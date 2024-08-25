@@ -156,8 +156,8 @@ const Knowledge = () => {
                 ></div>
                 <div className="py-2">
                   <p className="mt-2 text-base font-bold transition-all duration-200 group-hover:text-sky-500">
-                    Ông Hoàng Nam Tiến: "Không nhất thiết phải làm gà mới biết
-                    nước sôi là nóng"
+                    Ông Hoàng Nam Tiến: Không nhất thiết phải làm gà mới biết
+                    nước sôi là nóng
                   </p>
                   <p className="my-4 text-sm">
                     Theo ông Hoàng Nam Tiến, các bạn trẻ, đặc biệt là GenZ nếu
