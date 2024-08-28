@@ -5,12 +5,12 @@ import Header from "../Header/Header";
 
 const HeaderWrapper = () => {
   const pathname = usePathname();
-  const isAuthPage =
+  const isHiddenPage =
     pathname === "/register" ||
     pathname === "/login" ||
     pathname === "/employer/register";
 
-  if (isAuthPage) {
+  if (isHiddenPage) {
     return null;
   }
 

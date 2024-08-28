@@ -1,15 +1,6 @@
-"use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React from "react";
 import logo from "@images/logo.png";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,19 +8,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
+import SearchWrapper from "../client/SearchWrapper";
 
 const Header = () => {
   return (
     <>
-      <header className="bg-white py-4">
+      <header className="bg-[#003699] py-4">
         <div className="container mx-auto flex max-w-screen-2xl items-center justify-between px-6">
           <Link href="/" className="flex items-center">
             <Image src={logo} alt="CTU-Works Logo" width={50} height={50} />
-            <h1 className="ml-3 cursor-pointer text-2xl font-bold text-black">
+            <h1 className="ml-3 cursor-pointer text-2xl font-bold text-white">
               CTU-Works
             </h1>
           </Link>
-          <div className="mr-8 flex items-center gap-8 text-black">
+          <div className="mr-8 flex items-center gap-8 text-white">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <p className="cursor-pointer hover:text-gray-300">Việc làm</p>
@@ -84,12 +76,19 @@ const Header = () => {
                 </p>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="p-2">
-                <DropdownMenuItem className="my-[6px] bg-[#f4f5f5] p-3">
-                  Các câu hỏi phỏng vấn thường gặp
-                </DropdownMenuItem>
+                <Link href="/interview-questions">
+                  <DropdownMenuItem className="my-[6px] bg-[#f4f5f5] p-3">
+                    Các câu hỏi phỏng vấn thường gặp
+                  </DropdownMenuItem>
+                </Link>
                 <DropdownMenuItem className="my-[6px] bg-[#f4f5f5] p-3">
                   Bí kíp tìm việc
                 </DropdownMenuItem>
+                <Link href="/career-path">
+                  <DropdownMenuItem className="my-[6px] bg-[#f4f5f5] p-3">
+                    Lộ trình sự nghiệp
+                  </DropdownMenuItem>
+                </Link>
                 <DropdownMenuItem className="my-[6px] bg-[#f4f5f5] p-3">
                   Chế độ lương thưởng
                 </DropdownMenuItem>
@@ -125,87 +124,15 @@ const Header = () => {
               Đăng Nhập
             </button>
             <Link href="/register">
-              <button className="rounded-md border border-blue-600 bg-transparent px-4 py-2 text-blue-600 transition duration-300 hover:bg-blue-600 hover:text-white">
+              <button className="rounded-md border border-blue-600 bg-transparent px-4 py-2 text-white transition duration-300 hover:bg-blue-600 hover:text-white">
                 Đăng Ký
               </button>
             </Link>
           </div>
         </div>
       </header>
-      <div className="bg-[#F6FAFB] p-4">
-        <div className="container mx-auto px-6">
-          <div className="flex items-center justify-center gap-3">
-            <Select>
-              <SelectTrigger className="w-[200px] py-5 shadow-none focus-visible:ring-0">
-                <SelectValue placeholder="Theme" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="light">Light</SelectItem>
-                <SelectItem value="dark">Dark</SelectItem>
-                <SelectItem value="system">System</SelectItem>
-              </SelectContent>
-            </Select>
-            <input
-              type="text"
-              placeholder="Tìm kiếm việc làm..."
-              className="w-full max-w-lg rounded-md border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
-            />
-            <button className="rounded-md bg-blue-600 px-4 py-2 text-white transition duration-300 hover:bg-blue-700">
-              Tìm kiếm
-            </button>
-          </div>
-          <div className="mt-4 flex items-center justify-center gap-3">
-            <button className="rounded-md border border-teal-300 bg-white px-2 py-[2px] text-gray-600 transition hover:bg-slate-100 hover:text-teal-600">
-              Công nghệ thông tin
-            </button>
-            <button className="rounded-md border border-teal-300 bg-white px-2 py-[2px] text-gray-600 transition hover:bg-slate-100 hover:text-teal-600">
-              Kế toán
-            </button>
-            <button className="rounded-md border border-teal-300 bg-white px-2 py-[2px] text-gray-600 transition hover:bg-slate-100 hover:text-teal-600">
-              Cơ khí
-            </button>
-          </div>
-        </div>
 
-        <div className="mt-4 flex items-center justify-center gap-4">
-          <div className="max-w-80 rounded-md border border-blue-600 p-4">
-            <p className="text-xl font-semibold">Phân tích CN</p>
-            <p className="text-xs">
-              Bạn đã có sẳn CV? Tải lên để nhận phân tích và gợi ý của CTU-Works
-            </p>
-          </div>
-          <div className="max-w-80 rounded-md border border-blue-600 p-4">
-            <p className="text-xl font-semibold">Tạo CV tự động trong 2 phút</p>
-            <p className="text-xs">
-              Tạo CV nhanh chóng , chuẩn , đẹp , phong phú bằng công cụ tự động
-              hoàn toàn miễn phí
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* <div className="bg-white py-4">
-        <div className="container mx-auto px-6">
-          <div className="flex items-center justify-center gap-4">
-            <div className="max-w-80 rounded-md border border-blue-600 p-4">
-              <p className="text-xl font-semibold">Phân tích CN</p>
-              <p className="text-xs">
-                Bạn đã có sẳn CV? Tải lên để nhận phân tích và gợi ý của
-                CTU-Works
-              </p>
-            </div>
-            <div className="max-w-80 rounded-md border border-blue-600 p-4">
-              <p className="text-xl font-semibold">
-                Tạo CV tự động trong 2 phút
-              </p>
-              <p className="text-xs">
-                Tạo CV nhanh chóng , chuẩn , đẹp , phong phú bằng công cụ tự
-                động hoàn toàn miễn phí
-              </p>
-            </div>
-          </div>
-        </div>
-      </div> */}
+      <SearchWrapper />
     </>
   );
 };

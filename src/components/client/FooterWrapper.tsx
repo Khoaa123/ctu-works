@@ -5,12 +5,12 @@ import Footer from "../Footer/Footer";
 
 const FooterWrapper = () => {
   const pathname = usePathname();
-  const isAuthPage =
+  const isHiddenPage =
     pathname === "/register" ||
     pathname === "/login" ||
     pathname === "/employer/register";
 
-  if (isAuthPage) {
+  if (isHiddenPage) {
     return null;
   }
 
