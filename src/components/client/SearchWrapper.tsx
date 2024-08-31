@@ -10,7 +10,8 @@ const SearchWrapper = () => {
     pathname === "/career-path" ||
     pathname === "/salary-calculator" ||
     pathname === "/interview-questions" ||
-    pathname === "/career-path/[career]/[level]";
+    pathname.startsWith("/career-path/") ||
+    pathname.startsWith("/job-search/");
 
   if (isHiddenPage) {
     return null;
