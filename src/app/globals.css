@@ -59,6 +59,18 @@
   }
 }
 
+.rdp-vhidden {
+  @apply hidden;
+}
+
+.ql-container.ql-snow {
+  @apply !border-none;
+}
+
+.ql-toolbar.ql-snow {
+  @apply !border-none;
+}
+
 @layer base {
   * {
     @apply list-inside border-border;
