@@ -8,9 +8,9 @@ const Footer = () => {
           <div className="grid grid-cols-1 gap-3 py-10 md:grid-cols-4">
             <div>
               <ul className="list-none">
-                <li className="pb-2 text-white">VietnamWorks</li>
-                <li className="pb-2 text-[#b3ceff]">Về VietnamWorks</li>
-                <li className="pb-2 text-[#b3ceff]">Về VietnamWorks inTECH</li>
+                <li className="pb-2 text-white">CTU-Works</li>
+                <li className="pb-2 text-[#b3ceff]">Về CTU-Works</li>
+                <li className="pb-2 text-[#b3ceff]">Về CTU-Works inTECH</li>
                 <li className="pb-2 text-[#b3ceff]">Liên Hệ</li>
                 <li className="pb-2 text-[#b3ceff]">Hỏi Đáp</li>
               </ul>

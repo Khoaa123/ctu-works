@@ -387,7 +387,7 @@ const Profile = () => {
                     <button className="flex items-center gap-2">
                       <GoPlusCircle className="text-blue-600" size={24} />
                       <span className="text-sm font-bold text-blue-600">
-                        Kinh Nghiệm Làm Việc
+                        Thêm Kinh Nghiệm Làm Việc
                       </span>
                     </button>
                   </DialogTrigger>
@@ -433,7 +433,7 @@ const Profile = () => {
                     <button className="flex items-center gap-2">
                       <GoPlusCircle className="text-blue-600" size={24} />
                       <span className="text-sm font-bold text-blue-600">
-                        Thêm Giới thiệu bản thân
+                        Thêm Học Vấn
                       </span>
                     </button>
                   </DialogTrigger>
@@ -595,12 +595,138 @@ const Profile = () => {
                 <p className="my-3 text-xs font-normal italic">
                   Mô tả các dự án nổi bật của bạn nhằm thu hút nhà tuyển dụng
                 </p>
-                <button className="flex items-center gap-2">
-                  <GoPlusCircle className="text-blue-600" size={24} />
-                  <span className="text-sm font-bold text-blue-600">
-                    Thêm Dự Án
-                  </span>
-                </button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button className="flex items-center gap-2">
+                      <GoPlusCircle className="text-blue-600" size={24} />
+                      <span className="text-sm font-bold text-blue-600">
+                        Thêm Dự Án
+                      </span>
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-3xl p-0">
+                    <DialogHeader className="flex justify-between border-b border-gray-300 px-6 py-4">
+                      <DialogTitle>Dự Án</DialogTitle>
+                    </DialogHeader>
+                    <div className="flex flex-col gap-4 px-6">
+                      <div className="flex flex-col gap-1">
+                        <label htmlFor="" className="text-sm">
+                          <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                            *
+                          </span>
+                          Trường
+                        </label>
+                        <input
+                          type="text"
+                          className="h-10 rounded-md border border-solid px-3 outline-none focus:border-sky-400"
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-5">
+                        <div className="col-span-1 flex flex-col gap-1">
+                          <label htmlFor="" className="text-sm">
+                            <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                              *
+                            </span>
+                            Từ lúc
+                          </label>
+
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "shadow-none h-10 rounded-md justify-start text-left hover:bg-transparent  font-normal",
+                                  !date && "text-muted-foreground"
+                                )}
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {date ? (
+                                  format(date, "dd/MM/yyyy")
+                                ) : (
+                                  <span>Ngày/Tháng/Năm</span>
+                                )}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent
+                              className="w-auto p-0"
+                              align="start"
+                            >
+                              <Calendar
+                                mode="single"
+                                captionLayout="dropdown-buttons"
+                                selected={date}
+                                onSelect={setDate}
+                                fromYear={1960}
+                                toYear={2030}
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                        <div className="col-span-1 flex flex-col gap-1">
+                          <label htmlFor="" className="text-sm">
+                            <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                              *
+                            </span>
+                            Đến lúc
+                          </label>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "shadow-none h-10 rounded-md justify-start text-left hover:bg-transparent  font-normal",
+                                  !date && "text-muted-foreground"
+                                )}
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {date ? (
+                                  format(date, "dd/MM/yyyy")
+                                ) : (
+                                  <span>Ngày/Tháng/Năm</span>
+                                )}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent
+                              className="w-auto p-0"
+                              align="start"
+                            >
+                              <Calendar
+                                mode="single"
+                                captionLayout="dropdown-buttons"
+                                selected={date}
+                                onSelect={setDate}
+                                fromYear={1960}
+                                toYear={2030}
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                      </div>
+                      <div className="overflow-hidden rounded-md border border-gray-300">
+                        <ReactQuill
+                          modules={modules}
+                          theme="snow"
+                          value={value}
+                          onChange={setValue}
+                        />
+                      </div>
+                      <p className="text-start text-sm text-gray-500">
+                        0/5000 từ
+                      </p>
+                    </div>
+                    <DialogFooter className="border-t border-gray-300 px-6 py-4">
+                      <DialogClose asChild>
+                        <Button className="bg-[#f1f2f4] text-black shadow-none hover:bg-slate-200">
+                          Hủy
+                        </Button>
+                      </DialogClose>
+                      <Button className="bg-orange-400 text-white shadow-none hover:bg-orange-500">
+                        Lưu
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </div>
 
               <div className="rounded-md bg-white p-4">
@@ -609,12 +735,76 @@ const Profile = () => {
                   Trong phần này, bạn nên liệt kê các kỹ năng phù hợp với vị trí
                   hoặc lĩnh vực nghề nghiệp mà bạn quan tâm.
                 </p>
-                <button className="flex items-center gap-2">
-                  <GoPlusCircle className="text-blue-600" size={24} />
-                  <span className="text-sm font-bold text-blue-600">
-                    Thêm Kỹ Năng
-                  </span>
-                </button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button className="flex items-center gap-2">
+                      <GoPlusCircle className="text-blue-600" size={24} />
+                      <span className="text-sm font-bold text-blue-600">
+                        Thêm Kỹ Năng
+                      </span>
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-3xl p-0">
+                    <DialogHeader className="flex justify-between border-b border-gray-300 px-6 py-4">
+                      <DialogTitle>Kỹ Năng</DialogTitle>
+                    </DialogHeader>
+                    <div className="flex flex-col gap-4 px-6">
+                      <div className="grid grid-cols-5 gap-5">
+                        <div className="col-span-2 flex flex-col gap-1">
+                          <label htmlFor="" className="text-sm">
+                            <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                              *
+                            </span>
+                            Tên Kỹ Năng
+                          </label>
+                          <input
+                            type="text"
+                            className="h-10 rounded-md border border-solid px-3 outline-none focus:border-sky-400"
+                          />
+                        </div>
+                        <div className="col-span-2 flex flex-col gap-1">
+                          <label htmlFor="" className="text-sm">
+                            <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                              *
+                            </span>
+                            Mức Độ Thành Thạo
+                          </label>
+                          <Select>
+                            <SelectTrigger className="h-10 bg-white shadow-none focus:ring-0">
+                              <SelectValue placeholder="Vui lòng chọn trình độ" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="moi-bat-dau">
+                                Mới bắt đầu
+                              </SelectItem>
+                              <SelectItem value="trung-binh">
+                                Trung bình
+                              </SelectItem>
+                              <SelectItem value="thanh-thao">
+                                Thành thạo
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="col-span-1 flex flex-1 flex-col justify-end gap-1">
+                          <Button className="h-10 border border-solid border-orange-400 bg-white text-orange-400 shadow-none hover:bg-orange-50">
+                            Thêm
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                    <DialogFooter className="border-t border-gray-300 px-6 py-4">
+                      <DialogClose asChild>
+                        <Button className="bg-[#f1f2f4] text-black shadow-none hover:bg-slate-200">
+                          Hủy
+                        </Button>
+                      </DialogClose>
+                      <Button className="bg-orange-400 text-white shadow-none hover:bg-orange-500">
+                        Lưu
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </div>
 
               <div className="rounded-md bg-white p-4">
