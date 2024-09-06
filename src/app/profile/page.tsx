@@ -1,11 +1,6 @@
 "use client";
 import UserSidebar from "@/components/UserSidebar/UserSidebar";
 import React, { useState } from "react";
-import { FaUser, FaRegPenToSquare, FaPen } from "react-icons/fa6";
-import { FiPhone, FiGift, FiUser } from "react-icons/fi";
-import { RiGraduationCapLine } from "react-icons/ri";
-import { MdOutlineLocationOn, MdMailOutline } from "react-icons/md";
-import { GoPlusCircle } from "react-icons/go";
 import {
   Dialog,
   DialogClose,
@@ -35,6 +30,14 @@ import { cn } from "@/lib/utils";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
+import { FaUser, FaRegPenToSquare, FaPen } from "react-icons/fa6";
+import { FiPhone, FiGift, FiUser } from "react-icons/fi";
+import { RiGraduationCapLine } from "react-icons/ri";
+import { MdOutlineLocationOn, MdMailOutline } from "react-icons/md";
+import { GoPlusCircle } from "react-icons/go";
+import { IoClose } from "react-icons/io5";
+
+type ProficiencyLevel = "thanh-thao" | "trung-binh" | "moi-bat-dau";
 
 const Profile = () => {
   const [date, setDate] = React.useState<Date>();
@@ -44,6 +47,35 @@ const Profile = () => {
       ["bold", "italic", "underline"],
       [{ list: "ordered" }, { list: "bullet" }],
     ],
+  };
+  const [skillName, setSkillName] = useState<string>("");
+  const [proficiency, setProficiency] = useState<ProficiencyLevel | "">("");
+  const [skills, setSkills] = useState<Record<ProficiencyLevel, string[]>>({
+    "thanh-thao": [],
+    "trung-binh": [],
+    "moi-bat-dau": [],
+  });
+
+  const handleAddSkill = () => {
+    if (skillName && proficiency) {
+      setSkills((prevSkills) => ({
+        ...prevSkills,
+        [proficiency]: [...prevSkills[proficiency], skillName],
+      }));
+      setSkillName("");
+      setProficiency("");
+    }
+  };
+
+  const handleProficiencyChange = (value: string) => {
+    setProficiency(value as ProficiencyLevel);
+  };
+
+  const handleRemoveSkill = (level: ProficiencyLevel, index: number) => {
+    setSkills((prevSkills) => ({
+      ...prevSkills,
+      [level]: prevSkills[level].filter((_, i) => i !== index),
+    }));
   };
   return (
     <>
@@ -759,6 +791,8 @@ const Profile = () => {
                           </label>
                           <input
                             type="text"
+                            value={skillName}
+                            onChange={(e) => setSkillName(e.target.value)}
                             className="h-10 rounded-md border border-solid px-3 outline-none focus:border-sky-400"
                           />
                         </div>
@@ -769,7 +803,10 @@ const Profile = () => {
                             </span>
                             Mức Độ Thành Thạo
                           </label>
-                          <Select>
+                          <Select
+                            value={proficiency}
+                            onValueChange={handleProficiencyChange}
+                          >
                             <SelectTrigger className="h-10 bg-white shadow-none focus:ring-0">
                               <SelectValue placeholder="Vui lòng chọn trình độ" />
                             </SelectTrigger>
@@ -787,9 +824,86 @@ const Profile = () => {
                           </Select>
                         </div>
                         <div className="col-span-1 flex flex-1 flex-col justify-end gap-1">
-                          <Button className="h-10 border border-solid border-orange-400 bg-white text-orange-400 shadow-none hover:bg-orange-50">
+                          <Button
+                            onClick={handleAddSkill}
+                            className="h-10 border border-solid border-orange-400 bg-white text-orange-400 shadow-none hover:bg-orange-50"
+                          >
                             Thêm
                           </Button>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-3 px-6">
+                      <div className="flex flex-col gap-1">
+                        <p className="font-bold">
+                          Thành thạo (hơn 3 năm kinh nghiệm)
+                        </p>
+                        <div className="flex gap-2">
+                          {skills["thanh-thao"].length > 0 ? (
+                            skills["thanh-thao"].map((skill, index) => (
+                              <button
+                                key={index}
+                                className="flex w-fit items-center gap-1 rounded-md border border-solid border-orange-500 bg-white px-3 py-2 text-sm text-amber-500"
+                                onClick={() =>
+                                  handleRemoveSkill("thanh-thao", index)
+                                }
+                              >
+                                {skill} <IoClose size={20} />
+                              </button>
+                            ))
+                          ) : (
+                            <span className="text-sm text-gray-400">
+                              Chưa thêm kỹ năng nào
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <p className="font-bold">
+                          Trung bình (1 - 3 kinh nghiệm)
+                        </p>
+                        <div className="flex gap-2">
+                          {skills["trung-binh"].length > 0 ? (
+                            skills["trung-binh"].map((skill, index) => (
+                              <button
+                                key={index}
+                                className="flex w-fit items-center gap-1 rounded-md border border-solid border-orange-500 bg-white px-3 py-2 text-sm text-amber-500"
+                                onClick={() =>
+                                  handleRemoveSkill("trung-binh", index)
+                                }
+                              >
+                                {skill} <IoClose size={20} />
+                              </button>
+                            ))
+                          ) : (
+                            <span className="text-sm text-gray-400">
+                              Chưa thêm kỹ năng nào
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <p className="font-bold">
+                          Mới bắt đầu (ít hơn 1 năm kinh nghiệm)
+                        </p>
+                        <div className="flex gap-2">
+                          {skills["moi-bat-dau"].length > 0 ? (
+                            skills["moi-bat-dau"].map((skill, index) => (
+                              <button
+                                key={index}
+                                className="flex w-fit items-center gap-1 rounded-md border border-solid border-orange-500 bg-white px-3 py-2 text-sm text-amber-500"
+                                onClick={() =>
+                                  handleRemoveSkill("moi-bat-dau", index)
+                                }
+                              >
+                                {skill} <IoClose size={20} />
+                              </button>
+                            ))
+                          ) : (
+                            <span className="text-sm text-gray-400">
+                              Chưa thêm kỹ năng nào
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
