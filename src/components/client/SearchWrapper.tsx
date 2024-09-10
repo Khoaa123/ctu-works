@@ -10,6 +10,7 @@ const SearchWrapper = () => {
     pathname === "/career-path" ||
     pathname === "/salary-calculator" ||
     pathname === "/interview-questions" ||
+    pathname === "/login" ||
     pathname.startsWith("/career-path/") ||
     pathname.startsWith("/job-search/") ||
     pathname.startsWith("/profile");

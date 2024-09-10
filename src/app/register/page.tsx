@@ -1,15 +1,144 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { CalendarIcon } from "@radix-ui/react-icons";
+import { Calendar } from "@/components/ui/calendar";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { useMutation } from "@tanstack/react-query";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import ScreenLoading from "@/components/ScreenLoading/ScreenLoading";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+
+interface FormData {
+  email: string;
+  fullName: string;
+  password: string;
+  confirmPassword: string;
+  dateOfBirth: string;
+  phoneNumber: string;
+  desiredFields: string[];
+  MSSV: string;
+  industry: string;
+  gender: string;
+}
 
 const Register = () => {
+  const [date, setDate] = React.useState<Date>();
+  const router = useRouter();
+  const [formData, setFormData] = useState<FormData>({
+    email: "",
+    fullName: "",
+    password: "",
+    confirmPassword: "",
+    dateOfBirth: "",
+    phoneNumber: "",
+    desiredFields: [],
+    MSSV: "",
+    industry: "",
+    gender: "",
+  });
+
+  const industries = [
+    { id: 1, name: "Công nghệ thông tin" },
+    { id: 2, name: "Kinh doanh / Bán hàng" },
+    { id: 3, name: "Kế toán / Kiểm toán" },
+    { id: 4, name: "Hành chính / Thư ký" },
+    { id: 5, name: "Marketing / Truyền thông" },
+    { id: 6, name: "Du lịch / Nhà hàng / Khách sạn" },
+    { id: 7, name: "Xây dựng / Kiến trúc" },
+    { id: 8, name: "Giáo dục / Đào tạo" },
+    { id: 9, name: "Y tế / Dược phẩm" },
+  ];
+  const [selectedIndustries, setSelectedIndustries] = useState<number[]>([]);
+
+  const handleIndustryClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const industryId = Number(event.currentTarget.value);
+    setSelectedIndustries((prevIndustries) => {
+      if (prevIndustries.includes(industryId)) {
+        return prevIndustries.filter((id) => id !== industryId);
+      } else {
+        return [...prevIndustries, industryId];
+      }
+    });
+  };
+
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/sign-up`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
+      if (!res.ok) {
+        throw new Error("Đăng ký thất bại");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      toast.success("Đăng ký thành công");
+      router.push("/");
+    },
+    onError: (error) => {
+      console.error("Lỗi khi đăng ký:", error);
+      toast.error("Đăng ký thất bại");
+    },
+  });
+
+  const register = () => {
+    mutation.mutate();
+  };
+
+  useEffect(() => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      desiredFields: selectedIndustries.map(
+        (id) => industries.find((industry) => industry.id === id)?.name || ""
+      ),
+    }));
+  }, [selectedIndustries]);
+
+  useEffect(() => {
+    if (date) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        dateOfBirth: format(date, "dd/MM/yyyy"),
+      }));
+    }
+  }, [date]);
   return (
     <>
       <div>
         <div className="bg-custom-gradient min-h-[160px] p-4 text-center sm:p-6">
           <h4 className="text-2xl font-bold text-white sm:text-3xl">
-            Đăng ký tài khoản nhà tuyển dụng{" "}
+            Đăng ký tài khoản nhà tuyển dụng
             <Link href="/">
-              <span className="text-sky-400">CTU-Works</span>
+              <span className="text-sky-400"> CTU-Works</span>
             </Link>
           </h4>
         </div>
@@ -76,14 +205,18 @@ const Register = () => {
             </div>
 
             <div className="grid gap-8 md:grid-cols-2">
-              <div>
+              <div className="col-span-2">
                 <label className="mb-2 block text-sm font-semibold text-gray-800">
                   Họ và tên
                 </label>
                 <input
                   type="text"
-                  className="w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-blue-500 transition-all focus:bg-transparent"
+                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-blue-500 transition-all focus:bg-transparent"
                   placeholder="Nhập họ và tên"
+                  value={formData.fullName}
+                  onChange={(e) =>
+                    setFormData({ ...formData, fullName: e.target.value })
+                  }
                 />
               </div>
 
@@ -93,19 +226,46 @@ const Register = () => {
                 </label>
                 <input
                   type="email"
-                  className="w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-blue-500 transition-all focus:bg-transparent"
+                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-blue-500 transition-all focus:bg-transparent"
                   placeholder="Nhập email"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                 />
               </div>
               <div>
                 <label className="mb-2 block text-sm font-semibold text-gray-800">
                   Năm sinh
                 </label>
-                <input
-                  type="date"
-                  className="w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-blue-500 transition-all focus:bg-transparent"
-                  placeholder="Nhập tên"
-                />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "shadow-none w-full border-gray-300 rounded-sm h-10  justify-start text-left hover:bg-transparent  font-normal",
+                        !date && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {date ? (
+                        format(date, "dd/MM/yyyy")
+                      ) : (
+                        <span>Ngày/Tháng/Năm</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      captionLayout="dropdown-buttons"
+                      selected={date}
+                      onSelect={setDate}
+                      fromYear={1960}
+                      toYear={2030}
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
               <div>
                 <label className="mb-2 block text-sm font-semibold text-gray-800">
@@ -113,9 +273,63 @@ const Register = () => {
                 </label>
                 <input
                   type="tel"
-                  className="w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-blue-500 transition-all focus:bg-transparent"
+                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-blue-500 transition-all focus:bg-transparent"
                   placeholder="Nhập số điện thoại"
+                  value={formData.phoneNumber}
+                  onChange={(e) =>
+                    setFormData({ ...formData, phoneNumber: e.target.value })
+                  }
                 />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-800">
+                  MSSV
+                </label>
+                <input
+                  type="text"
+                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-blue-500 transition-all focus:bg-transparent"
+                  placeholder="Nhập mã số sinh viên"
+                  value={formData.MSSV}
+                  onChange={(e) =>
+                    setFormData({ ...formData, MSSV: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-800">
+                  Ngành
+                </label>
+                <input
+                  type="text"
+                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-blue-500 transition-all focus:bg-transparent"
+                  placeholder="Nhập tên ngành"
+                  value={formData.industry}
+                  onChange={(e) =>
+                    setFormData({ ...formData, industry: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-800">
+                  Giới tính
+                </label>
+                <Select
+                  value={formData.gender}
+                  onValueChange={(value) =>
+                    setFormData((prevFormData) => ({
+                      ...prevFormData,
+                      gender: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger className="h-10 rounded-sm border-gray-300 bg-white shadow-none focus:ring-0">
+                    <SelectValue placeholder="Vui lòng chọn giới tính" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Nam">Nam</SelectItem>
+                    <SelectItem value="Nữ">Nữ</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <label className="mb-2 block text-sm font-semibold text-gray-800">
@@ -124,8 +338,12 @@ const Register = () => {
                 <input
                   name="password"
                   type="password"
-                  className="w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-blue-500 transition-all focus:bg-transparent"
+                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-blue-500 transition-all focus:bg-transparent"
                   placeholder="Nhập mật khẩu"
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
                 />
               </div>
               <div>
@@ -135,23 +353,74 @@ const Register = () => {
                 <input
                   name="cpassword"
                   type="password"
-                  className="w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-blue-500 transition-all focus:bg-transparent"
+                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-blue-500 transition-all focus:bg-transparent"
                   placeholder="Nhập lại mật khẩu"
+                  value={formData.confirmPassword}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      confirmPassword: e.target.value,
+                    })
+                  }
                 />
               </div>
             </div>
             <div className="mt-8">
-              <button
-                type="button"
-                className="w-full rounded-sm bg-blue-500 px-6 py-3 text-sm font-semibold tracking-wider text-white hover:bg-blue-600 focus:outline-none"
-              >
-                Đăng ký
-              </button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button
+                    type="button"
+                    className="h-10 w-full rounded-sm bg-blue-500 px-6 py-3 text-sm font-semibold tracking-wider text-white hover:bg-blue-600 focus:outline-none"
+                  >
+                    Tiếp tục
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="max-w-3xl p-0">
+                  <DialogHeader className="flex justify-between border-b border-gray-300 px-6 py-4">
+                    <DialogTitle>Công việc muốn tìm</DialogTitle>
+                  </DialogHeader>
+                  <div className="px-6">
+                    <p className="mb-2 font-medium">
+                      <span className="font-semibold text-[#FF9119]">Tip:</span>{" "}
+                      Hãy chọn các công việc bạn muốn tìm việc
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2 px-6">
+                    {industries.map((industry) => (
+                      <button
+                        key={industry.id}
+                        className={`flex w-fit items-center gap-1 rounded-md border border-solid px-3 py-2 text-sm ${
+                          selectedIndustries.includes(industry.id)
+                            ? "bg-orange-500 text-white"
+                            : "bg-white text-gray-400"
+                        } hover:bg-orange-600 hover:text-white`}
+                        value={industry.id.toString()}
+                        onClick={handleIndustryClick}
+                      >
+                        {industry.name}
+                      </button>
+                    ))}
+                  </div>
+                  <DialogFooter className="border-t border-gray-300 px-6 py-4">
+                    <DialogClose asChild>
+                      <Button className="bg-[#f1f2f4] text-black shadow-none hover:bg-slate-200">
+                        Hủy
+                      </Button>
+                    </DialogClose>
+                    <Button
+                      className="bg-orange-400 text-white shadow-none hover:bg-orange-500"
+                      onClick={register}
+                    >
+                      {mutation.isPending ? <ScreenLoading /> : "Đăng ký"}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
             <div className="my-5 text-center">
               <span className="text-gray-500">
                 Bạn đã có tài khoản CTU-Works?{" "}
-              </span>{" "}
+              </span>
               <button className="ml-2 font-semibold text-blue-600">
                 Đăng nhập
               </button>

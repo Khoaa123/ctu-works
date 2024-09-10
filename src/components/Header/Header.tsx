@@ -14,7 +14,7 @@ const Header = () => {
   return (
     <>
       <header className="bg-[#003699] py-4">
-        <div className="container mx-auto flex max-w-screen-2xl items-center justify-between px-6">
+        <div className="container mx-auto flex max-w-screen-2xl items-center gap-8 px-6">
           <Link href="/" className="flex items-center">
             <Image src={logo} alt="CTU-Works Logo" width={50} height={50} />
             <h1 className="ml-3 cursor-pointer text-2xl font-bold text-white">
@@ -65,8 +65,6 @@ const Header = () => {
                     Tính lương GROSS - NET
                   </DropdownMenuItem>
                 </Link>
-                <DropdownMenuItem>Option 2</DropdownMenuItem>
-                <DropdownMenuItem>Option 3</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             <DropdownMenu>
@@ -81,22 +79,22 @@ const Header = () => {
                     Các câu hỏi phỏng vấn thường gặp
                   </DropdownMenuItem>
                 </Link>
-                <DropdownMenuItem className="my-[6px] bg-[#f4f5f5] p-3">
-                  Bí kíp tìm việc
-                </DropdownMenuItem>
                 <Link href="/career-path">
                   <DropdownMenuItem className="my-[6px] bg-[#f4f5f5] p-3">
                     Lộ trình sự nghiệp
                   </DropdownMenuItem>
                 </Link>
-                <DropdownMenuItem className="my-[6px] bg-[#f4f5f5] p-3">
-                  Chế độ lương thưởng
-                </DropdownMenuItem>
                 <Link href="/blog/knowledge">
                   <DropdownMenuItem className="my-[6px] bg-[#f4f5f5] p-3">
                     Kiến thức chuyên ngành
                   </DropdownMenuItem>
                 </Link>
+                <DropdownMenuItem className="my-[6px] bg-[#f4f5f5] p-3">
+                  Bí kíp tìm việc
+                </DropdownMenuItem>
+                <DropdownMenuItem className="my-[6px] bg-[#f4f5f5] p-3">
+                  Chế độ lương thưởng
+                </DropdownMenuItem>
                 <DropdownMenuItem className="my-[6px] bg-[#f4f5f5] p-3">
                   Hành trang nghề nghiệp
                 </DropdownMenuItem>
@@ -116,13 +114,15 @@ const Header = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <div className="flex items-center gap-4 text-black">
+          <div className="flex flex-1 items-center justify-end gap-4 text-black">
             <button className="rounded-md bg-blue-600 px-4 py-2 text-white transition duration-300 hover:bg-blue-700">
               Đăng Tuyển
             </button>
-            <button className="rounded-md bg-green-600 px-4 py-2 text-white transition duration-300 hover:bg-green-700">
-              Đăng Nhập
-            </button>
+            <Link href="/login">
+              <button className="rounded-md bg-green-600 px-4 py-2 text-white transition duration-300 hover:bg-green-700">
+                Đăng Nhập
+              </button>
+            </Link>
             <Link href="/register">
               <button className="rounded-md border border-blue-600 bg-transparent px-4 py-2 text-white transition duration-300 hover:bg-blue-600 hover:text-white">
                 Đăng Ký

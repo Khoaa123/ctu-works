@@ -187,7 +187,6 @@ const CompanyDetail = () => {
                       <div>
                         <h1 className="mb-1 line-clamp-1 text-xl font-bold">
                           QA Game Tester
-                          Testerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
                         </h1>
                         <p>Nexon Networks Vina Co.Ltd</p>
                         <p className="my-1 text-sm text-amber-600">
@@ -201,7 +200,6 @@ const CompanyDetail = () => {
                       <div>
                         <h1 className="mb-1 line-clamp-1 text-xl font-bold">
                           QA Game Tester
-                          Testerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
                         </h1>
                         <p>Nexon Networks Vina Co.Ltd</p>
                         <p className="my-1 text-sm text-amber-600">
@@ -215,7 +213,6 @@ const CompanyDetail = () => {
                       <div>
                         <h1 className="mb-1 line-clamp-1 text-xl font-bold">
                           QA Game Tester
-                          Testerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
                         </h1>
                         <p>Nexon Networks Vina Co.Ltd</p>
                         <p className="my-1 text-sm text-amber-600">
@@ -229,7 +226,6 @@ const CompanyDetail = () => {
                       <div>
                         <h1 className="mb-1 line-clamp-1 text-xl font-bold">
                           QA Game Tester
-                          Testerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
                         </h1>
                         <p>Nexon Networks Vina Co.Ltd</p>
                         <p className="my-1 text-sm text-amber-600">

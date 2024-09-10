@@ -6,9 +6,7 @@ import Footer from "../Footer/Footer";
 const FooterWrapper = () => {
   const pathname = usePathname();
   const isHiddenPage =
-    pathname === "/register" ||
-    pathname === "/login" ||
-    pathname === "/employer/register";
+    pathname === "/register" || pathname === "/employer/register";
 
   if (isHiddenPage) {
     return null;
