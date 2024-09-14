@@ -7,6 +7,7 @@ import { ReactQueryProvider } from "@/components/ReactQueryProvider";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { CookiesProvider } from "next-client-cookies/server";
+import "react-toastify/dist/ReactToastify.css";
 
 const inter = Inter({ subsets: ["latin"] });
 

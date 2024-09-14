@@ -10,9 +10,9 @@ import {
 const Search = () => {
   return (
     <>
-      <div className="my-16 flex items-center justify-center gap-3">
+      <div className="mb-12 flex items-center justify-center gap-3 bg-[#F6FAFB] py-12">
         <Select>
-          <SelectTrigger className="w-[200px] py-5 shadow-none focus:ring-0">
+          <SelectTrigger className="w-[200px] bg-white py-5 shadow-none focus:ring-0">
             <SelectValue placeholder="Tất cả địa điểm" />
           </SelectTrigger>
           <SelectContent>

@@ -32,18 +32,34 @@ import ScreenLoading from "@/components/ScreenLoading/ScreenLoading";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
-interface FormData {
+type WorkingPreferences = {
+  companyIndustries: string[];
+};
+
+type FormData = {
   email: string;
   fullName: string;
   password: string;
   confirmPassword: string;
   dateOfBirth: string;
   phoneNumber: string;
-  desiredFields: string[];
-  MSSV: string;
-  industry: string;
+  jobTitle: string;
+  currentDegree: string;
+  currentIndustries: string;
+  currentJobFunction: string;
+  yearsExperience: string;
+  currentSalary: string;
+  highestDegree: string;
+  country: string;
+  city: string;
+  district: string;
+  address: string;
   gender: string;
-}
+  maritalStatusId: string;
+  MSSV: string;
+  skillName: string[];
+  workingPreferences: WorkingPreferences;
+};
 
 const Register = () => {
   const [date, setDate] = React.useState<Date>();
@@ -55,10 +71,24 @@ const Register = () => {
     confirmPassword: "",
     dateOfBirth: "",
     phoneNumber: "",
-    desiredFields: [],
-    MSSV: "",
-    industry: "",
+    jobTitle: "",
+    currentDegree: "",
+    currentIndustries: "",
+    currentJobFunction: "",
+    yearsExperience: "",
+    currentSalary: "",
+    highestDegree: "",
+    country: "",
+    city: "",
+    district: "",
+    address: "",
     gender: "",
+    maritalStatusId: "",
+    MSSV: "",
+    skillName: [],
+    workingPreferences: {
+      companyIndustries: [],
+    },
   });
 
   const industries = [
@@ -86,13 +116,20 @@ const Register = () => {
   };
 
   const mutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (data: FormData) => {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/sign-up`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
+          body: JSON.stringify({
+            ...data,
+            phoneNumber: Number(data.phoneNumber),
+            yearsExperience: Number(data.yearsExperience),
+            currentSalary: Number(data.currentSalary),
+            gender: Number(data.gender),
+            maritalStatusId: Number(data.maritalStatusId),
+          }),
         }
       );
       if (!res.ok) {
@@ -100,9 +137,13 @@ const Register = () => {
       }
       return res.json();
     },
-    onSuccess: () => {
-      toast.success("Đăng ký thành công");
-      router.push("/");
+    onSuccess: (data) => {
+      if (data.status === "OK") {
+        toast.success("Đăng ký thành công");
+        router.push("/");
+      } else {
+        toast.error("Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.");
+      }
     },
     onError: (error) => {
       console.error("Lỗi khi đăng ký:", error);
@@ -111,15 +152,18 @@ const Register = () => {
   });
 
   const register = () => {
-    mutation.mutate();
+    mutation.mutate(formData);
   };
 
   useEffect(() => {
     setFormData((prevFormData) => ({
       ...prevFormData,
-      desiredFields: selectedIndustries.map(
-        (id) => industries.find((industry) => industry.id === id)?.name || ""
-      ),
+      workingPreferences: {
+        ...prevFormData.workingPreferences,
+        companyIndustries: selectedIndustries.map(
+          (id) => industries.find((industry) => industry.id === id)?.name || ""
+        ),
+      },
     }));
   }, [selectedIndustries]);
 
@@ -205,13 +249,13 @@ const Register = () => {
             </div>
 
             <div className="grid gap-8 md:grid-cols-2">
-              <div className="col-span-2">
+              <div className="">
                 <label className="mb-2 block text-sm font-semibold text-gray-800">
                   Họ và tên
                 </label>
                 <input
                   type="text"
-                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-blue-500 transition-all focus:bg-transparent"
+                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
                   placeholder="Nhập họ và tên"
                   value={formData.fullName}
                   onChange={(e) =>
@@ -219,18 +263,50 @@ const Register = () => {
                   }
                 />
               </div>
-
               <div>
                 <label className="mb-2 block text-sm font-semibold text-gray-800">
                   Email
                 </label>
                 <input
                   type="email"
-                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-blue-500 transition-all focus:bg-transparent"
+                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
                   placeholder="Nhập email"
                   value={formData.email}
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-800">
+                  Mật khẩu
+                </label>
+                <input
+                  name="password"
+                  type="password"
+                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
+                  placeholder="Nhập mật khẩu"
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-800">
+                  Nhập lại mật khẩu
+                </label>
+                <input
+                  name="cpassword"
+                  type="password"
+                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
+                  placeholder="Nhập lại mật khẩu"
+                  value={formData.confirmPassword}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      confirmPassword: e.target.value,
+                    })
                   }
                 />
               </div>
@@ -243,7 +319,7 @@ const Register = () => {
                     <Button
                       variant={"outline"}
                       className={cn(
-                        "shadow-none w-full border-gray-300 rounded-sm h-10  justify-start text-left hover:bg-transparent  font-normal",
+                        "shadow-none w-full border-gray-300 rounded-sm h-10  justify-start text-left hover:bg-transparent  font-normal data-[state=open]:border-sky-400",
                         !date && "text-muted-foreground"
                       )}
                     >
@@ -273,25 +349,78 @@ const Register = () => {
                 </label>
                 <input
                   type="tel"
-                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-blue-500 transition-all focus:bg-transparent"
+                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
                   placeholder="Nhập số điện thoại"
                   value={formData.phoneNumber}
                   onChange={(e) =>
-                    setFormData({ ...formData, phoneNumber: e.target.value })
+                    setFormData({
+                      ...formData,
+                      phoneNumber: e.target.value,
+                    })
                   }
                 />
               </div>
               <div>
                 <label className="mb-2 block text-sm font-semibold text-gray-800">
-                  MSSV
+                  Chức Danh
                 </label>
                 <input
                   type="text"
-                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-blue-500 transition-all focus:bg-transparent"
-                  placeholder="Nhập mã số sinh viên"
-                  value={formData.MSSV}
+                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
+                  placeholder="Nhập chức danh"
+                  value={formData.jobTitle}
                   onChange={(e) =>
-                    setFormData({ ...formData, MSSV: e.target.value })
+                    setFormData({ ...formData, jobTitle: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-800">
+                  Cấp bậc hiện tại
+                </label>
+                <Select
+                  value={formData.currentDegree}
+                  onValueChange={(value) =>
+                    setFormData((prevFormData) => ({
+                      ...prevFormData,
+                      currentDegree: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger className="h-10 rounded-sm border-gray-300 bg-white shadow-none focus:ring-0 data-[state=open]:border-sky-400">
+                    <SelectValue placeholder="Vui lòng chọn cấp bậc" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Thực tập sinh/Sinh viên">
+                      Thực tập sinh/Sinh viên
+                    </SelectItem>
+                    <SelectItem value="Mới tốt nghiệp">
+                      Mới tốt nghiệp
+                    </SelectItem>
+                    <SelectItem value="Nhân viên">Nhân viên</SelectItem>
+                    <SelectItem value="Trưởng phòng">
+                      Trưởng phòng
+                    </SelectItem>{" "}
+                    <SelectItem value="Trưởng phòng">
+                      Giám đốc và Cấp Cao Hơn
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-800">
+                  Lĩnh vực hiện tại
+                </label>
+                <input
+                  type="text"
+                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
+                  placeholder="Nhập tên ngành"
+                  value={formData.currentIndustries}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      currentIndustries: e.target.value,
+                    })
                   }
                 />
               </div>
@@ -301,11 +430,144 @@ const Register = () => {
                 </label>
                 <input
                   type="text"
-                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-blue-500 transition-all focus:bg-transparent"
-                  placeholder="Nhập tên ngành"
-                  value={formData.industry}
+                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
+                  placeholder="Nhập chức danh"
+                  value={formData.currentJobFunction}
                   onChange={(e) =>
-                    setFormData({ ...formData, industry: e.target.value })
+                    setFormData({
+                      ...formData,
+                      currentJobFunction: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-800">
+                  Số năm kinh nghiệm
+                </label>
+                <input
+                  type="number"
+                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
+                  placeholder="Nhập số năm kinh nghiệm"
+                  min={0}
+                  value={formData.yearsExperience}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      yearsExperience: e.target.value,
+                    })
+                  }
+                />
+              </div>{" "}
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-800">
+                  Mức lương hiện tại
+                </label>
+                <input
+                  type="text"
+                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
+                  placeholder="Nhập chức danh"
+                  value={formData.currentSalary}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      currentSalary: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-800">
+                  Bằng cấp cao nhất
+                </label>
+                <Select
+                  value={formData.highestDegree}
+                  onValueChange={(value) =>
+                    setFormData((prevFormData) => ({
+                      ...prevFormData,
+                      highestDegree: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger className="h-10 rounded-sm border-gray-300 bg-white shadow-none focus:ring-0 data-[state=open]:border-sky-400">
+                    <SelectValue placeholder="Vui lòng chọn bằng cấp" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Đại học">Đại học</SelectItem>
+                    <SelectItem value="Thạc sĩ">Thạc sĩ</SelectItem>
+                    <SelectItem value="Tiến sĩ">Tiến sĩ</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-800">
+                  Quốc tịch
+                </label>
+                <input
+                  type="text"
+                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
+                  placeholder="Nhập chức danh"
+                  value={formData.country}
+                  onChange={(e) =>
+                    setFormData({ ...formData, country: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-800">
+                  Thành phố
+                </label>
+                <Select
+                  value={formData.city}
+                  onValueChange={(value) =>
+                    setFormData((prevFormData) => ({
+                      ...prevFormData,
+                      city: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger className="h-10 rounded-sm border-gray-300 bg-white shadow-none focus:ring-0 data-[state=open]:border-sky-400">
+                    <SelectValue placeholder="Vui lòng chọn giới tính" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Hồ Chính Minh">Hồ Chí Minh</SelectItem>
+                    <SelectItem value="Cần Thơ">Cần Thơ</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-800">
+                  Quận/Huyện
+                </label>
+                <Select
+                  value={formData.district}
+                  onValueChange={(value) =>
+                    setFormData((prevFormData) => ({
+                      ...prevFormData,
+                      district: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger className="h-10 rounded-sm border-gray-300 bg-white shadow-none focus:ring-0 data-[state=open]:border-sky-400">
+                    <SelectValue placeholder="Vui lòng chọn giới tính" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Quận 1">Quận 1</SelectItem>
+                    <SelectItem value="Ninh Kiều">Ninh Kiều</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-800">
+                  Địa chỉ
+                </label>
+                <input
+                  type="text"
+                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
+                  placeholder="Nhập tên ngành"
+                  value={formData.address}
+                  onChange={(e) =>
+                    setFormData({ ...formData, address: e.target.value })
                   }
                 />
               </div>
@@ -314,7 +576,7 @@ const Register = () => {
                   Giới tính
                 </label>
                 <Select
-                  value={formData.gender}
+                  value={formData.gender.toString()}
                   onValueChange={(value) =>
                     setFormData((prevFormData) => ({
                       ...prevFormData,
@@ -322,47 +584,94 @@ const Register = () => {
                     }))
                   }
                 >
-                  <SelectTrigger className="h-10 rounded-sm border-gray-300 bg-white shadow-none focus:ring-0">
+                  <SelectTrigger className="h-10 rounded-sm border-gray-300 bg-white shadow-none focus:ring-0 data-[state=open]:border-sky-400">
                     <SelectValue placeholder="Vui lòng chọn giới tính" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Nam">Nam</SelectItem>
-                    <SelectItem value="Nữ">Nữ</SelectItem>
+                    <SelectItem value="1">Nam</SelectItem>
+                    <SelectItem value="2">Nữ</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div>
                 <label className="mb-2 block text-sm font-semibold text-gray-800">
-                  Mật khẩu
+                  Tình trạng hôn nhân
+                </label>
+                <Select
+                  value={formData.maritalStatusId.toString()}
+                  onValueChange={(value) =>
+                    setFormData((prevFormData) => ({
+                      ...prevFormData,
+                      maritalStatusId: value,
+                    }))
+                  }
+                >
+                  <SelectTrigger className="h-10 rounded-sm border-gray-300 bg-white shadow-none focus:ring-0 data-[state=open]:border-sky-400">
+                    <SelectValue placeholder="Vui lòng chọn giới tính" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">Độc thân</SelectItem>
+                    <SelectItem value="2">Đã kết hôn</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-gray-800">
+                  MSSV
                 </label>
                 <input
-                  name="password"
-                  type="password"
-                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-blue-500 transition-all focus:bg-transparent"
-                  placeholder="Nhập mật khẩu"
-                  value={formData.password}
+                  type="text"
+                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
+                  placeholder="Nhập mã số sinh viên"
+                  value={formData.MSSV}
                   onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
+                    setFormData({ ...formData, MSSV: e.target.value })
                   }
                 />
               </div>
               <div>
                 <label className="mb-2 block text-sm font-semibold text-gray-800">
-                  Nhập lại mật khẩu
+                  Kỹ năng
                 </label>
-                <input
-                  name="cpassword"
-                  type="password"
-                  className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-blue-500 transition-all focus:bg-transparent"
-                  placeholder="Nhập lại mật khẩu"
-                  value={formData.confirmPassword}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      confirmPassword: e.target.value,
-                    })
-                  }
-                />
+                <div className="flex flex-wrap items-center gap-2 rounded-sm border border-solid border-gray-300 p-2">
+                  {formData.skillName.map((skill, index) => (
+                    <button
+                      key={index}
+                      className="rounded-md bg-blue-500 px-2 py-1 text-white"
+                      onClick={() => {
+                        setFormData((prevFormData) => ({
+                          ...prevFormData,
+                          skillName: prevFormData.skillName.filter(
+                            (_, i) => i !== index
+                          ),
+                        }));
+                      }}
+                    >
+                      {skill} &times;
+                    </button>
+                  ))}
+                  <input
+                    type="text"
+                    className="h-fit flex-grow border-none text-sm text-gray-800 outline-none"
+                    placeholder="Nhập tên kỹ năng và nhấn Enter"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        const target = e.target as HTMLInputElement;
+                        if (target.value.trim()) {
+                          setFormData((prevFormData) => ({
+                            ...prevFormData,
+                            skillName: [
+                              ...prevFormData.skillName,
+                              target.value.trim(),
+                            ],
+                          }));
+                          target.value = "";
+                        }
+                      }
+                    }}
+                  />
+                </div>
               </div>
             </div>
             <div className="mt-8">
@@ -391,9 +700,9 @@ const Register = () => {
                         key={industry.id}
                         className={`flex w-fit items-center gap-1 rounded-md border border-solid px-3 py-2 text-sm ${
                           selectedIndustries.includes(industry.id)
-                            ? "bg-orange-500 text-white"
+                            ? "bg-[#00b14f] text-white"
                             : "bg-white text-gray-400"
-                        } hover:bg-orange-600 hover:text-white`}
+                        } hover:bg-[#00b14f] hover:text-white`}
                         value={industry.id.toString()}
                         onClick={handleIndustryClick}
                       >
@@ -408,7 +717,7 @@ const Register = () => {
                       </Button>
                     </DialogClose>
                     <Button
-                      className="bg-orange-400 text-white shadow-none hover:bg-orange-500"
+                      className="bg-[#00b14f] text-white shadow-none hover:bg-green-700"
                       onClick={register}
                     >
                       {mutation.isPending ? <ScreenLoading /> : "Đăng ký"}

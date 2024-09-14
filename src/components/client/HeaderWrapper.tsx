@@ -6,7 +6,9 @@ import Header from "../Header/Header";
 const HeaderWrapper = () => {
   const pathname = usePathname();
   const isHiddenPage =
-    pathname === "/register" || pathname === "/employer/register";
+    pathname === "/register" ||
+    pathname === "/employer/register" ||
+    pathname.startsWith("/admin");
 
   if (isHiddenPage) {
     return null;

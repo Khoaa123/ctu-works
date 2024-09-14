@@ -8,29 +8,37 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { FaCheck } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-interface FormData {
-  email: string;
-  password: string;
-}
+const schema = z.object({
+  email: z.string().email("Email không hợp lệ"),
+  password: z.string().min(1, "Vui lòng nhập mật khẩu"),
+});
+
+type FormData = z.infer<typeof schema>;
 
 const Login = () => {
-  const [formData, setFormData] = useState<FormData>({
-    email: "",
-    password: "",
-  });
-  const [fullName, setfullName] = useState("");
   const router = useRouter();
   const cookies = useCookies();
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+  });
+
   const mutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (data: FormData) => {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/sign-in`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(data),
         }
       );
       if (!res.ok) {
@@ -54,8 +62,8 @@ const Login = () => {
     },
   });
 
-  const login = () => {
-    mutation.mutate();
+  const onSubmit = (data: FormData) => {
+    mutation.mutate(data);
   };
 
   return (
@@ -135,52 +143,56 @@ const Login = () => {
             <div className="my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300">
               <p className="mx-4 text-center">Hoặc</p>
             </div>
-            <div className="flex flex-col gap-6">
-              <div className="flex flex-col gap-1">
-                <label htmlFor="" className="text-sm">
-                  Email
-                </label>
-                <input
-                  type="text"
-                  className="h-10 rounded-md border border-solid px-3 outline-none focus:border-sky-300"
-                  placeholder="Nhập email"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                />
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-1">
+                  <label htmlFor="" className="text-sm">
+                    Email
+                  </label>
+                  <input
+                    type="text"
+                    className="h-10 rounded-md border border-solid px-3 outline-none focus:border-sky-300"
+                    placeholder="Nhập email"
+                    {...register("email")}
+                  />
+                  {errors.email && (
+                    <span className="text-red-500">{errors.email.message}</span>
+                  )}
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label htmlFor="" className="text-sm">
+                    Mật khẩu
+                  </label>
+                  <input
+                    type="password"
+                    className="h-10 rounded-md border border-solid px-3 outline-none focus:border-sky-300"
+                    placeholder="Nhập mật khẩu"
+                    {...register("password")}
+                  />{" "}
+                  {errors.password && (
+                    <span className="text-red-500">
+                      {errors.password.message}
+                    </span>
+                  )}
+                </div>
+                <Button
+                  className="h-10 bg-orange-400 text-white shadow-none hover:bg-orange-500"
+                  type="submit"
+                >
+                  Đăng nhập
+                </Button>
+                <div className="text-center">
+                  <span className="text-gray-500">
+                    Bạn đã có tài khoản CTU-Works?{" "}
+                  </span>
+                  <Link href="/register">
+                    <button className="ml-2 font-semibold text-blue-600">
+                      Đăng nhập
+                    </button>
+                  </Link>
+                </div>
               </div>
-              <div className="flex flex-col gap-1">
-                <label htmlFor="" className="text-sm">
-                  Mật khẩu
-                </label>
-                <input
-                  type="password"
-                  className="h-10 rounded-md border border-solid px-3 outline-none focus:border-sky-300"
-                  placeholder="Nhập mật khẩu"
-                  value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
-                />
-              </div>
-              <Button
-                className="h-10 bg-orange-400 text-white shadow-none hover:bg-orange-500"
-                onClick={login}
-              >
-                Đăng nhập
-              </Button>
-              <div className="text-center">
-                <span className="text-gray-500">
-                  Bạn đã có tài khoản CTU-Works?{" "}
-                </span>
-                <Link href="/register">
-                  <button className="ml-2 font-semibold text-blue-600">
-                    Đăng nhập
-                  </button>
-                </Link>
-              </div>
-            </div>
+            </form>
           </div>
           <div className="flex flex-col py-12">
             <p className="text-2xl font-bold">

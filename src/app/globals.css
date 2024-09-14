@@ -71,6 +71,17 @@
   @apply !border-none;
 }
 
+.ql-container {
+  width: 100%;
+  white-space: normal;
+}
+
+.ql-editor {
+  /* white-space: normal;
+  overflow-wrap: break-word;
+  word-wrap: break-word; */
+  word-break: break-word;
+}
 @layer base {
   * {
     @apply list-inside border-border;
