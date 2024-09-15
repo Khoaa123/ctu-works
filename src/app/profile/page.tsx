@@ -1,29 +1,7 @@
 "use client";
 import UserSidebar from "@/components/UserSidebar/UserSidebar";
 import React, { useEffect, useState } from "react";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { CalendarIcon, CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
+import { CalendarIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button";
 import { format, set } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -50,13 +28,52 @@ import {
   FaFileInvoiceDollar,
 } from "react-icons/fa";
 import { FaUserDoctor } from "react-icons/fa6";
-import Image from "next/image";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+const Project = dynamic(() => import("@/components/Profile/Project"), {
+  ssr: false,
+});
 const Education = dynamic(() => import("@/components/Profile/Education"), {
   ssr: false,
 });
 const WorkHistory = dynamic(() => import("@/components/Profile/WorkHistory"), {
   ssr: false,
 });
+const Skill = dynamic(() => import("@/components/Profile/Skill"), {
+  ssr: false,
+});
+const Introduce = dynamic(() => import("@/components/Profile/Introduce"), {
+  ssr: false,
+});
+const Language = dynamic(() => import("@/components/Profile/Language"), {
+  ssr: false,
+});
+const Certification = dynamic(
+  () => import("@/components/Profile/Certification"),
+  {
+    ssr: false,
+  }
+);
 type ProficiencyLevel = "thanh-thao" | "trung-binh" | "moi-bat-dau";
 
 export interface JwtPayload {
@@ -90,7 +107,6 @@ type UserData = {
   maritalStatusId: string;
   avatar: "";
   workingPreferences: WorkingPreferences;
-  // workingHistories: WorkingHistories[];
 };
 
 type FormData = {
@@ -112,8 +128,6 @@ type FormData = {
   maritalStatusId: string;
   MSSV: string;
   avatar: string;
-  // workingPreferences: WorkingPreferences;
-  // workingHistories: WorkingHistories;
 };
 
 type WorkingPreferences = {
@@ -126,38 +140,10 @@ type WorkingPreferences = {
   benefits: number[];
 };
 
-// interface WorkingHistoryRequest {
-//   jobTitle: string;
-//   companyName: string;
-//   companyLogo: string;
-//   fromDate: string;
-//   toDate: string;
-//   description: string;
-//   isCurrent: number;
-// }
-
-// type WorkingHistories = WorkingHistoryRequest & { _id: string };
-
 const Profile = () => {
   const queryClient = useQueryClient();
   const [date, setDate] = React.useState<Date>();
-  // const [fromDate, setFromDate] = useState<Date>();
-  // const [toDate, setToDate] = useState<Date>();
-  // const [isCurrent, setIsCurrent] = useState<boolean>(false);
   const [value, setValue] = useState("");
-  const modules = {
-    toolbar: [
-      ["bold", "italic", "underline"],
-      [{ list: "ordered" }, { list: "bullet" }],
-    ],
-  };
-  const [skillName, setSkillName] = useState<string>("");
-  const [proficiency, setProficiency] = useState<ProficiencyLevel | "">("");
-  const [skills, setSkills] = useState<Record<ProficiencyLevel, string[]>>({
-    "thanh-thao": [],
-    "trung-binh": [],
-    "moi-bat-dau": [],
-  });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isPreferencesDialogOpen, setIsPreferencesDialogOpen] = useState(false);
   const [selectedBenefits, setSelectedBenefits] = useState<number[]>([]);
@@ -181,24 +167,6 @@ const Profile = () => {
     maritalStatusId: "",
     MSSV: "",
     avatar: "",
-    // workingPreferences: {
-    //   locations: [""],
-    //   jobFunction: "",
-    //   companyIndustries: [""],
-    //   salary: "",
-    //   desiredJobLevel: "",
-    //   isRelocate: 1,
-    //   benefits: [],
-    // },
-    // workingHistories: {
-    //   jobTitle: "",
-    //   companyName: "",
-    //   companyLogo: "",
-    //   fromDate: "",
-    //   toDate: "",
-    //   description: "",
-    //   isCurrent: 1,
-    // },
   });
 
   const [workingPreferences, setWorkingPreferences] =
@@ -211,43 +179,6 @@ const Profile = () => {
       isRelocate: 1,
       benefits: [],
     });
-
-  // const [workingHistories, setWorkingHistories] =
-  //   useState<WorkingHistoryRequest>({
-  //     jobTitle: "",
-  //     companyName: "",
-  //     companyLogo: "",
-  //     fromDate: "",
-  //     toDate: "",
-  //     description: "",
-  //     isCurrent: 1,
-  //   });
-
-  // const [allWorkingHistories, setAllWorkingHistories] = useState<
-  //   WorkingHistories[]
-  // >([]);
-
-  const handleAddSkill = () => {
-    if (skillName && proficiency) {
-      setSkills((prevSkills) => ({
-        ...prevSkills,
-        [proficiency]: [...prevSkills[proficiency], skillName],
-      }));
-      setSkillName("");
-      setProficiency("");
-    }
-  };
-
-  const handleProficiencyChange = (value: string) => {
-    setProficiency(value as ProficiencyLevel);
-  };
-
-  const handleRemoveSkill = (level: ProficiencyLevel, index: number) => {
-    setSkills((prevSkills) => ({
-      ...prevSkills,
-      [level]: prevSkills[level].filter((_, i) => i !== index),
-    }));
-  };
 
   const cookies = useCookies();
   const accessToken = cookies.get("accessToken");
@@ -301,22 +232,6 @@ const Profile = () => {
     return res.json();
   };
 
-  // const updateWorkingHistories = async (
-  //   updatedHistories: WorkingHistoryRequest
-  // ) => {
-  //   const res = await fetch(
-  //     `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/create-working-histories/${decodedToken?.userid}`,
-  //     {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(updatedHistories),
-  //     }
-  //   );
-  //   return res.json();
-  // };
-
   const mutation = useMutation({
     mutationFn: updateUser,
     onSuccess: (data) => {
@@ -351,22 +266,6 @@ const Profile = () => {
     },
   });
 
-  // const historiesMutation = useMutation({
-  //   mutationFn: updateWorkingHistories,
-  //   onSuccess: (data) => {
-  //     if (data.status === "OK") {
-  //       toast.success("Cập nhật kinh nghiệm làm việc thành công ");
-  //       queryClient.invalidateQueries({ queryKey: ["getUser"] });
-  //     } else {
-  //       toast.error("Có lỗi xảy ra. Vui lòng kiểm tra lại thông tin.");
-  //     }
-  //   },
-  //   onError: (error) => {
-  //     console.error("Lỗi khi cập nhật:", error);
-  //     toast.error("Cập nhật thất bại");
-  //   },
-  // });
-
   const update = () => {
     mutation.mutate(formData);
   };
@@ -380,16 +279,11 @@ const Profile = () => {
     });
   };
 
-  // const updatedHistories = () => {
-  //   historiesMutation.mutate(workingHistories);
-  // };
-
   useEffect(() => {
     if (data) {
       setFormData(data);
       setSelectedBenefits(data.workingPreferences.benefits || []);
       setWorkingPreferences(data.workingPreferences);
-      // setAllWorkingHistories(data.workingHistories);
     }
   }, [data]);
 
@@ -401,24 +295,6 @@ const Profile = () => {
       }));
     }
   }, [date]);
-
-  // useEffect(() => {
-  //   if (fromDate) {
-  //     setWorkingHistories((prev) => ({
-  //       ...prev,
-  //       fromDate: format(fromDate, "MM/yyyy"),
-  //     }));
-  //   }
-  // }, [fromDate]);
-
-  // useEffect(() => {
-  //   if (toDate) {
-  //     setWorkingHistories((prev) => ({
-  //       ...prev,
-  //       toDate: format(toDate, "MM/yyyy"),
-  //     }));
-  //   }
-  // }, [toDate]);
 
   const handleAddWorkLocation = () => {
     setWorkingPreferences((prev) => ({
@@ -451,19 +327,19 @@ const Profile = () => {
     });
   };
 
-  // const handleIsCurrentChange = () => {
-  //   setIsCurrent(!isCurrent);
-  //   if (!isCurrent) {
-  //     setToDate(undefined);
-  //   }
-  // };
-
   const OPTIONS = [
     { label: "Công Nghệ Thông Tin", value: "Công Nghệ Thông Tin" },
     { label: "Ngân Hàng", value: "Ngân Hàng" },
     { label: "Kinh Tế", value: "Kinh Tế" },
     { label: "Cơ Khí", value: "Cơ Khí" },
   ];
+
+  const modules = {
+    toolbar: [
+      ["bold", "italic", "underline"],
+      [{ list: "ordered" }, { list: "bullet" }],
+    ],
+  };
 
   return (
     <>
@@ -1448,758 +1324,19 @@ const Profile = () => {
                 </Dialog>
               </div>
 
-              <div className="rounded-md bg-white p-4">
-                <p className="text-xl font-bold">Mục Tiêu Nghề Nghiệp</p>
-                <p className="my-3 text-xs font-normal italic">
-                  Giới thiệu bản thân và mục tiêu nghề nghiệp của bạn
-                </p>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <button className="flex items-center gap-2">
-                      <GoPlusCircle className="text-blue-600" size={24} />
-                      <span className="text-sm font-bold text-blue-600">
-                        Thêm Giới thiệu bản thân
-                      </span>
-                    </button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-3xl p-0">
-                    <DialogHeader className="flex justify-between border-b border-gray-300 px-6 py-4">
-                      <DialogTitle>Mục Tiêu Nghề Nghiệp</DialogTitle>
-                    </DialogHeader>
-                    <div className="px-6">
-                      <div className="overflow-hidden rounded-md border border-gray-300">
-                        <ReactQuill
-                          modules={modules}
-                          theme="snow"
-                          value={value}
-                          onChange={setValue}
-                        />
-                      </div>
-                      <p className="mt-2 text-start text-sm text-gray-500">
-                        0/2000 từ
-                      </p>
-                    </div>
-                    <DialogFooter className="border-t border-gray-300 px-6 py-4">
-                      <DialogClose asChild>
-                        <Button className="bg-[#f1f2f4] text-black shadow-none hover:bg-slate-200">
-                          Hủy
-                        </Button>
-                      </DialogClose>
-                      <Button className="bg-orange-400 text-white shadow-none hover:bg-orange-500">
-                        Lưu
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </div>
+              <Introduce data={data} />
 
               <WorkHistory data={data} />
 
               <Education data={data} />
 
-              {/* <div className="rounded-md bg-white p-4">
-                <p className="text-xl font-bold">Kinh Nghiệm Làm Việc</p>
-                <p className="my-3 text-xs font-normal italic">
-                  Mô tả kinh nghiệm làm việc của bạn càng chi tiết càng tốt,
-                  điều đó giúp bạn có cơ hội hiển thị nhiều hơn trong kết quả
-                  tìm kiếm
-                </p>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <button className="flex items-center gap-2">
-                      <GoPlusCircle className="text-blue-600" size={24} />
-                      <span className="text-sm font-bold text-blue-600">
-                        Thêm Kinh Nghiệm Làm Việc
-                      </span>
-                    </button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-3xl p-0">
-                    <DialogHeader className="flex justify-between border-b border-gray-300 px-6 py-4">
-                      <DialogTitle>Kinh Nghiệm Làm Việc</DialogTitle>
-                    </DialogHeader>
-                    <div className="flex flex-col gap-4 px-6">
-                      <div className="grid grid-cols-2 gap-5">
-                        <div className="col-span-1 flex flex-col gap-1">
-                          <label htmlFor="" className="text-sm">
-                            <span className="-top-1 mr-1 inline-block text-[#dc362e]">
-                              *
-                            </span>
-                            Tên Dự Án
-                          </label>
-                          <input
-                            type="text"
-                            className="h-10 rounded-md border border-solid px-3 outline-none focus:border-sky-400"
-                            value={workingHistories.jobTitle}
-                            onChange={(e) =>
-                              setWorkingHistories((prev) => ({
-                                ...prev,
-                                jobTitle: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-                        <div className="col-span-1 flex flex-col gap-1">
-                          <label htmlFor="" className="text-sm">
-                            <span className="-top-1 mr-1 inline-block text-[#dc362e]">
-                              *
-                            </span>
-                            Công Ty
-                          </label>
-                          <input
-                            type="text"
-                            className="h-10 rounded-md border border-solid px-3 outline-none focus:border-sky-400"
-                            value={workingHistories.companyName}
-                            onChange={(e) =>
-                              setWorkingHistories((prev) => ({
-                                ...prev,
-                                companyName: e.target.value,
-                              }))
-                            }
-                          />
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-3 gap-5">
-                        <div className="col-span-1 flex flex-col gap-1">
-                          <label htmlFor="" className="text-sm">
-                            <span className="-top-1 mr-1 inline-block text-[#dc362e]">
-                              *
-                            </span>
-                            Từ Tháng
-                          </label>
+              <Project data={data} />
 
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "shadow-none h-10 rounded-md justify-start text-left hover:bg-transparent  font-normal",
-                                  !fromDate && "text-muted-foreground"
-                                )}
-                              >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {fromDate ? (
-                                  format(fromDate, "dd/MM/yyyy")
-                                ) : (
-                                  <span>Ngày/Tháng/Năm</span>
-                                )}
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent
-                              className="w-auto p-0"
-                              align="start"
-                            >
-                              <Calendar
-                                mode="single"
-                                captionLayout="dropdown-buttons"
-                                selected={fromDate}
-                                onSelect={setFromDate}
-                                fromYear={1960}
-                                toYear={2030}
-                              />
-                            </PopoverContent>
-                          </Popover>
-                        </div>
-                        <div className="col-span-1 flex flex-col gap-1">
-                          <label htmlFor="" className="text-sm">
-                            <span className="-top-1 mr-1 inline-block text-[#dc362e]">
-                              *
-                            </span>
-                            Đến Tháng
-                          </label>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "shadow-none h-10 rounded-md justify-start text-left hover:bg-transparent  font-normal",
-                                  !toDate && "text-muted-foreground"
-                                )}
-                                disabled={isCurrent}
-                              >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {toDate ? (
-                                  format(toDate, "dd/MM/yyyy")
-                                ) : (
-                                  <span>Ngày/Tháng/Năm</span>
-                                )}
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent
-                              className="w-auto p-0"
-                              align="start"
-                            >
-                              <Calendar
-                                mode="single"
-                                captionLayout="dropdown-buttons"
-                                selected={toDate}
-                                onSelect={setToDate}
-                                fromYear={1960}
-                                toYear={2030}
-                              />
-                            </PopoverContent>
-                          </Popover>
-                        </div>
-                        <div className="col-span-1 flex items-center gap-1">
-                          <input
-                            type="checkbox"
-                            name=""
-                            id=""
-                            className="h-4 w-4"
-                            checked={isCurrent}
-                            onChange={handleIsCurrentChange}
-                          />
-                          <label htmlFor="">Công việc hiện tại</label>
-                        </div>
-                      </div>
-                      <div className="overflow-hidden rounded-md border border-gray-300">
-                        <ReactQuill
-                          modules={modules}
-                          theme="snow"
-                          value={workingHistories.description}
-                          onChange={(value) =>
-                            setWorkingHistories((prev) => ({
-                              ...prev,
-                              description: value,
-                            }))
-                          }
-                        />
-                      </div>
-                      <p className="mt-2 text-start text-sm text-gray-500">
-                        0/2000 từ
-                      </p>
-                    </div>
-                    <DialogFooter className="border-t border-gray-300 px-6 py-4">
-                      <DialogClose asChild>
-                        <Button className="bg-[#f1f2f4] text-black shadow-none hover:bg-slate-200">
-                          Hủy
-                        </Button>
-                      </DialogClose>
-                      <Button
-                        className="bg-orange-400 text-white shadow-none hover:bg-orange-500"
-                        onClick={updatedHistories}
-                      >
-                        Lưu
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-                {allWorkingHistories.map((history: WorkingHistories) => (
-                  <div key={history._id} className="my-4">
-                    <div className="mb-2 flex items-center gap-4">
-                      <Image
-                        src={history.companyLogo}
-                        alt="logo"
-                        width={40}
-                        height={40}
-                        className="rounded-md object-cover"
-                      />
-                      <div className="flex flex-1 justify-between">
-                        <div>
-                          <h3 className="font-medium">{history.jobTitle}</h3>
-                          <p className="text-sm text-gray-500">
-                            {history.companyName}
-                          </p>
-                          <div className="flex items-center gap-2 text-sm text-gray-500">
-                            {history.fromDate && (
-                              <span>{history.fromDate}</span>
-                            )}
-                            {history.fromDate && history.toDate && (
-                              <span> - </span>
-                            )}
-                            {history.toDate && <span>{history.toDate}</span>}
-                          </div>
-                        </div>
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: history.description,
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div> */}
+              <Skill data={data} />
 
-              {/* <div className="rounded-md bg-white p-4">
-                <p className="text-xl font-bold">Học Vấn</p>
-                <p className="my-3 text-xs font-normal italic">
-                  Mô tả toàn bộ quá trình học vấn của bạn, cũng như các bằng cấp
-                  bạn đã được và các khóa huấn luyện bạn đã tham gia
-                </p>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <button className="flex items-center gap-2">
-                      <GoPlusCircle className="text-blue-600" size={24} />
-                      <span className="text-sm font-bold text-blue-600">
-                        Thêm Học Vấn
-                      </span>
-                    </button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-3xl p-0">
-                    <DialogHeader className="flex justify-between border-b border-gray-300 px-6 py-4">
-                      <DialogTitle>Học vấn</DialogTitle>
-                    </DialogHeader>
-                    <div className="flex flex-col gap-4 px-6">
-                      <div className="flex flex-col gap-1">
-                        <label htmlFor="" className="text-sm">
-                          <span className="-top-1 mr-1 inline-block text-[#dc362e]">
-                            *
-                          </span>
-                          Trường
-                        </label>
-                        <input
-                          type="text"
-                          className="h-10 rounded-md border border-solid px-3 outline-none focus:border-sky-400"
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-5">
-                        <div className="col-span-1 flex flex-col gap-1">
-                          <label htmlFor="" className="text-sm">
-                            <span className="-top-1 mr-1 inline-block text-[#dc362e]">
-                              *
-                            </span>
-                            Chuyên Ngành
-                          </label>
-                          <input
-                            type="text"
-                            className="h-10 rounded-md border border-solid px-3 outline-none focus:border-sky-400"
-                          />
-                        </div>
-                        <div className="col-span-1 flex flex-col gap-1">
-                          <label htmlFor="" className="text-sm">
-                            <span className="-top-1 mr-1 inline-block text-[#dc362e]">
-                              *
-                            </span>
-                            Ngày sinh
-                          </label>
-                          <Select>
-                            <SelectTrigger className="h-10 bg-white shadow-none focus:ring-0">
-                              <SelectValue placeholder="Vui lòng chọn trình độ" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="trung-hoc">
-                                Trung học
-                              </SelectItem>
-                              <SelectItem value="trung-cap">
-                                Trung cấp
-                              </SelectItem>
-                              <SelectItem value="cao-dang">Cao đẳng</SelectItem>
-                              <SelectItem value="cu-nhan">Cử nhân</SelectItem>
-                              <SelectItem value="thac-si">Thạc sĩ</SelectItem>
-                              <SelectItem value="tien-si">Tiến sĩ</SelectItem>
-                              <SelectItem value="khac">Khác</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-5">
-                        <div className="col-span-1 flex flex-col gap-1">
-                          <label htmlFor="" className="text-sm">
-                            <span className="-top-1 mr-1 inline-block text-[#dc362e]">
-                              *
-                            </span>
-                            Từ lúc
-                          </label>
+              <Language data={data} />
 
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "shadow-none h-10 rounded-md justify-start text-left hover:bg-transparent  font-normal",
-                                  !date && "text-muted-foreground"
-                                )}
-                              >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {date ? (
-                                  format(date, "dd/MM/yyyy")
-                                ) : (
-                                  <span>Ngày/Tháng/Năm</span>
-                                )}
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent
-                              className="w-auto p-0"
-                              align="start"
-                            >
-                              <Calendar
-                                mode="single"
-                                captionLayout="dropdown-buttons"
-                                selected={date}
-                                onSelect={setDate}
-                                fromYear={1960}
-                                toYear={2030}
-                              />
-                            </PopoverContent>
-                          </Popover>
-                        </div>
-                        <div className="col-span-1 flex flex-col gap-1">
-                          <label htmlFor="" className="text-sm">
-                            <span className="-top-1 mr-1 inline-block text-[#dc362e]">
-                              *
-                            </span>
-                            Đến lúc
-                          </label>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "shadow-none h-10 rounded-md justify-start text-left hover:bg-transparent  font-normal",
-                                  !date && "text-muted-foreground"
-                                )}
-                              >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {date ? (
-                                  format(date, "dd/MM/yyyy")
-                                ) : (
-                                  <span>Ngày/Tháng/Năm</span>
-                                )}
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent
-                              className="w-auto p-0"
-                              align="start"
-                            >
-                              <Calendar
-                                mode="single"
-                                captionLayout="dropdown-buttons"
-                                selected={date}
-                                onSelect={setDate}
-                                fromYear={1960}
-                                toYear={2030}
-                              />
-                            </PopoverContent>
-                          </Popover>
-                        </div>
-                      </div>
-                    </div>
-                    <DialogFooter className="border-t border-gray-300 px-6 py-4">
-                      <DialogClose asChild>
-                        <Button className="bg-[#f1f2f4] text-black shadow-none hover:bg-slate-200">
-                          Hủy
-                        </Button>
-                      </DialogClose>
-                      <Button className="bg-orange-400 text-white shadow-none hover:bg-orange-500">
-                        Lưu
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </div> */}
-
-              {/* <div className="rounded-md bg-white p-4">
-                <p className="text-xl font-bold">Dự Án</p>
-                <p className="my-3 text-xs font-normal italic">
-                  Mô tả các dự án nổi bật của bạn nhằm thu hút nhà tuyển dụng
-                </p>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <button className="flex items-center gap-2">
-                      <GoPlusCircle className="text-blue-600" size={24} />
-                      <span className="text-sm font-bold text-blue-600">
-                        Thêm Dự Án
-                      </span>
-                    </button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-3xl p-0">
-                    <DialogHeader className="flex justify-between border-b border-gray-300 px-6 py-4">
-                      <DialogTitle>Dự Án</DialogTitle>
-                    </DialogHeader>
-                    <div className="flex flex-col gap-4 px-6">
-                      <div className="flex flex-col gap-1">
-                        <label htmlFor="" className="text-sm">
-                          <span className="-top-1 mr-1 inline-block text-[#dc362e]">
-                            *
-                          </span>
-                          Trường
-                        </label>
-                        <input
-                          type="text"
-                          className="h-10 rounded-md border border-solid px-3 outline-none focus:border-sky-400"
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-5">
-                        <div className="col-span-1 flex flex-col gap-1">
-                          <label htmlFor="" className="text-sm">
-                            <span className="-top-1 mr-1 inline-block text-[#dc362e]">
-                              *
-                            </span>
-                            Từ lúc
-                          </label>
-
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "shadow-none h-10 rounded-md justify-start text-left hover:bg-transparent  font-normal",
-                                  !date && "text-muted-foreground"
-                                )}
-                              >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {date ? (
-                                  format(date, "dd/MM/yyyy")
-                                ) : (
-                                  <span>Ngày/Tháng/Năm</span>
-                                )}
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent
-                              className="w-auto p-0"
-                              align="start"
-                            >
-                              <Calendar
-                                mode="single"
-                                captionLayout="dropdown-buttons"
-                                selected={date}
-                                onSelect={setDate}
-                                fromYear={1960}
-                                toYear={2030}
-                              />
-                            </PopoverContent>
-                          </Popover>
-                        </div>
-                        <div className="col-span-1 flex flex-col gap-1">
-                          <label htmlFor="" className="text-sm">
-                            <span className="-top-1 mr-1 inline-block text-[#dc362e]">
-                              *
-                            </span>
-                            Đến lúc
-                          </label>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "shadow-none h-10 rounded-md justify-start text-left hover:bg-transparent  font-normal",
-                                  !date && "text-muted-foreground"
-                                )}
-                              >
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {date ? (
-                                  format(date, "dd/MM/yyyy")
-                                ) : (
-                                  <span>Ngày/Tháng/Năm</span>
-                                )}
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent
-                              className="w-auto p-0"
-                              align="start"
-                            >
-                              <Calendar
-                                mode="single"
-                                captionLayout="dropdown-buttons"
-                                selected={date}
-                                onSelect={setDate}
-                                fromYear={1960}
-                                toYear={2030}
-                              />
-                            </PopoverContent>
-                          </Popover>
-                        </div>
-                      </div>
-                      <div className="overflow-hidden rounded-md border border-gray-300">
-                        <ReactQuill
-                          modules={modules}
-                          theme="snow"
-                          value={value}
-                          onChange={setValue}
-                        />
-                      </div>
-                      <p className="text-start text-sm text-gray-500">
-                        0/5000 từ
-                      </p>
-                    </div>
-                    <DialogFooter className="border-t border-gray-300 px-6 py-4">
-                      <DialogClose asChild>
-                        <Button className="bg-[#f1f2f4] text-black shadow-none hover:bg-slate-200">
-                          Hủy
-                        </Button>
-                      </DialogClose>
-                      <Button className="bg-orange-400 text-white shadow-none hover:bg-orange-500">
-                        Lưu
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </div> */}
-
-              {/* <div className="rounded-md bg-white p-4">
-                <p className="text-xl font-bold">Kỹ Năng</p>
-                <p className="my-3 text-xs font-normal italic">
-                  Trong phần này, bạn nên liệt kê các kỹ năng phù hợp với vị trí
-                  hoặc lĩnh vực nghề nghiệp mà bạn quan tâm.
-                </p>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <button className="flex items-center gap-2">
-                      <GoPlusCircle className="text-blue-600" size={24} />
-                      <span className="text-sm font-bold text-blue-600">
-                        Thêm Kỹ Năng
-                      </span>
-                    </button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-3xl p-0">
-                    <DialogHeader className="flex justify-between border-b border-gray-300 px-6 py-4">
-                      <DialogTitle>Kỹ Năng</DialogTitle>
-                    </DialogHeader>
-                    <div className="flex flex-col gap-4 px-6">
-                      <div className="grid grid-cols-5 gap-5">
-                        <div className="col-span-2 flex flex-col gap-1">
-                          <label htmlFor="" className="text-sm">
-                            <span className="-top-1 mr-1 inline-block text-[#dc362e]">
-                              *
-                            </span>
-                            Tên Kỹ Năng
-                          </label>
-                          <input
-                            type="text"
-                            value={skillName}
-                            onChange={(e) => setSkillName(e.target.value)}
-                            className="h-10 rounded-md border border-solid px-3 outline-none focus:border-sky-400"
-                          />
-                        </div>
-                        <div className="col-span-2 flex flex-col gap-1">
-                          <label htmlFor="" className="text-sm">
-                            <span className="-top-1 mr-1 inline-block text-[#dc362e]">
-                              *
-                            </span>
-                            Mức Độ Thành Thạo
-                          </label>
-                          <Select
-                            value={proficiency}
-                            onValueChange={handleProficiencyChange}
-                          >
-                            <SelectTrigger className="h-10 bg-white shadow-none focus:ring-0">
-                              <SelectValue placeholder="Vui lòng chọn trình độ" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="moi-bat-dau">
-                                Mới bắt đầu
-                              </SelectItem>
-                              <SelectItem value="trung-binh">
-                                Trung bình
-                              </SelectItem>
-                              <SelectItem value="thanh-thao">
-                                Thành thạo
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="col-span-1 flex flex-1 flex-col justify-end gap-1">
-                          <Button
-                            onClick={handleAddSkill}
-                            className="h-10 border border-solid border-orange-400 bg-white text-orange-400 shadow-none hover:bg-orange-50"
-                          >
-                            Thêm
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-3 px-6">
-                      <div className="flex flex-col gap-1">
-                        <p className="font-bold">
-                          Thành thạo (hơn 3 năm kinh nghiệm)
-                        </p>
-                        <div className="flex gap-2">
-                          {skills["thanh-thao"].length > 0 ? (
-                            skills["thanh-thao"].map((skill, index) => (
-                              <button
-                                key={index}
-                                className="flex w-fit items-center gap-1 rounded-md border border-solid border-orange-500 bg-white px-3 py-2 text-sm text-amber-500"
-                                onClick={() =>
-                                  handleRemoveSkill("thanh-thao", index)
-                                }
-                              >
-                                {skill} <IoClose size={20} />
-                              </button>
-                            ))
-                          ) : (
-                            <span className="text-sm text-gray-400">
-                              Chưa thêm kỹ năng nào
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        <p className="font-bold">
-                          Trung bình (1 - 3 kinh nghiệm)
-                        </p>
-                        <div className="flex gap-2">
-                          {skills["trung-binh"].length > 0 ? (
-                            skills["trung-binh"].map((skill, index) => (
-                              <button
-                                key={index}
-                                className="flex w-fit items-center gap-1 rounded-md border border-solid border-orange-500 bg-white px-3 py-2 text-sm text-amber-500"
-                                onClick={() =>
-                                  handleRemoveSkill("trung-binh", index)
-                                }
-                              >
-                                {skill} <IoClose size={20} />
-                              </button>
-                            ))
-                          ) : (
-                            <span className="text-sm text-gray-400">
-                              Chưa thêm kỹ năng nào
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        <p className="font-bold">
-                          Mới bắt đầu (ít hơn 1 năm kinh nghiệm)
-                        </p>
-                        <div className="flex gap-2">
-                          {skills["moi-bat-dau"].length > 0 ? (
-                            skills["moi-bat-dau"].map((skill, index) => (
-                              <button
-                                key={index}
-                                className="flex w-fit items-center gap-1 rounded-md border border-solid border-orange-500 bg-white px-3 py-2 text-sm text-amber-500"
-                                onClick={() =>
-                                  handleRemoveSkill("moi-bat-dau", index)
-                                }
-                              >
-                                {skill} <IoClose size={20} />
-                              </button>
-                            ))
-                          ) : (
-                            <span className="text-sm text-gray-400">
-                              Chưa thêm kỹ năng nào
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                    <DialogFooter className="border-t border-gray-300 px-6 py-4">
-                      <DialogClose asChild>
-                        <Button className="bg-[#f1f2f4] text-black shadow-none hover:bg-slate-200">
-                          Hủy
-                        </Button>
-                      </DialogClose>
-                      <Button className="bg-orange-400 text-white shadow-none hover:bg-orange-500">
-                        Lưu
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </div> */}
-
-              {/* <div className="rounded-md bg-white p-4">
-                <p className="text-xl font-bold">Ngoại Ngữ</p>
-                <p className="my-3 text-xs font-normal italic">
-                  Cập nhật thông tin ngoại ngữ, điều này sẽ giúp tăng triển vọng
-                  tìm kiếm công việc.
-                </p>
-                <button className="flex items-center gap-2">
-                  <GoPlusCircle className="text-blue-600" size={24} />
-                  <span className="text-sm font-bold text-blue-600">
-                    Thêm Ngoại Ngữ
-                  </span>
-                </button>
-              </div> */}
+              <Certification data={data} />
             </div>
           </div>
         </div>

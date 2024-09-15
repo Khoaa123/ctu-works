@@ -1,12 +1,6 @@
 import Image from "next/image";
 import React from "react";
 import logo from "@images/logo.png";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import SearchWrapper from "../client/SearchWrapper";
 import { jwtDecode } from "jwt-decode";
@@ -20,6 +14,12 @@ import {
   FaLock,
 } from "react-icons/fa6";
 import { FaCog, FaSignOutAlt } from "react-icons/fa";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 type JwtPayload = {
   userid: string;
@@ -34,6 +34,11 @@ const Header = () => {
   const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
   const userName = decodedToken?.fullName || "";
   const email = decodedToken?.email || "";
+
+  const handleLogout = () => {
+    cookies.remove("accessToken");
+    cookies.remove("refreshToken");
+  };
   return (
     <>
       <header className="bg-white py-4 shadow-sm">
@@ -189,7 +194,10 @@ const Header = () => {
                         <FaLock size={16} color="#00b14f" />
                         Đổi mật khẩu
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="my-[6px] flex items-center gap-3 bg-[#F6FAFB] p-3 font-medium">
+                      <DropdownMenuItem
+                        className="my-[6px] flex items-center gap-3 bg-[#F6FAFB] p-3 font-medium"
+                        onClick={handleLogout}
+                      >
                         <FaSignOutAlt size={16} color="#00b14f" />
                         Đăng xuất
                       </DropdownMenuItem>

@@ -12,6 +12,9 @@ import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useMutation } from "@tanstack/react-query";
+import ScreenLoading from "@/components/ScreenLoading/ScreenLoading";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogClose,
@@ -28,9 +31,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import ScreenLoading from "@/components/ScreenLoading/ScreenLoading";
-import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
 
 type WorkingPreferences = {
   companyIndustries: string[];
@@ -104,17 +104,6 @@ const Register = () => {
   ];
   const [selectedIndustries, setSelectedIndustries] = useState<number[]>([]);
 
-  const handleIndustryClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const industryId = Number(event.currentTarget.value);
-    setSelectedIndustries((prevIndustries) => {
-      if (prevIndustries.includes(industryId)) {
-        return prevIndustries.filter((id) => id !== industryId);
-      } else {
-        return [...prevIndustries, industryId];
-      }
-    });
-  };
-
   const mutation = useMutation({
     mutationFn: async (data: FormData) => {
       const res = await fetch(
@@ -175,6 +164,17 @@ const Register = () => {
       }));
     }
   }, [date]);
+
+  const handleIndustryClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const industryId = Number(event.currentTarget.value);
+    setSelectedIndustries((prevIndustries) => {
+      if (prevIndustries.includes(industryId)) {
+        return prevIndustries.filter((id) => id !== industryId);
+      } else {
+        return [...prevIndustries, industryId];
+      }
+    });
+  };
   return (
     <>
       <div>
