@@ -29,13 +29,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { IoFilterSharp, IoCloseSharp } from "react-icons/io5";
 
 const JobSearch = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isSubscribed, setIsSubscribed] = useState(false);
   const [isActive, setIsActive] = useState("all");
-
-  const toggleSubscription = () => {
-    setIsSubscribed(!isSubscribed);
-  };
 
   return (
     <>

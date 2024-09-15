@@ -1,24 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { GoPencil, GoPlusCircle, GoTrash } from "react-icons/go";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { Button } from "../ui/button";
 import { Calendar } from "../ui/calendar";
 import { toast } from "react-toastify";
-import { format, set } from "date-fns";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ReactQuill from "react-quill";
-import Image from "next/image";
 import { jwtDecode } from "jwt-decode";
 import { useCookies } from "next-client-cookies";
 import { JwtPayload } from "@/utils/Types";
@@ -30,6 +19,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { GoPencil, GoPlusCircle, GoTrash } from "react-icons/go";
 
 interface EducationRequest {
   major: string;
@@ -412,6 +411,14 @@ const Education = ({ data }: { data: any }) => {
                     }
                   />
                 </div>
+              </div>
+              <div className="flex flex-col gap-1">
+                <p className="mt-2 text-start text-sm italic text-gray-500">
+                  <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                    *
+                  </span>
+                  Thông tin bắt buộc
+                </p>
               </div>
             </div>
             <DialogFooter className="border-t border-gray-300 px-6 py-4">

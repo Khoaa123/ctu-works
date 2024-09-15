@@ -1,5 +1,7 @@
 "use client";
 import React from "react";
+import Image from "next/image";
+import Link from "next/link";
 import {
   Select,
   SelectContent,
@@ -12,13 +14,9 @@ import {
   CarouselApi,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
-import Image from "next/image";
 import { IoTriangleSharp } from "react-icons/io5";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
-import Link from "next/link";
 
 const CareerPath = () => {
   const [api, setApi] = React.useState<CarouselApi>();

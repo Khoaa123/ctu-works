@@ -13,6 +13,7 @@ import { jwtDecode } from "jwt-decode";
 import { useCookies } from "next-client-cookies";
 import { JwtPayload } from "@/utils/Types";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 import {
   Dialog,
   DialogContent,
@@ -23,52 +24,48 @@ import {
 } from "../ui/dialog";
 import { GoPencil, GoPlusCircle, GoTrash } from "react-icons/go";
 
-interface WorkingHistoryRequest {
-  jobTitle: string;
+type ProjectRequest = {
+  projectName: string;
   companyName: string;
+  yourRole: string;
   fromDate: string;
   toDate: string;
   description: string;
-  isCurrent: number;
-}
+  projectLink: string;
+};
 
-type WorkingHistories = WorkingHistoryRequest & {
+type Projects = ProjectRequest & {
   _id: string;
-  companyLogo: string;
+  logo: string;
 };
 
-type updateWorkingHistories = WorkingHistoryRequest & {
-  workingHistoriesId: string;
+type updateProject = ProjectRequest & {
+  projectId: string;
 };
 
-const WorkHistory = ({ data }: { data: any }) => {
+const Project = ({ data }: { data: any }) => {
   const queryClient = useQueryClient();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isCurrent, setIsCurrent] = useState<boolean>(false);
-  const [workingHistories, setWorkingHistories] =
-    useState<WorkingHistoryRequest>({
-      jobTitle: "",
-      companyName: "",
-      fromDate: "",
-      toDate: "",
-      description: "",
-      isCurrent: 1,
-    });
-  const [allWorkingHistories, setAllWorkingHistories] = useState<
-    WorkingHistories[]
-  >([]);
-  const [editingWorkingHistoriesId, setEditingWorkingHistoriesId] = useState<
-    string | null
-  >(null);
+  const [project, setProject] = useState<ProjectRequest>({
+    projectName: "",
+    companyName: "",
+    yourRole: "",
+    fromDate: "",
+    toDate: "",
+    description: "",
+    projectLink: "",
+  });
+  const [allProject, setAllProject] = useState<Projects[]>([]);
+  const [editingProjectId, setEditingProjectId] = useState<string | null>(null);
   const [fromDate, setFromDate] = useState<Date>();
   const [toDate, setToDate] = useState<Date>();
   const cookies = useCookies();
   const accessToken = cookies.get("accessToken");
   const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
 
-  const addItem = async (item: WorkingHistoryRequest) => {
+  const addItem = async (item: ProjectRequest) => {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/create-working-histories/${decodedToken?.userid}`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/create-project/${decodedToken?.userid}`,
       {
         method: "POST",
         headers: {
@@ -80,9 +77,9 @@ const WorkHistory = ({ data }: { data: any }) => {
     return res.json();
   };
 
-  const updateItem = async (item: updateWorkingHistories) => {
+  const updateItem = async (item: updateProject) => {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/update-working-histories/${decodedToken?.userid}`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/update-project/${decodedToken?.userid}`,
       {
         method: "PUT",
         headers: {
@@ -96,13 +93,13 @@ const WorkHistory = ({ data }: { data: any }) => {
 
   const deleteItem = async (id: string) => {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/delete-working-histories/${decodedToken?.userid}`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/delete-project/${decodedToken?.userid}`,
       {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ workingHistoriesId: id }),
+        body: JSON.stringify({ projectId: id }),
       }
     );
     return res.json();
@@ -112,7 +109,7 @@ const WorkHistory = ({ data }: { data: any }) => {
     mutationFn: addItem,
     onSuccess: (data) => {
       if (data.status === "OK") {
-        toast.success("Thêm kinh nghiệm làm việc thành công ");
+        toast.success("Thêm dự án thành công ");
         setIsDialogOpen(false);
         queryClient.invalidateQueries({ queryKey: ["getUser"] });
       } else {
@@ -129,7 +126,7 @@ const WorkHistory = ({ data }: { data: any }) => {
     mutationFn: updateItem,
     onSuccess: (data) => {
       if (data.status === "OK") {
-        toast.success("Cập nhật kinh nghiệm làm việc thành công");
+        toast.success("Cập nhật dự án thành công");
         setIsDialogOpen(false);
         queryClient.invalidateQueries({ queryKey: ["getUser"] });
       } else {
@@ -146,7 +143,7 @@ const WorkHistory = ({ data }: { data: any }) => {
     mutationFn: deleteItem,
     onSuccess: (data) => {
       if (data.status === "OK") {
-        toast.success("Xóa kinh nghiệm làm việc thành công");
+        toast.success("Xóa dự án thành công");
         queryClient.invalidateQueries({ queryKey: ["getUser"] });
       } else {
         toast.error("Có lỗi xảy ra. Vui lòng thử lại.");
@@ -158,16 +155,9 @@ const WorkHistory = ({ data }: { data: any }) => {
     },
   });
 
-  const handleIsCurrentChange = () => {
-    setIsCurrent(!isCurrent);
-    if (!isCurrent) {
-      setToDate(undefined);
-    }
-  };
-
   useEffect(() => {
     if (fromDate) {
-      setWorkingHistories((prev) => ({
+      setProject((prev) => ({
         ...prev,
         fromDate: format(fromDate, "MM/yyyy"),
       }));
@@ -176,7 +166,7 @@ const WorkHistory = ({ data }: { data: any }) => {
 
   useEffect(() => {
     if (toDate) {
-      setWorkingHistories((prev) => ({
+      setProject((prev) => ({
         ...prev,
         toDate: format(toDate, "MM/yyyy"),
       }));
@@ -185,7 +175,7 @@ const WorkHistory = ({ data }: { data: any }) => {
 
   useEffect(() => {
     if (data) {
-      setAllWorkingHistories(data.workingHistories);
+      setAllProject(data.project);
     }
   }, [data]);
 
@@ -196,33 +186,34 @@ const WorkHistory = ({ data }: { data: any }) => {
     ],
   };
 
-  const handleEdit = (item: WorkingHistories) => {
-    setWorkingHistories(item);
-    setEditingWorkingHistoriesId(item._id);
+  const handleEdit = (item: Projects) => {
+    setProject(item);
+    setEditingProjectId(item._id);
     setIsDialogOpen(true);
   };
 
   const handleAdd = () => {
-    createMutation.mutate(workingHistories, {
+    createMutation.mutate(project, {
       onSuccess: () => {
-        setWorkingHistories({
-          jobTitle: "",
+        setProject({
+          projectName: "",
           companyName: "",
+          yourRole: "",
           fromDate: "",
           toDate: "",
           description: "",
-          isCurrent: 1,
+          projectLink: "",
         });
-        setEditingWorkingHistoriesId(null);
+        setEditingProjectId(null);
       },
     });
   };
 
   const handleSave = () => {
-    if (editingWorkingHistoriesId) {
+    if (editingProjectId) {
       updateMutation.mutate({
-        ...workingHistories,
-        workingHistoriesId: editingWorkingHistoriesId,
+        ...project,
+        projectId: editingProjectId,
       });
     } else {
       handleAdd();
@@ -235,71 +226,86 @@ const WorkHistory = ({ data }: { data: any }) => {
   return (
     <>
       <div className="rounded-md bg-white p-4">
-        <p className="text-xl font-bold">Kinh Nghiệm Làm Việc</p>
+        <p className="text-xl font-bold">Dự Án</p>
         <p className="my-3 text-xs font-normal italic">
-          Mô tả kinh nghiệm làm việc của bạn càng chi tiết càng tốt, điều đó
-          giúp bạn có cơ hội hiển thị nhiều hơn trong kết quả tìm kiếm
+          Mô tả các dự án nổi bật của bạn nhằm thu hút nhà tuyển dụng
         </p>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <button className="flex items-center gap-2">
               <GoPlusCircle className="text-blue-600" size={24} />
               <span className="text-sm font-bold text-blue-600">
-                Thêm Kinh Nghiệm Làm Việc
+                Thêm Dự Án
               </span>
             </button>
           </DialogTrigger>
           <DialogContent className="max-w-3xl p-0">
             <DialogHeader className="flex justify-between border-b border-gray-300 px-6 py-4">
-              <DialogTitle>Kinh Nghiệm Làm Việc</DialogTitle>
+              <DialogTitle>Dự Án</DialogTitle>
             </DialogHeader>
             <div className="flex flex-col gap-4 px-6">
+              <div className="flex flex-col gap-1">
+                <label htmlFor="" className="text-sm">
+                  <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                    *
+                  </span>
+                  Tên Dự Án
+                </label>
+                <input
+                  type="text"
+                  className="h-10 rounded-md border border-solid px-3 outline-none focus:border-sky-400"
+                  value={project.projectName}
+                  onChange={(e) =>
+                    setProject((prev) => ({
+                      ...prev,
+                      projectName: e.target.value,
+                    }))
+                  }
+                />
+              </div>
               <div className="grid grid-cols-2 gap-5">
                 <div className="col-span-1 flex flex-col gap-1">
                   <label htmlFor="" className="text-sm">
                     <span className="-top-1 mr-1 inline-block text-[#dc362e]">
                       *
                     </span>
-                    Tên Dự Án
+                    Khách hàng / Công Ty
                   </label>
                   <input
                     type="text"
                     className="h-10 rounded-md border border-solid px-3 outline-none focus:border-sky-400"
-                    value={workingHistories.jobTitle}
+                    value={project.companyName}
                     onChange={(e) =>
-                      setWorkingHistories((prev) => ({
-                        ...prev,
-                        jobTitle: e.target.value,
-                      }))
-                    }
-                  />
-                </div>
-                <div className="col-span-1 flex flex-col gap-1">
-                  <label htmlFor="" className="text-sm">
-                    <span className="-top-1 mr-1 inline-block text-[#dc362e]">
-                      *
-                    </span>
-                    Công Ty
-                  </label>
-                  <input
-                    type="text"
-                    className="h-10 rounded-md border border-solid px-3 outline-none focus:border-sky-400"
-                    value={workingHistories.companyName}
-                    onChange={(e) =>
-                      setWorkingHistories((prev) => ({
+                      setProject((prev) => ({
                         ...prev,
                         companyName: e.target.value,
                       }))
                     }
                   />
                 </div>
-              </div>
-              <div className="grid grid-cols-3 gap-5">
                 <div className="col-span-1 flex flex-col gap-1">
                   <label htmlFor="" className="text-sm">
                     <span className="-top-1 mr-1 inline-block text-[#dc362e]">
                       *
                     </span>
+                    Vai trò của bạn
+                  </label>
+                  <input
+                    type="text"
+                    className="h-10 rounded-md border border-solid px-3 outline-none focus:border-sky-400"
+                    value={project.yourRole}
+                    onChange={(e) =>
+                      setProject((prev) => ({
+                        ...prev,
+                        yourRole: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-5">
+                <div className="col-span-1 flex flex-col gap-1">
+                  <label htmlFor="" className="text-sm">
                     Từ Tháng
                   </label>
 
@@ -334,9 +340,6 @@ const WorkHistory = ({ data }: { data: any }) => {
                 </div>
                 <div className="col-span-1 flex flex-col gap-1">
                   <label htmlFor="" className="text-sm">
-                    <span className="-top-1 mr-1 inline-block text-[#dc362e]">
-                      *
-                    </span>
                     Đến Tháng
                   </label>
                   <Popover>
@@ -347,7 +350,6 @@ const WorkHistory = ({ data }: { data: any }) => {
                           "shadow-none h-10 rounded-md justify-start text-left hover:bg-transparent  font-normal",
                           !toDate && "text-muted-foreground"
                         )}
-                        disabled={isCurrent}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {toDate ? (
@@ -369,27 +371,44 @@ const WorkHistory = ({ data }: { data: any }) => {
                     </PopoverContent>
                   </Popover>
                 </div>
-                <div className="col-span-1 flex items-center gap-1">
-                  <input
-                    type="checkbox"
-                    name=""
-                    id=""
-                    className="h-4 w-4"
-                    checked={isCurrent}
-                    onChange={handleIsCurrentChange}
+              </div>
+              <div className="col-span-1 flex flex-col gap-1">
+                <p className="text-sm">
+                  <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                    *
+                  </span>
+                  Mô tả dự án
+                </p>
+                <div className="overflow-hidden rounded-md border border-gray-300">
+                  <ReactQuill
+                    modules={modules}
+                    theme="snow"
+                    value={project.description}
+                    onChange={(value) =>
+                      setProject((prev) => ({
+                        ...prev,
+                        description: value,
+                      }))
+                    }
                   />
-                  <label htmlFor="">Công việc hiện tại</label>
                 </div>
               </div>
-              <div className="overflow-hidden rounded-md border border-gray-300">
-                <ReactQuill
-                  modules={modules}
-                  theme="snow"
-                  value={workingHistories.description}
-                  onChange={(value) =>
-                    setWorkingHistories((prev) => ({
+
+              <div className="flex flex-col gap-1">
+                <label htmlFor="" className="text-sm">
+                  <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                    *
+                  </span>
+                  Link
+                </label>
+                <input
+                  type="text"
+                  className="h-10 rounded-md border border-solid px-3 outline-none focus:border-sky-400"
+                  value={project.projectLink}
+                  onChange={(e) =>
+                    setProject((prev) => ({
                       ...prev,
-                      description: value,
+                      projectLink: e.target.value,
                     }))
                   }
                 />
@@ -413,14 +432,14 @@ const WorkHistory = ({ data }: { data: any }) => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        {allWorkingHistories.map((history: WorkingHistories) => (
+        {allProject.map((project: Projects) => (
           <div
-            key={history._id}
+            key={project._id}
             className="group my-4 cursor-pointer rounded-md p-2 transition duration-300 hover:bg-[#f8f9fa]"
           >
             <div className="mb-2 flex items-center gap-4">
               <Image
-                src={history.companyLogo}
+                src={project.logo}
                 alt="logo"
                 width={60}
                 height={60}
@@ -428,19 +447,26 @@ const WorkHistory = ({ data }: { data: any }) => {
               />
               <div className="flex flex-1 justify-between">
                 <div>
-                  <h3 className="font-medium">{history.jobTitle}</h3>
-                  <p className="text-sm text-gray-500">{history.companyName}</p>
+                  <h3 className="font-medium">{project.projectName}</h3>
+                  <p className="text-sm text-gray-500">{project.companyName}</p>
                   <div className="flex items-center gap-2 text-sm text-gray-500">
-                    {history.fromDate && <span>{history.fromDate}</span>}
-                    {history.fromDate && history.toDate && <span> - </span>}
-                    {history.toDate && <span>{history.toDate}</span>}
+                    {project.fromDate && <span>{project.fromDate}</span>}
+                    {project.fromDate && project.toDate && <span> - </span>}
+                    {project.toDate && <span>{project.toDate}</span>}
                   </div>
+                  <Link
+                    href={project.projectLink}
+                    target="_blank"
+                    className="transition-colors duration-300 group-hover:text-blue-500"
+                  >
+                    {project.projectLink}
+                  </Link>
                 </div>
                 <div className="flex items-center gap-2">
                   <GoPencil
                     className="cursor-pointer text-blue-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
                     size={20}
-                    onClick={() => handleEdit(history)}
+                    onClick={() => handleEdit(project)}
                   />
 
                   <Dialog>
@@ -464,7 +490,7 @@ const WorkHistory = ({ data }: { data: any }) => {
                       <DialogFooter className="px-6 py-4">
                         <Button
                           className="bg-orange-400 text-white shadow-none hover:bg-orange-500"
-                          onClick={() => handleDelete(history._id)}
+                          onClick={() => handleDelete(project._id)}
                         >
                           Xóa
                         </Button>
@@ -476,7 +502,7 @@ const WorkHistory = ({ data }: { data: any }) => {
             </div>
             <div
               dangerouslySetInnerHTML={{
-                __html: history.description,
+                __html: project.description,
               }}
             />
           </div>
@@ -486,4 +512,4 @@ const WorkHistory = ({ data }: { data: any }) => {
   );
 };
 
-export default WorkHistory;
+export default Project;

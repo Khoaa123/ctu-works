@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { CookiesProvider } from "next-client-cookies/server";
 import "react-toastify/dist/ReactToastify.css";
+import ProgressBarProvider from "@/components/ProgressBarProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,7 +29,9 @@ export default function RootLayout({
           <body className={inter.className}>
             <div className="flex min-h-screen flex-col">
               <HeaderWrapper />
-              <div className="flex-grow">{children}</div>
+              <ProgressBarProvider>
+                <div className="flex-grow">{children}</div>
+              </ProgressBarProvider>
               <FooterWrapper />
             </div>
             <ToastContainer closeOnClick draggable />
