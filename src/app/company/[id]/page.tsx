@@ -37,15 +37,15 @@ const CompanyDetail = () => {
     }
   };
   const [detailsCompany, setDetailsCompany] = useState({
-    companyLogo: '',
-    companyName: '',
-    companyScale: '',
-    companyIndustries: '',
-    fullName: '',
-    companyAddress: '',
-    companyDescription: '',
+    companyLogo: "",
+    companyName: "",
+    companyScale: "",
+    companyIndustries: "",
+    fullName: "",
+    companyAddress: "",
+    companyDescription: "",
     following: -1,
-    follower: []
+    follower: [],
   });
   useEffect(() => {
     const fetchData = async () => {
@@ -56,7 +56,7 @@ const CompanyDetail = () => {
     fetchData();
   }, []);
   const fetchDetailsCompany = async () => {
-    const id = location.pathname.split('/company/')[1]
+    const id = location.pathname.split("/company/")[1];
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/recruiter/get-details-recruiter/${id}`,
       {
@@ -68,25 +68,27 @@ const CompanyDetail = () => {
     );
     return res.json();
   };
-  const [jobPostCompany, setJobPostCompany] = useState([{
-    companyLogo: '',
-    companyName: '',
-    salary: '',
-    jobTitle: '',
-    location: [],
-    _id: ''
-  }]);
+  const [jobPostCompany, setJobPostCompany] = useState([
+    {
+      companyLogo: "",
+      companyName: "",
+      salary: "",
+      jobTitle: "",
+      location: [],
+      _id: "",
+    },
+  ]);
 
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchJobPostCompany();
       setJobPostCompany(data.data);
-      console.log(data.data)
+      console.log(data.data);
     };
     fetchData();
   }, []);
   const fetchJobPostCompany = async () => {
-    const id = location.pathname.split('/company/')[1]
+    const id = location.pathname.split("/company/")[1];
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobpost/get-my-jobpost/${id}`,
       {
@@ -104,8 +106,8 @@ const CompanyDetail = () => {
   const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
 
   const addFollow = async () => {
-    const id = location.pathname.split('/company/')[1]
-    const userId = decodedToken?.userid
+    const id = location.pathname.split("/company/")[1];
+    const userId = decodedToken?.userid;
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/follow/create-follow/${id}`,
       {
@@ -114,7 +116,7 @@ const CompanyDetail = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId: userId
+          userId: userId,
         }),
       }
     );
@@ -122,8 +124,8 @@ const CompanyDetail = () => {
   };
 
   const unFollow = async () => {
-    const id = location.pathname.split('/company/')[1]
-    const userId = decodedToken?.userid
+    const id = location.pathname.split("/company/")[1];
+    const userId = decodedToken?.userid;
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/follow/delete-follow/${id}`,
       {
@@ -133,7 +135,7 @@ const CompanyDetail = () => {
         },
         body: JSON.stringify({
           recruiterId: id,
-          userId: userId
+          userId: userId,
         }),
       }
     );
@@ -142,17 +144,22 @@ const CompanyDetail = () => {
   const router = useRouter();
 
   const navigate = (id: string) => {
-    router.push(`/job/${id}`)
-  }
+    router.push(`/job/${id}`);
+  };
 
   return (
     <>
       <div className="bg-[#F1F2F4]">
         <div className="container">
           <div className="pt-5">
-            <div className="rounded-md bg-white px-12 py-6">
+            <div className="cursor-pointer rounded-md bg-white px-12 py-6">
               <div className="flex justify-between gap-3">
-                <Image src={detailsCompany?.companyLogo || logo} alt="company-logo" height={100} width={100} />
+                <Image
+                  src={detailsCompany?.companyLogo || logo}
+                  alt="company-logo"
+                  height={100}
+                  width={100}
+                />
                 <div className="ml-2 flex-1">
                   <p className="text-xl font-semibold">
                     {/* Nexon Networks Vina Co. Ltd, */}
@@ -161,11 +168,12 @@ const CompanyDetail = () => {
                   <p className="text-sm">
                     {/* 234 lượt theo dõi */}
                     {detailsCompany?.following || 0} lượt theo dõi
-
                   </p>
                 </div>
                 <div>
-                  {detailsCompany?.follower.some((item) => item === decodedToken?.userid) ? (
+                  {detailsCompany?.follower.some(
+                    (item) => item === decodedToken?.userid
+                  ) ? (
                     <button
                       className="flex flex-1 items-center justify-center rounded-lg bg-[#ff7d55] px-4 py-2 text-sm text-white transition hover:bg-[#fd916f]"
                       onClick={unFollow}
@@ -227,8 +235,9 @@ const CompanyDetail = () => {
                   </p>
                 </div>
                 <div
-                  className={` transition-all duration-400 ease-in-out overflow-hidden ${isExpanded ? "max-h-[1000px]" : "max-h-[170px]"
-                    }`}
+                  className={` transition-all duration-400 ease-in-out overflow-hidden ${
+                    isExpanded ? "max-h-[1000px]" : "max-h-[170px]"
+                  }`}
                 >
                   <div className="my-4">
                     <p className="text-sm">
@@ -328,19 +337,26 @@ const CompanyDetail = () => {
                   </div>
                   <div className="mt-2 flex flex-col gap-4">
                     {jobPostCompany?.map((item, index) => (
-                      <div key={index} className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]">
-                        <Image src={item?.companyLogo} alt="companyLogo" height={80} width={80} />
+                      <div
+                        key={index}
+                        className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]"
+                      >
+                        <Image
+                          src={item?.companyLogo}
+                          alt="companyLogo"
+                          height={80}
+                          width={80}
+                        />
                         <div>
-                          <h1 className="mb-1 line-clamp-1 text-xl font-bold"
+                          <h1
+                            className="mb-1 line-clamp-1 text-xl font-bold"
                             onClick={() => navigate(item?._id)}
                           >
                             {item?.jobTitle}
                           </h1>
-                          <p>
-                            {item?.companyName}
-                          </p>
+                          <p>{item?.companyName}</p>
                           <p className="my-1 text-sm text-amber-600">
-                            {item?.salary ?? 'Thương lượng'}
+                            {item?.salary ?? "Thương lượng"}
                           </p>
                           <p className="text-sm">
                             {item?.location?.map((loc, locIndex) => (

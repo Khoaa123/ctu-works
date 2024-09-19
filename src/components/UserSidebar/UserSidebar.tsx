@@ -2,11 +2,12 @@ import React from "react";
 import {
   FaCircleUser,
   FaClipboardCheck,
-  FaBookmark,
   FaBell,
+  FaBriefcase,
 } from "react-icons/fa6";
 import { RiFileUserFill } from "react-icons/ri";
 import { BiLogOut } from "react-icons/bi";
+import Link from "next/link";
 
 const UserSidebar = () => {
   return (
@@ -38,10 +39,12 @@ const UserSidebar = () => {
           </div>
         </div>
         <div className="cursor-pointer rounded-md border bg-white p-4 transition duration-300 hover:border-sky-200 hover:bg-[#ebf2ff]">
-          <div className="flex items-center gap-3">
-            <FaBookmark color="grey" size={20} />
-            <p>Công việc đã lưu</p>
-          </div>
+          <Link href="/profile/my-job">
+            <div className="flex items-center gap-3">
+              <FaBriefcase color="grey" size={20} />
+              <p>Việc làm của tôi</p>
+            </div>
+          </Link>
         </div>
         <div className="cursor-pointer rounded-md border bg-white p-4 transition duration-300 hover:border-sky-200 hover:bg-[#ebf2ff]">
           <div className="flex items-center gap-3">
