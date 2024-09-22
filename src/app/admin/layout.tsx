@@ -4,17 +4,15 @@ import React from "react";
 
 const Layout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   return (
-    <>
-      <div className="flex h-lvh">
-        <div className="w-1/5 bg-white">
-          <Sidebar />
-        </div>
-        <div className="flex-1 bg-[#F7F8FA]">
-          <Navbar />
-          {children}
-        </div>
+    <div className="flex min-h-screen">
+      <div className="w-1/5 flex-shrink-0 bg-white">
+        <Sidebar />
       </div>
-    </>
+      <div className="flex flex-1 flex-col bg-[#F7F8FA]">
+        {/* <Navbar /> */}
+        <main className="flex-1 overflow-y-auto p-4">{children}</main>
+      </div>
+    </div>
   );
 };
 
