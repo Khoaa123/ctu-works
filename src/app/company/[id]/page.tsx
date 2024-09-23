@@ -51,7 +51,6 @@ const CompanyDetail = () => {
     const fetchData = async () => {
       const data = await fetchDetailsCompany();
       setDetailsCompany(data.data);
-      // console.log(data.data);
     };
     fetchData();
   }, []);
@@ -83,7 +82,7 @@ const CompanyDetail = () => {
     const fetchData = async () => {
       const data = await fetchJobPostCompany();
       setJobPostCompany(data.data);
-      console.log(data.data);
+      // console.log(data.data);
     };
     fetchData();
   }, []);
@@ -235,9 +234,8 @@ const CompanyDetail = () => {
                   </p>
                 </div>
                 <div
-                  className={` transition-all duration-400 ease-in-out overflow-hidden ${
-                    isExpanded ? "max-h-[1000px]" : "max-h-[170px]"
-                  }`}
+                  className={` transition-all duration-400 ease-in-out overflow-hidden ${isExpanded ? "max-h-[1000px]" : "max-h-[170px]"
+                    }`}
                 >
                   <div className="my-4">
                     <p className="text-sm">
@@ -360,7 +358,7 @@ const CompanyDetail = () => {
                           </p>
                           <p className="text-sm">
                             {item?.location?.map((loc, locIndex) => (
-                              <p key={locIndex}>{loc}</p>
+                              <p key={locIndex}>{loc}{locIndex < item.location.length - 1 ? ', ' : ''}</p>
                             ))}
                           </p>
                         </div>

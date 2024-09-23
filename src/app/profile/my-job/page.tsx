@@ -1,18 +1,19 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaHeart } from "react-icons/fa6";
 import vinfast from "@images/vinfast.png";
 import Link from "next/link";
+import { useCookies } from "next-client-cookies";
+import { jwtDecode } from "jwt-decode";
+import { useRouter } from "next/navigation";
 
-type Job = {
-  id: number;
-  title: string;
-  company: string;
-  location: string;
-  salary?: string;
-  logo: string;
-};
+export interface JwtPayload {
+  userid: string;
+  email: string;
+  fullName: string;
+  role: string;
+}
 
 const tabs = [
   { id: "applied", label: "Việc đã ứng tuyển" },
@@ -21,38 +22,84 @@ const tabs = [
   { id: "invited", label: "Thư mời ứng tuyển" },
 ];
 
-const jobs: Job[] = [
-  {
-    id: 1,
-    title:
-      "Chuyên Viên Nghiệp Vụ Quản Lý Chất Lượng Dịch Vụ & Dự Án CNTT (PQA) Chuyên Viên Nghiệp Vụ Quản Lý Chất Lượng Dịch Vụ & Dự Án CNTT (PQA)",
-    company: "Công Ty Cổ Phần Liên Doanh Ô Tô Hyundai Thành Công Việt Nam",
-    location: "Hà Nội",
-    salary: "Thương lượng",
-    logo: vinfast.src,
-  },
-  {
-    id: 2,
-    title: "Project Manager - Offer Up to $3500",
-    company: "FPT Software",
-    location: "Hà Nội",
-    salary: "$ 3,000-3,500 /tháng",
-    logo: vinfast.src,
-  },
-  {
-    id: 3,
-    title: "Chuyên Viên Quản Lý Chương Trình",
-    company: "Công Ty Cổ Phần Tập Đoàn Hòa Phát",
-    location: "Hà Nội",
-    salary: "Thương lượng",
-    logo: vinfast.src,
-  },
-];
-
 const MyJob = () => {
+  const cookies = useCookies();
+  const accessToken = cookies.get("accessToken");
+  const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
+  const [saveJob, setSaveJob] = useState([
+    {
+      companyLogo: "",
+      companyName: "",
+      jobSalary: "",
+      jobTitle: "",
+      jobLocation: [],
+      jobPostId: '',
+      _id: "",
+    },
+  ]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchSaveJob();
+      setSaveJob(data.data);
+    };
+    fetchData();
+  }, []);
+  const fetchSaveJob = async () => {
+    const id = decodedToken?.userid;
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/savejob/get-my-savejob/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return res.json();
+  };
+
+  const [applyJob, setApplyJob] = useState([
+    {
+      companyLogo: "",
+      companyName: "",
+      jobSalary: "",
+      jobTitle: "",
+      jobLocation: [],
+      jobPostId: '',
+      jobPostTitle: '',
+      status: '',
+      _id: "",
+    },
+  ]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchApplyJob();
+      setApplyJob(data.data);
+    };
+    fetchData();
+  }, []);
+  const fetchApplyJob = async () => {
+    const id = decodedToken?.userid;
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/apply/get-my-apply/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return res.json();
+  };
+
+  const test = () => {
+    console.log(saveJob)
+  }
+
   const [activeTab, setActiveTab] = useState("saved");
   return (
     <div className="">
+      <button onClick={test}>SAdea</button>
       <h1 className="mb-3 rounded-md border bg-white p-4 font-bold">
         Việc Làm Của Tôi
       </h1>
@@ -61,43 +108,44 @@ const MyJob = () => {
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              className={`px-4 py-3 text-sm  ${
-                activeTab === tab.id
-                  ? "text-blue-600 font-bold border-b-2 border-blue-600"
-                  : "text-gray-500 hover:text-gray-700 font-medium"
-              }`}
+              className={`px-4 py-3 text-sm  ${activeTab === tab.id
+                ? "text-blue-600 font-bold border-b-2 border-blue-600"
+                : "text-gray-500 hover:text-gray-700 font-medium"
+                }`}
               onClick={() => setActiveTab(tab.id)}
             >
               {tab.label}
             </button>
           ))}
         </div>
-        <div className="p-4">
+        {<div className="p-4">
           {activeTab === "saved" && (
             <div className="space-y-4">
-              {jobs.map((job) => (
+              {saveJob.map((job) => (
                 <Link
-                  href={`/job/${job.id}`}
-                  key={job.id}
+                  href={`/job/${job.jobPostId}`}
+                  key={job.jobPostId}
                   className="group flex cursor-pointer items-center justify-between rounded-lg border bg-white p-4 transition-all duration-300 hover:bg-[#f9fcff]"
                 >
                   <div className="flex flex-grow items-center gap-6">
                     <Image
-                      src={job.logo}
-                      alt={`${job.company} logo`}
+                      src={job.companyLogo}
+                      alt={`${job.companyName} logo`}
                       className="rounded-lg"
                       width={60}
                       height={60}
                     />
                     <div className="max-w-[calc(100%-200px)] flex-grow">
                       <h3 className="line-clamp-2 text-lg font-medium duration-300 group-hover:text-[#ff7d55] group-hover:transition-all">
-                        {job.title}
+                        {job.jobTitle}
                       </h3>
-                      <p className="truncate text-gray-600">{job.company}</p>
-                      <p className="text-sm text-gray-500">{job.location}</p>
-                      {job.salary && (
-                        <p className="text-sm text-[#ff7d55]">{job.salary}</p>
-                      )}
+                      <p className="truncate text-gray-600">{job.companyName}</p>
+                      <p className="text-sm text-gray-500">
+                        {job?.jobLocation?.map((loc, locIndex) => (
+                          <span key={locIndex}>{loc}{locIndex < job.jobLocation.length - 1 ? ', ' : ''}</span>
+                        ))}
+                      </p>
+                      <p className="text-sm text-[#ff7d55]">{job.jobSalary}</p>
                     </div>
                   </div>
                   <div className="flex flex-shrink-0 items-center space-x-4">
@@ -112,7 +160,50 @@ const MyJob = () => {
               ))}
             </div>
           )}
-        </div>
+        </div>}
+        {<div className="p-4">
+          {activeTab === "applied" && (
+            <div className="space-y-4">
+              {applyJob.map((job) => (
+                <Link
+                  href={`/job/${job.jobPostId}`}
+                  key={job.jobPostId}
+                  className="group flex cursor-pointer items-center justify-between rounded-lg border bg-white p-4 transition-all duration-300 hover:bg-[#f9fcff]"
+                >
+                  <div className="flex flex-grow items-center gap-6">
+                    <Image
+                      src={job.companyLogo}
+                      alt={`${job.companyName} logo`}
+                      className="rounded-lg"
+                      width={60}
+                      height={60}
+                    />
+                    <div className="max-w-[calc(100%-200px)] flex-grow">
+                      <h3 className="line-clamp-2 text-lg font-medium duration-300 group-hover:text-[#ff7d55] group-hover:transition-all">
+                        {job.jobPostTitle}
+                      </h3>
+                      <p className="truncate text-gray-600">{job.companyName}</p>
+                      <p className="text-sm text-gray-500">
+                        {job?.jobLocation?.map((loc, locIndex) => (
+                          <span key={locIndex}>{loc}{locIndex < job.jobLocation.length - 1 ? ', ' : ''}</span>
+                        ))}
+                      </p>
+                      <p className="text-sm text-[#ff7d55]">{job.jobSalary}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-shrink-0 items-center space-x-4">
+                    {/* <button className="text-blue-500 hover:text-blue-600">
+                      <FaHeart size={20} />
+                    </button> */}
+                    <button disabled className="whitespace-nowrap rounded-lg bg-orange-400 px-4 py-2 text-white transition-colors hover:bg-orange-500">
+                      {job.status}
+                    </button>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>}
       </div>
     </div>
   );

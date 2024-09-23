@@ -340,9 +340,12 @@ const Profile = () => {
       [{ list: "ordered" }, { list: "bullet" }],
     ],
   };
-
+  const test = () => {
+    console.log(selectedBenefits)
+  }
   return (
     <>
+      <button onClick={test}>Test</button>
       <div className="flex flex-col gap-4 rounded-md bg-[#f1f2f4] p-4">
         <div className="flex items-center gap-6 rounded-md bg-white p-4">
           <FaUser color="#EEEEEE" size={80} />
@@ -847,9 +850,8 @@ const Profile = () => {
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <MdMailOutline />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
-                      data?.email ? "text-[#414042] font-medium" : ""
-                    }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.email ? "text-[#414042] font-medium" : ""
+                      }`}
                   >
                     {data?.email ? data.email : "Email"}
                   </p>
@@ -857,9 +859,8 @@ const Profile = () => {
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <FiGift />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
-                      data?.dateOfBirth ? "text-[#414042] font-medium" : ""
-                    }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.dateOfBirth ? "text-[#414042] font-medium" : ""
+                      }`}
                   >
                     {data?.dateOfBirth ? data.dateOfBirth : "Ngày sinh"}
                   </p>
@@ -867,9 +868,8 @@ const Profile = () => {
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <MdOutlineLocationOn />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
-                      data?.address ? "text-[#414042] font-medium" : ""
-                    }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.address ? "text-[#414042] font-medium" : ""
+                      }`}
                   >
                     {data?.address ? data.address : "Địa chỉ"}
                   </p>
@@ -880,9 +880,8 @@ const Profile = () => {
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <FiPhone />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
-                      data?.phoneNumber ? "text-[#414042] font-medium" : ""
-                    }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.phoneNumber ? "text-[#414042] font-medium" : ""
+                      }`}
                   >
                     {data?.phoneNumber ? data.phoneNumber : "Số điện thoại"}
                   </p>
@@ -890,23 +889,21 @@ const Profile = () => {
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <FiUser />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
-                      data?.gender ? "text-[#414042] font-medium" : ""
-                    }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.gender ? "text-[#414042] font-medium" : ""
+                      }`}
                   >
-                    {data?.gender === "1"
+                    {data?.gender === 1
                       ? "Nam"
-                      : data?.gender === "2"
-                      ? "Nữ"
-                      : "Giới tính"}
+                      : data?.gender === 2
+                        ? "Nữ"
+                        : "Giới tính"}
                   </p>
                 </div>
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <RiGraduationCapLine />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
-                      data?.MSSV ? "text-[#414042] font-medium" : ""
-                    }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.MSSV ? "text-[#414042] font-medium" : ""
+                      }`}
                   >
                     {data?.MSSV ? data.MSSV : "Mã số sinh viên"}
                   </p>
@@ -1031,7 +1028,7 @@ const Profile = () => {
                         </label>
                         <input
                           type="text"
-                          placeholder="VNĐ/Tháng"
+                          placeholder="Nhập ngành nghề mong muốn"
                           className="h-10 rounded-md border border-solid px-3 text-sm outline-none focus:border-sky-400"
                           value={workingPreferences.jobFunction}
                           onChange={(e) =>
@@ -1168,11 +1165,13 @@ const Profile = () => {
                             <button
                               key={benefit.id}
                               onClick={() => handleBenefitClick(benefit.id)}
-                              className={`flex flex-col items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm hover:bg-gray-100   ${
-                                selectedBenefits.includes(benefit.id)
-                                  ? "border-blue-400"
+                              className={`flex flex-col items-center justify-center gap-2 
+                                rounded-md border border-gray-300 bg-white px-3 py-2 
+                                text-sm hover:bg-gray-100   
+                                ${selectedBenefits.includes(benefit.id)
+                                  ? "text-blue-400"
                                   : ""
-                              }`}
+                                }`}
                             >
                               {benefit.icon}
                               {benefit.label}

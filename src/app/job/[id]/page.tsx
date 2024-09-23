@@ -1,5 +1,4 @@
 "use client";
-import React, { useState } from "react";
 import { AiOutlineDollarCircle } from "react-icons/ai";
 import { HiMiniUserGroup } from "react-icons/hi2";
 import {
@@ -11,20 +10,83 @@ import {
 import { FaHeart } from "react-icons/fa";
 import nexon from "@images/nexon.png";
 import Image from "next/image";
-import Link from "next/link";
 import ScrollToTopButton from "@/components/ScrollToTopButton/ScrollToTopButotn";
+import { PhoneCall } from "lucide-react";
+import { useCookies } from "next-client-cookies";
+import { jwtDecode } from "jwt-decode";
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { CalendarIcon } from "@radix-ui/react-icons";
+import { Calendar } from "@/components/ui/calendar";
+import { format, set } from "date-fns";
+import { cn } from "@/lib/utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import MultipleSelector from "@/components/ui/multiple-selector";
+import { toast } from "react-toastify";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { toast } from "react-toastify";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+export interface JwtPayload {
+  userid: string;
+  email: string;
+  fullName: string;
+  role: string;
+}
+
+type FormData = {
+  email: string;
+  fullName: string;
+  dateOfBirth: string;
+  phoneNumber: string;
+  jobTitle: string;
+  currentDegree: string;
+  currentIndustries: string;
+  currentJobFunction: string;
+  yearsExperience: string;
+  currentSalary: string;
+  highestDegree: string;
+  country: string;
+  city: string;
+  district: string;
+  address: string;
+  gender: string;
+  maritalStatusId: string;
+  MSSV: string;
+  skillName: string[];
+  workingPreferences: WorkingPreferences;
+};
+type WorkingPreferences = {
+  locations: string[];
+  jobFunction: string;
+  companyIndustries: string[];
+  salary: string;
+  desiredJobLevel: string;
+  isRelocate: 1 | 2;
+  benefits: string[];
+};
 
 const JobDetail = () => {
+
   const [file, setFile] = useState<File | null>(null);
   const [isSaved, setIsSaved] = useState(false);
 
@@ -34,7 +96,75 @@ const JobDetail = () => {
     }
   };
 
-  const handleSaveClick = () => {
+  const cookies = useCookies();
+  const accessToken = cookies.get("accessToken");
+  const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
+  const [saveJobDetails, setsaveJobDetails] = useState({
+    _id: ''
+  })
+  const saveJob = async () => {
+    const id = location.pathname.split("/job/")[1];
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/savejob/create`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: decodedToken?.userid,
+          jobPostId: id,
+        })
+      }
+    );
+    return res.json();
+  };
+
+  const unSaveJob = async () => {
+    const id = saveJobDetails._id;
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/savejob/delete/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return res.json();
+  };
+
+  useEffect(() => {
+    const checkSaveJob = async () => {
+      const id = location.pathname.split("/job/")[1];
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/savejob/check-save`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: decodedToken?.userid,
+            jobPostId: id,
+          })
+        }
+      );
+      const data = await res.json();
+      if (data.status == "OK") {
+        setIsSaved(true);
+        setsaveJobDetails(data.data)
+      }
+    };
+    checkSaveJob();
+  }, []
+  )
+  const handleSaveClick = async () => {
+    if (!isSaved) {
+      const save = await saveJob()
+    } else {
+      const unSave = await unSaveJob()
+    }
     setIsSaved(!isSaved);
     toast.success(
       isSaved ? (
@@ -42,7 +172,7 @@ const JobDetail = () => {
       ) : (
         <p>
           Bạn đã lưu việc làm thành công, xem
-          <Link href="/">
+          <Link href="/profile/my-job">
             <span className="text-blue-500 hover:text-[#ff7d55]">
               {" "}
               Việc làm của tôi
@@ -52,6 +182,262 @@ const JobDetail = () => {
       )
     );
   };
+
+  const [jobPostDetails, setJobPostDetails] = useState(
+    {
+      companyLogo: "",
+      expirationDate: '',
+      companyName: "",
+      salary: "",
+      jobTitle: "",
+      postViews: 0,
+      jobDescription: '',
+      jobRequirements: '',
+      location: [],
+      companyScale: '',
+      staffName: '',
+      companyAddress: '',
+      recruiter: '',
+      _id: "",
+    },
+  );
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchJobPostDetails();
+      setJobPostDetails(data.data);
+    };
+    fetchData();
+  }, []);
+  const fetchJobPostDetails = async () => {
+    const id = location.pathname.split("/job/")[1];
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobpost/get-details-jobpost/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return res.json();
+  };
+
+  const [date, setDate] = React.useState<Date>();
+  const [workingPreferences, setWorkingPreferences] =
+    useState<WorkingPreferences>({
+      locations: [],
+      jobFunction: "",
+      companyIndustries: [],
+      salary: "",
+      desiredJobLevel: "",
+      isRelocate: 1,
+      benefits: [],
+    });
+
+  const [formData, setFormData] = useState<FormData>({
+    email: "",
+    fullName: "",
+    dateOfBirth: "",
+    phoneNumber: "",
+    jobTitle: "",
+    currentDegree: "",
+    currentIndustries: "",
+    currentJobFunction: "",
+    yearsExperience: "",
+    currentSalary: "",
+    highestDegree: "",
+    country: "",
+    city: "",
+    district: "",
+    address: "",
+    gender: "",
+    maritalStatusId: "",
+    MSSV: "",
+    skillName: [],
+    workingPreferences: workingPreferences
+  });
+
+  useEffect(() => {
+    if (date) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        dateOfBirth: format(date, "dd/MM/yyyy"),
+      }));
+    }
+  }, [date]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchDetailsUser();
+      setFormData(data.data);
+      setWorkingPreferences(data.data?.workingPreferences);
+    };
+    fetchData();
+  }, []);
+
+  const fetchDetailsUser = async () => {
+    const id = decodedToken?.userid;
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/get-details/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return res.json();
+  };
+
+  const handleCompanyIndustriesChange = (newIndustries: any) => {
+    setWorkingPreferences((prev) => {
+      const updatedPreferences = {
+        ...prev,
+        companyIndustries: newIndustries.map((industry: any) => industry.value),
+      };
+
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        workingPreferences: updatedPreferences,
+      }));
+
+      return updatedPreferences;
+    });
+  };
+  const handleCompanyBenefitsChange = (newBenefits: any) => {
+    console.log(newBenefits);
+    setWorkingPreferences((prev) => ({
+      ...prev,
+      benefits: newBenefits.map((benefit: any) => benefit.value),
+    }));
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      workingPreferences: workingPreferences,
+    }))
+  };
+  const handleCompanySalaryChange = (newSalary: any) => {
+    const updatedSalary = newSalary.target.value;
+    setWorkingPreferences((prev) => {
+      const updatedPreferences = {
+        ...prev,
+        salary: updatedSalary,
+      };
+
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        workingPreferences: updatedPreferences,
+      }));
+
+      return updatedPreferences;
+    });
+  };
+  const handleCompanyLocationChange = (newLocations: any) => {
+    setWorkingPreferences((prev) => {
+      const updatedPreferences = {
+        ...prev,
+        locations: newLocations.map((location: any) => location.value),
+      };
+
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        workingPreferences: updatedPreferences,
+      }));
+
+      return updatedPreferences;
+    });
+  };
+  const handleCompanyLevelChange = (value: any) => {
+    // const updatedSalary = value.target.value;
+    setWorkingPreferences((prev) => {
+      const updatedPreferences = {
+        ...prev,
+        desiredJobLevel: value,
+      };
+
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        workingPreferences: updatedPreferences,
+      }));
+
+      return updatedPreferences;
+    });
+  };
+  const handleCompanyJobFunctionChange = (newJobFun: any) => {
+    const updatedJobFunction = newJobFun.target.value;
+    setWorkingPreferences((prev) => {
+      const updatedPreferences = {
+        ...prev,
+        jobFunction: updatedJobFunction,
+      };
+
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        workingPreferences: updatedPreferences,
+      }));
+
+      return updatedPreferences;
+    });
+  };
+  const OPTIONS = [
+    { label: "Công Nghệ Thông Tin", value: "Công Nghệ Thông Tin" },
+    { label: "Ngân Hàng", value: "Ngân Hàng" },
+    { label: "Kinh Tế", value: "Kinh Tế" },
+    { label: "Cơ Khí", value: "Cơ Khí" },
+  ];
+  const OPTIONSBENEFIT = [
+    { label: "Giải Thưởng", value: "1" },
+    { label: "Thưởng", value: "2" },
+    { label: "Căn tin", value: "3" },
+    { label: "Khám sức khỏe", value: "4" },
+    { label: "Trông trẻ", value: "5" },
+    { label: "Điện thoại", value: "6" },
+    { label: "Nghỉ phép", value: "7" },
+
+  ];
+  const OPTIONSLOCATION = [
+    { label: "Cần Thơ", value: "Cần Thơ" },
+    { label: "Hồ Chí Minh", value: "Hồ Chí Minh" },
+    { label: "Hà Nội", value: "Hà Nội" },
+    { label: "Đà Nẵng", value: "Đà Nẵng" },
+
+
+  ];
+
+  const handleApplication = async () => {
+    const id = location.pathname.split("/job/")[1];
+
+    // const id = decodedToken?.userid;
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/apply/create`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          jobPostId: id,
+          recruiterId: jobPostDetails.recruiter
+        })
+      }
+    );
+
+    return res.json();
+  }
+
+  const aplicationCreate = async () => {
+    try {
+      const res = await handleApplication();
+      if (res.status === "OK") {
+        toast.success("Ứng tuyển công việc thành công");
+      } else {
+        toast.error("Bạn đã ứng tuyển công việc này rồi");
+      }
+    } catch (error) {
+      toast.error("Cập nhật thất bại. Vui lòng thử lại sau.");
+    }
+  };
+
   return (
     <>
       <div className="bg-[#F1F2F4]">
@@ -62,36 +448,49 @@ const JobDetail = () => {
                 <div className="rounded-md bg-white p-6">
                   <div className="rounded-md bg-[#F8F9FA] p-3">
                     <p className="mb-1 line-clamp-1 text-xl font-bold">
-                      QA Game Tester
+                      {jobPostDetails?.jobTitle}
                     </p>
                     <div className="mt-6 flex flex-col gap-4">
-                      <div className="flex gap-6">
-                        <div className="flex items-center gap-2">
-                          <div className="rounded-full bg-[#f1f2f4] p-2">
-                            <AiOutlineDollarCircle color="grey" size={14} />
-                          </div>
-                          <span className="text-sm">15 - 20 triệu</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="rounded-full bg-[#f1f2f4] p-2">
-                            <HiMiniUserGroup color="grey" size={14} />
-                          </div>
-                          <span className="text-sm">5000 lượt xem</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="rounded-full bg-[#f1f2f4] p-2">
-                            <FaLocationDot color="grey" size={14} />
-                          </div>
-                          <span className="text-sm">Thành phố Hồ Chí Minh</span>
-                        </div>
-                      </div>
                       <div className="flex items-center gap-2">
                         <div className="rounded-full bg-[#f1f2f4] p-2">
                           <FaClock color="grey" size={14} />
                         </div>
                         <span className="text-sm text-[#ff7d55]">
-                          Hạn nộp hồ sơ: 30/9/2024
+                          {(
+                            <span>
+                              {new Date(jobPostDetails?.expirationDate).toLocaleDateString('vi-VN', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                              })}
+                              {` (Hết hạn trong ${Math.ceil((new Date(jobPostDetails?.expirationDate) - new Date()) / (1000 * 60 * 60 * 24))} ngày)`}
+                            </span>
+                          )}
                         </span>
+                      </div>
+                      <div className="flex gap-6">
+                        <div className="flex items-center gap-2">
+                          <div className="rounded-full bg-[#f1f2f4] p-2">
+                            <AiOutlineDollarCircle color="grey" size={14} />
+                          </div>
+                          <span className="text-sm">{jobPostDetails?.salary}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="rounded-full bg-[#f1f2f4] p-2">
+                            <HiMiniUserGroup color="grey" size={14} />
+                          </div>
+                          <span className="text-sm">{jobPostDetails?.postViews} lượt xem</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="rounded-full bg-[#f1f2f4] p-2">
+                            <FaLocationDot color="grey" size={14} />
+                          </div>
+                          <span className="text-sm">
+                            {jobPostDetails?.location?.map((loc, locIndex) => (
+                              <span key={locIndex}>{loc}{locIndex < jobPostDetails.location.length - 1 ? ', ' : ''}</span>
+                            ))}
+                          </span>
+                        </div>
                       </div>
                       <div className="flex items-center justify-between gap-4">
                         <Dialog>
@@ -101,120 +500,657 @@ const JobDetail = () => {
                               Ứng tuyển ngay
                             </button>
                           </DialogTrigger>
-                          <DialogContent className="max-w-3xl p-0">
+
+                          <DialogContent className="max-w-5xl p-0">
                             <DialogHeader className="flex justify-between border-b border-gray-300 px-6 py-4">
                               <DialogTitle>Ứng tuyển công việc</DialogTitle>
                             </DialogHeader>
-                            <div className="flex flex-col gap-4 px-6 py-4">
-                              <div className="flex flex-col gap-1">
-                                <label htmlFor="fullName" className="text-sm">
-                                  <span className="-top-1 mr-1 inline-block text-[#dc362e]">
-                                    *
-                                  </span>
-                                  Họ và tên
-                                </label>
-                                <input
-                                  id="fullName"
-                                  type="text"
-                                  className="h-10 rounded-md border border-solid px-3 text-sm placeholder-gray-300 outline-none focus:border-sky-400"
-                                  placeholder="Họ và tên hiển thị với NTD"
-                                />
+
+                            <form className="mx-auto w-full rounded-md bg-white p-4 shadow-[0_2px_13px_-6px_rgba(0,0,0,0.4)] sm:p-8">
+                              <div className="flex flex-col gap-1 px-6 py-4">
+                                <Accordion
+                                  type="single"
+                                  defaultValue="item-1"
+                                  collapsible
+                                >
+                                  <AccordionItem value="item-1">
+                                    <AccordionTrigger>Hồ sơ của bạn</AccordionTrigger>
+                                    <AccordionContent>
+                                      <div className="flex flex-col gap-1">
+                                        <label htmlFor="cv" className="text-sm">
+                                          <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                                            *
+                                          </span>
+                                          Tải lên CV
+                                        </label>
+                                        <div className="flex flex-col items-center justify-center rounded-md border-2 border-dashed border-gray-300 p-6">
+                                          <svg
+                                            className="mb-4 h-8 w-8 text-gray-400"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                          >
+                                            <path
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              strokeWidth="2"
+                                              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                                            ></path>
+                                          </svg>
+                                          <p className="mb-2 text-sm text-gray-500">
+                                            Tải lên CV từ máy tính, chọn hoặc kéo thả
+                                          </p>
+                                          <p className="text-xs text-gray-500">
+                                            Hỗ trợ định dạng .doc, .docx, pdf có kích
+                                            thước dưới 5MB
+                                          </p>
+                                          <label
+                                            htmlFor="file-upload"
+                                            className="mt-4 cursor-pointer rounded-md bg-white px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50"
+                                          >
+                                            Chọn CV
+                                            <input
+                                              id="file-upload"
+                                              name="file-upload"
+                                              type="file"
+                                              className="sr-only"
+                                              onChange={handleFileChange}
+                                              accept=".doc,.docx,.pdf"
+                                            />
+                                          </label>
+                                        </div>
+                                        {file && (
+                                          <p className="mt-2 text-sm text-gray-500">
+                                            File đã chọn: {file.name}
+                                          </p>
+                                        )}
+                                      </div>
+                                    </AccordionContent>
+                                  </AccordionItem>
+                                  <AccordionItem value="item-2">
+                                    <AccordionTrigger>Thông tin ứng tuyển</AccordionTrigger>
+                                    <AccordionContent>
+                                      <div className="overflow-y-scroll overflow-y-hidden h-48 w-full  gap-5">
+                                        <div className="grid h-30 gap-8 md:grid-cols-2">
+                                          <div className="">
+                                            <label className="mb-2 block text-sm font-semibold text-gray-800">
+                                              <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                                                *
+                                              </span>
+                                              Họ và tên
+                                            </label>
+                                            <input
+                                              type="text"
+                                              className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
+                                              placeholder="Nhập họ và tên"
+                                              value={formData?.fullName}
+                                              onChange={(e) =>
+                                                setFormData({ ...formData, fullName: e.target.value })
+                                              }
+                                            />
+                                          </div>
+                                          <div>
+                                            <label className="mb-2 block text-sm font-semibold text-gray-800">
+                                              <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                                                *
+                                              </span>
+                                              Email
+                                            </label>
+                                            <input
+                                              type="email"
+                                              className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
+                                              placeholder="Nhập email"
+                                              value={formData?.email}
+                                              onChange={(e) =>
+                                                setFormData({ ...formData, email: e.target.value })
+                                              }
+                                            />
+                                          </div>
+                                          <div>
+                                            <label className="mb-2 block text-sm font-semibold text-gray-800">
+                                              <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                                                *
+                                              </span>
+                                              Năm sinh
+                                            </label>
+                                            <Popover>
+                                              <PopoverTrigger asChild>
+                                                <Button
+                                                  variant={"outline"}
+                                                  className={cn(
+                                                    "shadow-none w-full border-gray-300 rounded-sm h-10  justify-start text-left hover:bg-transparent  font-normal data-[state=open]:border-sky-400",
+                                                    !date && "text-muted-foreground"
+                                                  )}
+                                                >
+                                                  <CalendarIcon className="mr-2 h-4 w-4" />
+                                                  {date ? (
+                                                    format(date, "dd/MM/yyyy")
+                                                  ) : (
+                                                    <span>{formData?.dateOfBirth}</span>
+                                                  )}
+                                                </Button>
+                                              </PopoverTrigger>
+                                              <PopoverContent className="w-auto p-0" align="start">
+                                                <Calendar
+                                                  mode="single"
+                                                  captionLayout="dropdown-buttons"
+                                                  selected={date}
+                                                  onSelect={setDate}
+                                                  fromYear={1960}
+                                                  toYear={2030}
+                                                />
+                                              </PopoverContent>
+                                            </Popover>
+                                          </div>
+                                          <div>
+                                            <label className="mb-2 block text-sm font-semibold text-gray-800">
+                                              <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                                                *
+                                              </span>
+                                              Số điện thoại
+                                            </label>
+                                            <input
+                                              type="tel"
+                                              className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
+                                              placeholder="Nhập số điện thoại"
+                                              value={formData?.phoneNumber}
+                                              onChange={(e) =>
+                                                setFormData({
+                                                  ...formData,
+                                                  phoneNumber: e.target.value,
+                                                })
+                                              }
+                                            />
+                                          </div>
+                                          <div>
+                                            <label className="mb-2 block text-sm font-semibold text-gray-800">
+                                              <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                                                *
+                                              </span>
+                                              Chức Danh
+                                            </label>
+                                            <input
+                                              type="text"
+                                              className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
+                                              placeholder="Nhập chức danh"
+                                              value={formData?.jobTitle}
+                                              onChange={(e) =>
+                                                setFormData({ ...formData, jobTitle: e.target.value })
+                                              }
+                                            />
+                                          </div>
+                                          <div>
+                                            <label className="mb-2 block text-sm font-semibold text-gray-800">
+                                              <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                                                *
+                                              </span>
+                                              Cấp bậc hiện tại
+                                            </label>
+                                            <Select
+                                              value={formData?.currentDegree}
+                                              onValueChange={(value) =>
+                                                setFormData((prevFormData) => ({
+                                                  ...prevFormData,
+                                                  currentDegree: value,
+                                                }))
+                                              }
+                                            >
+                                              <SelectTrigger className="h-10 rounded-sm border-gray-300 bg-white shadow-none focus:ring-0 data-[state=open]:border-sky-400">
+                                                <SelectValue placeholder="Vui lòng chọn cấp bậc" />
+                                              </SelectTrigger>
+                                              <SelectContent>
+                                                <SelectItem value="Thực tập sinh/Sinh viên">
+                                                  Thực tập sinh/Sinh viên
+                                                </SelectItem>
+                                                <SelectItem value="Mới tốt nghiệp">
+                                                  Mới tốt nghiệp
+                                                </SelectItem>
+                                                <SelectItem value="Nhân viên">Nhân viên</SelectItem>
+                                                <SelectItem value="Trưởng phòng">
+                                                  Trưởng phòng
+                                                </SelectItem>{" "}
+                                                <SelectItem value="Trưởng phòng">
+                                                  Giám đốc và Cấp Cao Hơn
+                                                </SelectItem>
+                                              </SelectContent>
+                                            </Select>
+                                          </div>
+                                          <div>
+                                            <label className="mb-2 block text-sm font-semibold text-gray-800">
+                                              <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                                                *
+                                              </span>
+                                              Lĩnh vực hiện tại
+                                            </label>
+                                            <input
+                                              type="text"
+                                              className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
+                                              placeholder="Nhập tên ngành"
+                                              value={formData?.currentIndustries}
+                                              onChange={(e) =>
+                                                setFormData({
+                                                  ...formData,
+                                                  currentIndustries: e.target.value,
+                                                })
+                                              }
+                                            />
+                                          </div>
+                                          <div>
+                                            <label className="mb-2 block text-sm font-semibold text-gray-800">
+                                              <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                                                *
+                                              </span>
+                                              Ngành
+                                            </label>
+                                            <input
+                                              type="text"
+                                              className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
+                                              placeholder="Nhập chức danh"
+                                              value={formData?.currentJobFunction}
+                                              onChange={(e) =>
+                                                setFormData({
+                                                  ...formData,
+                                                  currentJobFunction: e.target.value,
+                                                })
+                                              }
+                                            />
+                                          </div>
+                                          <div>
+                                            <label className="mb-2 block text-sm font-semibold text-gray-800">
+                                              <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                                                *
+                                              </span>
+                                              Số năm kinh nghiệm
+                                            </label>
+                                            <input
+                                              type="number"
+                                              className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
+                                              placeholder="Nhập số năm kinh nghiệm"
+                                              min={0}
+                                              value={formData?.yearsExperience}
+                                              onChange={(e) =>
+                                                setFormData({
+                                                  ...formData,
+                                                  yearsExperience: e.target.value,
+                                                })
+                                              }
+                                            />
+                                          </div>{" "}
+                                          <div>
+                                            <label className="mb-2 block text-sm font-semibold text-gray-800">
+                                              <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                                                *
+                                              </span>
+                                              Mức lương hiện tại
+                                            </label>
+                                            <input
+                                              type="text"
+                                              className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
+                                              placeholder="Nhập chức danh"
+                                              value={formData?.currentSalary}
+                                              onChange={(e) =>
+                                                setFormData({
+                                                  ...formData,
+                                                  currentSalary: e.target.value,
+                                                })
+                                              }
+                                            />
+                                          </div>
+                                          <div>
+                                            <label className="mb-2 block text-sm font-semibold text-gray-800">
+                                              <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                                                *
+                                              </span>
+                                              Bằng cấp cao nhất
+                                            </label>
+                                            <Select
+                                              value={formData?.highestDegree}
+                                              onValueChange={(value) =>
+                                                setFormData((prevFormData) => ({
+                                                  ...prevFormData,
+                                                  highestDegree: value,
+                                                }))
+                                              }
+                                            >
+                                              <SelectTrigger className="h-10 rounded-sm border-gray-300 bg-white shadow-none focus:ring-0 data-[state=open]:border-sky-400">
+                                                <SelectValue placeholder="Vui lòng chọn bằng cấp" />
+                                              </SelectTrigger>
+                                              <SelectContent>
+                                                <SelectItem value="Đại học">Đại học</SelectItem>
+                                                <SelectItem value="Thạc sĩ">Thạc sĩ</SelectItem>
+                                                <SelectItem value="Tiến sĩ">Tiến sĩ</SelectItem>
+                                              </SelectContent>
+                                            </Select>
+                                          </div>
+                                          <div>
+                                            <label className="mb-2 block text-sm font-semibold text-gray-800">
+                                              <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                                                *
+                                              </span>
+                                              Quốc tịch
+                                            </label>
+                                            <input
+                                              type="text"
+                                              className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
+                                              placeholder="Nhập chức danh"
+                                              value={formData?.country}
+                                              onChange={(e) =>
+                                                setFormData({ ...formData, country: e.target.value })
+                                              }
+                                            />
+                                          </div>
+                                          <div>
+                                            <label className="mb-2 block text-sm font-semibold text-gray-800">
+                                              <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                                                *
+                                              </span>
+                                              Thành phố
+                                            </label>
+                                            <Select
+                                              value={formData?.city}
+                                              onValueChange={(value) =>
+                                                setFormData((prevFormData) => ({
+                                                  ...prevFormData,
+                                                  city: value,
+                                                }))
+                                              }
+                                            >
+                                              <SelectTrigger className="h-10 rounded-sm border-gray-300 bg-white shadow-none focus:ring-0 data-[state=open]:border-sky-400">
+                                                <SelectValue placeholder="Vui lòng chọn giới tính" />
+                                              </SelectTrigger>
+                                              <SelectContent>
+                                                <SelectItem value="Hồ Chính Minh">Hồ Chí Minh</SelectItem>
+                                                <SelectItem value="Cần Thơ">Cần Thơ</SelectItem>
+                                              </SelectContent>
+                                            </Select>
+                                          </div>
+                                          <div>
+                                            <label className="mb-2 block text-sm font-semibold text-gray-800">
+                                              <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                                                *
+                                              </span>
+                                              Quận/Huyện
+                                            </label>
+                                            <Select
+                                              value={formData?.district}
+                                              onValueChange={(value) =>
+                                                setFormData((prevFormData) => ({
+                                                  ...prevFormData,
+                                                  district: value,
+                                                }))
+                                              }
+                                            >
+                                              <SelectTrigger className="h-10 rounded-sm border-gray-300 bg-white shadow-none focus:ring-0 data-[state=open]:border-sky-400">
+                                                <SelectValue placeholder="Vui lòng chọn giới tính" />
+                                              </SelectTrigger>
+                                              <SelectContent>
+                                                <SelectItem value="Quận 1">Quận 1</SelectItem>
+                                                <SelectItem value="Ninh Kiều">Ninh Kiều</SelectItem>
+                                              </SelectContent>
+                                            </Select>
+                                          </div>
+                                          <div>
+                                            <label className="mb-2 block text-sm font-semibold text-gray-800">
+                                              <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                                                *
+                                              </span>
+                                              Giới tính
+                                            </label>
+                                            <Select
+                                              value={formData?.gender.toString()}
+                                              onValueChange={(value) =>
+                                                setFormData((prevFormData) => ({
+                                                  ...prevFormData,
+                                                  gender: value,
+                                                }))
+                                              }
+                                            >
+                                              <SelectTrigger className="h-10 rounded-sm border-gray-300 bg-white shadow-none focus:ring-0 data-[state=open]:border-sky-400">
+                                                <SelectValue placeholder="Vui lòng chọn giới tính" />
+                                              </SelectTrigger>
+                                              <SelectContent>
+                                                <SelectItem value="1">Nam</SelectItem>
+                                                <SelectItem value="2">Nữ</SelectItem>
+                                              </SelectContent>
+                                            </Select>
+                                          </div>
+                                          <div>
+                                            <label className="mb-2 block text-sm font-semibold text-gray-800">
+                                              <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                                                *
+                                              </span>
+                                              Tình trạng hôn nhân
+                                            </label>
+                                            <Select
+                                              value={formData?.maritalStatusId.toString()}
+                                              onValueChange={(value) =>
+                                                setFormData((prevFormData) => ({
+                                                  ...prevFormData,
+                                                  maritalStatusId: value,
+                                                }))
+                                              }
+                                            >
+                                              <SelectTrigger className="h-10 rounded-sm border-gray-300 bg-white shadow-none focus:ring-0 data-[state=open]:border-sky-400">
+                                                <SelectValue placeholder="Vui lòng chọn giới tính" />
+                                              </SelectTrigger>
+                                              <SelectContent>
+                                                <SelectItem value="1">Độc thân</SelectItem>
+                                                <SelectItem value="2">Đã kết hôn</SelectItem>
+                                              </SelectContent>
+                                            </Select>
+                                          </div>
+                                          <div>
+                                            <label className="mb-2 block text-sm font-semibold text-gray-800">
+                                              MSSV
+                                            </label>
+                                            <input
+                                              type="text"
+                                              className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
+                                              placeholder="Nhập mã số sinh viên"
+                                              value={formData?.MSSV}
+                                              onChange={(e) =>
+                                                setFormData({ ...formData, MSSV: e.target.value })
+                                              }
+                                            />
+                                          </div>
+                                          <div>
+                                            <label className="mb-2 block text-sm font-semibold text-gray-800">
+                                              Địa chỉ
+                                            </label>
+                                            <input
+                                              type="text"
+                                              className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
+                                              placeholder="Nhập địa chỉ"
+                                              value={formData?.address}
+                                              onChange={(e) =>
+                                                setFormData({ ...formData, address: e.target.value })
+                                              }
+                                            />
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </AccordionContent>
+                                  </AccordionItem>
+                                  <AccordionItem value="item-3">
+                                    <AccordionTrigger>Công việc mong muốn</AccordionTrigger>
+                                    <AccordionContent>
+                                      <ScrollArea className="h-50 w-full">
+                                        <div className="flex flex-col items-center gap-6 px-6">
+                                          <div className="flex grid h-30 w-full gap-8 md:grid-cols-2 flex-1 flex-col gap-6">
+                                            <div className="gap-5">
+
+                                              <div className="col-span-1 flex flex-col gap-1">
+                                                <label htmlFor="" className="text-sm">
+                                                  <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                                                    *
+                                                  </span>
+                                                  Nơi làm việc mong muốn
+                                                </label>
+                                                <MultipleSelector
+                                                  defaultOptions={OPTIONSLOCATION}
+                                                  placeholder="Vui lòng chọn..."
+                                                  onChange={handleCompanyLocationChange}
+                                                  value={workingPreferences?.locations.map(
+                                                    (location) => ({
+                                                      label: location,
+                                                      value: location,
+                                                    })
+                                                  )}
+                                                />
+                                              </div>
+
+                                            </div>
+                                            <div className="col-span-1 flex flex-col gap-1">
+                                              <label htmlFor="" className="text-sm">
+                                                <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                                                  *
+                                                </span>
+                                                Ngành nghề mong muốn
+                                              </label>
+                                              <input
+                                                type="text"
+                                                placeholder="Nhập ngành nghề mong muốn"
+                                                className="h-10 rounded-md border border-solid px-3 text-sm outline-none focus:border-sky-400"
+                                                value={workingPreferences?.jobFunction}
+                                                onChange={handleCompanyJobFunctionChange}
+                                              // onChange={(e) => {
+                                              //   setWorkingPreferences((prev) => ({
+                                              //     ...prev,
+                                              //     jobFunction: e.target.value,
+                                              //   }));
+                                              //   setFormData((prevFormData) => ({
+                                              //     ...prevFormData,
+                                              //     workingPreferences: workingPreferences,
+                                              //   }))
+                                              // }}
+                                              />
+                                            </div>
+                                            <div className="col-span-1 flex flex-col gap-1">
+                                              <label htmlFor="" className="text-sm">
+                                                <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                                                  *
+                                                </span>
+                                                Lĩnh vực mong muốn
+                                              </label>
+                                              <MultipleSelector
+                                                defaultOptions={OPTIONS}
+                                                placeholder="Vui lòng chọn..."
+                                                onChange={handleCompanyIndustriesChange}
+                                                value={workingPreferences?.companyIndustries.map(
+                                                  (industry) => ({
+                                                    label: industry,
+                                                    value: industry,
+                                                  })
+                                                )}
+                                              />
+                                            </div>
+                                            <div className="col-span-1 flex flex-col gap-1">
+                                              <label htmlFor="" className="text-sm">
+                                                <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                                                  *
+                                                </span>
+                                                5 phúc lợi mong muốn
+                                              </label>
+                                              <MultipleSelector
+                                                defaultOptions={OPTIONSBENEFIT}
+                                                placeholder="Vui lòng chọn..."
+                                                onChange={handleCompanyBenefitsChange}
+                                                value={workingPreferences?.benefits.map(
+                                                  (industry) => ({
+                                                    label: industry,
+                                                    value: industry,
+                                                  })
+                                                )}
+                                              />
+                                            </div>
+                                            <div className="col-span-1 flex flex-col gap-1">
+                                              <label htmlFor="" className="text-sm">
+                                                <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                                                  *
+                                                </span>
+                                                Mức lương mong muốn
+                                              </label>
+                                              <input
+                                                type="number"
+                                                placeholder="VNĐ/Tháng"
+                                                className="h-10 rounded-md border border-solid px-3 text-sm outline-none focus:border-sky-400"
+                                                value={workingPreferences?.salary}
+                                                onChange={handleCompanySalaryChange}
+                                              // onChange={(e) => {
+                                              //   setWorkingPreferences((prev) => ({
+                                              //     ...prev,
+                                              //     salary: e.target.value,
+
+                                              //   }))
+                                              // }}
+                                              />
+                                            </div>
+
+                                            <div className="col-span-1 flex flex-col gap-1">
+                                              <label htmlFor="" className="text-sm">
+                                                <span className="-top-1 mr-1 inline-block text-[#dc362e]">
+                                                  *
+                                                </span>
+                                                Cấp bậc mong muốn
+                                              </label>
+                                              <Select
+                                                value={workingPreferences?.desiredJobLevel}
+                                                onValueChange={(value) => handleCompanyLevelChange(value)}
+                                              // onValueChange={(value) =>
+                                              //   setWorkingPreferences((prev) => ({
+                                              //     ...prev,
+                                              //     desiredJobLevel: value,
+                                              //   }))
+                                              // }
+                                              >
+                                                <SelectTrigger className="h-10 bg-white shadow-none focus:ring-0">
+                                                  <SelectValue placeholder="Vui lòng chọn..." />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                  <SelectItem value="Thực tập sinh/Sinh viên">
+                                                    Thực tập sinh/Sinh viên
+                                                  </SelectItem>
+                                                  <SelectItem value="Mới tốt nghiệp">
+                                                    Mới tốt nghiệp
+                                                  </SelectItem>
+                                                  <SelectItem value="Nhân viên">Nhân viên</SelectItem>
+                                                  <SelectItem value="Trưởng phòng">
+                                                    Trưởng phòng
+                                                  </SelectItem>{" "}
+                                                  <SelectItem value=" Giám đốc và Cấp Cao Hơn">
+                                                    Giám đốc và Cấp Cao Hơn
+                                                  </SelectItem>
+                                                </SelectContent>
+                                              </Select>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </ScrollArea>
+                                    </AccordionContent>
+                                  </AccordionItem>
+
+                                </Accordion>
+
                               </div>
-                              <div className="grid grid-cols-2 gap-5">
-                                <div className="col-span-1 flex flex-col gap-1">
-                                  <label htmlFor="email" className="text-sm">
-                                    <span className="-top-1 mr-1 inline-block text-[#dc362e]">
-                                      *
-                                    </span>
-                                    Email
-                                  </label>
-                                  <input
-                                    id="email"
-                                    type="email"
-                                    className="h-10 rounded-md border border-solid px-3 text-sm placeholder-gray-300 outline-none focus:border-sky-400"
-                                    placeholder="Email hiển thị với NTD"
-                                  />
-                                </div>
-                                <div className="col-span-1 flex flex-col gap-1">
-                                  <label htmlFor="phone" className="text-sm">
-                                    <span className="-top-1 mr-1 inline-block text-[#dc362e]">
-                                      *
-                                    </span>
-                                    Số điện thoại
-                                  </label>
-                                  <input
-                                    id="phone"
-                                    type="tel"
-                                    className="h-10 rounded-md border border-solid px-3 text-sm placeholder-gray-300 outline-none focus:border-sky-400"
-                                    placeholder="Số điện thoại hiển thị với NTD"
-                                  />
-                                </div>
-                              </div>
-                              <div className="flex flex-col gap-1">
-                                <label htmlFor="cv" className="text-sm">
-                                  <span className="-top-1 mr-1 inline-block text-[#dc362e]">
-                                    *
-                                  </span>
-                                  Tải lên CV
-                                </label>
-                                <div className="flex flex-col items-center justify-center rounded-md border-2 border-dashed border-gray-300 p-6">
-                                  <svg
-                                    className="mb-4 h-8 w-8 text-gray-400"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth="2"
-                                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                                    ></path>
-                                  </svg>
-                                  <p className="mb-2 text-sm text-gray-500">
-                                    Tải lên CV từ máy tính, chọn hoặc kéo thả
-                                  </p>
-                                  <p className="text-xs text-gray-500">
-                                    Hỗ trợ định dạng .doc, .docx, pdf có kích
-                                    thước dưới 5MB
-                                  </p>
-                                  <label
-                                    htmlFor="file-upload"
-                                    className="mt-4 cursor-pointer rounded-md bg-white px-4 py-2 text-sm font-medium text-blue-600 hover:bg-blue-50"
-                                  >
-                                    Chọn CV
-                                    <input
-                                      id="file-upload"
-                                      name="file-upload"
-                                      type="file"
-                                      className="sr-only"
-                                      onChange={handleFileChange}
-                                      accept=".doc,.docx,.pdf"
-                                    />
-                                  </label>
-                                </div>
-                                {file && (
-                                  <p className="mt-2 text-sm text-gray-500">
-                                    File đã chọn: {file.name}
-                                  </p>
-                                )}
-                              </div>
-                            </div>
+                            </form>
+
                             <DialogFooter className="px-6 py-4">
-                              <Button className="bg-orange-400 text-white shadow-none hover:bg-orange-500">
-                                Ứng tuyển
-                              </Button>
+                              <DialogClose>
+                                <Button onClick={aplicationCreate} className="bg-orange-400 text-white shadow-none hover:bg-orange-500">
+                                  Ứng tuyển
+                                </Button>
+                              </DialogClose>
                             </DialogFooter>
+
                           </DialogContent>
                         </Dialog>
 
                         <button
-                          className={`flex flex-1 justify-center items-center gap-3 rounded-lg border px-4 py-2 transition ${
-                            isSaved
-                              ? "border-[#005aff] text-[#005aff] hover:bg-[#347bff26] "
-                              : "border-gray-300 "
-                          }`}
+                          className={`flex flex-1 justify-center items-center gap-3 rounded-lg border px-4 py-2 transition ${isSaved
+                            ? "border-[#005aff] text-[#005aff] hover:bg-[#347bff26] "
+                            : "border-gray-300 "
+                            }`}
                           onClick={handleSaveClick}
                         >
                           {isSaved ? (
@@ -230,56 +1166,18 @@ const JobDetail = () => {
                   <div className="mt-8">
                     <p className="text-lg font-bold">Mô tả công việc</p>
                     <div className="mt-3">
-                      <p className="text-sm">
-                        Chúng tôi tuyển dụng Nhân viên kiểm soát chất lượng để
-                        đảm bảo chất lượng các trò chơi thông qua biện pháp kiểm
-                        tra thủ công.
-                      </p>
-                      <p className="text-sm">
-                        Ứng viên đủ tiêu chuẩn cần có đôi mắt tinh tường và có
-                        khả năng thiết lập các tình huống kiểm tra lỗi khác
-                        nhau. Đam mê game là một lợi thế.
-                      </p>
-                      <p></p>
-                      <p className="mt-2 text-sm font-bold">
-                        Ứng viên CẦN mô tả kinh nghiệm về Game hoặc kiến thức về
-                        Game trong CV bao gồm các tựa games mà bạn đã chơi qua.
-                      </p>
-                      <p className="mt-4 text-sm font-bold">Mô tả công việc</p>
-                      <ul className="text-sm">
-                        <li>Kiểm soát nội dung cơ bản trong game</li>
-                        <li>
-                          Kiểm soát các chức năng có độ phức tạp khác nhau.
-                        </li>
-                        <li>Nội dung kiểm tra liên quan đến dữ liệu số.</li>
-                      </ul>
-                      <p className="mt-4 text-sm font-bold">Phúc lợi:</p>
-                      <ul className="text-sm">
-                        <li>
-                          Thời gian làm việc: 8 tiếng/ngày [9:00 - 18:00] and 5
-                          ngày/ tuần (Từ Thứ Hai đến Thứ Sáu).
-                        </li>
-                        <li>
-                          Kiểm soát các chức năng có độ phức tạp khác nhau.
-                        </li>
-                        <li>
-                          Cơ hội làm việc trong các dự án toàn cầu với các nhóm
-                          đa văn hóa, các trò chơi đẳng cấp thế giới
-                        </li>
-                      </ul>
-                      <p className="mt-4 text-sm font-bold">
-                        Địa điểm làm việc
-                      </p>
-                      <p className="text-sm">
-                        - Hà Nội: Hà Nội: Liền kề, Toà Nhà SME Hoàng Gia, Quang
-                        Trung, Hà Đông, Hà Nội, Hà Đông
-                      </p>
+                      {jobPostDetails?.jobDescription}
+                      {jobPostDetails?.jobRequirements}
                       <div className="mt-3 flex gap-3">
                         <button className="flex items-center justify-center gap-3 rounded-lg bg-[#ff7d55] p-2 text-sm text-white transition hover:bg-[#fd916f]">
                           Ứng tuyển ngay
                         </button>
                         <button className="flex items-center gap-3 rounded-lg border border-gray-300 px-4 py-2 transition hover:bg-[#838da326]">
-                          <FaRegHeart />
+                          {isSaved ? (
+                            <FaHeart color="#005aff" />
+                          ) : (
+                            <FaRegHeart />
+                          )}
                         </button>
                       </div>
                     </div>
@@ -352,12 +1250,12 @@ const JobDetail = () => {
               <div className="col-span-1">
                 <div className="flex flex-col rounded-md bg-white px-8 py-4">
                   <div className="flex items-center justify-center">
-                    <Image src={nexon} alt="" height={100} width={100} />
+                    <Image src={jobPostDetails?.companyLogo} alt="" height={100} width={100} />
                   </div>
                   <div className="flex flex-col">
-                    <Link href="/company/1">
+                    <Link href={`/company/${jobPostDetails?.recruiter}`}>
                       <p className="my-3 cursor-pointer text-center font-medium hover:text-[#ff7d55]">
-                        Nexon Networks Vina Co. Ltd,
+                        {jobPostDetails?.companyName}
                       </p>
                     </Link>
                     <div className="flex flex-col gap-6">
@@ -366,8 +1264,7 @@ const JobDetail = () => {
                           <FaLocationDot color="grey" size={14} />
                         </div>
                         <span className="text-sm">
-                          UOA Tower, 6 Tan Trao Street, Tan Phu Ward, District
-                          7, HCMC, Vietnam
+                          {jobPostDetails?.companyAddress}
                         </span>
                       </div>
 
@@ -375,7 +1272,17 @@ const JobDetail = () => {
                         <div className="rounded-full bg-[#f1f2f4] p-1">
                           <HiMiniUserGroup color="grey" size={14} />
                         </div>
-                        <span className="text-sm">5000 lượt xem</span>
+                        <span className="text-sm">
+                          {jobPostDetails?.companyScale}
+                        </span>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <div className="rounded-full bg-[#f1f2f4] p-1">
+                          <PhoneCall color="grey" size={14} />
+                        </div>
+                        <span className="text-sm">
+                          {jobPostDetails?.staffName}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -384,8 +1291,8 @@ const JobDetail = () => {
             </div>
           </div>
         </div>
-      </div>{" "}
-      <ScrollToTopButton />
+      </div > {" "}
+      < ScrollToTopButton />
     </>
   );
 };
