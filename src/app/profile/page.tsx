@@ -892,11 +892,16 @@ const Profile = () => {
                     className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.gender ? "text-[#414042] font-medium" : ""
                       }`}
                   >
-                    {data?.gender === 1
-                      ? "Nam"
-                      : data?.gender === 2
-                        ? "Nữ"
-                        : "Giới tính"}
+                    {(() => {
+                      switch (Number(data?.gender)) {
+                        case 1:
+                          return "Nam";
+                        case 2:
+                          return "Nữ";
+                        default:
+                          return "Giới tính";
+                      }
+                    })()}
                   </p>
                 </div>
                 <div className="my-1 flex items-center gap-2 text-gray-400">

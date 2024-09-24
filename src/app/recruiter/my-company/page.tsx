@@ -57,13 +57,14 @@ const MyCompany = () => {
         const fetchData = async () => {
             const data = await fetchApplyJob();
             setApplyJob(data.data);
+            console.log(data.data)
         };
         fetchData();
     }, []);
     const fetchApplyJob = async () => {
         const id = decodedToken?.userid;
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/apply/get-my-apply/${id}`,
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/apply/get-my-apply/66e88fd0f696118a75d38ae0`,
             {
                 method: "GET",
                 headers: {
@@ -73,24 +74,6 @@ const MyCompany = () => {
         );
         return res.json();
     };
-    const unFollow = async (id: any) => {
-        const userId = decodedToken?.userid;
-        const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/follow/delete-follow/${id}`,
-            {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    userId: userId,
-                }),
-            }
-        );
-        window.location.reload()
-        return res.json();
-    };
-
     const [activeTab, setActiveTab] = useState("profileViews");
     return (
         <div className="">

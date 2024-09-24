@@ -28,9 +28,12 @@ const HeaderRecruiter = () => {
         <div className="container py-3">
           <div className="flex items-center gap-6">
             <div className="flex gap-4 text-[#d9d9d9]">
-              <p className="cursor-pointer transition-colors duration-300 hover:text-[#ff7d55]">
-                Dashboard
-              </p>
+              <Link href="/recruiter">
+                <p className="cursor-pointer transition-colors duration-300 hover:text-[#ff7d55]">
+                  Dashboard
+                </p>
+              </Link>
+
               <p className="cursor-pointer transition-colors duration-300 hover:text-[#ff7d55]">
                 Việc làm
               </p>
@@ -101,9 +104,11 @@ const HeaderRecruiter = () => {
               <Button className="h-10 bg-[#ff7d55] hover:bg-[#fd6333] lg:min-w-32">
                 Đăng Tuyển Dụng
               </Button>
-              <Button className="h-10 bg-[#ff7d55] hover:bg-[#fd6333] lg:min-w-32">
-                Tìm Ứng Viên
-              </Button>
+              <Link href="/recruiter/search">
+                <Button className="h-10 bg-[#ff7d55] hover:bg-[#fd6333] lg:min-w-32">
+                  Tìm Ứng Viên
+                </Button>
+              </Link>
               <Button className="h-10 bg-[#ff7d55] hover:bg-[#fd6333] lg:min-w-32">
                 Mua
               </Button>

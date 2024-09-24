@@ -6,8 +6,19 @@ import {
   FaClock,
   FaRegPaperPlane,
   FaRegHeart,
+  FaBriefcase,
+  FaLaptop,
+  FaLaptopCode,
+  FaUserClock,
+  FaGraduationCap,
+  FaUsers,
+  FaUserTie,
+  FaLanguage,
+  FaFlag,
+  FaVenus,
+  FaVenusMars,
 } from "react-icons/fa6";
-import { FaHeart } from "react-icons/fa";
+import { FaBirthdayCake, FaCalendarAlt, FaCogs, FaHeart, FaMapMarkedAlt } from "react-icons/fa";
 import nexon from "@images/nexon.png";
 import Image from "next/image";
 import ScrollToTopButton from "@/components/ScrollToTopButton/ScrollToTopButotn";
@@ -198,6 +209,24 @@ const JobDetail = () => {
       staffName: '',
       companyAddress: '',
       recruiter: '',
+      jobInformation:
+      {
+        jobLevel: "",
+        industry: "",
+        skills: [],
+        field: '',
+        languageForApplications: '',
+        minimumExperience: 0,
+        nationality: '',
+        minimumEducation: '',
+        gender: '',
+        preferredAge: 0,
+        datePosted: '',
+        numberOfPositions: 0,
+        maritalStatus: '',
+
+      },
+
       _id: "",
     },
   );
@@ -206,6 +235,7 @@ const JobDetail = () => {
     const fetchData = async () => {
       const data = await fetchJobPostDetails();
       setJobPostDetails(data.data);
+      console.log(data.data)
     };
     fetchData();
   }, []);
@@ -437,7 +467,13 @@ const JobDetail = () => {
       toast.error("Cập nhật thất bại. Vui lòng thử lại sau.");
     }
   };
-
+  const calculateDaysRemaining = (expirationDate: any) => {
+    const expirationDateObj = new Date(expirationDate);
+    const today = new Date();
+    const diffInMs = expirationDateObj.getTime() - today.getTime();
+    const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
+    return diffInDays;
+  }
   return (
     <>
       <div className="bg-[#F1F2F4]">
@@ -456,16 +492,12 @@ const JobDetail = () => {
                           <FaClock color="grey" size={14} />
                         </div>
                         <span className="text-sm text-[#ff7d55]">
-                          {(
-                            <span>
-                              {new Date(jobPostDetails?.expirationDate).toLocaleDateString('vi-VN', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                              })}
-                              {` (Hết hạn trong ${Math.ceil((new Date(jobPostDetails?.expirationDate) - new Date()) / (1000 * 60 * 60 * 24))} ngày)`}
-                            </span>
-                          )}
+                          {new Date(jobPostDetails?.expirationDate).toLocaleDateString('vi-VN', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}
+                          {` (Hết hạn trong ${calculateDaysRemaining(jobPostDetails?.expirationDate)} ngày)`}
                         </span>
                       </div>
                       <div className="flex gap-6">
@@ -1167,23 +1199,159 @@ const JobDetail = () => {
                     <p className="text-lg font-bold">Mô tả công việc</p>
                     <div className="mt-3">
                       {jobPostDetails?.jobDescription}
+                    </div>
+                    <p className="text-lg font-bold">Yêu cầu công việc</p>
+                    <div className="mt-3">
                       {jobPostDetails?.jobRequirements}
-                      <div className="mt-3 flex gap-3">
-                        <button className="flex items-center justify-center gap-3 rounded-lg bg-[#ff7d55] p-2 text-sm text-white transition hover:bg-[#fd916f]">
-                          Ứng tuyển ngay
-                        </button>
-                        <button className="flex items-center gap-3 rounded-lg border border-gray-300 px-4 py-2 transition hover:bg-[#838da326]">
-                          {isSaved ? (
-                            <FaHeart color="#005aff" />
-                          ) : (
-                            <FaRegHeart />
-                          )}
-                        </button>
+                    </div>
+                  </div>
+                  <div className="mt-8">
+                    <p className="text-lg font-bold">Thông tin việc làm</p>
+                    <h2 className="text-xl font-bold mb-4"></h2>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <div className="flex items-center mb-2">
+                          <FaCalendarAlt className="fas fa-calendar-alt mr-2"></FaCalendarAlt>
+                          <span className="text-[#939393]">NGÀY ĐĂNG</span>
+                        </div>
+                        <div className="ml-6 mb-4">
+                          {new Date(jobPostDetails.jobInformation.datePosted).toLocaleDateString('vi-VN', {
+                            year: 'numeric',
+                            month: 'numeric',
+                            day: 'numeric'
+                          })}
+                        </div>
+
+                        <div className="flex items-center mb-2">
+                          <FaBriefcase className="fas fa-briefcase mr-2"></FaBriefcase>
+                          <span className="text-[#939393]">NGÀNH NGHỀ</span>
+                        </div>
+                        <div className="ml-6 mb-4">Công Nghệ Thông Tin/Viễn Thông {'>'} Phần Mềm Máy Tính</div>
+
+                        <div className="flex items-center mb-2">
+                          <FaLaptopCode className="fas fa-laptop-code mr-2"></FaLaptopCode>
+                          <span className="text-[#939393]">LĨNH VỰC</span>
+                        </div>
+                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation.field}</div>
+
+                        <div className="flex items-center mb-2">
+                          <FaUserClock className="fas fa-user-clock mr-2"></FaUserClock>
+                          <span className="text-[#939393]">SỐ NĂM KINH NGHIỆM TỐI THIỂU</span>
+                        </div>
+                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation.minimumExperience}</div>
+
+                        <div className="flex items-center mb-2">
+                          <FaGraduationCap className="fas fa-graduation-cap mr-2"></FaGraduationCap>
+                          <span className="text-[#939393]">TRÌNH ĐỘ HỌC VẤN TỐI THIỂU</span>
+                        </div>
+                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation.minimumEducation}</div>
+
+                        <div className="flex items-center mb-2">
+                          <FaBirthdayCake className="fas fa-birthday-cake mr-2"></FaBirthdayCake>
+                          <span className="text-[#939393]">ĐỘ TUỔI MONG MUỐN</span>
+                        </div>
+                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation?.preferredAge || "Không hiển thị"} </div>
+
+                        <div className="flex items-center mb-2">
+                          <FaUsers className="fas fa-users mr-2"></FaUsers>
+                          <span className="text-[#939393]">SỐ LƯỢNG TUYỂN DỤNG</span>
+                        </div>
+                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation?.numberOfPositions || "Không hiển thị"}</div>
                       </div>
+                      <div>
+                        <div className="flex items-center mb-2">
+                          <FaUserTie className="fas fa-user-tie mr-2"></FaUserTie>
+                          <span className="text-[#939393]">CẤP BẬC</span>
+                        </div>
+                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation?.jobLevel || "Không hiển thị"}</div>
+
+                        <div className="flex items-center mb-2">
+                          <FaCogs className="fas fa-cogs mr-2"></FaCogs>
+                          <span className="text-[#939393]">KỸ NĂNG</span>
+                        </div>
+                        <div className="ml-6 mb-4">
+                          {jobPostDetails.jobInformation.skills.map((skill) => (
+                            <span className="mr-2">{skill}</span>
+                          ))}
+                        </div>
+
+                        <div className="flex items-center mb-2">
+                          <FaLanguage className="fas fa-language mr-2"></FaLanguage>
+                          <span className="text-[#939393]">NGÔN NGỮ TRÌNH BÀY HỒ SƠ</span>
+                        </div>
+                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation?.languageForApplications || "Không hiển thị"}</div>
+
+                        <div className="flex items-center mb-2">
+                          <FaFlag className="fas fa-flag mr-2"></FaFlag>
+                          <span className="text-[#939393]">QUỐC TỊCH</span>
+                        </div>
+                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation?.nationality || "Không hiển thị"}</div>
+
+                        <div className="flex items-center mb-2">
+                          <FaVenusMars className="fas fa-venus-mars mr-2"></FaVenusMars>
+                          <span className="text-[#939393]">GIỚI TÍNH</span>
+                        </div>
+                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation?.gender || "Không hiển thị"}</div>
+
+                        <div className="flex items-center mb-2">
+                          <FaHeart className="fas fa-heart mr-2"></FaHeart>
+                          <span className="text-[#939393]">TÌNH TRẠNG HÔN NHÂN</span>
+                        </div>
+                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation?.maritalStatus || "Không hiển thị"}</div>
+                      </div>
+                    </div>
+                    <h2 className="text-xl font-bold mt-6 mb-4">Địa điểm làm việc</h2>
+                    <div className="flex items-center">
+                      <FaLocationDot className="fas fa-map-marker-alt mr-2"></FaLocationDot>
+                      <span>{jobPostDetails?.companyAddress || "Chưa cập nhật"}</span>
                     </div>
                   </div>
                 </div>
-
+                <div className="fixed bottom-0 left-0 right-0 bg-white p-4 border-t border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <img alt="Company logo" className="w-12 h-12 rounded-full" height="50"
+                        src={jobPostDetails?.companyLogo} width="50" />
+                      <div className="ml-4">
+                        <h2 className="text-xl font-semibold text-gray-800">
+                          {jobPostDetails?.jobTitle}</h2>
+                        <div className="flex items-center text-sm text-gray-500">
+                          <span className="text-red-500">
+                            {jobPostDetails?.salary}
+                          </span>
+                          <span className="mx-2">|</span>
+                          <i className="fas fa-clock"></i>
+                          <span className="ml-1">
+                            {new Date(jobPostDetails?.expirationDate).toLocaleDateString('vi-VN', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric'
+                            })}
+                            {` (Hết hạn trong ${calculateDaysRemaining(jobPostDetails?.expirationDate)} ngày)`}
+                          </span>
+                          <span className="mx-2">|</span>
+                          <i className="fas fa-map-marker-alt"></i>
+                          <span className="ml-1">
+                            {jobPostDetails?.location?.map((loc, locIndex) => (
+                              <span key={locIndex}>{loc}{locIndex < jobPostDetails.location.length - 1 ? ', ' : ''}</span>
+                            ))}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex mr-[10%] items-center">
+                      <button className="bg-orange-500 text-white px-4 py-2 rounded-md">
+                        Nộp đơn</button>
+                      <button className="ml-4 p-2 border border-gray-300 rounded-md">
+                        {isSaved ? (
+                          <FaHeart color="#005aff" />
+                        ) : (
+                          <FaRegHeart />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
                 <div className="mt-4 rounded-md bg-white p-6">
                   <p className="mb-4 text-xl font-bold">Việc làm liên quan</p>
 
@@ -1267,7 +1435,6 @@ const JobDetail = () => {
                           {jobPostDetails?.companyAddress}
                         </span>
                       </div>
-
                       <div className="flex items-start gap-2">
                         <div className="rounded-full bg-[#f1f2f4] p-1">
                           <HiMiniUserGroup color="grey" size={14} />
