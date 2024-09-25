@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,54 +12,93 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
+import { useRouter, useParams } from "next/navigation";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
 import Link from "next/link";
 
 type Post = {
-  id?: string;
+  id: string;
   title: string;
-  summary: string;
+  author: string;
   category: string;
   content: string;
   status: "published" | "draft";
   publishDate: Date;
 };
 
-type CreateEditPostProps = {
-  post?: Post;
-  onSave: (post: Post) => void;
-  onCancel: () => void;
-};
+const EditNews = () => {
+  const { id } = useParams();
+  const router = useRouter();
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [category, setCategory] = useState("");
+  const [content, setContent] = useState("");
+  const [status, setStatus] = useState<"published" | "draft">("draft");
+  const [publishDate, setPublishDate] = useState(new Date());
+  const [isLoading, setIsLoading] = useState(false);
 
-const CreateNews: React.FC<CreateEditPostProps> = ({
-  post,
-  onSave,
-  onCancel,
-}) => {
-  const [title, setTitle] = useState(post?.title || "");
-  const [summary, setSummary] = useState(post?.summary || "");
-  const [category, setCategory] = useState(post?.category || "");
-  const [content, setContent] = useState(post?.content || "");
-  const [status, setStatus] = useState<"published" | "draft">(
-    post?.status || "draft"
-  );
-  const [publishDate, setPublishDate] = useState(
-    post?.publishDate || new Date()
-  );
+  useEffect(() => {
+    const fetchPostData = async () => {
+      if (id) {
+        try {
+          const response = await fetch(`/api/posts/${id}`);
+          const post = await response.json();
 
-  const handleSave = () => {
+          setTitle(post.title);
+          setAuthor(post.author);
+          setCategory(post.category);
+          setContent(post.content);
+          setStatus(post.status);
+          setPublishDate(new Date(post.publishDate));
+        } catch (error) {
+          console.error("Failed to fetch post data", error);
+        }
+      }
+    };
+
+    fetchPostData();
+  }, [id]);
+
+  const handleSave = async () => {
+    if (typeof id !== "string") {
+      console.error("Invalid post ID");
+      return;
+    }
+
     const updatedPost: Post = {
-      id: post?.id,
+      id,
       title,
-      summary,
+      author,
       category,
       content,
       status,
       publishDate,
     };
-    onSave(updatedPost);
+
+    try {
+      setIsLoading(true);
+
+      const requestOptions = {
+        method: id ? "PUT" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedPost),
+      };
+
+      const response = await fetch(`/api/posts/${id ?? ""}`, requestOptions);
+
+      if (response.ok) {
+        router.push("/admin/post-management");
+      } else {
+        console.error("Failed to save post");
+      }
+    } catch (error) {
+      console.error("Failed to save post", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const modules = {
@@ -95,7 +134,7 @@ const CreateNews: React.FC<CreateEditPostProps> = ({
     <div className="p-6">
       <div className="bg-white p-6 shadow-sm">
         <h1 className="mb-6 text-2xl font-bold">
-          {post ? "Chỉnh sửa bài viết" : "Tạo bài viết mới"}
+          {id ? "Chỉnh sửa bài viết" : "Tạo bài viết mới"}
         </h1>
         <div className="mb-4">
           <Label htmlFor="title">Tiêu đề</Label>
@@ -107,15 +146,15 @@ const CreateNews: React.FC<CreateEditPostProps> = ({
           />
         </div>
         <div className="mb-4">
-          <Label htmlFor="summary">Đoạn tóm tắt</Label>
+          <Label htmlFor="author">Tác giả</Label>
           <Input
-            id="summary"
-            value={summary}
-            onChange={(e) => setSummary(e.target.value)}
+            id="author"
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
             className="mt-1 shadow-none focus:border-sky-400 focus-visible:ring-0"
           />
         </div>
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <Label htmlFor="category">Danh mục</Label>
           <Input
             id="category"
@@ -123,7 +162,7 @@ const CreateNews: React.FC<CreateEditPostProps> = ({
             onChange={(e) => setCategory(e.target.value)}
             className="mt-1 shadow-none focus:border-sky-400 focus-visible:ring-0"
           />
-        </div>
+        </div> */}
         <div className="create-post-editor mb-4">
           <Label htmlFor="content">Nội dung</Label>
           <ReactQuill
@@ -152,15 +191,15 @@ const CreateNews: React.FC<CreateEditPostProps> = ({
         </div> */}
         <div className="flex justify-end space-x-4">
           <Link href="/admin/post-management">
-            <Button variant="outline" onClick={onCancel}>
-              Hủy
-            </Button>
+            <Button variant="outline">Hủy</Button>
           </Link>
-          <Button onClick={handleSave}>Lưu</Button>
+          <Button onClick={handleSave} disabled={isLoading}>
+            {isLoading ? "Đang lưu..." : "Lưu"}
+          </Button>
         </div>
       </div>
     </div>
   );
 };
 
-export default CreateNews;
+export default EditNews;

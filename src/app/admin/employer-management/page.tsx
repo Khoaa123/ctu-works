@@ -119,7 +119,7 @@ const EmployerManagement = () => {
             <Search className="mr-2 h-4 w-4" /> Tìm kiếm
           </Button>
         </div>
-        <Button>
+        <Button className="bg-[#00b14f] hover:bg-[#3ba769]">
           <Building2 className="mr-2 h-4 w-4" /> Thêm nhà tuyển dụng
         </Button>
       </div>

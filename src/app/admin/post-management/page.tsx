@@ -18,7 +18,7 @@ import Link from "next/link";
 type Post = {
   id: string;
   title: string;
-  author: string;
+  // author: string;
   category: string;
   publishDate: string;
   status: "published" | "draft";
@@ -30,7 +30,7 @@ const PostManagement = () => {
       {
         id: "1",
         title: "Job Market Trends 2024",
-        author: "John Doe",
+        // author: "John Doe",
         category: "Career Advice",
         publishDate: "2024-01-15",
         status: "published",
@@ -38,7 +38,7 @@ const PostManagement = () => {
       {
         id: "2",
         title: "Interview Tips for Fresh Graduates",
-        author: "Jane Smith",
+        // author: "Jane Smith",
         category: "Tips",
         publishDate: "2024-01-20",
         status: "draft",
@@ -63,7 +63,7 @@ const PostManagement = () => {
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">Quản lý bài viết</h1>
         <Link href="/admin/create-news">
-          <Button>
+          <Button className="bg-[#00b14f] hover:bg-[#3ba769]">
             <PlusIcon className="mr-2 h-4 w-4" /> Tạo bài viết mới
           </Button>
         </Link>
@@ -78,9 +78,9 @@ const PostManagement = () => {
         <TableHeader>
           <TableRow>
             <TableHead>Tiêu đề</TableHead>
-            <TableHead>Tác giả</TableHead>
+            {/* <TableHead>Tác giả</TableHead> */}
             <TableHead>Danh mục</TableHead>
-            <TableHead>Ngày xuất bản</TableHead>
+            <TableHead>Ngày đăng</TableHead>
             <TableHead>Trạng thái</TableHead>
             <TableHead className="text-right">Hành động</TableHead>
           </TableRow>
@@ -89,16 +89,18 @@ const PostManagement = () => {
           {posts?.map((post) => (
             <TableRow key={post.id}>
               <TableCell className="font-medium">{post.title}</TableCell>
-              <TableCell>{post.author}</TableCell>
+              {/* <TableCell>{post.author}</TableCell> */}
               <TableCell>{post.category}</TableCell>
               <TableCell>{post.publishDate}</TableCell>
               <TableCell>
                 {post.status === "published" ? "Đã đăng" : "Bản nháp"}
               </TableCell>
               <TableCell className="text-right">
-                <Button variant="ghost" size="icon">
-                  <PencilIcon className="h-4 w-4" />
-                </Button>
+                <Link href={`/admin/create-news/${post.id}`}>
+                  <Button variant="ghost" size="icon">
+                    <PencilIcon className="h-4 w-4" />
+                  </Button>
+                </Link>
                 <Button variant="ghost" size="icon">
                   <TrashIcon className="h-4 w-4" />
                 </Button>
