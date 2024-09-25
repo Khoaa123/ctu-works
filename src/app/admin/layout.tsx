@@ -10,7 +10,7 @@ const Layout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
           <Sidebar />
         </div>
         <div className="flex-1 bg-[#F7F8FA]">
-          <Navbar />
+          {/* <Navbar /> */}
           {children}
         </div>
       </div>
