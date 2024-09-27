@@ -18,7 +18,13 @@ import {
   FaVenus,
   FaVenusMars,
 } from "react-icons/fa6";
-import { FaBirthdayCake, FaCalendarAlt, FaCogs, FaHeart, FaMapMarkedAlt } from "react-icons/fa";
+import {
+  FaBirthdayCake,
+  FaCalendarAlt,
+  FaCogs,
+  FaHeart,
+  FaMapMarkedAlt,
+} from "react-icons/fa";
 import nexon from "@images/nexon.png";
 import Image from "next/image";
 import ScrollToTopButton from "@/components/ScrollToTopButton/ScrollToTopButotn";
@@ -56,7 +62,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 export interface JwtPayload {
   userid: string;
   email: string;
@@ -97,9 +108,9 @@ type WorkingPreferences = {
 };
 
 const JobDetail = () => {
-
   const [file, setFile] = useState<File | null>(null);
   const [isSaved, setIsSaved] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -111,8 +122,8 @@ const JobDetail = () => {
   const accessToken = cookies.get("accessToken");
   const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
   const [saveJobDetails, setsaveJobDetails] = useState({
-    _id: ''
-  })
+    _id: "",
+  });
   const saveJob = async () => {
     const id = location.pathname.split("/job/")[1];
     const res = await fetch(
@@ -125,7 +136,7 @@ const JobDetail = () => {
         body: JSON.stringify({
           userId: decodedToken?.userid,
           jobPostId: id,
-        })
+        }),
       }
     );
     return res.json();
@@ -158,23 +169,22 @@ const JobDetail = () => {
           body: JSON.stringify({
             userId: decodedToken?.userid,
             jobPostId: id,
-          })
+          }),
         }
       );
       const data = await res.json();
       if (data.status == "OK") {
         setIsSaved(true);
-        setsaveJobDetails(data.data)
+        setsaveJobDetails(data.data);
       }
     };
     checkSaveJob();
-  }, []
-  )
+  }, []);
   const handleSaveClick = async () => {
     if (!isSaved) {
-      const save = await saveJob()
+      const save = await saveJob();
     } else {
-      const unSave = await unSaveJob()
+      const unSave = await unSaveJob();
     }
     setIsSaved(!isSaved);
     toast.success(
@@ -194,48 +204,44 @@ const JobDetail = () => {
     );
   };
 
-  const [jobPostDetails, setJobPostDetails] = useState(
-    {
-      companyLogo: "",
-      expirationDate: '',
-      companyName: "",
-      salary: "",
-      jobTitle: "",
-      postViews: 0,
-      jobDescription: '',
-      jobRequirements: '',
-      location: [],
-      companyScale: '',
-      staffName: '',
-      companyAddress: '',
-      recruiter: '',
-      jobInformation:
-      {
-        jobLevel: "",
-        industry: "",
-        skills: [],
-        field: '',
-        languageForApplications: '',
-        minimumExperience: 0,
-        nationality: '',
-        minimumEducation: '',
-        gender: '',
-        preferredAge: 0,
-        datePosted: '',
-        numberOfPositions: 0,
-        maritalStatus: '',
-
-      },
-
-      _id: "",
+  const [jobPostDetails, setJobPostDetails] = useState({
+    companyLogo: "",
+    expirationDate: "",
+    companyName: "",
+    salary: "",
+    jobTitle: "",
+    postViews: 0,
+    jobDescription: "",
+    jobRequirements: "",
+    location: [],
+    companyScale: "",
+    staffName: "",
+    companyAddress: "",
+    recruiter: "",
+    jobInformation: {
+      jobLevel: "",
+      industry: "",
+      skills: [],
+      field: "",
+      languageForApplications: "",
+      minimumExperience: 0,
+      nationality: "",
+      minimumEducation: "",
+      gender: "",
+      preferredAge: 0,
+      datePosted: "",
+      numberOfPositions: 0,
+      maritalStatus: "",
     },
-  );
+
+    _id: "",
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchJobPostDetails();
       setJobPostDetails(data.data);
-      console.log(data.data)
+      console.log(data.data);
     };
     fetchData();
   }, []);
@@ -285,7 +291,7 @@ const JobDetail = () => {
     maritalStatusId: "",
     MSSV: "",
     skillName: [],
-    workingPreferences: workingPreferences
+    workingPreferences: workingPreferences,
   });
 
   useEffect(() => {
@@ -343,7 +349,7 @@ const JobDetail = () => {
     setFormData((prevFormData) => ({
       ...prevFormData,
       workingPreferences: workingPreferences,
-    }))
+    }));
   };
   const handleCompanySalaryChange = (newSalary: any) => {
     const updatedSalary = newSalary.target.value;
@@ -422,15 +428,12 @@ const JobDetail = () => {
     { label: "Trông trẻ", value: "5" },
     { label: "Điện thoại", value: "6" },
     { label: "Nghỉ phép", value: "7" },
-
   ];
   const OPTIONSLOCATION = [
     { label: "Cần Thơ", value: "Cần Thơ" },
     { label: "Hồ Chí Minh", value: "Hồ Chí Minh" },
     { label: "Hà Nội", value: "Hà Nội" },
     { label: "Đà Nẵng", value: "Đà Nẵng" },
-
-
   ];
 
   const handleApplication = async () => {
@@ -447,13 +450,13 @@ const JobDetail = () => {
         body: JSON.stringify({
           ...formData,
           jobPostId: id,
-          recruiterId: jobPostDetails.recruiter
-        })
+          recruiterId: jobPostDetails.recruiter,
+        }),
       }
     );
 
     return res.json();
-  }
+  };
 
   const aplicationCreate = async () => {
     try {
@@ -473,7 +476,7 @@ const JobDetail = () => {
     const diffInMs = expirationDateObj.getTime() - today.getTime();
     const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
     return diffInDays;
-  }
+  };
   return (
     <>
       <div className="bg-[#F1F2F4]">
@@ -492,12 +495,16 @@ const JobDetail = () => {
                           <FaClock color="grey" size={14} />
                         </div>
                         <span className="text-sm text-[#ff7d55]">
-                          {new Date(jobPostDetails?.expirationDate).toLocaleDateString('vi-VN', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
+                          {new Date(
+                            jobPostDetails?.expirationDate
+                          ).toLocaleDateString("vi-VN", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
                           })}
-                          {` (Hết hạn trong ${calculateDaysRemaining(jobPostDetails?.expirationDate)} ngày)`}
+                          {` (Hết hạn trong ${calculateDaysRemaining(
+                            jobPostDetails?.expirationDate
+                          )} ngày)`}
                         </span>
                       </div>
                       <div className="flex gap-6">
@@ -505,13 +512,17 @@ const JobDetail = () => {
                           <div className="rounded-full bg-[#f1f2f4] p-2">
                             <AiOutlineDollarCircle color="grey" size={14} />
                           </div>
-                          <span className="text-sm">{jobPostDetails?.salary}</span>
+                          <span className="text-sm">
+                            {jobPostDetails?.salary}
+                          </span>
                         </div>
                         <div className="flex items-center gap-2">
                           <div className="rounded-full bg-[#f1f2f4] p-2">
                             <HiMiniUserGroup color="grey" size={14} />
                           </div>
-                          <span className="text-sm">{jobPostDetails?.postViews} lượt xem</span>
+                          <span className="text-sm">
+                            {jobPostDetails?.postViews} lượt xem
+                          </span>
                         </div>
                         <div className="flex items-center gap-2">
                           <div className="rounded-full bg-[#f1f2f4] p-2">
@@ -519,15 +530,23 @@ const JobDetail = () => {
                           </div>
                           <span className="text-sm">
                             {jobPostDetails?.location?.map((loc, locIndex) => (
-                              <span key={locIndex}>{loc}{locIndex < jobPostDetails.location.length - 1 ? ', ' : ''}</span>
+                              <span key={locIndex}>
+                                {loc}
+                                {locIndex < jobPostDetails.location.length - 1
+                                  ? ", "
+                                  : ""}
+                              </span>
                             ))}
                           </span>
                         </div>
                       </div>
                       <div className="flex items-center justify-between gap-4">
-                        <Dialog>
+                        <Dialog open={isOpen} onOpenChange={setIsOpen}>
                           <DialogTrigger asChild>
-                            <button className="flex w-3/4 items-center justify-center gap-3 rounded-lg bg-[#ff7d55] p-2 text-sm text-white transition hover:bg-[#fd916f]">
+                            <button
+                              className="flex w-3/4 items-center justify-center gap-3 rounded-lg bg-[#ff7d55] p-2 text-sm text-white transition hover:bg-[#fd916f]"
+                              onClick={() => setIsOpen(true)}
+                            >
                               <FaRegPaperPlane size={16} />
                               Ứng tuyển ngay
                             </button>
@@ -546,7 +565,9 @@ const JobDetail = () => {
                                   collapsible
                                 >
                                   <AccordionItem value="item-1">
-                                    <AccordionTrigger>Hồ sơ của bạn</AccordionTrigger>
+                                    <AccordionTrigger>
+                                      Hồ sơ của bạn
+                                    </AccordionTrigger>
                                     <AccordionContent>
                                       <div className="flex flex-col gap-1">
                                         <label htmlFor="cv" className="text-sm">
@@ -571,11 +592,12 @@ const JobDetail = () => {
                                             ></path>
                                           </svg>
                                           <p className="mb-2 text-sm text-gray-500">
-                                            Tải lên CV từ máy tính, chọn hoặc kéo thả
+                                            Tải lên CV từ máy tính, chọn hoặc
+                                            kéo thả
                                           </p>
                                           <p className="text-xs text-gray-500">
-                                            Hỗ trợ định dạng .doc, .docx, pdf có kích
-                                            thước dưới 5MB
+                                            Hỗ trợ định dạng .doc, .docx, pdf có
+                                            kích thước dưới 5MB
                                           </p>
                                           <label
                                             htmlFor="file-upload"
@@ -601,10 +623,12 @@ const JobDetail = () => {
                                     </AccordionContent>
                                   </AccordionItem>
                                   <AccordionItem value="item-2">
-                                    <AccordionTrigger>Thông tin ứng tuyển</AccordionTrigger>
+                                    <AccordionTrigger>
+                                      Thông tin ứng tuyển
+                                    </AccordionTrigger>
                                     <AccordionContent>
-                                      <div className="overflow-y-scroll overflow-y-hidden h-48 w-full  gap-5">
-                                        <div className="grid h-30 gap-8 md:grid-cols-2">
+                                      <div className="h-48 w-full gap-5 overflow-y-hidden overflow-y-scroll">
+                                        <div className="h-30 grid gap-8 md:grid-cols-2">
                                           <div className="">
                                             <label className="mb-2 block text-sm font-semibold text-gray-800">
                                               <span className="-top-1 mr-1 inline-block text-[#dc362e]">
@@ -618,7 +642,10 @@ const JobDetail = () => {
                                               placeholder="Nhập họ và tên"
                                               value={formData?.fullName}
                                               onChange={(e) =>
-                                                setFormData({ ...formData, fullName: e.target.value })
+                                                setFormData({
+                                                  ...formData,
+                                                  fullName: e.target.value,
+                                                })
                                               }
                                             />
                                           </div>
@@ -635,7 +662,10 @@ const JobDetail = () => {
                                               placeholder="Nhập email"
                                               value={formData?.email}
                                               onChange={(e) =>
-                                                setFormData({ ...formData, email: e.target.value })
+                                                setFormData({
+                                                  ...formData,
+                                                  email: e.target.value,
+                                                })
                                               }
                                             />
                                           </div>
@@ -652,18 +682,24 @@ const JobDetail = () => {
                                                   variant={"outline"}
                                                   className={cn(
                                                     "shadow-none w-full border-gray-300 rounded-sm h-10  justify-start text-left hover:bg-transparent  font-normal data-[state=open]:border-sky-400",
-                                                    !date && "text-muted-foreground"
+                                                    !date &&
+                                                      "text-muted-foreground"
                                                   )}
                                                 >
                                                   <CalendarIcon className="mr-2 h-4 w-4" />
                                                   {date ? (
                                                     format(date, "dd/MM/yyyy")
                                                   ) : (
-                                                    <span>{formData?.dateOfBirth}</span>
+                                                    <span>
+                                                      {formData?.dateOfBirth}
+                                                    </span>
                                                   )}
                                                 </Button>
                                               </PopoverTrigger>
-                                              <PopoverContent className="w-auto p-0" align="start">
+                                              <PopoverContent
+                                                className="w-auto p-0"
+                                                align="start"
+                                              >
                                                 <Calendar
                                                   mode="single"
                                                   captionLayout="dropdown-buttons"
@@ -708,7 +744,10 @@ const JobDetail = () => {
                                               placeholder="Nhập chức danh"
                                               value={formData?.jobTitle}
                                               onChange={(e) =>
-                                                setFormData({ ...formData, jobTitle: e.target.value })
+                                                setFormData({
+                                                  ...formData,
+                                                  jobTitle: e.target.value,
+                                                })
                                               }
                                             />
                                           </div>
@@ -738,7 +777,9 @@ const JobDetail = () => {
                                                 <SelectItem value="Mới tốt nghiệp">
                                                   Mới tốt nghiệp
                                                 </SelectItem>
-                                                <SelectItem value="Nhân viên">Nhân viên</SelectItem>
+                                                <SelectItem value="Nhân viên">
+                                                  Nhân viên
+                                                </SelectItem>
                                                 <SelectItem value="Trưởng phòng">
                                                   Trưởng phòng
                                                 </SelectItem>{" "}
@@ -759,11 +800,14 @@ const JobDetail = () => {
                                               type="text"
                                               className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
                                               placeholder="Nhập tên ngành"
-                                              value={formData?.currentIndustries}
+                                              value={
+                                                formData?.currentIndustries
+                                              }
                                               onChange={(e) =>
                                                 setFormData({
                                                   ...formData,
-                                                  currentIndustries: e.target.value,
+                                                  currentIndustries:
+                                                    e.target.value,
                                                 })
                                               }
                                             />
@@ -779,11 +823,14 @@ const JobDetail = () => {
                                               type="text"
                                               className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
                                               placeholder="Nhập chức danh"
-                                              value={formData?.currentJobFunction}
+                                              value={
+                                                formData?.currentJobFunction
+                                              }
                                               onChange={(e) =>
                                                 setFormData({
                                                   ...formData,
-                                                  currentJobFunction: e.target.value,
+                                                  currentJobFunction:
+                                                    e.target.value,
                                                 })
                                               }
                                             />
@@ -804,7 +851,8 @@ const JobDetail = () => {
                                               onChange={(e) =>
                                                 setFormData({
                                                   ...formData,
-                                                  yearsExperience: e.target.value,
+                                                  yearsExperience:
+                                                    e.target.value,
                                                 })
                                               }
                                             />
@@ -849,9 +897,15 @@ const JobDetail = () => {
                                                 <SelectValue placeholder="Vui lòng chọn bằng cấp" />
                                               </SelectTrigger>
                                               <SelectContent>
-                                                <SelectItem value="Đại học">Đại học</SelectItem>
-                                                <SelectItem value="Thạc sĩ">Thạc sĩ</SelectItem>
-                                                <SelectItem value="Tiến sĩ">Tiến sĩ</SelectItem>
+                                                <SelectItem value="Đại học">
+                                                  Đại học
+                                                </SelectItem>
+                                                <SelectItem value="Thạc sĩ">
+                                                  Thạc sĩ
+                                                </SelectItem>
+                                                <SelectItem value="Tiến sĩ">
+                                                  Tiến sĩ
+                                                </SelectItem>
                                               </SelectContent>
                                             </Select>
                                           </div>
@@ -868,7 +922,10 @@ const JobDetail = () => {
                                               placeholder="Nhập chức danh"
                                               value={formData?.country}
                                               onChange={(e) =>
-                                                setFormData({ ...formData, country: e.target.value })
+                                                setFormData({
+                                                  ...formData,
+                                                  country: e.target.value,
+                                                })
                                               }
                                             />
                                           </div>
@@ -892,8 +949,12 @@ const JobDetail = () => {
                                                 <SelectValue placeholder="Vui lòng chọn giới tính" />
                                               </SelectTrigger>
                                               <SelectContent>
-                                                <SelectItem value="Hồ Chính Minh">Hồ Chí Minh</SelectItem>
-                                                <SelectItem value="Cần Thơ">Cần Thơ</SelectItem>
+                                                <SelectItem value="Hồ Chính Minh">
+                                                  Hồ Chí Minh
+                                                </SelectItem>
+                                                <SelectItem value="Cần Thơ">
+                                                  Cần Thơ
+                                                </SelectItem>
                                               </SelectContent>
                                             </Select>
                                           </div>
@@ -917,8 +978,12 @@ const JobDetail = () => {
                                                 <SelectValue placeholder="Vui lòng chọn giới tính" />
                                               </SelectTrigger>
                                               <SelectContent>
-                                                <SelectItem value="Quận 1">Quận 1</SelectItem>
-                                                <SelectItem value="Ninh Kiều">Ninh Kiều</SelectItem>
+                                                <SelectItem value="Quận 1">
+                                                  Quận 1
+                                                </SelectItem>
+                                                <SelectItem value="Ninh Kiều">
+                                                  Ninh Kiều
+                                                </SelectItem>
                                               </SelectContent>
                                             </Select>
                                           </div>
@@ -942,8 +1007,12 @@ const JobDetail = () => {
                                                 <SelectValue placeholder="Vui lòng chọn giới tính" />
                                               </SelectTrigger>
                                               <SelectContent>
-                                                <SelectItem value="1">Nam</SelectItem>
-                                                <SelectItem value="2">Nữ</SelectItem>
+                                                <SelectItem value="1">
+                                                  Nam
+                                                </SelectItem>
+                                                <SelectItem value="2">
+                                                  Nữ
+                                                </SelectItem>
                                               </SelectContent>
                                             </Select>
                                           </div>
@@ -967,8 +1036,12 @@ const JobDetail = () => {
                                                 <SelectValue placeholder="Vui lòng chọn giới tính" />
                                               </SelectTrigger>
                                               <SelectContent>
-                                                <SelectItem value="1">Độc thân</SelectItem>
-                                                <SelectItem value="2">Đã kết hôn</SelectItem>
+                                                <SelectItem value="1">
+                                                  Độc thân
+                                                </SelectItem>
+                                                <SelectItem value="2">
+                                                  Đã kết hôn
+                                                </SelectItem>
                                               </SelectContent>
                                             </Select>
                                           </div>
@@ -982,7 +1055,10 @@ const JobDetail = () => {
                                               placeholder="Nhập mã số sinh viên"
                                               value={formData?.MSSV}
                                               onChange={(e) =>
-                                                setFormData({ ...formData, MSSV: e.target.value })
+                                                setFormData({
+                                                  ...formData,
+                                                  MSSV: e.target.value,
+                                                })
                                               }
                                             />
                                           </div>
@@ -996,7 +1072,10 @@ const JobDetail = () => {
                                               placeholder="Nhập địa chỉ"
                                               value={formData?.address}
                                               onChange={(e) =>
-                                                setFormData({ ...formData, address: e.target.value })
+                                                setFormData({
+                                                  ...formData,
+                                                  address: e.target.value,
+                                                })
                                               }
                                             />
                                           </div>
@@ -1005,24 +1084,32 @@ const JobDetail = () => {
                                     </AccordionContent>
                                   </AccordionItem>
                                   <AccordionItem value="item-3">
-                                    <AccordionTrigger>Công việc mong muốn</AccordionTrigger>
+                                    <AccordionTrigger>
+                                      Công việc mong muốn
+                                    </AccordionTrigger>
                                     <AccordionContent>
                                       <ScrollArea className="h-50 w-full">
                                         <div className="flex flex-col items-center gap-6 px-6">
-                                          <div className="flex grid h-30 w-full gap-8 md:grid-cols-2 flex-1 flex-col gap-6">
+                                          <div className="h-30 flex grid w-full flex-1 flex-col gap-6 gap-8 md:grid-cols-2">
                                             <div className="gap-5">
-
                                               <div className="col-span-1 flex flex-col gap-1">
-                                                <label htmlFor="" className="text-sm">
+                                                <label
+                                                  htmlFor=""
+                                                  className="text-sm"
+                                                >
                                                   <span className="-top-1 mr-1 inline-block text-[#dc362e]">
                                                     *
                                                   </span>
                                                   Nơi làm việc mong muốn
                                                 </label>
                                                 <MultipleSelector
-                                                  defaultOptions={OPTIONSLOCATION}
+                                                  defaultOptions={
+                                                    OPTIONSLOCATION
+                                                  }
                                                   placeholder="Vui lòng chọn..."
-                                                  onChange={handleCompanyLocationChange}
+                                                  onChange={
+                                                    handleCompanyLocationChange
+                                                  }
                                                   value={workingPreferences?.locations.map(
                                                     (location) => ({
                                                       label: location,
@@ -1031,10 +1118,12 @@ const JobDetail = () => {
                                                   )}
                                                 />
                                               </div>
-
                                             </div>
                                             <div className="col-span-1 flex flex-col gap-1">
-                                              <label htmlFor="" className="text-sm">
+                                              <label
+                                                htmlFor=""
+                                                className="text-sm"
+                                              >
                                                 <span className="-top-1 mr-1 inline-block text-[#dc362e]">
                                                   *
                                                 </span>
@@ -1044,22 +1133,29 @@ const JobDetail = () => {
                                                 type="text"
                                                 placeholder="Nhập ngành nghề mong muốn"
                                                 className="h-10 rounded-md border border-solid px-3 text-sm outline-none focus:border-sky-400"
-                                                value={workingPreferences?.jobFunction}
-                                                onChange={handleCompanyJobFunctionChange}
-                                              // onChange={(e) => {
-                                              //   setWorkingPreferences((prev) => ({
-                                              //     ...prev,
-                                              //     jobFunction: e.target.value,
-                                              //   }));
-                                              //   setFormData((prevFormData) => ({
-                                              //     ...prevFormData,
-                                              //     workingPreferences: workingPreferences,
-                                              //   }))
-                                              // }}
+                                                value={
+                                                  workingPreferences?.jobFunction
+                                                }
+                                                onChange={
+                                                  handleCompanyJobFunctionChange
+                                                }
+                                                // onChange={(e) => {
+                                                //   setWorkingPreferences((prev) => ({
+                                                //     ...prev,
+                                                //     jobFunction: e.target.value,
+                                                //   }));
+                                                //   setFormData((prevFormData) => ({
+                                                //     ...prevFormData,
+                                                //     workingPreferences: workingPreferences,
+                                                //   }))
+                                                // }}
                                               />
                                             </div>
                                             <div className="col-span-1 flex flex-col gap-1">
-                                              <label htmlFor="" className="text-sm">
+                                              <label
+                                                htmlFor=""
+                                                className="text-sm"
+                                              >
                                                 <span className="-top-1 mr-1 inline-block text-[#dc362e]">
                                                   *
                                                 </span>
@@ -1068,7 +1164,9 @@ const JobDetail = () => {
                                               <MultipleSelector
                                                 defaultOptions={OPTIONS}
                                                 placeholder="Vui lòng chọn..."
-                                                onChange={handleCompanyIndustriesChange}
+                                                onChange={
+                                                  handleCompanyIndustriesChange
+                                                }
                                                 value={workingPreferences?.companyIndustries.map(
                                                   (industry) => ({
                                                     label: industry,
@@ -1078,7 +1176,10 @@ const JobDetail = () => {
                                               />
                                             </div>
                                             <div className="col-span-1 flex flex-col gap-1">
-                                              <label htmlFor="" className="text-sm">
+                                              <label
+                                                htmlFor=""
+                                                className="text-sm"
+                                              >
                                                 <span className="-top-1 mr-1 inline-block text-[#dc362e]">
                                                   *
                                                 </span>
@@ -1087,7 +1188,9 @@ const JobDetail = () => {
                                               <MultipleSelector
                                                 defaultOptions={OPTIONSBENEFIT}
                                                 placeholder="Vui lòng chọn..."
-                                                onChange={handleCompanyBenefitsChange}
+                                                onChange={
+                                                  handleCompanyBenefitsChange
+                                                }
                                                 value={workingPreferences?.benefits.map(
                                                   (industry) => ({
                                                     label: industry,
@@ -1097,7 +1200,10 @@ const JobDetail = () => {
                                               />
                                             </div>
                                             <div className="col-span-1 flex flex-col gap-1">
-                                              <label htmlFor="" className="text-sm">
+                                              <label
+                                                htmlFor=""
+                                                className="text-sm"
+                                              >
                                                 <span className="-top-1 mr-1 inline-block text-[#dc362e]">
                                                   *
                                                 </span>
@@ -1107,34 +1213,47 @@ const JobDetail = () => {
                                                 type="number"
                                                 placeholder="VNĐ/Tháng"
                                                 className="h-10 rounded-md border border-solid px-3 text-sm outline-none focus:border-sky-400"
-                                                value={workingPreferences?.salary}
-                                                onChange={handleCompanySalaryChange}
-                                              // onChange={(e) => {
-                                              //   setWorkingPreferences((prev) => ({
-                                              //     ...prev,
-                                              //     salary: e.target.value,
+                                                value={
+                                                  workingPreferences?.salary
+                                                }
+                                                onChange={
+                                                  handleCompanySalaryChange
+                                                }
+                                                // onChange={(e) => {
+                                                //   setWorkingPreferences((prev) => ({
+                                                //     ...prev,
+                                                //     salary: e.target.value,
 
-                                              //   }))
-                                              // }}
+                                                //   }))
+                                                // }}
                                               />
                                             </div>
 
                                             <div className="col-span-1 flex flex-col gap-1">
-                                              <label htmlFor="" className="text-sm">
+                                              <label
+                                                htmlFor=""
+                                                className="text-sm"
+                                              >
                                                 <span className="-top-1 mr-1 inline-block text-[#dc362e]">
                                                   *
                                                 </span>
                                                 Cấp bậc mong muốn
                                               </label>
                                               <Select
-                                                value={workingPreferences?.desiredJobLevel}
-                                                onValueChange={(value) => handleCompanyLevelChange(value)}
-                                              // onValueChange={(value) =>
-                                              //   setWorkingPreferences((prev) => ({
-                                              //     ...prev,
-                                              //     desiredJobLevel: value,
-                                              //   }))
-                                              // }
+                                                value={
+                                                  workingPreferences?.desiredJobLevel
+                                                }
+                                                onValueChange={(value) =>
+                                                  handleCompanyLevelChange(
+                                                    value
+                                                  )
+                                                }
+                                                // onValueChange={(value) =>
+                                                //   setWorkingPreferences((prev) => ({
+                                                //     ...prev,
+                                                //     desiredJobLevel: value,
+                                                //   }))
+                                                // }
                                               >
                                                 <SelectTrigger className="h-10 bg-white shadow-none focus:ring-0">
                                                   <SelectValue placeholder="Vui lòng chọn..." />
@@ -1146,7 +1265,9 @@ const JobDetail = () => {
                                                   <SelectItem value="Mới tốt nghiệp">
                                                     Mới tốt nghiệp
                                                   </SelectItem>
-                                                  <SelectItem value="Nhân viên">Nhân viên</SelectItem>
+                                                  <SelectItem value="Nhân viên">
+                                                    Nhân viên
+                                                  </SelectItem>
                                                   <SelectItem value="Trưởng phòng">
                                                     Trưởng phòng
                                                   </SelectItem>{" "}
@@ -1161,28 +1282,29 @@ const JobDetail = () => {
                                       </ScrollArea>
                                     </AccordionContent>
                                   </AccordionItem>
-
                                 </Accordion>
-
                               </div>
                             </form>
 
                             <DialogFooter className="px-6 py-4">
                               <DialogClose>
-                                <Button onClick={aplicationCreate} className="bg-orange-400 text-white shadow-none hover:bg-orange-500">
+                                <Button
+                                  onClick={aplicationCreate}
+                                  className="bg-orange-400 text-white shadow-none hover:bg-orange-500"
+                                >
                                   Ứng tuyển
                                 </Button>
                               </DialogClose>
                             </DialogFooter>
-
                           </DialogContent>
                         </Dialog>
 
                         <button
-                          className={`flex flex-1 justify-center items-center gap-3 rounded-lg border px-4 py-2 transition ${isSaved
-                            ? "border-[#005aff] text-[#005aff] hover:bg-[#347bff26] "
-                            : "border-gray-300 "
-                            }`}
+                          className={`flex flex-1 justify-center items-center gap-3 rounded-lg border px-4 py-2 transition ${
+                            isSaved
+                              ? "border-[#005aff] text-[#005aff] hover:bg-[#347bff26] "
+                              : "border-gray-300 "
+                          }`}
                           onClick={handleSaveClick}
                         >
                           {isSaved ? (
@@ -1197,9 +1319,7 @@ const JobDetail = () => {
                   </div>
                   <div className="mt-8">
                     <p className="text-lg font-bold">Mô tả công việc</p>
-                    <div className="mt-3">
-                      {jobPostDetails?.jobDescription}
-                    </div>
+                    <div className="mt-3">{jobPostDetails?.jobDescription}</div>
                     <p className="text-lg font-bold">Yêu cầu công việc</p>
                     <div className="mt-3">
                       {jobPostDetails?.jobRequirements}
@@ -1207,114 +1327,167 @@ const JobDetail = () => {
                   </div>
                   <div className="mt-8">
                     <p className="text-lg font-bold">Thông tin việc làm</p>
-                    <h2 className="text-xl font-bold mb-4"></h2>
+                    <h2 className="mb-4 text-xl font-bold"></h2>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <div className="flex items-center mb-2">
+                        <div className="mb-2 flex items-center">
                           <FaCalendarAlt className="fas fa-calendar-alt mr-2"></FaCalendarAlt>
                           <span className="text-[#939393]">NGÀY ĐĂNG</span>
                         </div>
-                        <div className="ml-6 mb-4">
-                          {new Date(jobPostDetails.jobInformation.datePosted).toLocaleDateString('vi-VN', {
-                            year: 'numeric',
-                            month: 'numeric',
-                            day: 'numeric'
+                        <div className="mb-4 ml-6">
+                          {new Date(
+                            jobPostDetails.jobInformation.datePosted
+                          ).toLocaleDateString("vi-VN", {
+                            year: "numeric",
+                            month: "numeric",
+                            day: "numeric",
                           })}
                         </div>
 
-                        <div className="flex items-center mb-2">
+                        <div className="mb-2 flex items-center">
                           <FaBriefcase className="fas fa-briefcase mr-2"></FaBriefcase>
                           <span className="text-[#939393]">NGÀNH NGHỀ</span>
                         </div>
-                        <div className="ml-6 mb-4">Công Nghệ Thông Tin/Viễn Thông {'>'} Phần Mềm Máy Tính</div>
+                        <div className="mb-4 ml-6">
+                          Công Nghệ Thông Tin/Viễn Thông {">"} Phần Mềm Máy Tính
+                        </div>
 
-                        <div className="flex items-center mb-2">
+                        <div className="mb-2 flex items-center">
                           <FaLaptopCode className="fas fa-laptop-code mr-2"></FaLaptopCode>
                           <span className="text-[#939393]">LĨNH VỰC</span>
                         </div>
-                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation.field}</div>
+                        <div className="mb-4 ml-6">
+                          {jobPostDetails.jobInformation.field}
+                        </div>
 
-                        <div className="flex items-center mb-2">
+                        <div className="mb-2 flex items-center">
                           <FaUserClock className="fas fa-user-clock mr-2"></FaUserClock>
-                          <span className="text-[#939393]">SỐ NĂM KINH NGHIỆM TỐI THIỂU</span>
+                          <span className="text-[#939393]">
+                            SỐ NĂM KINH NGHIỆM TỐI THIỂU
+                          </span>
                         </div>
-                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation.minimumExperience}</div>
+                        <div className="mb-4 ml-6">
+                          {jobPostDetails.jobInformation.minimumExperience}
+                        </div>
 
-                        <div className="flex items-center mb-2">
+                        <div className="mb-2 flex items-center">
                           <FaGraduationCap className="fas fa-graduation-cap mr-2"></FaGraduationCap>
-                          <span className="text-[#939393]">TRÌNH ĐỘ HỌC VẤN TỐI THIỂU</span>
+                          <span className="text-[#939393]">
+                            TRÌNH ĐỘ HỌC VẤN TỐI THIỂU
+                          </span>
                         </div>
-                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation.minimumEducation}</div>
+                        <div className="mb-4 ml-6">
+                          {jobPostDetails.jobInformation.minimumEducation}
+                        </div>
 
-                        <div className="flex items-center mb-2">
+                        <div className="mb-2 flex items-center">
                           <FaBirthdayCake className="fas fa-birthday-cake mr-2"></FaBirthdayCake>
-                          <span className="text-[#939393]">ĐỘ TUỔI MONG MUỐN</span>
+                          <span className="text-[#939393]">
+                            ĐỘ TUỔI MONG MUỐN
+                          </span>
                         </div>
-                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation?.preferredAge || "Không hiển thị"} </div>
+                        <div className="mb-4 ml-6">
+                          {jobPostDetails.jobInformation?.preferredAge ||
+                            "Không hiển thị"}{" "}
+                        </div>
 
-                        <div className="flex items-center mb-2">
+                        <div className="mb-2 flex items-center">
                           <FaUsers className="fas fa-users mr-2"></FaUsers>
-                          <span className="text-[#939393]">SỐ LƯỢNG TUYỂN DỤNG</span>
+                          <span className="text-[#939393]">
+                            SỐ LƯỢNG TUYỂN DỤNG
+                          </span>
                         </div>
-                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation?.numberOfPositions || "Không hiển thị"}</div>
+                        <div className="mb-4 ml-6">
+                          {jobPostDetails.jobInformation?.numberOfPositions ||
+                            "Không hiển thị"}
+                        </div>
                       </div>
                       <div>
-                        <div className="flex items-center mb-2">
+                        <div className="mb-2 flex items-center">
                           <FaUserTie className="fas fa-user-tie mr-2"></FaUserTie>
                           <span className="text-[#939393]">CẤP BẬC</span>
                         </div>
-                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation?.jobLevel || "Không hiển thị"}</div>
+                        <div className="mb-4 ml-6">
+                          {jobPostDetails.jobInformation?.jobLevel ||
+                            "Không hiển thị"}
+                        </div>
 
-                        <div className="flex items-center mb-2">
+                        <div className="mb-2 flex items-center">
                           <FaCogs className="fas fa-cogs mr-2"></FaCogs>
                           <span className="text-[#939393]">KỸ NĂNG</span>
                         </div>
-                        <div className="ml-6 mb-4">
+                        <div className="mb-4 ml-6">
                           {jobPostDetails.jobInformation.skills.map((skill) => (
                             <span className="mr-2">{skill}</span>
                           ))}
                         </div>
 
-                        <div className="flex items-center mb-2">
+                        <div className="mb-2 flex items-center">
                           <FaLanguage className="fas fa-language mr-2"></FaLanguage>
-                          <span className="text-[#939393]">NGÔN NGỮ TRÌNH BÀY HỒ SƠ</span>
+                          <span className="text-[#939393]">
+                            NGÔN NGỮ TRÌNH BÀY HỒ SƠ
+                          </span>
                         </div>
-                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation?.languageForApplications || "Không hiển thị"}</div>
+                        <div className="mb-4 ml-6">
+                          {jobPostDetails.jobInformation
+                            ?.languageForApplications || "Không hiển thị"}
+                        </div>
 
-                        <div className="flex items-center mb-2">
+                        <div className="mb-2 flex items-center">
                           <FaFlag className="fas fa-flag mr-2"></FaFlag>
                           <span className="text-[#939393]">QUỐC TỊCH</span>
                         </div>
-                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation?.nationality || "Không hiển thị"}</div>
+                        <div className="mb-4 ml-6">
+                          {jobPostDetails.jobInformation?.nationality ||
+                            "Không hiển thị"}
+                        </div>
 
-                        <div className="flex items-center mb-2">
+                        <div className="mb-2 flex items-center">
                           <FaVenusMars className="fas fa-venus-mars mr-2"></FaVenusMars>
                           <span className="text-[#939393]">GIỚI TÍNH</span>
                         </div>
-                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation?.gender || "Không hiển thị"}</div>
-
-                        <div className="flex items-center mb-2">
-                          <FaHeart className="fas fa-heart mr-2"></FaHeart>
-                          <span className="text-[#939393]">TÌNH TRẠNG HÔN NHÂN</span>
+                        <div className="mb-4 ml-6">
+                          {jobPostDetails.jobInformation?.gender ||
+                            "Không hiển thị"}
                         </div>
-                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation?.maritalStatus || "Không hiển thị"}</div>
+
+                        <div className="mb-2 flex items-center">
+                          <FaHeart className="fas fa-heart mr-2"></FaHeart>
+                          <span className="text-[#939393]">
+                            TÌNH TRẠNG HÔN NHÂN
+                          </span>
+                        </div>
+                        <div className="mb-4 ml-6">
+                          {jobPostDetails.jobInformation?.maritalStatus ||
+                            "Không hiển thị"}
+                        </div>
                       </div>
                     </div>
-                    <h2 className="text-xl font-bold mt-6 mb-4">Địa điểm làm việc</h2>
+                    <h2 className="mb-4 mt-6 text-xl font-bold">
+                      Địa điểm làm việc
+                    </h2>
                     <div className="flex items-center">
                       <FaLocationDot className="fas fa-map-marker-alt mr-2"></FaLocationDot>
-                      <span>{jobPostDetails?.companyAddress || "Chưa cập nhật"}</span>
+                      <span>
+                        {jobPostDetails?.companyAddress || "Chưa cập nhật"}
+                      </span>
                     </div>
                   </div>
                 </div>
-                <div className="fixed bottom-0 left-0 right-0 bg-white p-4 border-t border-gray-200">
+                <div className="fixed bottom-0 left-0 right-0 border-t border-gray-200 bg-white p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
-                      <img alt="Company logo" className="w-12 h-12 rounded-full" height="50"
-                        src={jobPostDetails?.companyLogo} width="50" />
+                      <img
+                        alt="Company logo"
+                        className="h-12 w-12 rounded-full"
+                        height="50"
+                        src={jobPostDetails?.companyLogo}
+                        width="50"
+                      />
                       <div className="ml-4">
                         <h2 className="text-xl font-semibold text-gray-800">
-                          {jobPostDetails?.jobTitle}</h2>
+                          {jobPostDetails?.jobTitle}
+                        </h2>
                         <div className="flex items-center text-sm text-gray-500">
                           <span className="text-red-500">
                             {jobPostDetails?.salary}
@@ -1322,32 +1495,41 @@ const JobDetail = () => {
                           <span className="mx-2">|</span>
                           <i className="fas fa-clock"></i>
                           <span className="ml-1">
-                            {new Date(jobPostDetails?.expirationDate).toLocaleDateString('vi-VN', {
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric'
+                            {new Date(
+                              jobPostDetails?.expirationDate
+                            ).toLocaleDateString("vi-VN", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
                             })}
-                            {` (Hết hạn trong ${calculateDaysRemaining(jobPostDetails?.expirationDate)} ngày)`}
+                            {` (Hết hạn trong ${calculateDaysRemaining(
+                              jobPostDetails?.expirationDate
+                            )} ngày)`}
                           </span>
                           <span className="mx-2">|</span>
                           <i className="fas fa-map-marker-alt"></i>
                           <span className="ml-1">
                             {jobPostDetails?.location?.map((loc, locIndex) => (
-                              <span key={locIndex}>{loc}{locIndex < jobPostDetails.location.length - 1 ? ', ' : ''}</span>
+                              <span key={locIndex}>
+                                {loc}
+                                {locIndex < jobPostDetails.location.length - 1
+                                  ? ", "
+                                  : ""}
+                              </span>
                             ))}
                           </span>
                         </div>
                       </div>
                     </div>
-                    <div className="flex mr-[10%] items-center">
-                      <button className="bg-orange-500 text-white px-4 py-2 rounded-md">
-                        Nộp đơn</button>
-                      <button className="ml-4 p-2 border border-gray-300 rounded-md">
-                        {isSaved ? (
-                          <FaHeart color="#005aff" />
-                        ) : (
-                          <FaRegHeart />
-                        )}
+                    <div className="mr-[10%] flex items-center">
+                      <button
+                        className="rounded-md bg-orange-500 px-4 py-2 text-white"
+                        onClick={() => setIsOpen(true)}
+                      >
+                        Nộp đơn
+                      </button>
+                      <button className="ml-4 rounded-md border border-gray-300 p-2">
+                        {isSaved ? <FaHeart color="#005aff" /> : <FaRegHeart />}
                       </button>
                     </div>
                   </div>
@@ -1418,7 +1600,12 @@ const JobDetail = () => {
               <div className="col-span-1">
                 <div className="flex flex-col rounded-md bg-white px-8 py-4">
                   <div className="flex items-center justify-center">
-                    <Image src={jobPostDetails?.companyLogo} alt="" height={100} width={100} />
+                    <Image
+                      src={jobPostDetails?.companyLogo}
+                      alt=""
+                      height={100}
+                      width={100}
+                    />
                   </div>
                   <div className="flex flex-col">
                     <Link href={`/company/${jobPostDetails?.recruiter}`}>
@@ -1458,8 +1645,8 @@ const JobDetail = () => {
             </div>
           </div>
         </div>
-      </div > {" "}
-      < ScrollToTopButton />
+      </div>{" "}
+      <ScrollToTopButton />
     </>
   );
 };

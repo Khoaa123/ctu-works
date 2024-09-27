@@ -58,6 +58,13 @@
     --chart-5: 340 75% 55%;
   }
 }
+/* 
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+} */
 
 .rdp-vhidden {
   @apply hidden;

@@ -27,7 +27,7 @@ export default function RootLayout({
       <ReactQueryProvider>
         <html lang="en">
           <body className={inter.className}>
-            <div className="flex min-h-screen flex-col">
+            <div className="flex h-screen flex-col">
               <HeaderWrapper />
               <ProgressBarProvider>
                 <div className="flex-grow">{children}</div>
