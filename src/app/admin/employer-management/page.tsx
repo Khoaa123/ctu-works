@@ -28,6 +28,7 @@ type EmployerData = {
   logo: string;
 };
 
+// Mock data
 const mockEmployers: EmployerData[] = [
   {
     _id: "1",
