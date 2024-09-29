@@ -196,34 +196,41 @@ const JobDetail = () => {
 
   const [jobPostDetails, setJobPostDetails] = useState(
     {
-      companyLogo: "",
-      expirationDate: '',
-      companyName: "",
-      salary: "",
-      jobTitle: "",
-      postViews: 0,
+
+      companyInfo: {
+        companyAddress: '',
+        companyBenefits: [],
+        companyEmail: '',
+        companyLogo: "",
+        companyName: "",
+        companySize: '',
+        companyStaffName: '',
+      },
       jobDescription: '',
       jobRequirements: '',
+      expirationDate: '',
+      jobTitle: "",
+      minSalary: 0,
+      maxSalary: 0,
+      postViews: 0,
       location: [],
-      companyScale: '',
-      staffName: '',
-      companyAddress: '',
-      recruiter: '',
+      recruiterId: '',
       jobInformation:
       {
-        jobLevel: "",
-        industry: "",
-        skills: [],
-        field: '',
-        languageForApplications: '',
-        minimumExperience: 0,
-        nationality: '',
-        minimumEducation: '',
-        gender: '',
-        preferredAge: 0,
         datePosted: '',
-        numberOfPositions: 0,
+        educationLevel: '',
+        gender: '',
+        jobField: '',
+        jobIndustry: "",
+        jobLevel: "",
+        keywords: [],
+        language: '',
         maritalStatus: '',
+        minExperience: 0,
+        nationality: '',
+        minAge: 0,
+        maxAge: 0,
+        numberOfPositions: 0,
 
       },
 
@@ -447,7 +454,7 @@ const JobDetail = () => {
         body: JSON.stringify({
           ...formData,
           jobPostId: id,
-          recruiterId: jobPostDetails.recruiter
+          recruiterId: jobPostDetails.recruiterId
         })
       }
     );
@@ -505,7 +512,8 @@ const JobDetail = () => {
                           <div className="rounded-full bg-[#f1f2f4] p-2">
                             <AiOutlineDollarCircle color="grey" size={14} />
                           </div>
-                          <span className="text-sm">{jobPostDetails?.salary}</span>
+                          <span className="text-sm">{jobPostDetails?.minSalary}$ -{jobPostDetails?.maxSalary}$</span>
+
                         </div>
                         <div className="flex items-center gap-2">
                           <div className="rounded-full bg-[#f1f2f4] p-2">
@@ -1232,25 +1240,25 @@ const JobDetail = () => {
                           <FaLaptopCode className="fas fa-laptop-code mr-2"></FaLaptopCode>
                           <span className="text-[#939393]">LĨNH VỰC</span>
                         </div>
-                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation.field}</div>
+                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation.jobField}</div>
 
                         <div className="flex items-center mb-2">
                           <FaUserClock className="fas fa-user-clock mr-2"></FaUserClock>
                           <span className="text-[#939393]">SỐ NĂM KINH NGHIỆM TỐI THIỂU</span>
                         </div>
-                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation.minimumExperience}</div>
+                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation.minExperience}</div>
 
                         <div className="flex items-center mb-2">
                           <FaGraduationCap className="fas fa-graduation-cap mr-2"></FaGraduationCap>
                           <span className="text-[#939393]">TRÌNH ĐỘ HỌC VẤN TỐI THIỂU</span>
                         </div>
-                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation.minimumEducation}</div>
+                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation.educationLevel}</div>
 
                         <div className="flex items-center mb-2">
                           <FaBirthdayCake className="fas fa-birthday-cake mr-2"></FaBirthdayCake>
                           <span className="text-[#939393]">ĐỘ TUỔI MONG MUỐN</span>
                         </div>
-                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation?.preferredAge || "Không hiển thị"} </div>
+                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation?.minAge || "Không hiển thị"}-{jobPostDetails.jobInformation?.maxAge || "Không hiển thị"}  </div>
 
                         <div className="flex items-center mb-2">
                           <FaUsers className="fas fa-users mr-2"></FaUsers>
@@ -1270,40 +1278,57 @@ const JobDetail = () => {
                           <span className="text-[#939393]">KỸ NĂNG</span>
                         </div>
                         <div className="ml-6 mb-4">
-                          {jobPostDetails.jobInformation.skills?.map((skill) => (
-                            <span className="mr-2">{skill}</span>
+                          {jobPostDetails.jobInformation.keywords?.map((skill, index) => (
+                            <span key={index} className="mr-1">{skill}{index < jobPostDetails?.jobInformation?.keywords.length - 1 ? ', ' : ''}</span>
                           ))}
+
                         </div>
 
                         <div className="flex items-center mb-2">
                           <FaLanguage className="fas fa-language mr-2"></FaLanguage>
                           <span className="text-[#939393]">NGÔN NGỮ TRÌNH BÀY HỒ SƠ</span>
                         </div>
-                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation?.languageForApplications || "Không hiển thị"}</div>
+                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation?.language || "Không hiển thị"}</div>
 
                         <div className="flex items-center mb-2">
                           <FaFlag className="fas fa-flag mr-2"></FaFlag>
                           <span className="text-[#939393]">QUỐC TỊCH</span>
                         </div>
-                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation?.nationality || "Không hiển thị"}</div>
+                        <div className="ml-6 mb-4">
+                          {jobPostDetails.jobInformation?.nationality === "1"
+                            ? "Người Việt"
+                            : jobPostDetails.jobInformation?.nationality === "2" ? "Người nước ngoài" : "Bất kỳ"}
+                        </div>
 
                         <div className="flex items-center mb-2">
                           <FaVenusMars className="fas fa-venus-mars mr-2"></FaVenusMars>
                           <span className="text-[#939393]">GIỚI TÍNH</span>
                         </div>
-                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation?.gender || "Không hiển thị"}</div>
+                        <div className="ml-6 mb-4">
+                          {jobPostDetails.jobInformation?.gender === "1"
+                            ? "Nam"
+                            : jobPostDetails.jobInformation?.gender === "2"
+                              ? "Nữ"
+                              : "Bất kỳ"}
+                        </div>
 
                         <div className="flex items-center mb-2">
                           <FaHeart className="fas fa-heart mr-2"></FaHeart>
                           <span className="text-[#939393]">TÌNH TRẠNG HÔN NHÂN</span>
                         </div>
-                        <div className="ml-6 mb-4">{jobPostDetails.jobInformation?.maritalStatus || "Không hiển thị"}</div>
+                        <div className="ml-6 mb-4">
+                          {jobPostDetails.jobInformation?.maritalStatus === "1"
+                            ? "Chưa kết hôn"
+                            : jobPostDetails.jobInformation?.maritalStatus === "2"
+                              ? "Đã kết hôn"
+                              : "Bất kỳ"}
+                        </div>
                       </div>
                     </div>
                     <h2 className="text-xl font-bold mt-6 mb-4">Địa điểm làm việc</h2>
                     <div className="flex items-center">
                       <FaLocationDot className="fas fa-map-marker-alt mr-2"></FaLocationDot>
-                      <span>{jobPostDetails?.companyAddress || "Chưa cập nhật"}</span>
+                      <span>{jobPostDetails?.companyInfo?.companyAddress || "Chưa cập nhật"}</span>
                     </div>
                   </div>
                 </div>
@@ -1311,13 +1336,14 @@ const JobDetail = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <img alt="Company logo" className="w-12 h-12 rounded-full" height="50"
-                        src={jobPostDetails?.companyLogo} width="50" />
+                        src={jobPostDetails?.companyInfo?.companyLogo} width="50" />
                       <div className="ml-4">
                         <h2 className="text-xl font-semibold text-gray-800">
                           {jobPostDetails?.jobTitle}</h2>
                         <div className="flex items-center text-sm text-gray-500">
                           <span className="text-red-500">
-                            {jobPostDetails?.salary}
+                            {jobPostDetails?.minSalary}$ -
+                            {jobPostDetails?.maxSalary}$
                           </span>
                           <span className="mx-2">|</span>
                           <i className="fas fa-clock"></i>
@@ -1418,12 +1444,12 @@ const JobDetail = () => {
               <div className="col-span-1">
                 <div className="flex flex-col rounded-md bg-white px-8 py-4">
                   <div className="flex items-center justify-center">
-                    <Image src={jobPostDetails?.companyLogo} alt="" height={100} width={100} />
+                    <Image src={jobPostDetails?.companyInfo?.companyLogo} alt="" height={100} width={100} />
                   </div>
                   <div className="flex flex-col">
-                    <Link href={`/company/${jobPostDetails?.recruiter}`}>
+                    <Link href={`/company/${jobPostDetails?.recruiterId}`}>
                       <p className="my-3 cursor-pointer text-center font-medium hover:text-[#ff7d55]">
-                        {jobPostDetails?.companyName}
+                        {jobPostDetails?.companyInfo?.companyName}
                       </p>
                     </Link>
                     <div className="flex flex-col gap-6">
@@ -1432,7 +1458,7 @@ const JobDetail = () => {
                           <FaLocationDot color="grey" size={14} />
                         </div>
                         <span className="text-sm">
-                          {jobPostDetails?.companyAddress}
+                          {jobPostDetails?.companyInfo?.companyAddress}
                         </span>
                       </div>
                       <div className="flex items-start gap-2">
@@ -1440,7 +1466,7 @@ const JobDetail = () => {
                           <HiMiniUserGroup color="grey" size={14} />
                         </div>
                         <span className="text-sm">
-                          {jobPostDetails?.companyScale}
+                          {jobPostDetails?.companyInfo?.companySize}
                         </span>
                       </div>
                       <div className="flex items-start gap-2">
@@ -1448,7 +1474,7 @@ const JobDetail = () => {
                           <PhoneCall color="grey" size={14} />
                         </div>
                         <span className="text-sm">
-                          {jobPostDetails?.staffName}
+                          {jobPostDetails?.companyInfo?.companyStaffName}
                         </span>
                       </div>
                     </div>

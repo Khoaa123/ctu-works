@@ -32,6 +32,14 @@ import {
 import dynamic from "next/dynamic";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Button } from "@/components/ui/button";
+import { CalendarIcon } from "@radix-ui/react-icons";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 export interface JwtPayload {
   userid: string;
@@ -49,15 +57,18 @@ const CreateJobpost = () => {
   const cookies = useCookies();
   const accessToken = cookies.get("accessToken");
   const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
-
+  const [date, setDate] = React.useState<Date>();
+  const router = useRouter();
   const [formData, setFormData] = useState({
     jobTitle: "",
+    expirationDate: '',
     jobLocation: "",
     jobDescription: "",
     jobRequirements: "",
     jobType: "",
     minSalary: 0,
     maxSalary: 0,
+    numberOfPositions: 0,
     jobInformation: {
       jobLevel: "",
       jobIndustry: "",
@@ -241,6 +252,7 @@ const CreateJobpost = () => {
         }),
       }
     );
+
     return res.json();
   };
   const [activeItem, setActiveItem] = useState("item-1");
@@ -259,7 +271,18 @@ const CreateJobpost = () => {
   };
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    fetchApplyJob(formData);
+    fetchApplyJob(formData)
+      .then((response) => {
+        if (response.ok) {
+          toast.success("Tạo bài đăng thành công!");
+          router.push("/recruiter");
+        } else {
+          toast.error("Tạo bài đăng thất bại");
+        }
+      })
+      .catch((error) => {
+        console.log("Error!", error);
+      });
     // console.log(formData);
   };
 
@@ -272,6 +295,46 @@ const CreateJobpost = () => {
       ["image"],
     ],
   };
+  const [numberOfPositions, setNumberOfPositions] = useState(formData.numberOfPositions);
+  const handleDecrement = () => {
+    if (numberOfPositions > 0) {
+      setNumberOfPositions(numberOfPositions - 1);
+      setFormData({ ...formData, numberOfPositions: numberOfPositions - 1 });
+    }
+  };
+
+  const handleIncrement = () => {
+    setNumberOfPositions(numberOfPositions + 1);
+    setFormData({ ...formData, numberOfPositions: numberOfPositions + 1 });
+  };
+
+  const [minExperience, setMinExperience] = useState(
+    Math.max(Math.min(formData.jobInformation.minExperience, 100), 1)
+  );
+
+  const handleDecrementExperience = () => {
+    if (minExperience > 1) {
+      setMinExperience(minExperience - 1);
+      setFormData({
+        ...formData,
+        jobInformation: { ...formData.jobInformation, minExperience: minExperience - 1 },
+      });
+    }
+  };
+
+  const handleIncrementExperience = () => {
+    setMinExperience(minExperience + 1);
+    setFormData({
+      ...formData,
+      jobInformation: { ...formData.jobInformation, minExperience: minExperience + 1 },
+    });
+  };
+
+  const handleDateSelect = (e: any) => {
+    console.log(e)
+    setDate(e);
+    setFormData((prevFormData) => ({ ...prevFormData, expirationDate: e }));
+  };
 
   return (
     <>
@@ -280,27 +343,7 @@ const CreateJobpost = () => {
         <div className="w-full max-w-4xl rounded-lg bg-white p-6 shadow-md">
           <div className="mb-6 flex justify-center">
             <div className="flex flex-col items-center">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 text-white">
-                1
-              </div>
-              <span className="mt-2 text-blue-500">Thông tin công việc</span>
-            </div>
-            <div className="mb-5 flex items-center space-x-1">
-              <div className="h-2 w-2 rounded-full bg-blue-500"></div>
-              <div className="h-2 w-2 rounded-full bg-blue-500"></div>
-              <div className="h-2 w-2 rounded-full bg-blue-500"></div>
-              <div className="h-2 w-2 rounded-full bg-blue-500"></div>
-              <div className="h-2 w-2 rounded-full bg-blue-500"></div>
-              <div className="h-2 w-2 rounded-full bg-blue-500"></div>
-              <div className="h-2 w-2 rounded-full bg-blue-500"></div>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-300 text-gray-500">
-                2
-              </div>
-              <span className="mt-2 text-gray-500">
-                Thiết lập quy trình và đội ngũ
-              </span>
+              <h1 className="text-4xl mt-2 text-blue-500">Thông tin công việc</h1>
             </div>
           </div>
           <Accordion
@@ -577,22 +620,56 @@ const CreateJobpost = () => {
                           />
                         </div>
                       </div>
-                      {/* <div>
-                                                <label className="block text-gray-700">Số lượng tuyển dụng</label>
-                                                <div className="mt-1 flex items-center space-x-2">
-                                                    <button className="text-gray-500"><FaMinus className="fas fa-minus" /></button>
-                                                    <input
-                                                        value={formData.jobDescription.maximumSalary}
-                                                        onChange={(e) => {
-                                                            setFormData({
-                                                                ...formData,
-                                                                jobDescription: { ...formData.jobDescription, maximumSalary: Number(e.target.value) }
-                                                            });
-                                                        }}
-                                                        type="text" value="1" className="w-12 rounded-lg border border-gray-300 p-2 text-center" readOnly />
-                                                    <button className="text-gray-500"><FaPlus className="fas fa-plus" /></button>
-                                                </div>
-                                            </div> */}
+                      <div>
+                        <label className="block text-gray-700">Số lượng tuyển dụng</label>
+                        <div className="flex items-center space-x-2 mt-1">
+                          <button className="text-gray-500" onClick={handleDecrement}>
+                            <FaMinus className="fas fa-minus" />
+                          </button>
+                          <input
+                            value={numberOfPositions}
+                            onChange={(e) => setNumberOfPositions(Number(e.target.value))}
+                            type="text"
+                            className="w-12 rounded-lg border border-gray-300 p-2 text-center"
+                          />
+                          <button className="text-gray-500" onClick={handleIncrement}>
+                            <FaPlus className="fas fa-plus" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="">
+                      <label className="block text-gray-700 mb-2 mt-5">
+                        Ngày ngưng nhập ứng tuyển
+                      </label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "shadow-none w-full border-gray-300 rounded-sm h-10  justify-start text-left hover:bg-transparent  font-normal data-[state=open]:border-sky-400",
+                              !date && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {date ? (
+                              format(date, "dd/MM/yyyy")
+                            ) : (
+                              <span>Ngày/Tháng/Năm</span>
+                            )}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            captionLayout="dropdown-buttons"
+                            selected={date}
+                            onSelect={handleDateSelect}
+                            fromYear={1960}
+                            toYear={2030}
+                          />
+                        </PopoverContent>
+                      </Popover>
                     </div>
                   </div>
                   <div className="flex justify-end">
@@ -683,32 +760,24 @@ const CreateJobpost = () => {
                             Năm kinh nghiệm tối thiểu
                           </label>
                           <div className="flex items-center space-x-2">
-                            <button className="rounded bg-gray-200 px-3 py-1 text-gray-700">
-                              -
+                            <button className="rounded bg-gray-200 px-3 py-1 text-gray-700" onClick={handleDecrementExperience}>
+                              <FaMinus className="fas fa-minus" />
                             </button>
                             <input
-                              value={
-                                (formData.jobInformation.minExperience > 100
-                                  ? 100
-                                  : formData.jobInformation.minExperience) ||
-                                (formData.jobInformation.minExperience < 1
-                                  ? 1
-                                  : formData.jobInformation.minExperience)
-                              }
+                              value={minExperience}
                               onChange={(e) => {
+                                const newExperience = Math.max(Math.min(Number(e.target.value), 100), 1);
+                                setMinExperience(newExperience);
                                 setFormData({
                                   ...formData,
-                                  jobInformation: {
-                                    ...formData.jobInformation,
-                                    minExperience: Number(e.target.value),
-                                  },
+                                  jobInformation: { ...formData.jobInformation, minExperience: newExperience },
                                 });
                               }}
                               type="text"
                               className="w-12 rounded border border-gray-300 px-2 py-1 text-center outline-none focus:border-sky-400"
                             />
-                            <button className="rounded bg-gray-200 px-3 py-1 text-gray-700">
-                              +
+                            <button className="rounded bg-gray-200 px-3 py-1 text-gray-700" onClick={handleIncrementExperience}>
+                              <FaPlus className="fas fa-plus" />
                             </button>
                           </div>
                         </div>
@@ -815,15 +884,16 @@ const CreateJobpost = () => {
                               />
                               <span className="ml-2">Người nước ngoài</span>
                             </label>
-                            <label className="flex w-[25%] items-center">
-                              <input
+                            {/*<label className="flex w-[25%] items-center">
+                               <input
                                 type="checkbox"
                                 className="form-checkbox text-blue-500"
+                                checked
                               />
                               <span className="ml-2">
                                 Hiển thị cho Ứng Viên
                               </span>
-                            </label>
+                            </label> */}
                           </div>
                         </div>
                       </div>
@@ -898,7 +968,7 @@ const CreateJobpost = () => {
                               />
                               <span className="ml-2">Nữ</span>
                             </label>
-                            <label className="flex w-[25%] items-center">
+                            {/* <label className="flex w-[25%] items-center">
                               <input
                                 type="checkbox"
                                 className="form-checkbox text-blue-500"
@@ -906,7 +976,7 @@ const CreateJobpost = () => {
                               <span className="ml-2">
                                 Hiển thị cho Ứng Viên
                               </span>
-                            </label>
+                            </label> */}
                           </div>
                         </div>
                       </div>
@@ -983,7 +1053,7 @@ const CreateJobpost = () => {
                               />
                               <span className="ml-2">Đã kết hôn</span>
                             </label>
-                            <label className="flex w-[25%] items-center">
+                            {/* <label className="flex w-[25%] items-center">
                               <input
                                 type="checkbox"
                                 className="form-checkbox text-blue-500"
@@ -991,7 +1061,7 @@ const CreateJobpost = () => {
                               <span className="ml-2">
                                 Hiển thị cho Ứng Viên
                               </span>
-                            </label>
+                            </label> */}
                           </div>
                         </div>
                       </div>
@@ -1037,7 +1107,7 @@ const CreateJobpost = () => {
                               type="text"
                               className="w-12 w-[30%] rounded border border-gray-300 px-2 py-1 text-center outline-none focus:border-sky-400"
                             />
-                            <label className="ml-5 flex w-[25%] items-center">
+                            {/* <label className="ml-5 flex w-[25%] items-center">
                               <input
                                 type="checkbox"
                                 className="form-checkbox text-blue-500"
@@ -1045,7 +1115,7 @@ const CreateJobpost = () => {
                               <span className="ml-2">
                                 Hiển thị cho Ứng Viên
                               </span>
-                            </label>
+                            </label> */}
                           </div>
                         </div>
                       </div>
@@ -1136,6 +1206,7 @@ const CreateJobpost = () => {
                           });
                         }}
                         type="text"
+                        placeholder="Mr.Chuong"
                         className="mt-1 w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400"
                       />
                     </div>
@@ -1255,7 +1326,7 @@ const CreateJobpost = () => {
                                   ...formData.companyInfo.companyBenefits,
                                   [benefit.id]: {
                                     ...formData.companyInfo.companyBenefits[
-                                      benefit.id
+                                    benefit.id
                                     ],
                                     benefitId: e.target.value,
                                     benefitDescription:
@@ -1278,9 +1349,9 @@ const CreateJobpost = () => {
                               disabled={
                                 usedBenefits.includes(item.name) &&
                                 item.name !==
-                                  formData.companyInfo.companyBenefits[
-                                    benefit.id
-                                  ]?.benefitId
+                                formData.companyInfo.companyBenefits[
+                                  benefit.id
+                                ]?.benefitId
                               }
                             >
                               {item.name}{" "}
