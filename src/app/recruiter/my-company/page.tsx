@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useCookies } from "next-client-cookies";
 import { jwtDecode } from "jwt-decode";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import HeaderRecruiter from "@/components/HeaderRecruiter/HeaderRecruiter";
 
 export interface JwtPayload {
     userid: string;
@@ -140,12 +141,13 @@ const MyCompany = () => {
     }
     return (
         <div className="">
+            <HeaderRecruiter />
             <h1 className="mb-3 rounded-md border bg-white p-4 font-bold">
                 Hồ sơ ứng viên
             </h1>
             <div className="rounded-md border bg-white">
                 <div className="flex border-b">
-                    {tabs.map((tab) => (
+                    {tabs?.map((tab) => (
                         <button
                             key={tab.id}
                             className={`px-4 py-3 text-sm  ${activeTab === tab.id
@@ -199,8 +201,8 @@ const MyCompany = () => {
                                         <AccordionContent>
                                             {applyJob[index].map((job: any) => (
                                                 <Link
-                                                    href={`/job/${job.fullName}`}
-                                                    key={job.jobPostId}
+                                                    href={`/profileuser/${job.userId}`}
+                                                    key={job.userId}
                                                     className="group flex cursor-pointer items-center justify-between rounded-lg border bg-white p-4 transition-all duration-300 hover:bg-[#f9fcff]"
                                                 >
                                                     <div className="flex flex-grow items-center gap-6">

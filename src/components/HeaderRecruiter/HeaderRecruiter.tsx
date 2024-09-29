@@ -39,18 +39,21 @@ const HeaderRecruiter = () => {
               </p>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <p className="cursor-pointer transition-colors duration-300 hover:text-[#ff7d55] data-[state=open]:text-[#ff7d55]">
-                    Ứng viên
-                  </p>
+                  <Link href="/recruiter/my-company">
+
+                    <p className="cursor-pointer transition-colors duration-300 hover:text-[#ff7d55] data-[state=open]:text-[#ff7d55]">
+                      Ứng viên
+                    </p>
+                  </Link>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start">
+                {/* <DropdownMenuContent align="start">
                   <DropdownMenuItem className="flex items-center gap-3">
                     Quản lý theo việc đăng tuyển{" "}
                   </DropdownMenuItem>
                   <DropdownMenuItem className="flex items-center gap-3">
                     Quản lý theo thư mục và thẻ{" "}
                   </DropdownMenuItem>
-                </DropdownMenuContent>
+                </DropdownMenuContent> */}
               </DropdownMenu>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -101,9 +104,11 @@ const HeaderRecruiter = () => {
               </p>
             </div>
             <div className="flex gap-4 text-white">
-              <Button className="h-10 bg-[#ff7d55] hover:bg-[#fd6333] lg:min-w-32">
-                Đăng Tuyển Dụng
-              </Button>
+              <Link href="/recruiter/create-jobpost">
+                <Button className="h-10 bg-[#ff7d55] hover:bg-[#fd6333] lg:min-w-32">
+                  Đăng Tuyển Dụng
+                </Button>
+              </Link>
               <Link href="/recruiter/search">
                 <Button className="h-10 bg-[#ff7d55] hover:bg-[#fd6333] lg:min-w-32">
                   Tìm Ứng Viên
@@ -166,7 +171,7 @@ const HeaderRecruiter = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div >
     </>
   );
 };
