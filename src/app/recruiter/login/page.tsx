@@ -12,14 +12,65 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useCookies } from "next-client-cookies";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const router = useRouter();
+  const cookies = useCookies();
 
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
 
+  const handleChange = (e: any) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
+
+  const Login = async () => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/recruiter/sign-in-recruiter`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+          }),
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Đăng nhập thất bại");
+      } else {
+        const data = await res.json();
+        if (data.status === "OK") {
+          console.log("Đăng nhập thành công");
+          cookies.set("accessToken", data.access_token);
+          cookies.set("refreshToken", data.refresh_token);
+          toast.success("Đăng nhập thành công");
+          router.push("/recruiter");
+        } else {
+          console.error("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
+        }
+        return data;
+      }
+    } catch (error) {
+      console.error("Lỗi khi đăng nhập:", error);
+    }
+  };
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
       <div className="flex flex-grow items-center justify-center">
@@ -42,6 +93,8 @@ const Login = () => {
                   id="email"
                   placeholder="Nhập email của bạn"
                   type="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-sky-400 focus-visible:ring-0"
                 />
               </div>
@@ -56,6 +109,8 @@ const Login = () => {
                   <Input
                     id="password"
                     type={passwordVisible ? "text" : "password"}
+                    value={formData.password}
+                    onChange={handleChange}
                     className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-sky-400 focus-visible:ring-0"
                   />
                   <Button
@@ -89,7 +144,7 @@ const Login = () => {
               </div>
               <Button
                 className="w-full bg-orange-500 text-white hover:bg-orange-600"
-                type="submit"
+                onClick={Login}
               >
                 Đăng nhập
               </Button>
