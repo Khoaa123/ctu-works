@@ -11,8 +11,7 @@ const FooterWrapper = () => {
     pathname === "/recruiter" ||
     pathname === "/recruiter/my-company" ||
     pathname === "/recruiter/create-jobpost" ||
-
-
+    pathname === "/recruiter/register" ||
     // pathname === `/profileuser/:${id}` ||
     pathname.startsWith("/admin");
 

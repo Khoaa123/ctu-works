@@ -52,6 +52,8 @@ const Login = () => {
         }
       );
 
+      console.log(res);
+
       if (!res.ok) {
         throw new Error("Đăng nhập thất bại");
       } else {
@@ -94,7 +96,7 @@ const Login = () => {
                   placeholder="Nhập email của bạn"
                   type="email"
                   value={formData.email}
-                  onChange={handleChange}
+                  onChange={(e) => handleChange(e)}
                   className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-sky-400 focus-visible:ring-0"
                 />
               </div>
@@ -110,7 +112,7 @@ const Login = () => {
                     id="password"
                     type={passwordVisible ? "text" : "password"}
                     value={formData.password}
-                    onChange={handleChange}
+                    onChange={(e) => handleChange(e)}
                     className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-sky-400 focus-visible:ring-0"
                   />
                   <Button
@@ -145,6 +147,7 @@ const Login = () => {
               <Button
                 className="w-full bg-orange-500 text-white hover:bg-orange-600"
                 onClick={Login}
+                type="button"
               >
                 Đăng nhập
               </Button>
