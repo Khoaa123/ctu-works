@@ -14,6 +14,10 @@ const HeaderWrapper = () => {
     pathname === "/recruiter/create-jobpost" ||
     pathname === "/recruiter/login" ||
     pathname === "/recruiter/register" ||
+    pathname === "/recruiter/location" ||
+    pathname === "/recruiter/profile" ||
+    pathname === "/recruiter/job" ||
+
     pathname.startsWith("/admin");
 
   if (isHiddenPage) {

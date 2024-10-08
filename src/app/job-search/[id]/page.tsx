@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -27,10 +27,60 @@ import nexon from "@images/nexon.png";
 import Image from "next/image";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { IoFilterSharp, IoCloseSharp } from "react-icons/io5";
-
+import { useRouter } from "next/navigation"
+import { toast } from "react-toastify";
+import { useCookies } from "next-client-cookies";
+import { jwtDecode } from "jwt-decode";
+export interface JwtPayload {
+  userid: string;
+  email: string;
+  fullName: string;
+  role: string;
+}
 const JobSearch = () => {
   const [isActive, setIsActive] = useState("all");
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const cookies = useCookies();
+  const accessToken = cookies.get("accessToken");
+  const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
+  const router = useRouter();
 
+  useEffect(() => {
+    const query = location.pathname.split("/job-search/")[1];
+    if (query) {
+      // setSearchQuery(query);
+      
+    }
+    fetchSearhData()
+  }, [])
+  const createSearch = async (query: any) => {
+    const id = decodedToken?.userid;
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/search-history/create`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: id,
+          description: query,
+        }),
+      }
+    );
+
+    return res.json();
+  }
+  const fetchSearhData = () => {
+
+  }
+  const handleSearch = (e: any) => {
+    e.preventDefault();
+    if (searchQuery) {
+      createSearch(searchQuery)
+      router.push(`/job-search/${searchQuery}`);
+    }
+  };
   return (
     <>
       <div className="bg-[#F7F8FA]">
@@ -42,9 +92,13 @@ const JobSearch = () => {
             <input
               type="text"
               placeholder="Tìm kiếm việc làm..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full max-w-4xl rounded-md border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
             />
-            <button className="rounded-md bg-blue-600 px-4 py-2 text-white transition duration-300 hover:bg-blue-700">
+            <button
+              onClick={handleSearch}
+              className="rounded-md bg-blue-600 px-4 py-2 text-white transition duration-300 hover:bg-blue-700">
               Tìm kiếm
             </button>
 
@@ -212,38 +266,34 @@ const JobSearch = () => {
           <div className="flex items-center gap-3 text-sm">
             <span>Sắp xếp theo</span>
             <button
-              className={`rounded-md text-gray-600  ${
-                isActive === "all"
-                  ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
-                  : "bg-white"
-              } py-1 px-2 `}
+              className={`rounded-md text-gray-600  ${isActive === "all"
+                ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
+                : "bg-white"
+                } py-1 px-2 `}
             >
               Tất cả
             </button>
             <button
-              className={`rounded-md text-gray-600  ${
-                isActive === "salary"
-                  ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
-                  : "bg-white"
-              } py-1 px-2 `}
+              className={`rounded-md text-gray-600  ${isActive === "salary"
+                ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
+                : "bg-white"
+                } py-1 px-2 `}
             >
               Lương (cao - thấp)
             </button>
             <button
-              className={`rounded-md text-gray-600  ${
-                isActive === "newest"
-                  ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
-                  : "bg-white"
-              } py-1 px-2 `}
+              className={`rounded-md text-gray-600  ${isActive === "newest"
+                ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
+                : "bg-white"
+                } py-1 px-2 `}
             >
               Ngày đăng (mới nhất)
             </button>
             <button
-              className={`rounded-md text-gray-600  ${
-                isActive === "oldest"
-                  ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
-                  : "bg-white"
-              } py-1 px-2 `}
+              className={`rounded-md text-gray-600  ${isActive === "oldest"
+                ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
+                : "bg-white"
+                } py-1 px-2 `}
             >
               Ngày đăng (cũ nhất)
             </button>

@@ -22,7 +22,11 @@ type FormData = z.infer<typeof schema>;
 const Login = () => {
   const router = useRouter();
   const cookies = useCookies();
-
+  useEffect(() => {
+    if (cookies.get("accessToken")) {
+      router.push("/");
+    }
+  })
   const {
     register,
     handleSubmit,

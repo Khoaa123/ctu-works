@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -35,7 +35,11 @@ const Login = () => {
       [e.target.id]: e.target.value,
     });
   };
-
+  useEffect(() => {
+    if (cookies.get("accessTokenRecruiter")) {
+      router.push("/recruiter");
+    }
+  })
   const Login = async () => {
     try {
       const res = await fetch(
@@ -60,8 +64,8 @@ const Login = () => {
         const data = await res.json();
         if (data.status === "OK") {
           console.log("Đăng nhập thành công");
-          cookies.set("accessToken", data.access_token);
-          cookies.set("refreshToken", data.refresh_token);
+          cookies.set("accessTokenRecruiter", data.access_token);
+          cookies.set("refreshTokenRecruiter", data.refresh_token);
           toast.success("Đăng nhập thành công");
           router.push("/recruiter");
         } else {
@@ -156,7 +160,7 @@ const Login = () => {
           <CardFooter className="justify-center">
             <p className="text-sm text-gray-600">
               Bạn chưa đăng ký?{" "}
-              <Link className="text-blue-600 hover:underline" href="#">
+              <Link className="text-blue-600 hover:underline" href="/recruiter/register">
                 Đăng ký ngay
               </Link>
             </p>

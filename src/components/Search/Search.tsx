@@ -6,8 +6,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useRouter } from "next/navigation"
 
 const Search = () => {
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = React.useState("");
+
+  const handleSearch = (e: any) => {
+    e.preventDefault();
+    if (searchQuery) {
+      router.push(`/job-search/${searchQuery}`);
+    }
+  };
   return (
     <>
       <div className="mb-12 flex items-center justify-center gap-3 bg-[#F6FAFB] py-12">
@@ -23,10 +33,14 @@ const Search = () => {
         </Select>
         <input
           type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Tìm kiếm việc làm..."
           className="w-full max-w-lg rounded-md border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
         />
-        <button className="rounded-md bg-blue-600 px-4 py-2 text-white transition duration-300 hover:bg-blue-700">
+        <button
+          onClick={handleSearch}
+          className="rounded-md bg-blue-600 px-4 py-2 text-white transition duration-300 hover:bg-blue-700">
           Tìm kiếm
         </button>
       </div>

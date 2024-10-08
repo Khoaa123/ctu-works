@@ -6,10 +6,6 @@ import { FaMapMarkerAlt, FaSearch, FaTh } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
 
-
-
-
-
 const Search = () => {
     const [userData, setUserData] = useState([{
         _id: '',

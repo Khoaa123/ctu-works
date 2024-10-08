@@ -340,12 +340,8 @@ const Profile = () => {
       [{ list: "ordered" }, { list: "bullet" }],
     ],
   };
-  const test = () => {
-    console.log(selectedBenefits)
-  }
   return (
     <>
-      <button onClick={test}>Test</button>
       <div className="flex flex-col gap-4 rounded-md bg-[#f1f2f4] p-4">
         <div className="flex items-center gap-6 rounded-md bg-white p-4">
           <FaUser color="#EEEEEE" size={80} />

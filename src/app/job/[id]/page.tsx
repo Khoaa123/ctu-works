@@ -172,7 +172,7 @@ const JobDetail = () => {
         }
       );
       const data = await res.json();
-      if (data.status == "OK") {
+      if (data.status === "OK") {
         setIsSaved(true);
         setsaveJobDetails(data.data);
       }
@@ -204,15 +204,15 @@ const JobDetail = () => {
   };
 
   const [jobPostDetails, setJobPostDetails] = useState({
-    companyInfo: {
-      companyAddress: "",
-      companyBenefits: [],
-      companyEmail: "",
-      companyLogo: "",
-      companyName: "",
-      companySize: "",
-      companyStaffName: "",
-    },
+
+    companyAddress: "",
+    companyBenefits: [],
+    companyEmail: "",
+    companyLogo: "",
+    companyName: "",
+    companySize: "",
+    companyStaffName: "",
+
     jobDescription: "",
     jobRequirements: "",
     expirationDate: "",
@@ -222,23 +222,20 @@ const JobDetail = () => {
     postViews: 0,
     location: [],
     recruiterId: "",
-    jobInformation: {
-      datePosted: "",
-      educationLevel: "",
-      gender: "",
-      jobField: "",
-      jobIndustry: "",
-      jobLevel: "",
-      keywords: [],
-      language: "",
-      maritalStatus: "",
-      minExperience: 0,
-      nationality: "",
-      minAge: 0,
-      maxAge: 0,
-      numberOfPositions: 0,
-    },
-
+    datePosted: "",
+    educationLevel: "",
+    gender: "",
+    jobField: "",
+    jobIndustry: "",
+    jobLevel: "",
+    keywords: [],
+    language: "",
+    maritalStatus: "",
+    minExperience: 0,
+    nationality: "",
+    minAge: 0,
+    maxAge: 0,
+    numberOfPositions: 0,
     _id: "",
   });
 
@@ -457,7 +454,7 @@ const JobDetail = () => {
         body: JSON.stringify({
           ...formData,
           jobPostId: id,
-          recruiterId: jobPostDetails.recruiterId,
+          recruiterId: jobPostDetails?.recruiterId,
         }),
       }
     );
@@ -540,7 +537,7 @@ const JobDetail = () => {
                             {jobPostDetails?.location?.map((loc, locIndex) => (
                               <span key={locIndex}>
                                 {loc}
-                                {locIndex < jobPostDetails.location.length - 1
+                                {locIndex < jobPostDetails?.location.length - 1
                                   ? ", "
                                   : ""}
                               </span>
@@ -688,7 +685,7 @@ const JobDetail = () => {
                                                   className={cn(
                                                     "shadow-none w-full border-gray-300 rounded-sm h-10  justify-start text-left hover:bg-transparent  font-normal data-[state=open]:border-sky-400",
                                                     !date &&
-                                                      "text-muted-foreground"
+                                                    "text-muted-foreground"
                                                   )}
                                                 >
                                                   <CalendarIcon className="mr-2 h-4 w-4" />
@@ -1144,16 +1141,16 @@ const JobDetail = () => {
                                                 onChange={
                                                   handleCompanyJobFunctionChange
                                                 }
-                                                // onChange={(e) => {
-                                                //   setWorkingPreferences((prev) => ({
-                                                //     ...prev,
-                                                //     jobFunction: e.target.value,
-                                                //   }));
-                                                //   setFormData((prevFormData) => ({
-                                                //     ...prevFormData,
-                                                //     workingPreferences: workingPreferences,
-                                                //   }))
-                                                // }}
+                                              // onChange={(e) => {
+                                              //   setWorkingPreferences((prev) => ({
+                                              //     ...prev,
+                                              //     jobFunction: e.target.value,
+                                              //   }));
+                                              //   setFormData((prevFormData) => ({
+                                              //     ...prevFormData,
+                                              //     workingPreferences: workingPreferences,
+                                              //   }))
+                                              // }}
                                               />
                                             </div>
                                             <div className="col-span-1 flex flex-col gap-1">
@@ -1224,13 +1221,13 @@ const JobDetail = () => {
                                                 onChange={
                                                   handleCompanySalaryChange
                                                 }
-                                                // onChange={(e) => {
-                                                //   setWorkingPreferences((prev) => ({
-                                                //     ...prev,
-                                                //     salary: e.target.value,
+                                              // onChange={(e) => {
+                                              //   setWorkingPreferences((prev) => ({
+                                              //     ...prev,
+                                              //     salary: e.target.value,
 
-                                                //   }))
-                                                // }}
+                                              //   }))
+                                              // }}
                                               />
                                             </div>
 
@@ -1253,12 +1250,12 @@ const JobDetail = () => {
                                                     value
                                                   )
                                                 }
-                                                // onValueChange={(value) =>
-                                                //   setWorkingPreferences((prev) => ({
-                                                //     ...prev,
-                                                //     desiredJobLevel: value,
-                                                //   }))
-                                                // }
+                                              // onValueChange={(value) =>
+                                              //   setWorkingPreferences((prev) => ({
+                                              //     ...prev,
+                                              //     desiredJobLevel: value,
+                                              //   }))
+                                              // }
                                               >
                                                 <SelectTrigger className="h-10 bg-white shadow-none focus:ring-0">
                                                   <SelectValue placeholder="Vui lòng chọn..." />
@@ -1305,11 +1302,10 @@ const JobDetail = () => {
                         </Dialog>
 
                         <button
-                          className={`flex flex-1 justify-center items-center gap-3 rounded-lg border px-4 py-2 transition ${
-                            isSaved
-                              ? "border-[#005aff] text-[#005aff] hover:bg-[#347bff26] "
-                              : "border-gray-300 "
-                          }`}
+                          className={`flex flex-1 justify-center items-center gap-3 rounded-lg border px-4 py-2 transition ${isSaved
+                            ? "border-[#005aff] text-[#005aff] hover:bg-[#347bff26] "
+                            : "border-gray-300 "
+                            }`}
                           onClick={handleSaveClick}
                         >
                           {isSaved ? (
@@ -1349,7 +1345,7 @@ const JobDetail = () => {
                         </div>
                         <div className="mb-4 ml-6">
                           {new Date(
-                            jobPostDetails.jobInformation.datePosted
+                            jobPostDetails?.datePosted
                           ).toLocaleDateString("vi-VN", {
                             year: "numeric",
                             month: "numeric",
@@ -1370,7 +1366,7 @@ const JobDetail = () => {
                           <span className="text-[#939393]">LĨNH VỰC</span>
                         </div>
                         <div className="mb-4 ml-6">
-                          {jobPostDetails.jobInformation.jobField}
+                          {jobPostDetails?.jobField}
                         </div>
 
                         <div className="mb-2 flex items-center">
@@ -1380,7 +1376,7 @@ const JobDetail = () => {
                           </span>
                         </div>
                         <div className="mb-4 ml-6">
-                          {jobPostDetails.jobInformation.minExperience}
+                          {jobPostDetails?.minExperience}
                         </div>
 
                         <div className="mb-2 flex items-center">
@@ -1390,7 +1386,7 @@ const JobDetail = () => {
                           </span>
                         </div>
                         <div className="mb-4 ml-6">
-                          {jobPostDetails.jobInformation.educationLevel}
+                          {jobPostDetails?.educationLevel}
                         </div>
 
                         <div className="mb-2 flex items-center">
@@ -1400,10 +1396,10 @@ const JobDetail = () => {
                           </span>
                         </div>
                         <div className="mb-4 ml-6">
-                          {jobPostDetails.jobInformation?.minAge ||
+                          {jobPostDetails?.minAge ||
                             "Không hiển thị"}
                           -
-                          {jobPostDetails.jobInformation?.maxAge ||
+                          {jobPostDetails?.maxAge ||
                             "Không hiển thị"}{" "}
                         </div>
 
@@ -1414,7 +1410,7 @@ const JobDetail = () => {
                           </span>
                         </div>
                         <div className="mb-4 ml-6">
-                          {jobPostDetails.jobInformation?.numberOfPositions ||
+                          {jobPostDetails?.numberOfPositions ||
                             "Không hiển thị"}
                         </div>
                       </div>
@@ -1424,7 +1420,7 @@ const JobDetail = () => {
                           <span className="text-[#939393]">CẤP BẬC</span>
                         </div>
                         <div className="mb-4 ml-6">
-                          {jobPostDetails.jobInformation?.jobLevel ||
+                          {jobPostDetails?.jobLevel ||
                             "Không hiển thị"}
                         </div>
 
@@ -1433,13 +1429,13 @@ const JobDetail = () => {
                           <span className="text-[#939393]">KỸ NĂNG</span>
                         </div>
                         <div className="mb-4 ml-6">
-                          {jobPostDetails.jobInformation.keywords?.map(
+                          {jobPostDetails?.keywords?.map(
                             (skill, index) => (
                               <span key={index} className="mr-1">
                                 {skill}
                                 {index <
-                                jobPostDetails?.jobInformation?.keywords
-                                  .length -
+                                  jobPostDetails?.keywords
+                                    .length -
                                   1
                                   ? ", "
                                   : ""}
@@ -1455,7 +1451,7 @@ const JobDetail = () => {
                           </span>
                         </div>
                         <div className="mb-4 ml-6">
-                          {jobPostDetails.jobInformation?.language ||
+                          {jobPostDetails?.language ||
                             "Không hiển thị"}
                         </div>
 
@@ -1464,11 +1460,11 @@ const JobDetail = () => {
                           <span className="text-[#939393]">QUỐC TỊCH</span>
                         </div>
                         <div className="mb-4 ml-6">
-                          {jobPostDetails.jobInformation?.nationality === "1"
+                          {jobPostDetails?.nationality === "1"
                             ? "Người Việt"
-                            : jobPostDetails.jobInformation?.nationality === "2"
-                            ? "Người nước ngoài"
-                            : "Bất kỳ"}
+                            : jobPostDetails?.nationality === "2"
+                              ? "Người nước ngoài"
+                              : "Bất kỳ"}
                         </div>
 
                         <div className="mb-2 flex items-center">
@@ -1476,11 +1472,11 @@ const JobDetail = () => {
                           <span className="text-[#939393]">GIỚI TÍNH</span>
                         </div>
                         <div className="mb-4 ml-6">
-                          {jobPostDetails.jobInformation?.gender === "1"
+                          {jobPostDetails?.gender === "1"
                             ? "Nam"
-                            : jobPostDetails.jobInformation?.gender === "2"
-                            ? "Nữ"
-                            : "Bất kỳ"}
+                            : jobPostDetails?.gender === "2"
+                              ? "Nữ"
+                              : "Bất kỳ"}
                         </div>
 
                         <div className="mb-2 flex items-center">
@@ -1490,12 +1486,12 @@ const JobDetail = () => {
                           </span>
                         </div>
                         <div className="mb-4 ml-6">
-                          {jobPostDetails.jobInformation?.maritalStatus === "1"
+                          {jobPostDetails?.maritalStatus === "1"
                             ? "Chưa kết hôn"
-                            : jobPostDetails.jobInformation?.maritalStatus ===
+                            : jobPostDetails?.maritalStatus ===
                               "2"
-                            ? "Đã kết hôn"
-                            : "Bất kỳ"}
+                              ? "Đã kết hôn"
+                              : "Bất kỳ"}
                         </div>
                       </div>
                     </div>
@@ -1505,7 +1501,7 @@ const JobDetail = () => {
                     <div className="flex items-center">
                       <FaLocationDot className="fas fa-map-marker-alt mr-2"></FaLocationDot>
                       <span>
-                        {jobPostDetails?.companyInfo?.companyAddress ||
+                        {jobPostDetails?.companyAddress ||
                           "Chưa cập nhật"}
                       </span>
                     </div>
@@ -1518,7 +1514,7 @@ const JobDetail = () => {
                         alt="Company logo"
                         className="h-12 w-12 rounded-full"
                         height="50"
-                        src={jobPostDetails?.companyInfo?.companyLogo}
+                        src={jobPostDetails?.companyLogo}
                         width="50"
                       />
                       <div className="ml-4">
@@ -1550,7 +1546,7 @@ const JobDetail = () => {
                             {jobPostDetails?.location?.map((loc, locIndex) => (
                               <span key={locIndex}>
                                 {loc}
-                                {locIndex < jobPostDetails.location.length - 1
+                                {locIndex < jobPostDetails?.location.length - 1
                                   ? ", "
                                   : ""}
                               </span>
@@ -1636,7 +1632,7 @@ const JobDetail = () => {
                 <div className="flex flex-col rounded-md bg-white px-8 py-4">
                   <div className="flex items-center justify-center">
                     <Image
-                      src={jobPostDetails?.companyInfo?.companyLogo}
+                      src={jobPostDetails?.companyLogo}
                       alt=""
                       height={100}
                       width={100}
@@ -1645,7 +1641,7 @@ const JobDetail = () => {
                   <div className="flex flex-col">
                     <Link href={`/company/${jobPostDetails?.recruiterId}`}>
                       <p className="my-3 cursor-pointer text-center font-medium hover:text-[#ff7d55]">
-                        {jobPostDetails?.companyInfo?.companyName}
+                        {jobPostDetails?.companyName}
                       </p>
                     </Link>
                     <div className="flex flex-col gap-6">
@@ -1654,7 +1650,7 @@ const JobDetail = () => {
                           <FaLocationDot color="grey" size={14} />
                         </div>
                         <span className="text-sm">
-                          {jobPostDetails?.companyInfo?.companyAddress}
+                          {jobPostDetails?.companyAddress}
                         </span>
                       </div>
                       <div className="flex items-start gap-2">
@@ -1662,7 +1658,7 @@ const JobDetail = () => {
                           <HiMiniUserGroup color="grey" size={14} />
                         </div>
                         <span className="text-sm">
-                          {jobPostDetails?.companyInfo?.companySize}
+                          {jobPostDetails?.companySize}
                         </span>
                       </div>
                       <div className="flex items-start gap-2">
@@ -1670,7 +1666,7 @@ const JobDetail = () => {
                           <PhoneCall color="grey" size={14} />
                         </div>
                         <span className="text-sm">
-                          {jobPostDetails?.companyInfo?.companyStaffName}
+                          {jobPostDetails?.companyStaffName}
                         </span>
                       </div>
                     </div>

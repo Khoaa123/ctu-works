@@ -64,6 +64,7 @@ export default function EmployerRegistration() {
             email: formData.email,
             fullName: formData.fullName,
             password: formData.password,
+            confirmPassword: formData.confirmPassword,
             companyName: formData.companyName,
             companyWebsite: formData.companyWebsite,
             companyFacebook: formData.companyFacebook,

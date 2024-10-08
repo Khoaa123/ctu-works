@@ -23,7 +23,7 @@ const tabs = [
 
 const MyCompany = () => {
     const cookies = useCookies();
-    const accessToken = cookies.get("accessToken");
+    const accessToken = cookies.get("accessTokenRecruiter");
     const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
     const [following, setFollowing] = useState([
         {
@@ -39,21 +39,21 @@ const MyCompany = () => {
     ]);
 
     const [applyJob, setApplyJob] = useState([[
-        {
-            companyLogo: "",
-            companyName: "",
-            jobSalary: "",
-            jobTitle: "",
-            jobLocation: [],
-            jobPostId: '',
-            jobPostTitle: '',
-            status: '',
-            fullName: '',
-            email: '',
-            address: '',
-            phoneNumber: '',
-            _id: "",
-        },
+        // {
+        //     companyLogo: "",
+        //     companyName: "",
+        //     jobSalary: "",
+        //     jobTitle: "",
+        //     jobLocation: [],
+        //     jobPostId: '',
+        //     jobPostTitle: '',
+        //     status: '',
+        //     fullName: '',
+        //     email: '',
+        //     address: '',
+        //     phoneNumber: '',
+        //     _id: "",
+        // },
     ]]);
     const [myJobpost, setMyJobpost] = useState([
         {
@@ -80,7 +80,6 @@ const MyCompany = () => {
         const fetchData = async () => {
             const data = await fetchGetMyJob();
             setMyJobpost(data.data);
-            console.log(data.data)
             const dataTest = data.data
             data?.data?.map(async (data: any) => {
                 const dataApply = await fetchApplyJob(data._id)
@@ -97,7 +96,7 @@ const MyCompany = () => {
     const fetchApplyJob = async (jobpostId: any) => {
         const id = decodedToken?.userid;
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/apply/get-my-apply/66e88fd0f696118a75d38ae0`,
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/apply/get-my-apply/${id}`,
             {
                 method: "POST",
                 headers: {
@@ -113,7 +112,7 @@ const MyCompany = () => {
     const fetchGetMyJob = async () => {
         const id = decodedToken?.userid;
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobpost/get-my-jobpost/66e88fd0f696118a75d38ae0`,
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobpost/get-my-jobpost/${id}`,
             {
                 method: "GET",
                 headers: {
@@ -127,7 +126,7 @@ const MyCompany = () => {
     const [activeTab, setActiveTab] = useState("profileViews");
 
     function areObjectsEqual(obj1: any, obj2: any) {
-        if (Object.keys(obj1).length !== Object.keys(obj2).length) {
+        if (Object.keys(obj1)?.length !== Object.keys(obj2)?.length) {
             return false;
         }
         for (const key in obj1) {
@@ -145,7 +144,6 @@ const MyCompany = () => {
     }
     const [applySelect, setApplySelect] = useState(0)
     const handleSelectJob = (job: any) => {
-        console.log("cos lamf")
         setApplySelect(job)
     }
     return (
@@ -247,13 +245,13 @@ const MyCompany = () => {
                     </div>
                 </div>
                 <div className="flex flex-col min-h-80 bg-white border border-gray-300 rounded p-2 overflow-y-auto">
-                    {applyJob[applySelect].length > 0 ? (
+                    {applyJob[applySelect]?.length > 0 ? (
                         applyJob[applySelect].map((job: any) => (
                             <Link
                                 key={job.userId}
                                 href={`/profileuser/${job.userId}`}
                                 className="group flex cursor-pointer w-full border-blue-400 items-center justify-between rounded-lg border bg-white p-4 transition-all duration-300 hover:bg-[#f9fcff]"
-                            >
+                            >{applyJob[applySelect].length}
                                 <div className="flex flex-grow items-center gap-6">
                                     <Image
                                         src={job.companyLogo}

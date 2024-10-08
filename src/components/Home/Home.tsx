@@ -92,7 +92,7 @@ const HomePage = () => {
     const fetchJobPosts = async () => {
       try {
         const res = await fetch(
-          "https://ctu-works-backend.onrender.com/api/jobpost/get-all-jobpost"
+          "http://localhost:3001/api/jobpost/get-all-jobpost"
         );
         const data = await res.json();
         if (data.status === "OK") {
@@ -140,7 +140,7 @@ const HomePage = () => {
                             <Link href={`/job/${job._id}`}>
                               <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]">
                                 <Image
-                                  src={job.companyInfo.companyLogo}
+                                  src={job.companyInfo?.companyLogo}
                                   alt={job.jobTitle}
                                   height={80}
                                   width={80}
@@ -150,10 +150,10 @@ const HomePage = () => {
                                   <h1 className="mb-1 line-clamp-1 text-xl font-bold">
                                     {job.jobTitle}
                                   </h1>
-                                  <p>{job.companyInfo.companyName}</p>
+                                  <p>{job.companyInfo?.companyName}</p>
                                   <p className="my-1 text-sm text-amber-600">
-                                    {job.minSalary.toLocaleString()} -{" "}
-                                    {job.maxSalary.toLocaleString()} VNĐ
+                                    {job.minSalary?.toLocaleString()} -{" "}
+                                    {job.maxSalary?.toLocaleString()} VNĐ
                                   </p>
                                   <p className="text-sm">{job.location}</p>
                                 </div>
