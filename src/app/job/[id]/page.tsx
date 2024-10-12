@@ -238,17 +238,20 @@ const JobDetail = () => {
     numberOfPositions: 0,
     _id: "",
   });
-
+  let run = 0
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchJobPostDetails();
-      setJobPostDetails(data.data);
-      console.log(data.data);
-    };
-    fetchData();
+    if (run < 1) {
+      const fetchData = async () => {
+        const data = await fetchJobPostDetails();
+        setJobPostDetails(data.data);
+      };
+      run = 1
+      fetchData();
+    }
   }, []);
   const fetchJobPostDetails = async () => {
     const id = location.pathname.split("/job/")[1];
+
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobpost/get-details-jobpost/${id}`,
       {
@@ -425,13 +428,13 @@ const JobDetail = () => {
     { label: "Cơ Khí", value: "Cơ Khí" },
   ];
   const OPTIONSBENEFIT = [
-    { label: "Giải Thưởng", value: "1" },
-    { label: "Thưởng", value: "2" },
-    { label: "Căn tin", value: "3" },
-    { label: "Khám sức khỏe", value: "4" },
-    { label: "Trông trẻ", value: "5" },
-    { label: "Điện thoại", value: "6" },
-    { label: "Nghỉ phép", value: "7" },
+    { label: "Giải Thưởng", value: "Giải Thưởng" },
+    { label: "Thưởng", value: "Thưởng" },
+    { label: "Căn tin", value: "Căn tin" },
+    { label: "Khám sức khỏe", value: "Khám sức khỏe" },
+    { label: "Trông trẻ", value: "Trông trẻ" },
+    { label: "Điện thoại", value: "Điện thoại" },
+    { label: "Nghỉ phép", value: "Nghỉ phép" },
   ];
   const OPTIONSLOCATION = [
     { label: "Cần Thơ", value: "Cần Thơ" },

@@ -76,23 +76,55 @@ const MyCompany = () => {
             applyJob: applyJob
         },
     ]);
+    const [userApplyDetail, setUserApplyDetail] = useState([[{
+        fullName: '',
+        email: '',
+        address: '',
+        phoneNumber: '',
+        _id: "",
+    }]])
     useEffect(() => {
         const fetchData = async () => {
             const data = await fetchGetMyJob();
             setMyJobpost(data.data);
-            const dataTest = data.data
-            data?.data?.map(async (data: any) => {
-                const dataApply = await fetchApplyJob(data._id)
-                applyJob.push(dataApply.data)
-                const uniqueArray = applyJob.filter((obj, index, self) => {
-                    return self.findIndex((otherObj) => areObjectsEqual(obj, otherObj)) === index;
-                });
-                uniqueArray.splice(0, 1)
-                setApplyJob(uniqueArray)
-            })
+            if (data?.data) {
+                const dataApply = await Promise.all(
+                    data.data.map(async (item: any) => {
+                        const res = await fetchApplyJob(item._id);
+                        return res.data
+                    })
+                );
+                const userInfo = await Promise.all(
+                    dataApply?.map(async (item: any) => {
+                        const dataUser = await Promise.all(
+                            item.map(async (item: any) => {
+                                const id = item.userId
+                                const res = await fetchDetailsUser(id)
+                                return res.data
+                            })
+                        )
+                        return dataUser
+                    })
+                )
+                setApplyJob(dataApply);
+                setUserApplyDetail(userInfo)
+            }
         };
         fetchData();
     }, []);
+    const fetchDetailsUser = async (id: any) => {
+        // const id = decodedToken?.userid;
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/get-details/${id}`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+        return res.json();
+    };
     const fetchApplyJob = async (jobpostId: any) => {
         const id = decodedToken?.userid;
         const res = await fetch(
@@ -244,34 +276,34 @@ const MyCompany = () => {
                         <FaCloudUploadAlt className="fas fa-cloud-upload-alt text-gray-500" />
                     </div>
                 </div>
-                <div className="flex flex-col min-h-80 bg-white border border-gray-300 rounded p-2 overflow-y-auto">
+                <div className="flex flex-col min-h-80 bg-white border border-gray-300 rounded p-2 gap-4 overflow-y-auto">
                     {applyJob[applySelect]?.length > 0 ? (
-                        applyJob[applySelect].map((job: any) => (
+                        userApplyDetail[applySelect].map((job: any) => (
                             <Link
                                 key={job.userId}
-                                href={`/profileuser/${job.userId}`}
+                                href={`/profileuser/${job._id}`}
                                 className="group flex cursor-pointer w-full border-blue-400 items-center justify-between rounded-lg border bg-white p-4 transition-all duration-300 hover:bg-[#f9fcff]"
                             >{applyJob[applySelect].length}
                                 <div className="flex flex-grow items-center gap-6">
                                     <Image
-                                        src={job.companyLogo}
-                                        alt={`${job.companyName} logo`}
+                                        src={myJobpost[applySelect].companyLogo}
+                                        alt={`companylogo`}
                                         className="rounded-lg"
                                         width={60}
                                         height={60}
                                     />
                                     <div className="max-w-[calc(100%-200px)] flex-grow">
                                         <h3 className="line-clamp-2 text-lg font-medium duration-300 group-hover:text-[#ff7d55] group-hover:transition-all">
-                                            {job.fullName}
+                                            {job?.fullName}
                                         </h3>
-                                        <p className="truncate text-gray-600">{job.email}</p>
+                                        <p className="truncate text-gray-600">{job?.email}</p>
                                         <p className="text-sm text-gray-500">{job?.address}</p>
-                                        <p className="text-sm text-[#ff7d55]">{job.phoneNumber}</p>
+                                        <p className="text-sm text-[#ff7d55]">{job?.phoneNumber}</p>
                                     </div>
                                 </div>
                                 <div className="flex flex-shrink-0 items-center space-x-4">
                                     <button disabled className="whitespace-nowrap rounded-lg bg-orange-400 px-4 py-2 text-white transition-colors hover:bg-orange-500">
-                                        {job.status}
+                                        {myJobpost[applySelect].status}
                                     </button>
                                 </div>
                             </Link>

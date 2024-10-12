@@ -57,33 +57,56 @@ const MyJob = () => {
     );
     return res.json();
   };
+  interface Job {
+    jobPostData: {
 
-  const [applyJob, setApplyJob] = useState([
-    {
-      companyLogo: "",
-      companyName: "",
-      jobSalary: "",
-      jobTitle: "",
-      jobLocation: [],
-      jobPostId: '',
-      jobPostTitle: '',
-      status: '',
-      _id: "",
-    },
-  ]);
+      companyLogo: string;
+      companyName: string;
+      jobSalary: string;
+      jobTitle: string;
+      jobPostId: string;
+      jobPostTitle: string;
+      minSalary: number;
+      maxSalary: number;
+    }
+    _id: string;
+    jobLocation: string[];
+    status: string;
+  }
+  const [applyJob, setApplyJob] = useState<Job[]>([]);
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchApplyJob();
-      setApplyJob(data.data);
+      if (data?.data) {
+        const jobPostsWithStatus = await Promise.all(
+          data.data.map(async (item: any) => {
+            const res = await getJobPost(item);
+            return { jobPostData: res.data, status: item.status };
+          })
+        );
+        setApplyJob(jobPostsWithStatus);
+      }
     };
     fetchData();
   }, []);
+  const getJobPost = async (item: any) => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobpost/get-details-jobpost/${item.jobPostId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return res.json();
+  };
   const fetchApplyJob = async () => {
     const id = decodedToken?.userid;
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/apply/get-my-apply/${id}`,
       {
-        method: "GET",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -94,6 +117,7 @@ const MyJob = () => {
 
   const test = () => {
     console.log(saveJob)
+    console.log(applyJob, "app")
   }
 
   const [activeTab, setActiveTab] = useState("saved");
@@ -121,7 +145,7 @@ const MyJob = () => {
         {<div className="p-4">
           {activeTab === "saved" && (
             <div className="space-y-4">
-              {saveJob.map((job) => (
+              {saveJob?.map((job) => (
                 <Link
                   href={`/job/${job.jobPostId}`}
                   key={job.jobPostId}
@@ -164,31 +188,31 @@ const MyJob = () => {
         {<div className="p-4">
           {activeTab === "applied" && (
             <div className="space-y-4">
-              {applyJob.map((job) => (
+              {applyJob && applyJob.map((job) => (
                 <Link
-                  href={`/job/${job.jobPostId}`}
-                  key={job.jobPostId}
+                  href={`/job/${job?.jobPostData?.jobPostId}`}
+                  key={job?.jobPostData?.jobPostId}
                   className="group flex cursor-pointer items-center justify-between rounded-lg border bg-white p-4 transition-all duration-300 hover:bg-[#f9fcff]"
                 >
                   <div className="flex flex-grow items-center gap-6">
                     <Image
-                      src={job.companyLogo}
-                      alt={`${job.companyName} logo`}
+                      src={job?.jobPostData?.companyLogo}
+                      alt={`logo Company`}
                       className="rounded-lg"
                       width={60}
                       height={60}
                     />
                     <div className="max-w-[calc(100%-200px)] flex-grow">
                       <h3 className="line-clamp-2 text-lg font-medium duration-300 group-hover:text-[#ff7d55] group-hover:transition-all">
-                        {job.jobPostTitle}
+                        {job?.jobPostData?.jobTitle}
                       </h3>
-                      <p className="truncate text-gray-600">{job.companyName}</p>
+                      <p className="truncate text-gray-600">{job?.jobPostData?.companyName}</p>
                       <p className="text-sm text-gray-500">
                         {job?.jobLocation?.map((loc, locIndex) => (
-                          <span key={locIndex}>{loc}{locIndex < job.jobLocation.length - 1 ? ', ' : ''}</span>
+                          <span key={locIndex}>{loc}{locIndex < job?.jobLocation.length - 1 ? ', ' : ''}</span>
                         ))}
                       </p>
-                      <p className="text-sm text-[#ff7d55]">{job.jobSalary}</p>
+                      <p className="text-sm text-[#ff7d55]">{job?.jobPostData?.minSalary} - {job?.jobPostData?.maxSalary}</p>
                     </div>
                   </div>
                   <div className="flex flex-shrink-0 items-center space-x-4">
