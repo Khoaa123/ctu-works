@@ -846,8 +846,9 @@ const Profile = () => {
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <MdMailOutline />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.email ? "text-[#414042] font-medium" : ""
-                      }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
+                      data?.email ? "text-[#414042] font-medium" : ""
+                    }`}
                   >
                     {data?.email ? data.email : "Email"}
                   </p>
@@ -855,8 +856,9 @@ const Profile = () => {
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <FiGift />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.dateOfBirth ? "text-[#414042] font-medium" : ""
-                      }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
+                      data?.dateOfBirth ? "text-[#414042] font-medium" : ""
+                    }`}
                   >
                     {data?.dateOfBirth ? data.dateOfBirth : "Ngày sinh"}
                   </p>
@@ -864,8 +866,9 @@ const Profile = () => {
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <MdOutlineLocationOn />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.address ? "text-[#414042] font-medium" : ""
-                      }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
+                      data?.address ? "text-[#414042] font-medium" : ""
+                    }`}
                   >
                     {data?.address ? data.address : "Địa chỉ"}
                   </p>
@@ -876,8 +879,9 @@ const Profile = () => {
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <FiPhone />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.phoneNumber ? "text-[#414042] font-medium" : ""
-                      }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
+                      data?.phoneNumber ? "text-[#414042] font-medium" : ""
+                    }`}
                   >
                     {data?.phoneNumber ? data.phoneNumber : "Số điện thoại"}
                   </p>
@@ -885,8 +889,9 @@ const Profile = () => {
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <FiUser />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.gender ? "text-[#414042] font-medium" : ""
-                      }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
+                      data?.gender ? "text-[#414042] font-medium" : ""
+                    }`}
                   >
                     {(() => {
                       switch (Number(data?.gender)) {
@@ -903,8 +908,9 @@ const Profile = () => {
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <RiGraduationCapLine />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.MSSV ? "text-[#414042] font-medium" : ""
-                      }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
+                      data?.MSSV ? "text-[#414042] font-medium" : ""
+                    }`}
                   >
                     {data?.MSSV ? data.MSSV : "Mã số sinh viên"}
                   </p>
@@ -1169,9 +1175,10 @@ const Profile = () => {
                               className={`flex flex-col items-center justify-center gap-2 
                                 rounded-md border border-gray-300 bg-white px-3 py-2 
                                 text-sm hover:bg-gray-100   
-                                ${selectedBenefits.includes(benefit.id)
-                                  ? "text-blue-400"
-                                  : ""
+                                ${
+                                  selectedBenefits.includes(benefit.id)
+                                    ? "text-blue-400"
+                                    : ""
                                 }`}
                             >
                               {benefit.icon}
@@ -1201,7 +1208,9 @@ const Profile = () => {
           </div>
           <div>
             <div className="flex">
-              <p className="min-w-64 font-normal text-gray-400">Nơi làm việc</p>
+              <p className="w-1/2 font-normal text-gray-400 md:min-w-64">
+                Nơi làm việc
+              </p>
               <p className="flex-1">
                 {" "}
                 {data?.workingPreferences.locations.join(", ") ||
@@ -1209,7 +1218,7 @@ const Profile = () => {
               </p>
             </div>
             <div className="flex">
-              <p className="min-w-64 font-normal text-gray-400">
+              <p className="w-1/2 font-normal text-gray-400 md:min-w-64">
                 Mức lương mong muốn
               </p>
               <p className="flex-1">

@@ -26,8 +26,8 @@ const SalaryCalculator = () => {
     <>
       <div className="bg-[#F7F8FA] py-4">
         <div className="container">
-          <div className="grid grid-cols-3 gap-6">
-            <div className="col-span-2 rounded-md bg-white p-6">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <div className="rounded-md bg-white p-6 lg:col-span-2">
               <p className="my-3 text-lg font-bold">
                 Công cụ tính lương Gross sang Net và ngược lại [Chuẩn 2024]
               </p>
@@ -173,7 +173,7 @@ const SalaryCalculator = () => {
                 1/7/2023
               </p>
             </div>
-            <div className="col-span-1 flex h-fit flex-col items-center rounded-md bg-white p-4">
+            <div className="hidden h-fit flex-col items-center rounded-md bg-white p-4 lg:col-span-1 lg:flex">
               <div>
                 <svg
                   width="121"

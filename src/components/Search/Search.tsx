@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
 
 const Search = () => {
   const router = useRouter();
@@ -20,7 +20,7 @@ const Search = () => {
   };
   return (
     <>
-      <div className="mb-12 flex items-center justify-center gap-3 bg-[#F6FAFB] py-12">
+      <div className="container mb-12 flex flex-wrap items-center justify-center gap-3 bg-[#F6FAFB] py-12">
         <Select>
           <SelectTrigger className="w-[200px] bg-white py-5 shadow-none focus:ring-0">
             <SelectValue placeholder="Tất cả địa điểm" />
@@ -40,7 +40,8 @@ const Search = () => {
         />
         <button
           onClick={handleSearch}
-          className="rounded-md bg-blue-600 px-4 py-2 text-white transition duration-300 hover:bg-blue-700">
+          className="rounded-md bg-blue-600 px-4 py-2 text-white transition duration-300 hover:bg-blue-700"
+        >
           Tìm kiếm
         </button>
       </div>
