@@ -426,12 +426,12 @@ const Register = () => {
               </div>
               <div>
                 <label className="mb-2 block text-sm font-semibold text-gray-800">
-                  Ngành
+                  Ngành nghề hiện tại
                 </label>
                 <input
                   type="text"
                   className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
-                  placeholder="Nhập chức danh"
+                  placeholder="Vui lòng nhập"
                   value={formData.currentJobFunction}
                   onChange={(e) =>
                     setFormData({
@@ -466,7 +466,7 @@ const Register = () => {
                 <input
                   type="text"
                   className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
-                  placeholder="Nhập chức danh"
+                  placeholder="Vui lòng nhập"
                   value={formData.currentSalary}
                   onChange={(e) =>
                     setFormData({
@@ -506,7 +506,7 @@ const Register = () => {
                 <input
                   type="text"
                   className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
-                  placeholder="Nhập chức danh"
+                  placeholder="Vui lòng nhập"
                   value={formData.country}
                   onChange={(e) =>
                     setFormData({ ...formData, country: e.target.value })
@@ -527,7 +527,7 @@ const Register = () => {
                   }
                 >
                   <SelectTrigger className="h-10 rounded-sm border-gray-300 bg-white shadow-none focus:ring-0 data-[state=open]:border-sky-400">
-                    <SelectValue placeholder="Vui lòng chọn giới tính" />
+                    <SelectValue placeholder="Vui lòng chọn" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Hồ Chính Minh">Hồ Chí Minh</SelectItem>
@@ -564,7 +564,7 @@ const Register = () => {
                 <input
                   type="text"
                   className="h-10 w-full rounded-sm border border-solid border-gray-300 px-4 py-3 text-sm text-gray-800 outline-none transition-all focus:border-sky-400 focus:bg-transparent"
-                  placeholder="Nhập tên ngành"
+                  placeholder="Vui lòng nhập"
                   value={formData.address}
                   onChange={(e) =>
                     setFormData({ ...formData, address: e.target.value })
@@ -585,7 +585,7 @@ const Register = () => {
                   }
                 >
                   <SelectTrigger className="h-10 rounded-sm border-gray-300 bg-white shadow-none focus:ring-0 data-[state=open]:border-sky-400">
-                    <SelectValue placeholder="Vui lòng chọn giới tính" />
+                    <SelectValue placeholder="Vui lòng chọn" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="1">Nam</SelectItem>
@@ -607,7 +607,7 @@ const Register = () => {
                   }
                 >
                   <SelectTrigger className="h-10 rounded-sm border-gray-300 bg-white shadow-none focus:ring-0 data-[state=open]:border-sky-400">
-                    <SelectValue placeholder="Vui lòng chọn giới tính" />
+                    <SelectValue placeholder="Vui lòng chọn" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="1">Độc thân</SelectItem>

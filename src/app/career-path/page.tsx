@@ -78,7 +78,7 @@ const CareerPath = () => {
           <p className="text-center text-xl font-bold">
             BẠN MUỐN XEM LỘ TRÌNH SỰ NGHIỆP CỦA NGÀNH NGHỀ NÀO
           </p>
-          <div className="my-2 grid grid-cols-2 gap-3 py-3 lg:grid-cols-4">
+          <div className="my-2 grid grid-cols-4 gap-3 py-3">
             <Link href="/career-path/sales/intern">
               <div className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg py-5 transition-all duration-300 ease-in-out hover:bg-[#d9e6ff]">
                 <div className="rounded-full border-2 border-solid border-[#005aff] p-4">
@@ -137,7 +137,7 @@ const CareerPath = () => {
           </div>
           <div className="mx-auto mt-4 h-[1px] w-4/5 bg-[#d5d5d5]"></div>
 
-          <div className="my-2 grid grid-cols-2 gap-3 py-3 lg:grid-cols-4">
+          <div className="my-2 grid grid-cols-4 gap-3 py-3">
             <div className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg py-5 transition-all duration-300 ease-in-out hover:bg-[#d9e6ff]">
               <div className="rounded-full border-2 border-solid border-[#005aff] p-4">
                 <Image
@@ -192,7 +192,7 @@ const CareerPath = () => {
           </div>
           <div className="mx-auto mt-4 h-[1px] w-4/5 bg-[#d5d5d5]"></div>
 
-          <div className="my-2 grid grid-cols-2 gap-3 py-3 lg:grid-cols-4">
+          <div className="my-2 grid grid-cols-4 gap-3 py-3">
             <div className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg py-5 transition-all duration-300 ease-in-out hover:bg-[#d9e6ff]">
               <div className="rounded-full border-2 border-solid border-[#005aff] p-4">
                 <Image

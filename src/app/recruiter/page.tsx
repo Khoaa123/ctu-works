@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import HeaderRecruiter from "@/components/HeaderRecruiter/HeaderRecruiter";
 import {
@@ -23,7 +23,15 @@ import {
 } from "@/components/ui/carousel";
 import { FaClock } from "react-icons/fa6";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { useCookies } from "next-client-cookies";
+import { jwtDecode } from "jwt-decode";
 
+export interface JwtPayload {
+  userid: string;
+  email: string;
+  fullName: string;
+  role: string;
+}
 const Recruiter = () => {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
@@ -33,14 +41,40 @@ const Recruiter = () => {
     if (!api) {
       return;
     }
-
     setCount(api.scrollSnapList().length);
     setCurrent(api.selectedScrollSnap());
-
     api.on("select", () => {
       setCurrent(api.selectedScrollSnap());
     });
   }, [api]);
+
+  const cookies = useCookies();
+  const accessToken = cookies.get("accessTokenRecruiter");
+  const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
+  const [recruiterInfo, setRecruiterInfo] = useState({
+    fullName: "",
+  });
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetchRecruiterInfo();
+      const data = res.data;
+      setRecruiterInfo(data);
+    };
+    fetchData();
+  }, []);
+  const fetchRecruiterInfo = async () => {
+    const id = decodedToken?.userid;
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/recruiter/get-details-recruiter/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return res.json();
+  };
   return (
     <>
       <div>
@@ -63,7 +97,7 @@ const Recruiter = () => {
                   <div className="p-4">
                     <p className="text-lg font-bold">Xin chào,</p>
                     <p className="text-lg font-medium text-[#ff7d55]">
-                      Chương Võ
+                      {recruiterInfo?.fullName}
                     </p>
                     <p className="mt-8 text-sm">
                       Đây là một số thông tin để bạn có thể bắt đầu sử dụng

@@ -175,7 +175,7 @@ const Project = ({ data }: { data: any }) => {
 
   useEffect(() => {
     if (data) {
-      setAllProject(data.project);
+      setAllProject(data.projects);
     }
   }, [data]);
 
@@ -432,7 +432,7 @@ const Project = ({ data }: { data: any }) => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        {allProject.map((project: Projects) => (
+        {allProject?.map((project: Projects) => (
           <div
             key={project._id}
             className="group my-4 cursor-pointer rounded-md p-2 transition duration-300 hover:bg-[#f8f9fa]"

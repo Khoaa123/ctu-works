@@ -146,7 +146,7 @@ const Profile = () => {
   const [value, setValue] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isPreferencesDialogOpen, setIsPreferencesDialogOpen] = useState(false);
-  const [selectedBenefits, setSelectedBenefits] = useState<number[]>([]);
+  const [selectedBenefits, setSelectedBenefits] = useState<any[]>([]);
 
   const [formData, setFormData] = useState<FormData>({
     fullName: "",
@@ -174,7 +174,7 @@ const Profile = () => {
       locations: [""],
       jobFunction: "",
       companyIndustries: [""],
-      salary: "",
+      salary: "1",
       desiredJobLevel: "",
       isRelocate: 1,
       benefits: [],
@@ -317,7 +317,7 @@ const Profile = () => {
     }));
   };
 
-  const handleBenefitClick = (benefitId: number) => {
+  const handleBenefitClick = (benefitId: any) => {
     setSelectedBenefits((prevBenefits) => {
       if (prevBenefits.includes(benefitId)) {
         return prevBenefits.filter((id) => id !== benefitId);
@@ -544,7 +544,7 @@ const Profile = () => {
                             <input
                               type="number"
                               placeholder="VNĐ/Tháng"
-                              value={formData.currentSalary}
+                              value={formData?.currentSalary}
                               className="h-10 rounded-md border border-solid px-3 text-sm outline-none focus:border-sky-400"
                               onChange={(e) =>
                                 setFormData({
@@ -846,9 +846,8 @@ const Profile = () => {
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <MdMailOutline />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
-                      data?.email ? "text-[#414042] font-medium" : ""
-                    }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.email ? "text-[#414042] font-medium" : ""
+                      }`}
                   >
                     {data?.email ? data.email : "Email"}
                   </p>
@@ -856,9 +855,8 @@ const Profile = () => {
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <FiGift />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
-                      data?.dateOfBirth ? "text-[#414042] font-medium" : ""
-                    }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.dateOfBirth ? "text-[#414042] font-medium" : ""
+                      }`}
                   >
                     {data?.dateOfBirth ? data.dateOfBirth : "Ngày sinh"}
                   </p>
@@ -866,9 +864,8 @@ const Profile = () => {
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <MdOutlineLocationOn />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
-                      data?.address ? "text-[#414042] font-medium" : ""
-                    }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.address ? "text-[#414042] font-medium" : ""
+                      }`}
                   >
                     {data?.address ? data.address : "Địa chỉ"}
                   </p>
@@ -879,9 +876,8 @@ const Profile = () => {
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <FiPhone />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
-                      data?.phoneNumber ? "text-[#414042] font-medium" : ""
-                    }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.phoneNumber ? "text-[#414042] font-medium" : ""
+                      }`}
                   >
                     {data?.phoneNumber ? data.phoneNumber : "Số điện thoại"}
                   </p>
@@ -889,9 +885,8 @@ const Profile = () => {
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <FiUser />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
-                      data?.gender ? "text-[#414042] font-medium" : ""
-                    }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.gender ? "text-[#414042] font-medium" : ""
+                      }`}
                   >
                     {(() => {
                       switch (Number(data?.gender)) {
@@ -908,9 +903,8 @@ const Profile = () => {
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <RiGraduationCapLine />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
-                      data?.MSSV ? "text-[#414042] font-medium" : ""
-                    }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.MSSV ? "text-[#414042] font-medium" : ""
+                      }`}
                   >
                     {data?.MSSV ? data.MSSV : "Mã số sinh viên"}
                   </p>
@@ -1077,7 +1071,7 @@ const Profile = () => {
                           type="number"
                           placeholder="VNĐ/Tháng"
                           className="h-10 rounded-md border border-solid px-3 text-sm outline-none focus:border-sky-400"
-                          value={workingPreferences.salary}
+                          value={workingPreferences?.salary}
                           onChange={(e) =>
                             setWorkingPreferences((prev) => ({
                               ...prev,
@@ -1134,37 +1128,37 @@ const Profile = () => {
                         <div className="grid grid-cols-5 gap-2">
                           {[
                             {
-                              id: 1,
+                              id: "1",
                               icon: <FaAward size={22} />,
                               label: "Giải thưởng",
                             },
                             {
-                              id: 2,
+                              id: "2",
                               icon: <FaHandHoldingUsd size={22} />,
                               label: "Thưởng",
                             },
                             {
-                              id: 3,
+                              id: "3",
                               icon: <FaUtensils size={22} />,
                               label: "Căn-tin",
                             },
                             {
-                              id: 4,
+                              id: "4",
                               icon: <FaUserDoctor size={22} />,
                               label: "Khám sức khỏe",
                             },
                             {
-                              id: 5,
+                              id: "5",
                               icon: <FaBaby size={22} />,
                               label: "Trông trẻ",
                             },
                             {
-                              id: 6,
+                              id: "6",
                               icon: <FaMobileAlt size={22} />,
                               label: "Điện thoại",
                             },
                             {
-                              id: 7,
+                              id: "7",
                               icon: <FaFileInvoiceDollar size={22} />,
                               label: "Nghỉ phép",
                             },
@@ -1175,10 +1169,9 @@ const Profile = () => {
                               className={`flex flex-col items-center justify-center gap-2 
                                 rounded-md border border-gray-300 bg-white px-3 py-2 
                                 text-sm hover:bg-gray-100   
-                                ${
-                                  selectedBenefits.includes(benefit.id)
-                                    ? "text-blue-400"
-                                    : ""
+                                ${selectedBenefits.includes(benefit.id)
+                                  ? "text-blue-400"
+                                  : ""
                                 }`}
                             >
                               {benefit.icon}
@@ -1208,22 +1201,20 @@ const Profile = () => {
           </div>
           <div>
             <div className="flex">
-              <p className="w-1/2 font-normal text-gray-400 md:min-w-64">
-                Nơi làm việc
-              </p>
+              <p className="min-w-64 font-normal text-gray-400">Nơi làm việc</p>
               <p className="flex-1">
                 {" "}
-                {data?.workingPreferences.locations.join(", ") ||
+                {data?.workingPreferences?.locations.join(", ") ||
                   "Thêm nơi làm việc"}
               </p>
             </div>
             <div className="flex">
-              <p className="w-1/2 font-normal text-gray-400 md:min-w-64">
+              <p className="min-w-64 font-normal text-gray-400">
                 Mức lương mong muốn
               </p>
               <p className="flex-1">
                 {" "}
-                {data?.workingPreferences.salary || "Thêm mức lương mong muốn"}
+                {data?.workingPreferences.salary || "Thêm mức lương mong muốn"} (USD / tháng)
               </p>
             </div>
           </div>

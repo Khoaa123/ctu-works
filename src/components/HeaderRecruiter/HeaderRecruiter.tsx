@@ -141,9 +141,13 @@ const HeaderRecruiter = () => {
                   Tìm Ứng Viên
                 </Button>
               </Link>
-              <Button className="h-10 bg-[#ff7d55] hover:bg-[#fd6333] lg:min-w-32">
-                Mua
-              </Button>
+              <Link href="/recruiter/create-jobpost-ai">
+
+                <Button className="h-10 bg-[#ff7d55] hover:bg-[#fd6333] lg:min-w-32">
+                  Đăng tuyển với AI
+                </Button>
+              </Link>
+
             </div>
             <div className="flex flex-1 items-center justify-end gap-8">
               <FaCartShopping size={24} className="cursor-pointer text-white" />

@@ -54,6 +54,7 @@ const CompanyDetail = () => {
     };
     fetchData();
   }, []);
+  
   const fetchDetailsCompany = async () => {
     const id = location.pathname.split("/company/")[1];
     const res = await fetch(
@@ -150,7 +151,7 @@ const CompanyDetail = () => {
     <>
       <div className="bg-[#F1F2F4]">
         <div className="container">
-          <div className="py-5">
+          <div className="pt-5">
             <div className="cursor-pointer rounded-md bg-white px-12 py-6">
               <div className="flex justify-between gap-3">
                 <Image
@@ -234,9 +235,8 @@ const CompanyDetail = () => {
                   </p>
                 </div>
                 <div
-                  className={` transition-all duration-400 ease-in-out overflow-hidden ${
-                    isExpanded ? "max-h-[1000px]" : "max-h-[170px]"
-                  }`}
+                  className={` transition-all duration-400 ease-in-out overflow-hidden ${isExpanded ? "max-h-[1000px]" : "max-h-[170px]"
+                    }`}
                 >
                   <div className="my-4">
                     <p className="text-sm">
@@ -359,12 +359,7 @@ const CompanyDetail = () => {
                           </p>
                           <p className="text-sm">
                             {item?.location?.map((loc, locIndex) => (
-                              <p key={locIndex}>
-                                {loc}
-                                {locIndex < item.location.length - 1
-                                  ? ", "
-                                  : ""}
-                              </p>
+                              <p key={locIndex}>{loc}{locIndex < item.location.length - 1 ? ', ' : ''}</p>
                             ))}
                           </p>
                         </div>

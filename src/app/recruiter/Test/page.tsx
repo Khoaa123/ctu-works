@@ -16,7 +16,10 @@ import { useRouter } from "next/navigation";
 import { useCookies } from "next-client-cookies";
 import { toast } from "react-toastify";
 import { title } from "process";
-import { chatSession } from "../../ai/keyWordSuggest";
+import { chatSessionCreate } from "../../ai/createJobAi";
+
+import * as XLSX from 'xlsx';
+import CreateJobPostAI from "../create-jobpost-ai/page";
 const Login = () => {
 
     // const [keywords, setKeywords] = useState('');
@@ -24,6 +27,8 @@ const Login = () => {
     const [jobField, setJobField] = useState('');
     const [recommendations, setRecommendations] = useState([
     ]);
+    const [formData, setFormData] = useState('');
+    const router = useRouter();
     const keywords = ["Anh Văn"];
     const handleSubmit = async (event: any) => {
         event.preventDefault();
@@ -63,15 +68,46 @@ const Login = () => {
         debounceTimeout = setTimeout(async () => {
             if (e.target.value.length > 1) {
                 const message = `Gợi ý cho tôi 20 từ khóa về kỹ năng và nghề nghiệp có chứa từ ${e.target.value} thuộc lĩnh vực Công nghệ thông tin`;
-                const result = await chatSession.sendMessage(message);
+                const result = await chatSessionCreate.sendMessage(message);
                 console.log(result?.response?.text());
             }
         }, 250);
     };
+    const [data, setData] = useState([]);
+    const extractedValues = [''];
+    const handleFileUpload = async (e: any) => {
+        const reader = new FileReader();
+        reader.readAsBinaryString(e.target.files[0]);
+        reader.onload = async (e) => {
+            const data = e.target?.result;
+            const workbook = XLSX.read(data, { type: "binary" });
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            const parsedData: any = XLSX.utils.sheet_to_json(sheet);
+            setData(parsedData);
+            parsedData.forEach((data: any, index: any) => {
+                Object.keys(data).forEach((key) => {
+                    extractedValues.push(data[key]);
+                    console.log(`${key}: ${data[key]}`);
+                });
+            });
 
+            const message = `Phân tích dữ liệu sau và đưa thông tin về định đạng đã được cung cấp ở trên ${extractedValues}`;
+            const result = await chatSessionCreate.sendMessage(message);
+            console.log(result?.response?.text());
+            const Test = JSON.parse(result?.response?.text())
+            // router.push("/recruiter/create-jobpost-ai")
+        };
+
+    }
+    const Test = async () => {
+        console.log(data)
+
+    }
     return (
         <div>
             <h1>Gợi ý công việc</h1>
+            <button onClick={Test}>Test</button>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="skills">Kỹ năng:</label>
@@ -112,6 +148,32 @@ const Login = () => {
                     </div>
                 </div>
             </div>
+            <input
+                type="file"
+                accept=".xlsx, .xls"
+                onChange={handleFileUpload}
+            />
+
+            {data.length > 0 && (
+                <table className="table">
+                    <thead>
+                        <tr>
+                            {Object.keys(data[0]).map((key) => (
+                                <th key={key}>{key}</th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {data.map((row, index) => (
+                            <tr key={index}>
+                                {Object.values(row).map((value, index) => (
+                                    <td key={index}>{}</td>
+                                ))}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
         </div>
     );
 };

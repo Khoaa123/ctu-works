@@ -14,7 +14,6 @@ import Image from "next/image";
 import nexon from "@images/nexon.png";
 import vinfast from "@images/vinfast.png";
 import science from "@images/image-science.png";
-import io from "socket.io-client";
 
 type CompanyInfo = {
   companyName: string;
@@ -108,18 +107,6 @@ const HomePage = () => {
 
     fetchJobPosts();
   }, []);
-
-  // const socket = io("http://localhost:3001");
-  // const [notification, setNotification] = useState<any>();
-  // useEffect(() => {
-  //   socket.on("notification", (data) => {
-  //     console.log("Socket IO", data);
-  //     setNotification((prev: any) => [...prev, data]);
-  //   });
-  //   return () => {
-  //     socket.off("notification");
-  //   };
-  // }, []);
 
   return (
     <>
@@ -281,7 +268,7 @@ const HomePage = () => {
                           height: "350px",
                         }}
                       ></div>
-                      <div className="z-50 mx-auto -mt-20 h-fit w-4/5 rounded-md bg-[#f4f4f7] p-5 md:w-3/4">
+                      <div className="z-50 mx-auto -mt-20 h-fit w-3/4 rounded-md bg-[#f4f4f7] p-5">
                         <div className="flex items-center gap-6 rounded-md bg-white p-4">
                           <Image
                             src={nexon}
@@ -296,7 +283,7 @@ const HomePage = () => {
                             <p className="text-sm italic text-[#ff7d55]">
                               Making People before Making Products
                             </p>
-                            <p className="hidden md:block">
+                            <p>
                               Panasonic Vietnam is the first 100% foreign owned
                               company to hold the role of a managing company in
                               Vietnam consisting of 7 companies.
@@ -358,7 +345,7 @@ const HomePage = () => {
                 <CarouselContent>
                   {groupedItems2.map((group, index) => (
                     <CarouselItem key={index} className="w-full">
-                      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                      <div className="grid grid-cols-3 gap-4">
                         {group.map((_, subIndex) => (
                           <div key={subIndex} className="p-1">
                             <Link href="/job/1">

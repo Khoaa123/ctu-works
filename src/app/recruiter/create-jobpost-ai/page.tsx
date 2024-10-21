@@ -42,7 +42,9 @@ import { cn } from "@/lib/utils";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { chatSession } from "../../ai/keyWordSuggest";
+import { chatSessionCreate } from "../../ai/createJobAi";
 
+import * as XLSX from 'xlsx';
 export interface JwtPayload {
   userid: string;
   email: string;
@@ -55,7 +57,7 @@ const tabs = [
   { id: "application", label: "Lời mời ứng tuyển" },
 ];
 
-const CreateJobpost = () => {
+const CreateJobPostAI = () => {
   const cookies = useCookies();
   const accessToken = cookies.get("accessTokenRecruiter");
   const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
@@ -89,13 +91,14 @@ const CreateJobpost = () => {
     companyStaffName: string;
     companyBenefits: CompanyBenefit[];
     companyEmail: string;
-    companyInfo: string;
+    // companyInfo: string;
   }
 
   interface FormData {
+
     jobTitle: string;
     expirationDate: string;
-    jobLocation: object[];
+    location: object[];
     jobDescription: string;
     jobRequirements: string;
     jobType: string;
@@ -105,11 +108,18 @@ const CreateJobpost = () => {
     jobInformation: JobInformation;
     companyInfo: CompanyInfo;
   }
-
+  interface Location {
+    id: number;
+    title: string;
+  }
+  interface Benefits {
+    id: number;
+    name: string;
+  }
   const [formData, setFormData] = useState<FormData>({
     jobTitle: "",
     expirationDate: '',
-    jobLocation: [],
+    location: [{}],
     jobDescription: "",
     jobRequirements: "",
     jobType: "",
@@ -121,10 +131,10 @@ const CreateJobpost = () => {
       jobIndustry: "",
       keywords: [],
       jobField: "",
-      language: "Bất kỳ",
-      minExperience: 1,
+      language: "",
+      minExperience: 0,
       nationality: "",
-      educationLevel: "Bất kỳ",
+      educationLevel: "",
       gender: "",
       minAge: 20,
       maxAge: 30,
@@ -143,7 +153,6 @@ const CreateJobpost = () => {
         },
       ],
       companyEmail: "",
-      companyInfo: "",
     },
   });
 
@@ -157,8 +166,8 @@ const CreateJobpost = () => {
     setInputValue(e.target.value);
   };
   const handleAddTag = (tag: string) => {
-    if (tags.length < 5) {
-      setTags([...tags, tag]);
+    if (tags?.length < 5) {
+      tags.push(tag);
       formData.jobInformation.keywords.push(tag);
       setInputValue("");
     }
@@ -245,18 +254,30 @@ const CreateJobpost = () => {
       placeholder: "Ví dụ: Cấp Misfix cho mỗi nhân viên",
     },
   ];
-  const [benefits, setBenefits] = useState([{ id: 0, name: "Thưởng" }]);
-  const [benefitId, setBenefitId] = useState(1);
-  const handleAddBenefit = () => {
-    if (benefits.length < 3) {
-      setBenefits((prevBenefits) => [
-        ...prevBenefits,
-        {
-          id: benefitId,
-          name: "",
-        },
-      ]);
-      setBenefitId((prevId) => prevId + 1);
+  const [benefits, setBenefits] = useState<Benefits[]>([]);
+  const [benefitId, setBenefitId] = useState(0);
+  const handleAddBenefit = (item: any, index: any) => {
+    if (benefits?.length < 3) {
+      if (item?.length > 1) {
+        setBenefits((prevBenefits) => [
+          ...prevBenefits,
+          {
+            id: index,
+            name: item,
+          }
+        ]);
+        setBenefitId((prevId) => prevId + 1);
+
+      } else {
+        setBenefits((prevBenefits) => [
+          ...prevBenefits,
+          {
+            id: benefitId,
+            name: "",
+          },
+        ]);
+        setBenefitId((prevId) => prevId + 1);
+      }
     }
   };
 
@@ -274,23 +295,35 @@ const CreateJobpost = () => {
       };
     });
   };
-  const usedBenefits = Object.values(formData.companyInfo.companyBenefits).map(
+  const usedBenefits = Object.values(formData.companyInfo?.companyBenefits).map(
     (benefit) => benefit.title
   );
 
-  const [locations, setLocations] = useState([{ id: 0, title: "" }]);
-  const [locationId, setLocationId] = useState(1);
+  const [locations, setLocations] = useState<Location[]>([]);
+  const [locationId, setLocationId] = useState(0);
 
-  const handleAddLocationCompany = () => {
-    if (locations.length < 3) {
-      setLocations((prevLocations) => [
-        ...prevLocations,
-        {
-          id: locationId,
-          title: "",
-        }
-      ]);
-      setLocationId((prevId) => prevId + 1);
+  const handleAddLocationCompany = (item: any, index: any) => {
+    if (locations?.length < 3) {
+      if (item?.length > 1) {
+        setLocations((prevLocations) => [
+          ...prevLocations,
+          {
+            id: index,
+            title: item,
+          }
+        ]);
+        setLocationId((prevId) => prevId + 1);
+
+      } else {
+        setLocations((prevLocations) => [
+          ...prevLocations,
+          {
+            id: locationId,
+            title: "",
+          }
+        ]);
+        setLocationId((prevId) => prevId + 1);
+      }
     }
   }
   const handleRemoveLocationCompany = (idToRemove: any) => {
@@ -304,25 +337,24 @@ const CreateJobpost = () => {
     );
 
     setFormData((prevFormData) => {
-      const { jobLocation } = prevFormData;
-      delete jobLocation[idToRemove];
+      const { location } = prevFormData;
+      delete location[idToRemove];
       return {
         ...prevFormData,
-        jobLocation: [jobLocation]
+        location: location
       };
     });
   };
-  const fetchApplyJob = async (formData: any) => {
-    const id = decodedToken?.userid;
+  const fetchUpdateJob = async (formData: any) => {
+    const id = location.pathname.split("/recruiter/edit-job/")[1];
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobpost/create`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobpost/update/${id}`,
       {
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          recruiterId: id,
           formData,
         }),
       }
@@ -350,7 +382,7 @@ const CreateJobpost = () => {
       ...Object.entries(formData.companyInfo).filter(([key, value]) => value === "").map(([key]) => key),
       ...Object.entries(formData.jobInformation).filter(([key, value]) => value === "").map(([key]) => key)
     ];
-    if (nullFields.length > 0) {
+    if (nullFields?.length > 0) {
       const labels = nullFields.map((key) => {
         if (key !== "companyLogo") {
           let label = null
@@ -416,16 +448,17 @@ const CreateJobpost = () => {
           }
         }
       });
-      if (labels.length > 1) {
+
+      if (labels?.length > 1) {
         toast.error(`Vui lòng không bỏ trống: ${labels.join(", ")}`);
       }
     }
 
-    fetchApplyJob(formData)
+    fetchUpdateJob(formData)
       .then((response) => {
         if (response.status === "OK") {
-          toast.success("Tạo bài đăng thành công!");
-          router.push("/recruiter");
+          toast.success("Chỉnh sửa bài đăng thành công!");
+          router.push("/recruiter/job");
         } else {
           toast.error("Vui lòng không bỏ trống: Từ khóa hoặc phúc lợi.");
         }
@@ -505,44 +538,146 @@ const CreateJobpost = () => {
       console.log(error)
     }
   }
+  let run = 0
   useEffect(() => {
-    try {
-      const fetchData = async () => {
-        const res = await fetchRecruiterInfo();
-        const data = res.data;
-        data?.locationCompanyId.map(async (data: any) => {
-          const dataLocation = await getLocationCompany(data)
-          const LocationData = dataLocation.data[0]
-          if (LocationData !== null) {
-            Location.push(LocationData);
-       
-            const uniqueArray = Location.filter((obj, index, self) => {
-              return self.findIndex((otherObj) => areObjectsEqual(obj, otherObj)) === index;
-            });
-            uniqueArray.splice(0, 1)
-            setLocation(uniqueArray)
+    if (run < 1) {
+      try {
+        const fetchData = async () => {
+          const res = await fetchJobPost();
+          const data = res.data;
+
+          const {
+            jobTitle,
+            expirationDate,
+            location,
+            jobDescription,
+            jobRequirements,
+            jobType,
+            minSalary,
+            maxSalary,
+            numberOfPositions,
+
+            jobLevel,
+            jobIndustry,
+            keywords,
+            jobField,
+            language,
+            minExperience,
+            nationality,
+            educationLevel,
+            gender,
+            minAge,
+            maxAge,
+            maritalStatus,
+
+            companyName,
+            companyAddress,
+            companySize,
+            companyLogo,
+            companyStaffName,
+            companyBenefits,
+            companyEmail,
+            // companyInfo,
+            jobCompanyInfoId,
+            candidateExpectationsId,
+            jobInfoId,
+          } = data[0]
+
+          const companyInfo = {
+            companyName,
+            companyAddress,
+            companySize,
+            companyLogo,
+            companyStaffName,
+            companyBenefits,
+            companyEmail,
+            // companyInfo,
           }
-        })
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          companyInfo: {
-            ...prevFormData.companyInfo,
-            companyName: data.companyName,
-            companyAddress: data.companyAddress,
-            companySize: data.companyScale,
-            // companyLogo: data.companyLogo,
-            companyStaffName: data.companyStaffName,
-            // companyBenefits: data.companyBenefits,
-            companyEmail: data.email,
-            companyInfo: data.companyInfo,
-          },
-        }))
-      };
-      fetchData();
-    } catch (error) {
-      console.log(error)
+          const jobInformation = {
+            jobLevel,
+            jobIndustry,
+            keywords,
+            jobField,
+            language,
+            minExperience,
+            nationality,
+            educationLevel,
+            gender,
+            minAge,
+            maxAge,
+            maritalStatus,
+          }
+          const jobData = {
+            jobCompanyInfoId,
+            candidateExpectationsId,
+            jobInfoId,
+            jobTitle,
+            expirationDate,
+            location,
+            jobDescription,
+            jobRequirements,
+            jobType,
+            minSalary,
+            maxSalary,
+            numberOfPositions, jobInformation, companyInfo
+          }
+
+          const Used: string[] = [];
+          location?.forEach((item: string, index: any) => {
+            handleAddLocationCompany(item, index);
+
+            Used.push(item?.split(":")[0]);
+          });
+          const res1 = await fetchRecruiterInfo();
+          const data1 = res1.data;
+          data1?.locationCompanyId.map(async (data: any) => {
+            const dataLocation = await getLocationCompany(data)
+            const LocationData = dataLocation.data[0]
+            if (LocationData !== null) {
+              Used?.map((item: any) => {
+                if (item === LocationData.title.split(":")[0]) {
+                  LocationData.used = true
+                }
+              })
+              Location.push(LocationData);
+              const uniqueArray = Location.filter((obj, index, self) => {
+                return self.findIndex((otherObj) => areObjectsEqual(obj, otherObj)) === index;
+              });
+              uniqueArray.splice(0, 1)
+              setLocation(uniqueArray)
+            }
+          })
+
+          keywords?.map((key: any) => {
+            handleAddTag(key)
+          })
+          companyBenefits?.forEach((item: any, index: any) => {
+            handleAddBenefit(item.title, index)
+          });
+          const date = new Date(expirationDate)
+          setDate(date)
+          setFormData(jobData)
+        };
+        run = 1
+        fetchData();
+      } catch (error) {
+        console.log(error)
+      }
     }
   }, []);
+  const fetchRecruiterInfo = async () => {
+    const id = decodedToken?.userid;
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/recruiter/get-details-recruiter/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return res.json();
+  };
   const getLocationCompany = async (id: any) => {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/location-company/get-location-company/${id}`,
@@ -555,12 +690,12 @@ const CreateJobpost = () => {
     );
     return res.json();
   };
-  const fetchRecruiterInfo = async () => {
-    const id = decodedToken?.userid;
+  const fetchJobPost = async () => {
+    // const id = location.pathname.split("/recruiter/edit-job/")[1];
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/recruiter/get-details-recruiter/${id}`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/create-job-ai/get/`,
       {
-        method: "GET",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -657,6 +792,7 @@ const CreateJobpost = () => {
     { value: "Đầu Bếp", label: "Đầu Bếp" },
     { value: "Quản Lý F&B", label: "Quản Lý F&B" },
     { value: "Bảo Mật Công Nghệ Thông Tin", label: "Bảo Mật Công Nghệ Thông Tin" },
+    { value: "Chuyển Đổi Số", label: "Chuyển Đổi Số" },
     { value: "Data Engineer/Data Analyst/AI", label: "Data Engineer/Data Analyst/AI" },
     { value: "IT Support/Help Desk", label: "IT Support/Help Desk" },
     { value: "Phần Cứng Máy Tính", label: "Phần Cứng Máy Tính" },
@@ -668,6 +804,7 @@ const CreateJobpost = () => {
     { value: "Quản Trị Cơ Sở Dữ Liệu", label: "Quản Trị Cơ Sở Dữ Liệu" },
     { value: "System/Cloud/DevOps Engineer", label: "System/Cloud/DevOps Engineer" },
     { value: "UX/UI Design", label: "UX/UI Design" },
+    { value: "Viễn Thông", label: "Viễn Thông" },
     { value: "Phát Triển Sản Phẩm May Mặc", label: "Phát Triển Sản Phẩm May Mặc" },
     { value: "Quản Lý Đơn Hàng", label: "Quản Lý Đơn Hàng" },
     { value: "Đầu Bếp", label: "Đầu Bếp" },
@@ -879,8 +1016,8 @@ const CreateJobpost = () => {
     }
 
     debounceTimeout = setTimeout(async () => {
-      if (e.target.value.length > 1) {
-        const message = `Gợi ý cho tôi 20 từ khóa về kỹ năng nghề nghiệp có chứa từ ${e.target.value} thuộc lĩnh vực ${formData?.jobInformation?.jobField || formData?.jobInformation?.jobIndustry || ""}`;
+      if (e.target.value?.length > 1) {
+        const message = `Gợi ý cho tôi 20 từ khóa tiếng việt về kỹ năng nghề nghiệp có chứa từ ${e.target.value} thuộc lĩnh vực ${formData?.jobInformation?.jobField || formData?.jobInformation?.jobIndustry || ""}`;
         try {
           const result = await chatSession.sendMessage(message);
           const data = result?.response?.text()
@@ -895,10 +1032,146 @@ const CreateJobpost = () => {
 
   };
 
+
+  const putData = async (data: any) => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/create-job-ai/create`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: data
+        }),
+      }
+    );
+    return res.json();
+  };
+  const [data, setData] = useState([]);
+  const extractedValues = [''];
+  const handleFileUpload = async (e: any) => {
+    const reader = new FileReader();
+    reader.readAsBinaryString(e.target.files[0]);
+    reader.onload = async (e) => {
+      const data = e.target?.result;
+      const workbook = XLSX.read(data, { type: "binary" });
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const parsedData: any = XLSX.utils.sheet_to_json(sheet);
+      setData(parsedData);
+      parsedData.forEach((data: any, index: any) => {
+        Object.keys(data).forEach((key) => {
+          extractedValues.push(data[key]);
+          console.log(`${key}: ${data[key]}`);
+        });
+      });
+
+      const message = `${extractedValues}`;
+      console.log(message, 'message')
+      const result = await chatSessionCreate.sendMessage(message);
+      console.log(result?.response?.text());
+      const Test = JSON.parse(result?.response?.text())
+      let jobTitle, expirationDate, location, jobDescription, jobRequirements, jobType, minSalary, maxSalary, numberOfPositions, jobLevel, jobIndustry, keywords, jobField, language, minExperience, nationality, educationLevel, gender, minAge, maxAge, maritalStatus, companyName, companyAddress, companySize, companyLogo, companyStaffName, companyBenefits, companyEmail, jobCompanyInfoId, candidateExpectationsId, jobInfoId;
+
+      if (Test !== undefined) {
+        jobTitle = Test.jobTitle || "";
+        expirationDate = Test.expirationDate || "";
+        location = Test.location || "";
+        jobDescription = Test.jobDescription || "";
+        jobRequirements = Test.jobRequirements || "";
+        jobType = Test.jobType || "";
+        minSalary = Test.minSalary || 1;
+        maxSalary = Test.maxSalary || 1;
+        numberOfPositions = Test.numberOfPositions || "";
+        jobLevel = Test.jobLevel || "";
+        jobIndustry = Test.jobIndustry || "";
+        keywords = Test.keywords || "";
+        jobField = Test.jobField || "";
+        language = Test.language || "";
+        minExperience = Test.minExperience || 1;
+        nationality = Test.nationality || "";
+        educationLevel = Test.educationLevel || "";
+        gender = Test.gender || "";
+        minAge = Test.minAge || 1;
+        maxAge = Test.maxAge || 1;
+        maritalStatus = Test.maritalStatus || "";
+        companyName = Test.companyName || "";
+        companyAddress = Test.companyAddress || "";
+        companySize = Test.companySize || "";
+        companyLogo = Test.companyLogo || "";
+        companyStaffName = Test.companyStaffName || "";
+        companyBenefits = Test.companyBenefits || "";
+        companyEmail = Test.companyEmail || "";
+        jobCompanyInfoId = Test.jobCompanyInfoId || "";
+        candidateExpectationsId = Test.candidateExpectationsId || "";
+        jobInfoId = Test.jobInfoId || "";
+      }
+      const Used: string[] = [];
+      const res1 = await fetchRecruiterInfo();
+      const data1 = res1.data;
+      data1?.locationCompanyId.map(async (data: any) => {
+        const dataLocation = await getLocationCompany(data)
+        const LocationData = dataLocation.data[0]
+        if (LocationData !== null) {
+          Used?.map((item: any) => {
+            if (item === LocationData.title.split(":")[0]) {
+              LocationData.used = true
+            }
+          })
+          Location.push(LocationData);
+          const uniqueArray = Location.filter((obj, index, self) => {
+            return self.findIndex((otherObj) => areObjectsEqual(obj, otherObj)) === index;
+          });
+          uniqueArray.splice(0, 1)
+          setLocation(uniqueArray)
+        }
+      })
+      location?.forEach((item: string, index: any) => {
+        Location.push({ _id: "", title: item, description: "", used: false })
+        // locations.push({ id: index, title: item });
+        // handleAddLocationCompany(item, index)
+        // Used.push(item?.split(":")[0]);
+      });
+      keywords?.map((key: any) => {
+        handleAddTag(key)
+      })
+      // const date = new Date(expirationDate)
+      // setDate(date)
+      companyBenefits?.forEach((item: any, index: any) => {
+        handleAddBenefit(item.title, index)
+      });
+      setFormData({
+        jobTitle, expirationDate, location, jobDescription, jobRequirements,
+        jobType, minSalary, maxSalary, numberOfPositions,
+        jobInformation: {
+          jobLevel, jobIndustry, keywords,
+          jobField, language, minExperience, nationality, educationLevel, gender, minAge, maxAge,
+          maritalStatus,
+        },
+        companyInfo: {
+          companyName, companyAddress, companySize, companyLogo, companyStaffName,
+          companyBenefits, companyEmail
+        }
+      })
+    };
+
+  }
+  const Test = () => {
+    console.log(locations)
+    // handleAddLocationCompany("Titlte", 1)
+    // locations.push({ id: 2, title: "okok" })
+  }
   return (
     <>
       <HeaderRecruiter />
       <div className="flex flex-col items-center py-10">
+        <button onClick={Test}>Test</button>
+        <input
+          type="file"
+          accept=".xlsx, .xls"
+          onChange={handleFileUpload}
+        />
         <div className="w-full max-w-4xl rounded-lg bg-white p-6 shadow-md">
           <div className="mb-6 flex justify-center">
             <div className="flex flex-col items-center">
@@ -1034,7 +1307,6 @@ const CreateJobpost = () => {
                                   openModal();
                                 } else {
                                   const use = e.target.value.split(':')
-                                  console.log(loc)
                                   if (loc.title.split(':')[0] !== use[0]) {
                                     const locationToUpdate = Location.find((location) => loc.title.split(':')[0] === location.title);
                                     if (locationToUpdate) {
@@ -1048,7 +1320,7 @@ const CreateJobpost = () => {
                                   loc.title = e.target.value;
                                   setFormData({
                                     ...formData,
-                                    jobLocation: locations,
+                                    location: locations,
                                   });
                                 }
                               }
@@ -1068,21 +1340,21 @@ const CreateJobpost = () => {
                               <option className="text-blue-500 cursor-pointer" key={""}>+ Tạo địa điểm làm việc</option>
                             </select>
                             {
-                              locations.length > 1 && (
+                              locations?.length > 1 && (
                                 <button
                                   onClick={() => handleRemoveLocationCompany(loc.id)}
                                 >
-                                  <FaTrash className="h-12 w-5" />
+                                  <FaTrash className="cursor-pointer h-12 w-5" />
                                 </button>
                               )
                             }
                           </div>
                         ))}
                         <div>
-                          {locations.length < 3 && (
+                          {locations?.length < 3 && (
                             <button
                               className="mt-2 text-blue-500"
-                              onClick={handleAddLocationCompany}
+                              onClick={() => handleAddLocationCompany('', '')}
                             >
                               + Thêm địa điểm làm việc
                             </button>
@@ -1279,7 +1551,7 @@ const CreateJobpost = () => {
                               onChange={handleInputChangeKeyWord}
                               className="flex-grow p-2 outline-none"
                               placeholder={
-                                tags.length > 0
+                                tags?.length > 0
                                   ? ""
                                   : "Ví dụ: Anh văn, Giao tiếp..."
                               }
@@ -1701,7 +1973,6 @@ const CreateJobpost = () => {
                             <option>Tiếng Pháp</option>
                             <option>Tiếng Tây Ban Nha</option>
                             <option>Tiếng Ý</option>
-
                           </select>
                         </div>
                         <div className="flex justify-end">
@@ -1735,7 +2006,7 @@ const CreateJobpost = () => {
                       Tên công ty <span className="text-red-500">*</span>
                     </label>
                     <input
-                      value={formData.companyInfo.companyName}
+                      value={formData.companyInfo?.companyName}
                       onChange={(e) => {
                         setFormData({
                           ...formData,
@@ -1757,7 +2028,7 @@ const CreateJobpost = () => {
                         Người liên hệ<span className="text-red-500">*</span>
                       </label>
                       <input
-                        value={formData.companyInfo.companyStaffName}
+                        value={formData.companyInfo?.companyStaffName}
                         onChange={(e) => {
                           setFormData({
                             ...formData,
@@ -1778,7 +2049,7 @@ const CreateJobpost = () => {
                         <span className="text-red-500">*</span>
                       </label>
                       <input
-                        value={formData.companyInfo.companyEmail}
+                        value={formData.companyInfo?.companyEmail}
                         onChange={(e) => {
                           setFormData({
                             ...formData,
@@ -1803,7 +2074,7 @@ const CreateJobpost = () => {
                       Địa chỉ công ty
                     </label>
                     <input
-                      value={formData.companyInfo.companyAddress}
+                      value={formData.companyInfo?.companyAddress}
                       onChange={(e) => {
                         setFormData({
                           ...formData,
@@ -1827,7 +2098,7 @@ const CreateJobpost = () => {
                       Quy mô công ty
                     </label>
                     <select
-                      value={formData.companyInfo.companySize}
+                      value={formData.companyInfo?.companySize}
                       onChange={(e) => {
                         setFormData({
                           ...formData,
@@ -1862,20 +2133,21 @@ const CreateJobpost = () => {
                     {benefits.map((benefit) => (
                       <div key={benefit.id} className="mb-2 flex space-x-4">
                         <select
+                          value={formData?.companyInfo?.companyBenefits[benefit.id]?.title}
                           onChange={(e) => {
                             setFormData({
                               ...formData,
                               companyInfo: {
                                 ...formData.companyInfo,
                                 companyBenefits: {
-                                  ...formData.companyInfo.companyBenefits,
+                                  ...formData.companyInfo?.companyBenefits,
                                   [benefit.id]: {
-                                    ...formData.companyInfo.companyBenefits[
+                                    ...formData.companyInfo?.companyBenefits[
                                     benefit.id
                                     ],
                                     title: e.target.value,
                                     content:
-                                      formData.companyInfo.companyBenefits[
+                                      formData.companyInfo?.companyBenefits[
                                         benefit.id
                                       ]?.content,
                                   },
@@ -1893,7 +2165,7 @@ const CreateJobpost = () => {
                               disabled={
                                 usedBenefits.includes(item.name) &&
                                 item.name !==
-                                formData.companyInfo.companyBenefits[
+                                formData.companyInfo?.companyBenefits[
                                   benefit.id
                                 ]?.title
                               }
@@ -1905,7 +2177,7 @@ const CreateJobpost = () => {
                         </select>
                         <textarea
                           value={
-                            formData.companyInfo.companyBenefits[benefit.id]
+                            formData.companyInfo?.companyBenefits[benefit.id]
                               ?.content
                           }
                           onChange={(e) => {
@@ -1914,10 +2186,10 @@ const CreateJobpost = () => {
                               companyInfo: {
                                 ...formData.companyInfo,
                                 companyBenefits: {
-                                  ...formData.companyInfo.companyBenefits,
+                                  ...formData.companyInfo?.companyBenefits,
                                   [benefit.id]: {
                                     title:
-                                      formData.companyInfo.companyBenefits[
+                                      formData.companyInfo?.companyBenefits[
                                         benefit.id
                                       ]?.title,
                                     content: e.target.value,
@@ -1931,12 +2203,12 @@ const CreateJobpost = () => {
                             benefitoptions.find(
                               (option) =>
                                 option.name ===
-                                formData.companyInfo.companyBenefits[benefit.id]
+                                formData.companyInfo?.companyBenefits[benefit.id]
                                   ?.title
                             )?.placeholder || "Nhập chi tiết phúc lợi"
                           }
                         ></textarea>
-                        {benefits.length > 1 && (
+                        {benefits?.length > 1 && (
                           <button
                             onClick={() => handleRemoveBenefit(benefit.id)}
                           >
@@ -1945,10 +2217,10 @@ const CreateJobpost = () => {
                         )}
                       </div>
                     ))}
-                    {benefits.length < 3 && (
+                    {benefits?.length < 3 && (
                       <button
                         className="mt-2 text-blue-500"
-                        onClick={handleAddBenefit}
+                        onClick={() => handleAddBenefit('', '')}
                       >
                         + Thêm phúc lợi
                       </button>
@@ -1964,7 +2236,7 @@ const CreateJobpost = () => {
                     </label>
                     <div className="rounded-lg border-2 border-dashed border-gray-300 p-4 text-center">
                       <input
-                        value={formData.companyInfo.companyLogo}
+                        value={formData.companyInfo?.companyLogo}
                         onChange={(e) => {
                           setFormData({
                             ...formData,
@@ -1995,7 +2267,7 @@ const CreateJobpost = () => {
             onClick={handleSubmit}
             className="mt-4 h-12 rounded bg-orange-500 px-4 py-2 text-white"
           >
-            Tạo
+            Lưu
           </button>
         </div>
         {isModalOpen && (
@@ -2041,4 +2313,4 @@ const CreateJobpost = () => {
   );
 };
 
-export default CreateJobpost;
+export default CreateJobPostAI;

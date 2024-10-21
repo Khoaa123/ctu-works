@@ -134,7 +134,7 @@ const Introduce = ({ data }: { data: any }) => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        {introduce.data ? (
+        {introduce?.data ? (
           <div
             dangerouslySetInnerHTML={{
               __html: introduce.data,

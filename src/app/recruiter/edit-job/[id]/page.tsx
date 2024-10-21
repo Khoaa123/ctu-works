@@ -171,7 +171,8 @@ const EditJob = () => {
   };
   const handleAddTag = (tag: string) => {
     if (tags?.length < 5) {
-      setTags([...tags, tag]);
+      tags.push(tag);
+      // setTags([...tags, tag]);
       formData.jobInformation.keywords.push(tag);
       setInputValue("");
     }
@@ -649,7 +650,10 @@ const EditJob = () => {
               setLocation(uniqueArray)
             }
           })
-          console.log(companyBenefits)
+          keywords?.map((key: any) => {
+            handleAddTag(key);
+          });
+
           companyBenefits?.forEach((item: any, index: any) => {
             handleAddBenefit(item.title, index)
           });
@@ -1830,6 +1834,12 @@ const EditJob = () => {
                             <option>Bất kỳ</option>
                             <option>Tiếng Anh</option>
                             <option>Tiếng Việt</option>
+                            <option>Tiếng Nhật</option>
+                            <option>Tiếng Trung Quốc</option>
+                            <option>Tiếng Hàn</option>
+                            <option>Tiếng Pháp</option>
+                            <option>Tiếng Tây Ban Nha</option>
+                            <option>Tiếng Ý</option>
                           </select>
                         </div>
                         <div className="flex justify-end">

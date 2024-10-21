@@ -332,7 +332,7 @@ const Certification = ({ data }: { data: any }) => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        {allCertification.map((certification: Certification) => (
+        {allCertification?.map((certification: Certification) => (
           <div
             key={certification._id}
             className="group my-4 cursor-pointer rounded-md p-2 transition duration-300 hover:bg-[#f8f9fa]"

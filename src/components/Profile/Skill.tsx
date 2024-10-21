@@ -266,7 +266,7 @@ const Skill = ({ data }: { data: any }) => {
           </DialogContent>
         </Dialog>
         <div>
-          {allSkill.map((item) => (
+          {allSkill?.map((item) => (
             <div
               key={item._id}
               className="group mt-3 flex w-fit gap-3 rounded-md border border-b border-solid bg-[#FBFBFB] px-3 py-2 hover:bg-[#f5f3f4]"

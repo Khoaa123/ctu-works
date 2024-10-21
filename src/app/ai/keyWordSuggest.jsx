@@ -25,7 +25,7 @@ export const chatSession = model.startChat(
             {
                 role: "user",
                 parts: [
-                    { text: "Gợi ý cho tôi các từ khóa về các lĩnh vực công việc có liên quan đến từ java" },
+                    { text: "Gợi ý cho tôi các từ khóa về các lĩnh vực công việc có liên quan đến từ java bao gồm cả nó" },
                 ],
             },
             {

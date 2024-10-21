@@ -436,7 +436,7 @@ const Education = ({ data }: { data: any }) => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        {allEducation.map((education: Education) => (
+        {allEducation?.map((education: Education) => (
           <div
             key={education._id}
             className="group my-4 cursor-pointer rounded-md p-2 transition duration-300 hover:bg-[#f8f9fa]"
