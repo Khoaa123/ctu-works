@@ -1,10 +1,12 @@
+"use client";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import logo from "@images/logo.png";
 import Link from "next/link";
 import SearchWrapper from "../client/SearchWrapper";
 import { jwtDecode } from "jwt-decode";
 import { useCookies } from "next-client-cookies";
+import { io } from "socket.io-client";
 import {
   FaCircleUser,
   FaMessage,
@@ -28,17 +30,88 @@ type JwtPayload = {
   role: string;
 };
 
+type Notification = {
+  _id: string;
+  message: string;
+  isRead: boolean;
+  createdAt: string;
+};
+
 const Header = () => {
   const cookies = useCookies();
   const accessToken = cookies.get("accessToken");
   const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
   const userName = decodedToken?.fullName || "";
   const email = decodedToken?.email || "";
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
   const handleLogout = () => {
     cookies.remove("accessToken");
     cookies.remove("refreshToken");
   };
+
+  const userId = decodedToken?.userid || "6715491824a3b95200ec55d3";
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:3001/api/notification/${userId}`
+        );
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch notifications");
+        }
+
+        const data = await res.json();
+        setNotifications(data.data);
+      } catch (error) {
+        console.error("Lỗi khi lấy thông báo:", error);
+      }
+    };
+
+    if (userId) fetchNotifications();
+
+    const socket = io("http://localhost:3001");
+
+    socket.on(`notification-${userId}`, (notification) => {
+      setNotifications((prev) => [notification, ...prev]);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [userId]);
+
+  const handleMarkAsRead = async (id: string) => {
+    try {
+      const res = await fetch(
+        `http://localhost:3001/api/notification/read/${id}`,
+        {
+          method: "PUT",
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Failed to mark notification as read");
+      }
+
+      setNotifications((prev) =>
+        prev.map((notification) =>
+          notification._id === id
+            ? { ...notification, isRead: true }
+            : notification
+        )
+      );
+    } catch (error) {
+      console.error("Lỗi khi đánh dấu thông báo đã đọc:", error);
+    }
+  };
+
+  const unreadCount = notifications.filter(
+    (notification) => !notification.isRead
+  ).length;
+
   return (
     <>
       <header className="bg-white py-4 shadow-sm">
@@ -147,11 +220,56 @@ const Header = () => {
             </DropdownMenu>
           </div>
           <div className="flex flex-1 items-center justify-end gap-4 text-black">
-            {accessToken ? (
+            {!accessToken ? (
               <>
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#00b14f1a]">
-                  <FaBell size={20} color="#00b14f" />
-                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <div className="relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-[#00b14f1a]">
+                      <FaBell size={20} color="#00b14f" />
+                      {unreadCount > 0 && (
+                        <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                          {unreadCount}
+                        </span>
+                      )}
+                    </div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-80 shadow-sm">
+                    <div className="p-4">
+                      <h3 className="mb-2 text-lg font-semibold">Thông báo</h3>
+                      {notifications.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-8">
+                          <div className="mb-4 rounded-full bg-gray-200 p-4">
+                            <FaBell size={24} color="#9CA3AF" />
+                          </div>
+                          <p className="text-center text-gray-500">
+                            Bạn chưa có thông báo nào
+                          </p>
+                        </div>
+                      ) : (
+                        <ul className="space-y-2">
+                          {notifications.map((notification) => (
+                            <li
+                              key={notification._id}
+                              className={`cursor-pointer list-none rounded-md p-2 ${
+                                notification.isRead
+                                  ? "bg-gray-100"
+                                  : "bg-sky-100"
+                              }`}
+                              onClick={() => handleMarkAsRead(notification._id)}
+                            >
+                              <p className="text-sm">{notification.message}</p>
+                              <p className="text-xs text-gray-500">
+                                {new Date(
+                                  notification.createdAt
+                                ).toLocaleString()}
+                              </p>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#00b14f1a]">
                   <FaMessage size={20} color="#00b14f" />
                 </div>
