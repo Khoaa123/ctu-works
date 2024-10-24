@@ -91,26 +91,6 @@ const Sidebar = () => {
                 Báo cáo thống kê
               </div>
             </Link>
-            <Link href="/admin/system-management">
-              <div
-                className={`cursor-pointer ease-in-out duration-300 hover:bg-[#F7F8Fa] flex gap-3 items-center rounded-md ${
-                  isActive === "system-management"
-                    ? "bg-[#5750f112] text-blue-600"
-                    : ""
-                } px-4 py-3`}
-                onClick={() => setIsActive("system-management")}
-              >
-                <FaCogs
-                  size={22}
-                  className={
-                    isActive === "system-management"
-                      ? "text-blue-600"
-                      : "text-[#4b5563]"
-                  }
-                />
-                Quản lý hệ thống
-              </div>
-            </Link>
           </div>
         </div>
 

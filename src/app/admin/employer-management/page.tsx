@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
-import Image from "next/image";
+import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { formatDate } from "@/utils/FormatDate";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -13,159 +13,124 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Search, Building2 } from "lucide-react";
+import { Search, UserPlus } from "lucide-react";
 import { FaChevronRight, FaChevronLeft } from "react-icons/fa6";
 
-type EmployerData = {
+type RecruiterData = {
   _id: string;
-  companyName: string;
+  fullName: string;
   email: string;
-  phoneNumber: string;
-  industry: string;
+  companyId: string;
   isVerified: boolean;
   createdAt: string;
-  logo: string;
+  lastOnline: string;
+  following: number;
 };
-
-// Mock data
-const mockEmployers: EmployerData[] = [
-  {
-    _id: "1",
-    companyName: "Tech Innovators",
-    email: "contact@techinnovators.com",
-    phoneNumber: "0123456789",
-    industry: "Công nghệ thông tin",
-    isVerified: true,
-    createdAt: "2023-01-15T00:00:00.000Z",
-    logo: "https://demo.nextadmin.co/images/brand/brand-01.svg",
-  },
-  {
-    _id: "2",
-    companyName: "Green Energy Solutions",
-    email: "info@greenenergy.com",
-    phoneNumber: "0987654321",
-    industry: "Năng lượng tái tạo",
-    isVerified: false,
-    createdAt: "2023-02-20T00:00:00.000Z",
-    logo: "https://demo.nextadmin.co/images/brand/brand-02.svg",
-  },
-  {
-    _id: "3",
-    companyName: "Global Logistics",
-    email: "support@globallogistics.com",
-    phoneNumber: "0369852147",
-    industry: "Vận tải và Logistics",
-    isVerified: true,
-    createdAt: "2023-03-10T00:00:00.000Z",
-    logo: "https://demo.nextadmin.co/images/brand/brand-03.svg",
-  },
-  {
-    _id: "4",
-    companyName: "HealthTech Solutions",
-    email: "info@healthtech.com",
-    phoneNumber: "0741852963",
-    industry: "Y tế và Công nghệ",
-    isVerified: true,
-    createdAt: "2023-04-05T00:00:00.000Z",
-    logo: "https://demo.nextadmin.co/images/brand/brand-04.svg",
-  },
-  {
-    _id: "5",
-    companyName: "EduLearn Platform",
-    email: "contact@edulearn.com",
-    phoneNumber: "0258963147",
-    industry: "Giáo dục trực tuyến",
-    isVerified: false,
-    createdAt: "2023-05-12T00:00:00.000Z",
-    logo: "https://demo.nextadmin.co/images/brand/brand-05.svg",
-  },
-];
 
 const EmployerManagement = () => {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const itemsPerPage = 10;
 
-  const filteredEmployers = useMemo(() => {
-    return mockEmployers.filter((employer) =>
-      employer.companyName.toLowerCase().includes(searchTerm.toLowerCase())
+  const fetchAllRecruiters = async () => {
+    const res = await fetch(
+      `http://localhost:3001/api/recruiter/getAll-recruiter?page=${page}&limit=${itemsPerPage}`
     );
-  }, [searchTerm]);
+    if (!res.ok) {
+      throw new Error("Failed to fetch recruiters");
+    }
+    const data = await res.json();
+    return data.data;
+  };
 
-  const paginatedEmployers = useMemo(() => {
-    const start = (page - 1) * itemsPerPage;
-    const end = start + itemsPerPage;
-    return filteredEmployers.slice(start, end);
-  }, [filteredEmployers, page]);
+  const { data, isLoading, isError } = useQuery<RecruiterData[]>({
+    queryKey: ["getAllRecruiters", page, searchTerm],
+    queryFn: fetchAllRecruiters,
+  });
 
-  const totalPages = Math.ceil(filteredEmployers.length / itemsPerPage);
+  const filteredData = data?.filter(
+    (recruiter) =>
+      recruiter.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      recruiter.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        Đang tải...
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        Lỗi khi tải dữ liệu
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-10">
-      <h1 className="mb-5 text-2xl font-bold">Quản lý nhà tuyển dụng</h1>
+      <h1 className="mb-5 border-b border-indigo-200 pb-2 text-2xl font-bold text-indigo-700">
+        Quản lý nhà tuyển dụng
+      </h1>
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center">
           <Input
-            placeholder="Tìm kiếm công ty..."
+            placeholder="Tìm kiếm theo tên hoặc email..."
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
               setPage(1);
             }}
-            className="mr-2 max-w-sm shadow-none focus:border-sky-400 focus:bg-white focus-visible:ring-0"
+            className="mr-2 max-w-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           />
           <Button variant="outline" onClick={() => setPage(1)}>
             <Search className="mr-2 h-4 w-4" /> Tìm kiếm
           </Button>
         </div>
-        <Button className="bg-[#00b14f] hover:bg-[#3ba769]">
-          <Building2 className="mr-2 h-4 w-4" /> Thêm nhà tuyển dụng
+        <Button className="bg-indigo-600 text-white hover:bg-indigo-700">
+          <UserPlus className="mr-2 h-4 w-4" /> Thêm nhà tuyển dụng
         </Button>
       </div>
       <Table className="bg-white">
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[250px]">Tên công ty</TableHead>
+            <TableHead>Họ tên</TableHead>
             <TableHead>Email</TableHead>
-            <TableHead>Số điện thoại</TableHead>
-            <TableHead>Ngành nghề</TableHead>
             <TableHead>Xác thực</TableHead>
+            <TableHead>Lần cuối trực tuyến</TableHead>
+            <TableHead>Số người theo dõi</TableHead>
             <TableHead className="text-right">Ngày tham gia</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {paginatedEmployers.map((employer) => (
-            <TableRow key={employer._id}>
-              <TableCell className="font-medium">
-                <div className="flex items-center">
-                  <Image
-                    src={employer.logo}
-                    alt="logo"
-                    height={30}
-                    width={30}
-                    className="mr-2 rounded-full"
-                  />
-                  <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-                    {employer.companyName}
+          {filteredData &&
+            filteredData.map((recruiter) => (
+              <TableRow key={recruiter._id}>
+                <TableCell className="font-medium">
+                  {recruiter.fullName}
+                </TableCell>
+                <TableCell>{recruiter.email}</TableCell>
+                <TableCell>
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      recruiter.isVerified
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {recruiter.isVerified ? "Đã xác thực" : "Chưa xác thực"}
                   </span>
-                </div>
-              </TableCell>
-              <TableCell>{employer.email}</TableCell>
-              <TableCell>{employer.phoneNumber}</TableCell>
-              <TableCell>{employer.industry}</TableCell>
-              <TableCell>
-                <Badge
-                  variant={employer.isVerified ? "default" : "destructive"}
-                >
-                  {employer.isVerified ? "Đã xác thực" : "Chưa xác thực"}
-                </Badge>
-              </TableCell>
-              <TableCell className="text-right">
-                {formatDate(employer.createdAt)}
-              </TableCell>
-            </TableRow>
-          ))}
+                </TableCell>
+                <TableCell>{formatDate(recruiter.lastOnline)}</TableCell>
+                <TableCell>{recruiter.following}</TableCell>
+                <TableCell className="text-right">
+                  {formatDate(recruiter.createdAt)}
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
       <div className="mt-5 flex justify-center">
@@ -176,14 +141,8 @@ const EmployerManagement = () => {
         >
           <FaChevronLeft />
         </Button>
-        <span className="mx-4 flex items-center">
-          Trang {page} / {totalPages}
-        </span>
-        <Button
-          variant="outline"
-          onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-          disabled={page === totalPages}
-        >
+        <span className="mx-4 flex items-center">Trang {page}</span>
+        <Button variant="outline" onClick={() => setPage((prev) => prev + 1)}>
           <FaChevronRight />
         </Button>
       </div>
