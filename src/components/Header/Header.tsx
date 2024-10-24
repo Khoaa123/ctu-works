@@ -220,7 +220,7 @@ const Header = () => {
             </DropdownMenu>
           </div>
           <div className="flex flex-1 items-center justify-end gap-4 text-black">
-            {!accessToken ? (
+            {accessToken ? (
               <>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
