@@ -17,11 +17,10 @@ const Sidebar = () => {
           <div className="flex list-none flex-col gap-2">
             <Link href="/admin/user-management">
               <div
-                className={`cursor-pointer ease-in-out duration-300 hover:bg-[#F7F8Fa] flex gap-3 items-center rounded-md ${
-                  isActive === "user-management"
+                className={`cursor-pointer ease-in-out duration-300 hover:bg-[#F7F8Fa] flex gap-3 items-center rounded-md ${isActive === "user-management"
                     ? "bg-[#5750f112] text-blue-600"
                     : ""
-                } px-4 py-3`}
+                  } px-4 py-3`}
                 onClick={() => setIsActive("user-management")}
               >
                 <FaUserCog
@@ -37,11 +36,10 @@ const Sidebar = () => {
             </Link>
             <Link href="/admin/employer-management">
               <div
-                className={`cursor-pointer ease-in-out duration-300 hover:bg-[#F7F8Fa] flex gap-3 items-center rounded-md ${
-                  isActive === "employer-management"
+                className={`cursor-pointer ease-in-out duration-300 hover:bg-[#F7F8Fa] flex gap-3 items-center rounded-md ${isActive === "employer-management"
                     ? "bg-[#5750f112] text-blue-600"
                     : ""
-                } px-4 py-3`}
+                  } px-4 py-3`}
                 onClick={() => setIsActive("employer-management")}
               >
                 <FaUserCog
@@ -57,11 +55,10 @@ const Sidebar = () => {
             </Link>
             <Link href="/admin/post-management">
               <div
-                className={`cursor-pointer ease-in-out duration-300 hover:bg-[#F7F8Fa] flex gap-3 items-center rounded-md ${
-                  isActive === "post-management"
+                className={`cursor-pointer ease-in-out duration-300 hover:bg-[#F7F8Fa] flex gap-3 items-center rounded-md ${isActive === "post-management"
                     ? "bg-[#5750f112] text-blue-600"
                     : ""
-                } px-4 py-3`}
+                  } px-4 py-3`}
                 onClick={() => setIsActive("post-management")}
               >
                 <FaFileAlt
@@ -77,9 +74,8 @@ const Sidebar = () => {
             </Link>
             <Link href="/admin/reports">
               <div
-                className={`cursor-pointer ease-in-out duration-300 hover:bg-[#F7F8Fa] flex gap-3 items-center rounded-md ${
-                  isActive === "reports" ? "bg-[#5750f112] text-blue-600" : ""
-                } px-4 py-3`}
+                className={`cursor-pointer ease-in-out duration-300 hover:bg-[#F7F8Fa] flex gap-3 items-center rounded-md ${isActive === "reports" ? "bg-[#5750f112] text-blue-600" : ""
+                  } px-4 py-3`}
                 onClick={() => setIsActive("reports")}
               >
                 <FaChartBar

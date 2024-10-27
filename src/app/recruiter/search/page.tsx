@@ -5,8 +5,20 @@ import HeaderRecruiter from "@/components/HeaderRecruiter/HeaderRecruiter";
 import { FaMapMarkerAlt, FaSearch, FaTh } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
+import { useCookies } from "next-client-cookies";
+import { jwtDecode } from "jwt-decode";
+
+export interface JwtPayload {
+    userid: string;
+    email: string;
+    fullName: string;
+    role: string;
+}
 
 const Search = () => {
+    const cookies = useCookies();
+    const accessToken = cookies.get("accessTokenRecruiter");
+    const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
     const [userData, setUserData] = useState([{
         _id: '',
         fullName: '',
@@ -47,13 +59,13 @@ const Search = () => {
     const options = ["Tất cả", "Công ty", "Chức vụ", "Kỹ năng", "Tên"];
     useEffect(() => {
         const fetchData = async () => {
-            const data = await fetchApplyJob();
+            const data = await fetchGetUsers();
             setUserData(data.data);
             setSelectedProfile(data.data[0])
         };
         fetchData();
     }, []);
-    const fetchApplyJob = async () => {
+    const fetchGetUsers = async () => {
         const res = await fetch(
             `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/getAll`,
             {
@@ -65,11 +77,31 @@ const Search = () => {
         );
         return res.json();
     };
+    const Test = () => {
+        console.log(userData)
+    }
+    const handleCreateHistoryViewUser = (id: any) => {
+        const recruiterId = decodedToken?.userid;
+        const res = fetch(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/history-view-user/create`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    userId: id,
+                    recruiterId: recruiterId,
+                }),
+            }
+        );
+    }
     return (
         <>
             <div className="max-h-auto">
                 <HeaderRecruiter />
                 <div className="p-4 mr-[10%] ml-[10%]">
+                    <button onClick={Test}>Test</button>
                     <div className="flex items-center space-x-2">
                         <div className="relative flex-grow">
                             <input
@@ -137,10 +169,10 @@ const Search = () => {
                                 className="mb-4 p-2 border border-gray-200 rounded hover:bg-gray-100 cursor-pointer">
                                 <div className="flex justify-between items-center">
                                     <div>
-                                        <div className="font-bold text-blue-600">{profile.fullName}</div>
-                                        <div className="text-gray-500">{profile.jobTitle}</div>
+                                        <div className="font-bold text-blue-600">{profile?.fullName}</div>
+                                        <div className="text-gray-500">{profile?.jobTitle}</div>
                                     </div>
-                                    {profile.seekJobMode && <div className="text-blue-500 text-sm">{profile.seekJobMode}</div>}
+                                    {profile?.seekJobMode && <div className="text-blue-500 text-sm">{profile?.seekJobMode}</div>}
                                 </div>
                                 <div className="text-gray-400 text-sm">Cập nhật gần nhất: Vừa cập nhật</div>
                             </div>
@@ -184,7 +216,7 @@ const Search = () => {
                                     </div>
                                     <div className="flex items-center mb-4">
                                         <Link href={`/profileuser/${selectedProfile._id}`}>
-                                            <button className="p-2 bg-orange-500 text-white rounded mr-4" >Xem chi tiết hồ sơ</button>
+                                            <button onClick={() => handleCreateHistoryViewUser(selectedProfile._id)} className="p-2 bg-orange-500 text-white rounded mr-4" >Xem chi tiết hồ sơ</button>
                                         </Link>
                                         <button className="p-2 bg-gray-200 text-gray-500 rounded">Gửi lời mời online</button>
                                     </div>

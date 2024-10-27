@@ -14,7 +14,7 @@ export interface JwtPayload {
 }
 
 const tabs = [
-    { id: "profileViews", label: "Nhà tuyển dụng xem hồ sơ" },
+    { id: "profileViews", label: "Nhà tuyển dụng xem hồ sơ của bạn" },
     { id: "followCompany", label: "Theo dõi công ty" },
 ];
 
@@ -34,11 +34,25 @@ const MyCompany = () => {
             _id: "",
         },
     ]);
+    const [profileViews, setProfileViews] = useState([
+        {
+            companyName: "",
+            companyLogo: "",
+            companyIndustries: "",
+            companyJob: 0,
+            companyFollowing: 0,
+            jobPostId: '',
+            recruiterId: '',
+            _id: "",
+        },
+    ])
     useEffect(() => {
         const fetchData = async () => {
             const data = await fetchFollowing();
+            const dataProfileViews = await fecthGetHistory();
+            setProfileViews(dataProfileViews.data)
+            console.log(dataProfileViews.data)
             setFollowing(data.data);
-            console.log(data.data)
         };
         fetchData();
     }, []);
@@ -72,8 +86,20 @@ const MyCompany = () => {
         window.location.reload()
         return res.json();
     };
-
     const [activeTab, setActiveTab] = useState("profileViews");
+    const fecthGetHistory = async () => {
+        const id = decodedToken?.userid;
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/history-view-user/get/${id}`,
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+        return res.json();
+    };
     return (
         <div className="">
             <h1 className="mb-3 rounded-md border bg-white p-4 font-bold">
@@ -94,6 +120,43 @@ const MyCompany = () => {
                         </button>
                     ))}
                 </div>
+                {<div className="p-4">
+                    {activeTab === "profileViews" && (
+                        <div className="space-y-4">
+                            {profileViews.map((company) => (
+                                <Link href={`/company/${company?._id}`}>
+                                    <div className="flex flex-grow items-center gap-6">
+                                        <Image
+                                            src={company?.companyLogo}
+                                            alt={`logo`}
+                                            className="rounded-lg"
+                                            width={60}
+                                            height={60}
+                                        />
+                                        <div className="max-w-[calc(100%-200px)] flex-grow">
+                                            <h3 className="line-clamp-2 text-lg font-medium duration-300 group-hover:text-[#ff7d55] group-hover:transition-all">
+                                                {company?.companyName}
+                                            </h3>
+                                            <div className="flex items-center gap-2">
+                                                <FaFolderOpen size={15} color="gray" />
+                                                <p className="truncate text-gray-600">{company?.companyIndustries || "Chưa cập nhật"}</p>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <FaUsers size={15} color="gray" />
+
+                                                <span className="truncate text-gray-600">{company?.companyFollowing || 0} lượt theo dõi</span>
+                                                <FaBriefcase size={15} color="gray" />
+
+                                                <span className="truncate text-gray-600">{company?.companyJob || 0} việc làm</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    )}
+                </div>}
                 {<div className="p-4">
                     {activeTab === "followCompany" && (
                         <div className="space-y-4">

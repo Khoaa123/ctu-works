@@ -18,7 +18,7 @@ export interface JwtPayload {
 const tabs = [
   { id: "applied", label: "Việc đã ứng tuyển" },
   { id: "saved", label: "Việc đã lưu" },
-  { id: "viewed", label: "Việc làm đã xem" },
+  { id: "historyView", label: "Việc làm đã xem" },
   { id: "invited", label: "Thư mời ứng tuyển" },
 ];
 
@@ -37,13 +37,44 @@ const MyJob = () => {
       _id: "",
     },
   ]);
+  const [viewHistory, setViewHistory] = useState([
+    {
+      companyLogo: "",
+      companyName: "",
+      jobSalary: "",
+      jobTitle: "",
+      jobLocation: [],
+      jobPostId: '',
+      minSalary: '',
+      maxSalary: '',
+      _id: "",
+    },
+  ]);
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchSaveJob();
       setSaveJob(data.data);
     };
+    const fetchViewHistoryData = async () => {
+      const data = await fetchViewHistory();
+      setViewHistory(data.data);
+    }
     fetchData();
+    fetchViewHistoryData()
   }, []);
+  const fetchViewHistory = async () => {
+    const id = decodedToken?.userid;
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/job-views-history/get/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return res.json();
+  };
   const fetchSaveJob = async () => {
     const id = decodedToken?.userid;
     const res = await fetch(
@@ -114,16 +145,9 @@ const MyJob = () => {
     );
     return res.json();
   };
-
-  const test = () => {
-    console.log(saveJob)
-    console.log(applyJob, "app")
-  }
-
   const [activeTab, setActiveTab] = useState("saved");
   return (
     <div className="">
-      <button onClick={test}>SAdea</button>
       <h1 className="mb-3 rounded-md border bg-white p-4 font-bold">
         Việc Làm Của Tôi
       </h1>
@@ -222,6 +246,41 @@ const MyJob = () => {
                     <button disabled className="whitespace-nowrap rounded-lg bg-orange-400 px-4 py-2 text-white transition-colors hover:bg-orange-500">
                       {job.status}
                     </button>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>}
+        {<div className="p-4">
+          {activeTab === "historyView" && (
+            <div className="space-y-4">
+              {viewHistory?.map((job) => (
+                <Link
+                  href={`/job/${job.jobPostId}`}
+                  key={job.jobPostId}
+                  className="group flex cursor-pointer items-center justify-between rounded-lg border bg-white p-4 transition-all duration-300 hover:bg-[#f9fcff]"
+                >
+                  <div className="flex flex-grow items-center gap-6">
+                    <Image
+                      src={job.companyLogo}
+                      alt={`logo`}
+                      className="rounded-lg"
+                      width={60}
+                      height={60}
+                    />
+                    <div className="max-w-[calc(100%-200px)] flex-grow">
+                      <h3 className="line-clamp-2 text-lg font-medium duration-300 group-hover:text-[#ff7d55] group-hover:transition-all">
+                        {job.jobTitle}
+                      </h3>
+                      <p className="truncate text-gray-600">{job.companyName}</p>
+                      <p className="text-sm text-gray-500">
+                        {job?.jobLocation?.map((loc, locIndex) => (
+                          <span key={locIndex}>{loc}{locIndex < job.jobLocation.length - 1 ? ', ' : ''}</span>
+                        ))}
+                      </p>
+                      <p className="text-sm text-[#ff7d55]">{job.minSalary}-{job.maxSalary}</p>
+                    </div>
                   </div>
                 </Link>
               ))}

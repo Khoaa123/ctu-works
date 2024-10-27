@@ -182,6 +182,7 @@ const JobDetail = () => {
   const handleSaveClick = async () => {
     if (!isSaved) {
       const save = await saveJob();
+      setsaveJobDetails({ _id: save?.data._id });
     } else {
       const unSave = await unSaveJob();
     }
@@ -315,7 +316,48 @@ const JobDetail = () => {
     };
     fetchData();
   }, []);
+  let startTime = Date.now();
+  const API_ENDPOINT = `${process.env.NEXT_PUBLIC_API_BASE_URL}/job-views-history/create`;
+  let hasRunBeforeunload = false;
+  useEffect(() => {
+    window.addEventListener('beforeunload', (event) => {
+      event.preventDefault();
+      event.returnValue = '';
+      event.timeStamp
+      // Kiểm tra xem hàm đã chạy chưa
+      if (!hasRunBeforeunload) {
+        hasRunBeforeunload = true;
+        let endTime = Date.now();
+        let timeSpent = endTime - startTime;
+        const userId = decodedToken?.userid;
+        const jobPostId = location.pathname.split('/job/')[1];
 
+        if (userId && jobPostId) {
+          fetch(API_ENDPOINT, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              userId: userId,
+              jobPostId: jobPostId,
+              timeSpent: timeSpent
+            })
+          })
+            .then(response => {
+
+            })
+            .catch(error => {
+
+            });
+        }
+      }
+    });
+
+    return () => {
+      window.removeEventListener('beforeunload', () => { });
+    };
+  }, []);
   const fetchDetailsUser = async () => {
     const id = decodedToken?.userid;
     const res = await fetch(
