@@ -14,12 +14,11 @@ import {
 } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "next/navigation";
-import { useCookies } from "next-client-cookies";
 import { toast } from "react-toastify";
 
-export default function EmployerRegistration() {
+export default function RecruiterRegistration() {
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     email: "",
     fullName: "",
     password: "",
@@ -30,16 +29,17 @@ export default function EmployerRegistration() {
     phoneNumber: "",
     companyDescription: "",
     companyAddress: "",
-    businessLicense: "",
+    // businessLicense: "",
+    companyScale: "",
+    companyIndustries: "",
   });
   const router = useRouter();
-  const cookies = useCookies();
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev: any) => ({ ...prev, [name]: value }));
   };
 
   const handleNext = () => {
@@ -60,39 +60,28 @@ export default function EmployerRegistration() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            email: formData.email,
-            fullName: formData.fullName,
-            password: formData.password,
-            confirmPassword: formData.confirmPassword,
-            companyName: formData.companyName,
-            companyWebsite: formData.companyWebsite,
-            companyFacebook: formData.companyFacebook,
-            phoneNumber: formData.phoneNumber,
-            companyDescription: formData.companyDescription,
-            companyAddress: formData.companyAddress,
-            businessLicense: formData.businessLicense,
-          }),
+          body: JSON.stringify(formData),
         }
       );
 
-      console.log(res);
-
       if (!res.ok) {
         throw new Error("Đăng ký thất bại");
+      }
+
+      const data = await res.json();
+      if (data.status === "OK") {
+        toast.success(
+          "Đăng ký thành công. Vui lòng kiểm tra email để xác thực tài khoản."
+        );
+        router.push("/recruiter/login");
       } else {
-        const data = await res.json();
-        if (data.status === "OK") {
-          console.log("Đăng ký thành công");
-          toast.success("Đăng ký thành công");
-          router.push("/recruiter/login");
-        } else {
-          console.error("Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.");
-        }
-        return data;
+        toast.error(
+          data.message || "Đăng ký thất bại. Vui lòng kiểm tra lại thông tin."
+        );
       }
     } catch (error) {
       console.error("Lỗi khi đăng ký:", error);
+      toast.error("Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại sau.");
     }
   };
 
@@ -101,126 +90,84 @@ export default function EmployerRegistration() {
       <div className="flex flex-grow items-center justify-center">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle className="text-2xl">Đăng ký</CardTitle>
-            <CardDescription>Đăng ký tài khoản nhà tuyển dụng</CardDescription>
+            <CardTitle className="text-2xl">Đăng ký nhà tuyển dụng</CardTitle>
+            <CardDescription>
+              Hoàn thành các bước để tạo tài khoản
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="mb-4 flex justify-between">
-              <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  step >= 1 ? "bg-blue-500 text-white" : "bg-gray-200"
-                }`}
-              >
-                1
-              </div>
-              <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  step >= 2 ? "bg-blue-500 text-white" : "bg-gray-200"
-                }`}
-              >
-                2
-              </div>
-              <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  step >= 3 ? "bg-blue-500 text-white" : "bg-gray-200"
-                }`}
-              >
-                3
-              </div>
+              {[1, 2, 3].map((s) => (
+                <div
+                  key={s}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                    step >= s ? "bg-blue-500 text-white" : "bg-gray-200"
+                  }`}
+                >
+                  {s}
+                </div>
+              ))}
             </div>
             <form onSubmit={handleSubmit}>
               {step === 1 && (
                 <>
                   <div className="grid w-full items-center gap-4">
-                    <div className="flex flex-col space-y-1.5">
-                      <Label htmlFor="fullName">Họ và tên</Label>
-                      <Input
-                        id="fullName"
-                        name="fullName"
-                        value={formData.fullName}
-                        onChange={handleInputChange}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-sky-400 focus-visible:ring-0"
-                      />
-                    </div>
-                    <div className="flex flex-col space-y-1.5">
-                      <Label htmlFor="email">Email</Label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-sky-400 focus-visible:ring-0"
-                      />
-                    </div>
-                    <div className="flex flex-col space-y-1.5">
-                      <Label htmlFor="password">Mật khẩu</Label>
-                      <Input
-                        id="password"
-                        name="password"
-                        type="password"
-                        value={formData.password}
-                        onChange={handleInputChange}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-sky-400 focus-visible:ring-0"
-                      />
-                    </div>
-                    <div className="flex flex-col space-y-1.5">
-                      <Label htmlFor="confirmPassword">Xác nhận mật khẩu</Label>
-                      <Input
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        type="password"
-                        value={formData.confirmPassword}
-                        onChange={handleInputChange}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-sky-400 focus-visible:ring-0"
-                      />
-                    </div>
+                    {["fullName", "email", "password", "confirmPassword"].map(
+                      (field) => (
+                        <div key={field} className="flex flex-col space-y-1.5">
+                          <Label htmlFor={field}>
+                            {field === "fullName"
+                              ? "Họ và tên"
+                              : field === "confirmPassword"
+                              ? "Xác nhận mật khẩu"
+                              : field}
+                          </Label>
+                          <Input
+                            id={field}
+                            name={field}
+                            type={
+                              field.includes("password")
+                                ? "password"
+                                : field === "email"
+                                ? "email"
+                                : "text"
+                            }
+                            value={formData[field]}
+                            onChange={handleInputChange}
+                            className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-sky-400 focus-visible:ring-0"
+                          />
+                        </div>
+                      )
+                    )}
                   </div>
                 </>
               )}
               {step === 2 && (
                 <>
                   <div className="grid w-full items-center gap-4">
-                    <div className="flex flex-col space-y-1.5">
-                      <Label htmlFor="companyName">Tên công ty</Label>
-                      <Input
-                        id="companyName"
-                        name="companyName"
-                        value={formData.companyName}
-                        onChange={handleInputChange}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-sky-400 focus-visible:ring-0"
-                      />
-                    </div>
-                    <div className="flex flex-col space-y-1.5">
-                      <Label htmlFor="companyWebsite">Website công ty</Label>
-                      <Input
-                        id="companyWebsite"
-                        name="companyWebsite"
-                        value={formData.companyWebsite}
-                        onChange={handleInputChange}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-sky-400 focus-visible:ring-0"
-                      />
-                    </div>
-                    <div className="flex flex-col space-y-1.5">
-                      <Label htmlFor="companyFacebook">Facebook công ty</Label>
-                      <Input
-                        id="companyFacebook"
-                        name="companyFacebook"
-                        value={formData.companyFacebook}
-                        onChange={handleInputChange}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-sky-400 focus-visible:ring-0"
-                      />
-                    </div>
-                    <div className="flex flex-col space-y-1.5">
-                      <Label htmlFor="phoneNumber">Số điện thoại</Label>
-                      <Input
-                        id="phoneNumber"
-                        name="phoneNumber"
-                        value={formData.phoneNumber}
-                        onChange={handleInputChange}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-sky-400 focus-visible:ring-0"
-                      />
-                    </div>
+                    {[
+                      "companyName",
+                      "companyWebsite",
+                      "companyFacebook",
+                      "phoneNumber",
+                      "companyScale",
+                      // "companyIndustries",
+                    ].map((field) => (
+                      <div key={field} className="flex flex-col space-y-1.5">
+                        <Label htmlFor={field}>
+                          {field
+                            .replace(/([A-Z])/g, " $1")
+                            .replace(/^./, (str) => str.toUpperCase())}
+                        </Label>
+                        <Input
+                          id={field}
+                          name={field}
+                          value={formData[field]}
+                          onChange={handleInputChange}
+                          className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-sky-400 focus-visible:ring-0"
+                        />
+                      </div>
+                    ))}
                   </div>
                 </>
               )}
@@ -243,18 +190,6 @@ export default function EmployerRegistration() {
                         id="companyAddress"
                         name="companyAddress"
                         value={formData.companyAddress}
-                        onChange={handleInputChange}
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-sky-400 focus-visible:ring-0"
-                      />
-                    </div>
-                    <div className="flex flex-col space-y-1.5">
-                      <Label htmlFor="businessLicense">
-                        Giấy phép kinh doanh
-                      </Label>
-                      <Input
-                        id="businessLicense"
-                        name="businessLicense"
-                        type="file"
                         onChange={handleInputChange}
                         className="w-full rounded-md border border-gray-300 px-3 py-2 outline-none focus:border-sky-400 focus-visible:ring-0"
                       />

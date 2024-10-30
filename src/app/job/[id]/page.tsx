@@ -68,6 +68,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useParams } from "next/navigation";
 export interface JwtPayload {
   userid: string;
   email: string;
@@ -107,9 +108,19 @@ type WorkingPreferences = {
   benefits: string[];
 };
 
+type Notification = {
+  _id: string;
+  message: string;
+  isRead: boolean;
+  createdAt: string;
+};
+
 const JobDetail = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isSaved, setIsSaved] = useState(false);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [relatedJobs, setRelatedJobs] = useState<any>([]);
+  const [jobInfoId, setJobInfoId] = useState("");
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -205,7 +216,6 @@ const JobDetail = () => {
   };
 
   const [jobPostDetails, setJobPostDetails] = useState({
-
     companyAddress: "",
     companyBenefits: [],
     companyEmail: "",
@@ -239,17 +249,20 @@ const JobDetail = () => {
     numberOfPositions: 0,
     _id: "",
   });
-  let run = 0
+  let run = 0;
+
   useEffect(() => {
     if (run < 1) {
       const fetchData = async () => {
         const data = await fetchJobPostDetails();
         setJobPostDetails(data.data);
+        setJobInfoId(data.data.jobInfoId);
       };
-      run = 1
+      run = 1;
       fetchData();
     }
   }, []);
+
   const fetchJobPostDetails = async () => {
     const id = location.pathname.split("/job/")[1];
 
@@ -320,42 +333,38 @@ const JobDetail = () => {
   const API_ENDPOINT = `${process.env.NEXT_PUBLIC_API_BASE_URL}/job-views-history/create`;
   let hasRunBeforeunload = false;
   useEffect(() => {
-    window.addEventListener('beforeunload', (event) => {
+    window.addEventListener("beforeunload", (event) => {
       event.preventDefault();
-      event.returnValue = '';
-      event.timeStamp
+      event.returnValue = "";
+      event.timeStamp;
       // Kiểm tra xem hàm đã chạy chưa
       if (!hasRunBeforeunload) {
         hasRunBeforeunload = true;
         let endTime = Date.now();
         let timeSpent = endTime - startTime;
         const userId = decodedToken?.userid;
-        const jobPostId = location.pathname.split('/job/')[1];
+        const jobPostId = location.pathname.split("/job/")[1];
 
         if (userId && jobPostId) {
           fetch(API_ENDPOINT, {
-            method: 'POST',
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json'
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({
               userId: userId,
               jobPostId: jobPostId,
-              timeSpent: timeSpent
-            })
+              timeSpent: timeSpent,
+            }),
           })
-            .then(response => {
-
-            })
-            .catch(error => {
-
-            });
+            .then((response) => {})
+            .catch((error) => {});
         }
       }
     });
 
     return () => {
-      window.removeEventListener('beforeunload', () => { });
+      window.removeEventListener("beforeunload", () => {});
     };
   }, []);
   const fetchDetailsUser = async () => {
@@ -489,20 +498,32 @@ const JobDetail = () => {
     const id = location.pathname.split("/job/")[1];
 
     // const id = decodedToken?.userid;
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/apply/create`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...formData,
-          jobPostId: id,
-          recruiterId: jobPostDetails?.recruiterId,
-        }),
-      }
-    );
+    const res = await fetch(`http://localhost:3001/api/apply/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...formData,
+        jobPostId: id,
+        recruiterId: jobPostDetails?.recruiterId,
+      }),
+    });
+
+    // const res = await fetch(
+    //   `${process.env.NEXT_PUBLIC_API_BASE_URL}/apply/create`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //       ...formData,
+    //       jobPostId: id,
+    //       recruiterId: jobPostDetails?.recruiterId,
+    //     }),
+    //   }
+    // );
 
     return res.json();
   };
@@ -526,6 +547,23 @@ const JobDetail = () => {
     const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
     return diffInDays;
   };
+
+  useEffect(() => {
+    const fetchRelatedJobs = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:3001/api/job-info/related-jobs/${jobInfoId}`
+        );
+        const data = await res.json();
+        setRelatedJobs(data.data);
+      } catch (e) {
+        console.error("Failed to fetch related jobs", e);
+      }
+    };
+
+    fetchRelatedJobs();
+  }, [jobInfoId]);
+
   return (
     <>
       <div className="bg-[#F1F2F4]">
@@ -730,7 +768,7 @@ const JobDetail = () => {
                                                   className={cn(
                                                     "shadow-none w-full border-gray-300 rounded-sm h-10  justify-start text-left hover:bg-transparent  font-normal data-[state=open]:border-sky-400",
                                                     !date &&
-                                                    "text-muted-foreground"
+                                                      "text-muted-foreground"
                                                   )}
                                                 >
                                                   <CalendarIcon className="mr-2 h-4 w-4" />
@@ -1186,16 +1224,16 @@ const JobDetail = () => {
                                                 onChange={
                                                   handleCompanyJobFunctionChange
                                                 }
-                                              // onChange={(e) => {
-                                              //   setWorkingPreferences((prev) => ({
-                                              //     ...prev,
-                                              //     jobFunction: e.target.value,
-                                              //   }));
-                                              //   setFormData((prevFormData) => ({
-                                              //     ...prevFormData,
-                                              //     workingPreferences: workingPreferences,
-                                              //   }))
-                                              // }}
+                                                // onChange={(e) => {
+                                                //   setWorkingPreferences((prev) => ({
+                                                //     ...prev,
+                                                //     jobFunction: e.target.value,
+                                                //   }));
+                                                //   setFormData((prevFormData) => ({
+                                                //     ...prevFormData,
+                                                //     workingPreferences: workingPreferences,
+                                                //   }))
+                                                // }}
                                               />
                                             </div>
                                             <div className="col-span-1 flex flex-col gap-1">
@@ -1266,13 +1304,13 @@ const JobDetail = () => {
                                                 onChange={
                                                   handleCompanySalaryChange
                                                 }
-                                              // onChange={(e) => {
-                                              //   setWorkingPreferences((prev) => ({
-                                              //     ...prev,
-                                              //     salary: e.target.value,
+                                                // onChange={(e) => {
+                                                //   setWorkingPreferences((prev) => ({
+                                                //     ...prev,
+                                                //     salary: e.target.value,
 
-                                              //   }))
-                                              // }}
+                                                //   }))
+                                                // }}
                                               />
                                             </div>
 
@@ -1295,12 +1333,12 @@ const JobDetail = () => {
                                                     value
                                                   )
                                                 }
-                                              // onValueChange={(value) =>
-                                              //   setWorkingPreferences((prev) => ({
-                                              //     ...prev,
-                                              //     desiredJobLevel: value,
-                                              //   }))
-                                              // }
+                                                // onValueChange={(value) =>
+                                                //   setWorkingPreferences((prev) => ({
+                                                //     ...prev,
+                                                //     desiredJobLevel: value,
+                                                //   }))
+                                                // }
                                               >
                                                 <SelectTrigger className="h-10 bg-white shadow-none focus:ring-0">
                                                   <SelectValue placeholder="Vui lòng chọn..." />
@@ -1347,10 +1385,11 @@ const JobDetail = () => {
                         </Dialog>
 
                         <button
-                          className={`flex flex-1 justify-center items-center gap-3 rounded-lg border px-4 py-2 transition ${isSaved
-                            ? "border-[#005aff] text-[#005aff] hover:bg-[#347bff26] "
-                            : "border-gray-300 "
-                            }`}
+                          className={`flex flex-1 justify-center items-center gap-3 rounded-lg border px-4 py-2 transition ${
+                            isSaved
+                              ? "border-[#005aff] text-[#005aff] hover:bg-[#347bff26] "
+                              : "border-gray-300 "
+                          }`}
                           onClick={handleSaveClick}
                         >
                           {isSaved ? (
@@ -1441,11 +1480,8 @@ const JobDetail = () => {
                           </span>
                         </div>
                         <div className="mb-4 ml-6">
-                          {jobPostDetails?.minAge ||
-                            "Không hiển thị"}
-                          -
-                          {jobPostDetails?.maxAge ||
-                            "Không hiển thị"}{" "}
+                          {jobPostDetails?.minAge || "Không hiển thị"}-
+                          {jobPostDetails?.maxAge || "Không hiển thị"}{" "}
                         </div>
 
                         <div className="mb-2 flex items-center">
@@ -1465,8 +1501,7 @@ const JobDetail = () => {
                           <span className="text-[#939393]">CẤP BẬC</span>
                         </div>
                         <div className="mb-4 ml-6">
-                          {jobPostDetails?.jobLevel ||
-                            "Không hiển thị"}
+                          {jobPostDetails?.jobLevel || "Không hiển thị"}
                         </div>
 
                         <div className="mb-2 flex items-center">
@@ -1474,19 +1509,14 @@ const JobDetail = () => {
                           <span className="text-[#939393]">KỸ NĂNG</span>
                         </div>
                         <div className="mb-4 ml-6">
-                          {jobPostDetails?.keywords?.map(
-                            (skill, index) => (
-                              <span key={index} className="mr-1">
-                                {skill}
-                                {index <
-                                  jobPostDetails?.keywords
-                                    .length -
-                                  1
-                                  ? ", "
-                                  : ""}
-                              </span>
-                            )
-                          )}
+                          {jobPostDetails?.keywords?.map((skill, index) => (
+                            <span key={index} className="mr-1">
+                              {skill}
+                              {index < jobPostDetails?.keywords.length - 1
+                                ? ", "
+                                : ""}
+                            </span>
+                          ))}
                         </div>
 
                         <div className="mb-2 flex items-center">
@@ -1496,8 +1526,7 @@ const JobDetail = () => {
                           </span>
                         </div>
                         <div className="mb-4 ml-6">
-                          {jobPostDetails?.language ||
-                            "Không hiển thị"}
+                          {jobPostDetails?.language || "Không hiển thị"}
                         </div>
 
                         <div className="mb-2 flex items-center">
@@ -1508,8 +1537,8 @@ const JobDetail = () => {
                           {jobPostDetails?.nationality === "1"
                             ? "Người Việt"
                             : jobPostDetails?.nationality === "2"
-                              ? "Người nước ngoài"
-                              : "Bất kỳ"}
+                            ? "Người nước ngoài"
+                            : "Bất kỳ"}
                         </div>
 
                         <div className="mb-2 flex items-center">
@@ -1520,8 +1549,8 @@ const JobDetail = () => {
                           {jobPostDetails?.gender === "1"
                             ? "Nam"
                             : jobPostDetails?.gender === "2"
-                              ? "Nữ"
-                              : "Bất kỳ"}
+                            ? "Nữ"
+                            : "Bất kỳ"}
                         </div>
 
                         <div className="mb-2 flex items-center">
@@ -1533,10 +1562,9 @@ const JobDetail = () => {
                         <div className="mb-4 ml-6">
                           {jobPostDetails?.maritalStatus === "1"
                             ? "Chưa kết hôn"
-                            : jobPostDetails?.maritalStatus ===
-                              "2"
-                              ? "Đã kết hôn"
-                              : "Bất kỳ"}
+                            : jobPostDetails?.maritalStatus === "2"
+                            ? "Đã kết hôn"
+                            : "Bất kỳ"}
                         </div>
                       </div>
                     </div>
@@ -1546,8 +1574,7 @@ const JobDetail = () => {
                     <div className="flex items-center">
                       <FaLocationDot className="fas fa-map-marker-alt mr-2"></FaLocationDot>
                       <span>
-                        {jobPostDetails?.companyAddress ||
-                          "Chưa cập nhật"}
+                        {jobPostDetails?.companyAddress || "Chưa cập nhật"}
                       </span>
                     </div>
                   </div>
@@ -1614,74 +1641,37 @@ const JobDetail = () => {
                   <p className="mb-4 text-xl font-bold">Việc làm liên quan</p>
 
                   <div className="mt-2 flex flex-col gap-4">
-                    <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]">
-                      <Image src={nexon} alt="" height={80} width={80} />
-                      <div>
-                        <h1 className="mb-1 line-clamp-1 text-xl font-bold">
-                          QA Game Tester
-                          Testerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
-                        </h1>
-                        <p>Nexon Networks Vina Co.Ltd</p>
-                        <p className="my-1 text-sm text-amber-600">
-                          Thương lượng
-                        </p>
-                        <p className="text-sm">Hồ Chí Minh</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]">
-                      <Image src={nexon} alt="" height={80} width={80} />
-                      <div>
-                        <h1 className="mb-1 line-clamp-1 text-xl font-bold">
-                          QA Game Tester
-                          Testerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
-                        </h1>
-                        <p>Nexon Networks Vina Co.Ltd</p>
-                        <p className="my-1 text-sm text-amber-600">
-                          Thương lượng
-                        </p>
-                        <p className="text-sm">Hồ Chí Minh</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]">
-                      <Image src={nexon} alt="" height={80} width={80} />
-                      <div>
-                        <h1 className="mb-1 line-clamp-1 text-xl font-bold">
-                          QA Game Tester
-                          Testerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
-                        </h1>
-                        <p>Nexon Networks Vina Co.Ltd</p>
-                        <p className="my-1 text-sm text-amber-600">
-                          Thương lượng
-                        </p>
-                        <p className="text-sm">Hồ Chí Minh</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]">
-                      <Image src={nexon} alt="" height={80} width={80} />
-                      <div>
-                        <h1 className="mb-1 line-clamp-1 text-xl font-bold">
-                          QA Game Tester
-                          Testerrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr
-                        </h1>
-                        <p>Nexon Networks Vina Co.Ltd</p>
-                        <p className="my-1 text-sm text-amber-600">
-                          Thương lượng
-                        </p>
-                        <p className="text-sm">Hồ Chí Minh</p>
-                      </div>
-                    </div>
+                    {relatedJobs?.map((job: any, index: any) => (
+                      <Link
+                        href={`/job/${job._id}`}
+                        className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]"
+                        key={index}
+                      >
+                        {/* <Image src={nexon} alt="" height={80} width={80} /> */}
+                        <div>
+                          <h1 className="mb-1 line-clamp-1 text-xl font-bold">
+                            {job.jobTitle}
+                          </h1>
+                          {/* <p>Nexon Networks Vina Co.Ltd</p> */}
+                          <p className="my-1 text-sm text-amber-600">
+                            {job.minSalary} - {job.maxSalary}
+                          </p>
+                          <p className="text-sm">Vị trí: {job.jobLevel}</p>
+                        </div>
+                      </Link>
+                    ))}
                   </div>
                 </div>
               </div>
               <div className="col-span-1">
                 <div className="flex flex-col rounded-md bg-white px-8 py-4">
                   <div className="flex items-center justify-center">
-                    <Image
+                    {/* <Image
                       src={jobPostDetails?.companyLogo}
                       alt=""
                       height={100}
                       width={100}
-                    />
+                    /> */}
                   </div>
                   <div className="flex flex-col">
                     <Link href={`/company/${jobPostDetails?.recruiterId}`}>

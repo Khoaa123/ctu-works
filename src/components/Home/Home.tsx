@@ -28,6 +28,7 @@ type jobPosts = {
   minSalary: number;
   maxSalary: number;
   location: string;
+  jobInfoId: string;
 };
 
 const HomePage = () => {
@@ -41,6 +42,7 @@ const HomePage = () => {
   const [current3, setCurrent3] = React.useState(0);
   const carouselLength2 = 2;
   const [jobPosts, setJobPosts] = useState<jobPosts[]>([]);
+  const [news, setNews] = useState<any[]>([]);
 
   React.useEffect(() => {
     if (!api) {
@@ -92,7 +94,7 @@ const HomePage = () => {
     const fetchJobPosts = async () => {
       try {
         const res = await fetch(
-          "http://localhost:3001/api/jobpost/get-all-jobpost"
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobpost/get-all-jobpost`
         );
         const data = await res.json();
         if (data.status === "OK") {
@@ -108,6 +110,26 @@ const HomePage = () => {
     fetchJobPosts();
   }, []);
 
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/news/get-all-news`
+        );
+        const data = await res.json();
+        if (data.status === "OK") {
+          setNews(data.data);
+        } else {
+          console.error("Failed to fetch news");
+        }
+      } catch (error) {
+        console.error("Error fetching news:", error);
+      }
+    };
+    fetchNews();
+  }, []);
+
+  // console.log("env", process.env.NEXT_PUBLIC_API_BASE_URL);
   return (
     <>
       <div className="container">
@@ -141,9 +163,10 @@ const HomePage = () => {
                               <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]">
                                 <Image
                                   src={job.companyInfo?.companyLogo}
-                                  alt={job.jobTitle}
+                                  alt="logo"
                                   height={80}
                                   width={80}
+                                  className="h-20 w-20"
                                 />
 
                                 <div>
@@ -495,12 +518,13 @@ const HomePage = () => {
               Tư vấn nghề nghiệp từ HR Insider
             </p>
             <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-4">
-              {Array.from({ length: 4 }).map((_, index) => (
-                <div
+              {news.map((item, index) => (
+                <Link
                   className="group cursor-pointer overflow-hidden rounded-md border border-solid border-[#dbdbdb] transition-all hover:border-[#ff7d55]"
                   key={index}
+                  href={`/news/${item._id}`}
                 >
-                  <div
+                  {/* <div
                     style={{
                       backgroundImage:
                         "url('https://www.vietnamworks.com/_next/image?url=https%3A%2F%2Fwww.vietnamworks.com%2Fhrinsider%2Fwp-content%2Fuploads%2F2024%2F08%2FHRINSIDER_-Mentor-sharing-1200_900-2.jpg&w=828&q=75')",
@@ -509,24 +533,19 @@ const HomePage = () => {
                       width: "100%",
                       height: "200px",
                     }}
-                  ></div>
+                  ></div> */}
                   <div className="px-4 py-2">
                     <p className="mt-2 text-base font-bold transition-all duration-200 group-hover:text-[#ff7d55]">
-                      Ông Hoàng Nam Tiến: Không nhất thiết phải làm gà mới biết
-                      nước sôi là nóng
+                      {item.title}
                     </p>
-                    <p className="my-4">
-                      Theo ông Hoàng Nam Tiến, các bạn trẻ, đặc biệt là GenZ nếu
-                      như gặp được những người này thì sẽ rút ngắn được rất
-                      nhiều thời gian trong hành ...
-                    </p>{" "}
-                    <div>
+                    <p className="my-4">{item.summary}</p>{" "}
+                    {/* <div>
                       <span className="text-sm text-[#757575]">
                         “Bắt mạch” Công Sở
                       </span>
-                    </div>
+                    </div> */}
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
