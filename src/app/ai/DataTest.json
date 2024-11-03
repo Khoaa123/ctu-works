@@ -1,0 +1,1159 @@
+[{
+    "_id": "6709844a8d7bdc29a269b096",
+    "recruiterId": "6702a172f6eaabd62ead38bf",
+    "jobCompanyInfoId": "6709844a8d7bdc29a269b08f",
+    "candidateExpectationsId": "6709844a8d7bdc29a269b094",
+    "jobInfoId": "6709844a8d7bdc29a269b092",
+    "expirationDate": "2024-10-29T17:00:00.000Z",
+    "statusSeeking": false,
+    "statusApproval": false,
+    "postViews": 341,
+    "companyName": "VNC Company",
+    "companyAddress": "Hà Nội, Hồ Chí Minh",
+    "companySize": "100 - 499",
+    "companyBenefits": [
+        {
+            "title": "Thư viện",
+            "content": "Thư viện",
+            "_id": "670abe7fe34aadcf3ab5f7e1"
+        },
+        {
+            "title": "Đào tạo",
+            "content": "ăeweqeq",
+            "_id": "670abe87e34aadcf3ab5f7fe"
+        }
+    ],
+    "companyLogo": "",
+    "companyStaffName": "Chng",
+    "companyEmail": "nguyenvana@gmail.com",
+    "keywords": [
+        "Analyze Vendor Performance",
+        "Develop Procurement Strategies"
+    ],
+    "jobField": "Thu Mua",
+    "language": "Tiếng Việt",
+    "minExperience": 3,
+    "nationality": "any",
+    "educationLevel": "Cử nhân",
+    "gender": "any",
+    "maritalStatus": "any",
+    "minAge": 20,
+    "maxAge": 30,
+    "jobTitle": "Test 1",
+    "jobDescription": "<p>qweqwe</p>",
+    "jobRequirements": "<p>qweqwe</p>",
+    "jobType": "Thực tập",
+    "minSalary": "1",
+    "maxSalary": "22",
+    "jobLevel": "Trưởng phòng",
+    "jobIndustry": "Bảo hiểm"
+},
+{
+    "_id": "670c209c9b1d76a2064a501e",
+    "recruiterId": "670c1e7e9b1d76a2064a4fd1",
+    "jobCompanyInfoId": "670c209c9b1d76a2064a5016",
+    "candidateExpectationsId": "670c209c9b1d76a2064a501c",
+    "jobInfoId": "670c209c9b1d76a2064a501a",
+    "expirationDate": "2024-11-29T17:00:00.000Z",
+    "statusSeeking": true,
+    "statusApproval": false,
+    "postViews": 263,
+    "companyName": "Synflex Elektro GmbH",
+    "companyAddress": "Ho Chi Minh City",
+    "companySize": "500 - 999",
+    "companyBenefits": [
+        {
+            "title": "Thưởng",
+            "content": "Bonus",
+            "_id": "670c209c9b1d76a2064a5017"
+        },
+        {
+            "title": "Chăm sóc sức khỏe",
+            "content": "Health check annually",
+            "_id": "670c209c9b1d76a2064a5018"
+        }
+    ],
+    "companyLogo": "",
+    "companyStaffName": "Synflex Elektro GmbH",
+    "companyEmail": "nguyenvanb@gmail.com",
+    "keywords": [
+        "Business Development Manager",
+        "Customer Support Specialist"
+    ],
+    "jobField": "Bán Hàng/Phát Triển Kinh Doanh",
+    "language": "Tiếng Anh",
+    "minExperience": 5,
+    "nationality": "any",
+    "educationLevel": "Cử nhân",
+    "gender": "any",
+    "maritalStatus": "any",
+    "minAge": 18,
+    "maxAge": 60,
+    "jobTitle": "Sales And Support Engineer",
+    "jobDescription": "<p><strong>Company introduction</strong></p><p>Precitec GmbH &amp; Co. KG is a medium-sized company based in Gaggenau near Karlsruhe (approx. 750 employees worldwide). We are the world market leader for optics for laser cutting machines and systems for quality monitoring of laser welding processes. We also offer high-end optical measuring technology. We have been represented in Japan, Korea and Taiwan for many years with our own sales and service companies and also with our own production in China. We are currently setting up our own sales and service company in India. In the SEA region we have so far only been active via sales representatives. Key sectors for us are the semiconductor industry, consumer electronics (handheld devices), automotive and, more recently, e-mobility (manufacturing of batteries and electric motors) as well as aerospace and, for laser cutting optics, machine manufacturers of laser cutting machines.</p><p><br></p><p><strong>Job purpose</strong></p><p>Sales engineers (SEs) sometimes called \"systems engineers\" or \"field consultants\". This person will procure the sale and be representing the technical aspects of how the product solves specific customer problems. The SE will perform technical presentations for the product. The product expert is dedicated to the success of the product in a specific section of market or territories.</p><p><br></p><p><strong>Duties and responsibilities</strong></p><p>• Maintain, grow, and support the business for the metrology product line through new business development and existing customer support and account maintenance.</p><p>• Enhance and further develop existing customer relationships and establish new accounts and business through an understanding of optical metrology, applications of Precitec’s technology as well as strong technical skills/knowledge, industry awareness and experience.</p><p>• Plan, market, organize and conduct product and process trainings for all metrology products and processes.</p><p>• Lead marketing efforts for Precitec in Vietnam (e.g. trade shows, conferences, social media, newsletters and technical articles or white papers for print media and online use).</p><p>• Keep upper management informed by submitting sales / customer activity and results reports, such as call reports, weekly work plans, and monthly and annual territory analyses as appropriate.</p><p>• Find customized solutions with customers or recommend new products, service, and policy by evaluating customer results and competitive developments.</p><p>• Resolve customer complaints by investigating problems; developing solutions; preparing reports; making recommendations to management and teaming with Applications Engineering in Germany.</p><p>• Maintain professional and technical knowledge by attending educational workshops; reviewing professional publications; establishing personal networks; participating in professional societies.</p><p>• Sales and Service support in the field of optical metrology</p><p>• Expand business by supporting new sales efforts in South East Asia( Vietnam, Thailand, Malaysia) with a priority on Vietnam</p><p>• Provide technical support and service for existing customer accounts</p><p>• Commissioning of metrology equipment at customer site (install, adjust, troubleshoot, etc.)</p><p>• Complete Service calls and remote access to troubleshoot on metrology process, providing process improvement strategies</p><p>• Perform customer demonstrations and customer training</p><p>• Attend and organize trade shows</p>",
+    "jobRequirements": "<p><strong>Skills and Qualifications</strong></p><p>• Must have at least a Bachelor’s degree in Physics, Electrical engineering or related fields</p><p>• Must have experience in optical metrology or a related field</p><p>• Must have prior business to business sales experience; ideally at least 5 years</p><p>• Must have the ability to travel 70%</p><p>• The ability to establish and maintain strong relations with customers, especially design engineers</p><p>• English speaking is a must for effectively communicating with current and future customers outside of Vietnam as well as staff at headquarters in Germany</p><p><br></p><p><strong>Application</strong></p><p>Interested applicants please send your <strong>CV and expected salary</strong> latest by <strong>31/10/2024</strong>!</p>",
+    "jobType": "Toàn thời gian",
+    "minSalary": "1000",
+    "maxSalary": "2000",
+    "jobLevel": "Nhân viên",
+    "jobIndustry": "Bán lẻ/Bán sỉ"
+},
+{
+    "_id": "670c22d49b1d76a2064a506b",
+    "recruiterId": "670c1e7e9b1d76a2064a4fd1",
+    "jobCompanyInfoId": "670c22d49b1d76a2064a5062",
+    "candidateExpectationsId": "670c22d49b1d76a2064a5069",
+    "jobInfoId": "670c22d49b1d76a2064a5067",
+    "expirationDate": "2024-10-30T17:00:00.000Z",
+    "statusSeeking": true,
+    "statusApproval": false,
+    "postViews": 18,
+    "companyName": "Công Ty Phát Triển Trạm Sạc Toàn Cầu V-Green",
+    "companyAddress": "Hà Nội",
+    "companySize": "500 - 999",
+    "companyBenefits": [
+        {
+            "title": "Thưởng",
+            "content": "Thu nhập rất cạnh tranh",
+            "_id": "670c22d49b1d76a2064a5063"
+        },
+        {
+            "title": "Chăm sóc sức khỏe",
+            "content": "Chăm sóc sức khỏe tại Vinmec cho bản thân và gia đình",
+            "_id": "670c22d49b1d76a2064a5064"
+        },
+        {
+            "title": "Khác",
+            "content": "Ưu đãi khi sử dụng dịch vụ nội bộ thuộc hệ sinh thái TĐ Vingroup (Vinpearl, Vinmec, Vinschool,...)",
+            "_id": "670c22d49b1d76a2064a5065"
+        }
+    ],
+    "companyLogo": "",
+    "companyStaffName": "Ms Lan",
+    "companyEmail": "nguyenvanb@gmail.com",
+    "keywords": [
+        "Kỹ năng kinh doanh",
+        "Kỹ năng tìm kiếm khách hàng"
+    ],
+    "jobField": "Bán Hàng/Phát Triển Kinh Doanh",
+    "language": "Bất kỳ",
+    "minExperience": 5,
+    "nationality": "any",
+    "educationLevel": "Bất kỳ",
+    "gender": "any",
+    "maritalStatus": "any",
+    "minAge": 20,
+    "maxAge": 30,
+    "jobTitle": "Chuyên Viên Phát Triển Trạm Sạc",
+    "jobDescription": "<p>- Tìm kiếm đối tác đầu tư, hợp tác trạm sạc (đối tác nhượng quyền/kênh nhỏ lẻ).</p><p>- Đàm phán ký hợp đồng với chủ nhà, đối tác nhượng quyền.</p><p>- Đảm bảo thu thập các tài liệu pháp lý cần thiết.</p><p>- Cung cấp thông tin, báo cáo theo yêu cầu của lãnh đạo trực tiếp.</p><p>- Các công việc khác theo yêu cầu của người quản lý trực tiếp.</p>",
+    "jobRequirements": "<p>- Bằng Cử nhân trở lên về Quản lý Kinh doanh/Điện/v.v.</p><p>- Tối thiểu 05 năm kinh nghiệm thực hiện các công việc liên quan đến bán nhượng quyền thương hiệu dạng chuỗi, bán BĐS, sales công nghệ</p><p>- Tinh thần trách nhiệm cao với công việc.</p><p>- Có thể đi công tác các tỉnh trong khu vực được phân công</p>",
+    "jobType": "Toàn thời gian",
+    "minSalary": "1000",
+    "maxSalary": "2000",
+    "jobLevel": "Nhân viên",
+    "jobIndustry": "Bất Động Sản/Cho thuê"
+},
+{
+    "_id": "670c244d9b1d76a2064a50dc",
+    "recruiterId": "670c1e7e9b1d76a2064a4fd1",
+    "jobCompanyInfoId": "670c244d9b1d76a2064a50d3",
+    "candidateExpectationsId": "670c244d9b1d76a2064a50da",
+    "jobInfoId": "670c244d9b1d76a2064a50d8",
+    "expirationDate": "2024-11-10T17:00:00.000Z",
+    "statusSeeking": true,
+    "statusApproval": false,
+    "postViews": 86,
+    "companyName": "Tập Đoàn Sun Group",
+    "companyAddress": "Tầng 9, Tòa nhà Sun City, 13 Hai Bà Trưng, Hoàn Kiếm, Hà Nội, Việt Nam",
+    "companySize": "5000 - 9999",
+    "companyBenefits": [
+        {
+            "title": "Thưởng",
+            "content": "Lương thưởng, phúc lợi, đãi ngộ hấp dẫn. Ưu đãi cho cả gia đình khi sử dụng các hệ thống dịch vụ cao cấp của Tập đoàn Sun Group như: Dịch vụ vui chơi giải trí Sun World, Dịch vụ nghỉ dưỡng...",
+            "_id": "670c244d9b1d76a2064a50d4"
+        },
+        {
+            "title": "Chăm sóc sức khỏe",
+            "content": "Bảo hiểm sức khỏe Suncare",
+            "_id": "670c244d9b1d76a2064a50d5"
+        },
+        {
+            "title": "Hoạt động nhóm",
+            "content": "Du lịch, team building thường niên",
+            "_id": "670c244d9b1d76a2064a50d6"
+        }
+    ],
+    "companyLogo": "",
+    "companyStaffName": "Ban nhân sự",
+    "companyEmail": "nguyenvanb@gmail.com",
+    "keywords": [
+        "Sales Planning",
+        "Phát triển khách hàng"
+    ],
+    "jobField": "Bán Hàng/Phát Triển Kinh Doanh",
+    "language": "Bất kỳ",
+    "minExperience": 3,
+    "nationality": "any",
+    "educationLevel": "Cử nhân",
+    "gender": "any",
+    "maritalStatus": "any",
+    "minAge": 20,
+    "maxAge": 30,
+    "jobTitle": "Nhân Viên Hỗ Trợ Kinh Doanh",
+    "jobDescription": "<p>• Vị trí: Nhân viên hỗ trợ phát triển kinh doanh</p><p>• Deadline ứng tuyển: 20/09/2024</p><p>• Địa điểm làm việc: Hà Nội và các địa điểm khác khi được yêu cầu.</p><p>___________________</p><p><br></p><p>• Bạn là SINH VIÊN MỚI RA TRƯỜNG mong muốn THỬ SỨC trong lĩnh vực SALES?</p><p>• Bạn đang tìm kiếm MÔI TRƯỜNG NĂNG ĐỘNG với CƠ HỘI THĂNG TIẾN RÕ RÀNG nhưng lại lo lắng vì CHƯA CÓ KINH NGHIỆM?</p><p>• Bạn muốn làm việc ở các TẬP ĐOÀN ĐA NGÀNH HÀNG ĐẦU?</p><p>• Hãy gia nhập với SUN GROUP để có cơ hội trở thành <strong>BUSINESS DEVELOPMENT MANAGER </strong>tại TẬP ĐOÀN TOP ĐẦU TRONG LĨNH VỰC VUI CHƠI GIẢI TRÍ, KHÁCH SẠN NGHỈ DƯỠNG, nằm trong danh sách TOP do TẠP CHÍ Travel + Leisure Luxury Awards bình chọn NHƯ Khách sạn Capella Hanoi, InterContinental Danang Sun Peninsula Resort, JW Marriott Phu Quoc Emerald Bay Resorts &amp; Spa …và được Oscar ngành du lịch thế giới vinh danh là “NHÀ PHÁT TRIỂN DU LICH NGHỈ DƯỠNG HÀNG ĐẦU CHÂU Á”!</p><p>• Website thông tin Tập đoàn: https://sungroup.com.vn/</p><p><br></p><p><strong>QUYỀN LỢI ỨNG VIÊN:</strong></p><p>• Được Chế độ LƯƠNG THƯỞNG CẠNH TRANH.</p><p>• Được hưởng đầy đủ chế độ BHYT, Bảo hiểm Nhân thọ, đặc quyền được khám chữa bệnh tại Bệnh viện Mặt Trời của Sun Group.</p><p>• Được sử dụng MIỄN PHÍ khi vui chơi tại công viên Sun World trên toàn quốc, áp dụng cho nhân viên và người thân.</p><p>• Chính sách giá NỘI BỘ về du lịch nghỉ dưỡng TẠI các địa điểm du lịch Top đầu như InterContinental Danang, JW Marriott Phu Quoc, New World Phu Quoc, Mercure, Premier Phu Quoc…………</p><p>• Chế độ AN CƯ LẠC NGHIỆP dành cho CBNV gắn bó lâu dài với Tập đoàn.</p><p>• Được ĐÀO TẠO CHUYÊN SÂU từ đội ngũ quản lý và các CHUYÊN GIA HÀNG ĐẦU.</p><p>• Môi trường làm việc đầy NĂNG ĐỘNG, nơi ý kiến cá nhân được TÔN TRỌNG và TINH THẦN ĐỒNG ĐỘI là chìa khóa thành công</p><p>• CƠ HỘI THĂNG TIẾN RÕ RÀNG dựa trên kết quả làm việc và tiềm năng của ứng viên, Từ FRESHER tới MANAGER tối thiểu trong 3 năm.</p><p>• Cùng nhiều ưu đãi độc quyền khác: Vay vốn với lãi suất ưu đãi ngân hàng tại ngân hàng NCB, ưu đãi mua các bất động sản của Tập đoàn,....</p><p><br></p><p><strong>MÔ TẢ CÔNG VIỆC:</strong></p><p>• Hỗ trợ xây dựng kế hoạch kinh doanh, phân tích xu hướng thị trường địa phương/vùng và các hoạt động của đối thủ để xác định cơ hội kinh doanh</p><p>• Phối hợp với bộ phận Marketing triển khai kế hoạch quảng bá theo từng dự án/sản phẩm/chương trình bán hàng cho cơ sở phụ trách</p><p>• Hỗ trợ xây dựng sản phẩm (nội dung biển bảng, quảng cáo tại chỗ,...)</p><p>• Hỗ trợ sự kiện truyền thông/bán hàng</p><p>• Hỗ trợ gặp gỡ đối tác đại lý, khách hàng</p><p>• Hỗ trợ tìm kiếm khách hàng lẻ, đoàn du lịch, đoàn MICE, chăm sóc và đàm phán sử dụng sản phẩm và dịch vụ của chuỗi cơ sở phụ trách</p><p>• Quản lý/xác nhận bookings, thanh toán, yêu cầu và các vấn đề liên quan</p><p>• Hỗ trợ xử lý và giải quyết các vấn đề phát sinh của khách hàng, đối tác trong và ngoài nước.</p><p><br></p>",
+    "jobRequirements": "<p><strong>YÊU CẦU ỨNG VIÊN:</strong></p><p>• Bằng cử nhân hoặc thạc sỹ, các ngành liên quan đến KINH TẾ, NGÂN HÀNG……</p><p>• Có dưới 3 năm kinh nghiệm, ưu tiên các ứng viên đam mê với lĩnh vực Sales.</p><p>• Có kỹ năng lãnh đạo, tư duy chiến lược và phân tích tốt</p><p>• Có khả năng giao tiếp lưu loát bằng tiếng Anh, IELS từ 6.0 trở lên.</p><p>• Sẵn sàng làm việc trong tất cả các địa điểm tại Việt Nam, có thể đi công tác dài ngày trong và ngoài nước.</p><p><br></p><p><strong>⚙ CÁCH THỨC ỨNG TUYỂN</strong></p><p>• Ứng tuyển trực tiếp qua website tuyển dụng: TẠI ĐÂY</p><p>• Tiêu đề CV: Họ và tên - NV Kinh doanh</p><p>• Hạn cuối nhận hồ sơ: Đến hết 30/09/2024</p>",
+    "jobType": "Toàn thời gian",
+    "minSalary": "500",
+    "maxSalary": "1000",
+    "jobLevel": "Nhân viên",
+    "jobIndustry": "Dịch vụ lưu trú/Nhà hàng/Khách sạn/Du lịch"
+},
+{
+    "_id": "670c258c9b1d76a2064a51a0",
+    "recruiterId": "670c1e7e9b1d76a2064a4fd1",
+    "jobCompanyInfoId": "670c258c9b1d76a2064a5197",
+    "candidateExpectationsId": "670c258c9b1d76a2064a519e",
+    "jobInfoId": "670c258c9b1d76a2064a519c",
+    "expirationDate": "2024-10-22T17:00:00.000Z",
+    "statusSeeking": true,
+    "statusApproval": false,
+    "postViews": 3,
+    "companyName": "Công Ty Cho Thuê Tài Chính TNHH BIDV - Sumi Trust",
+    "companyAddress": "Tầng 23, tòa nhà TNR, 54A Nguyễn Chí Thanh, Láng Thượng, Đống Đa, Hà Nội/ Chi nhánh Hồ Chí Minh: 472-472A-472C Nguyễn Thị Minh Khai, P2, Q3, TP.HCM.",
+    "companySize": "25 - 99",
+    "companyBenefits": [
+        {
+            "title": "Thưởng",
+            "content": "Lương, thưởng cao theo năng lực",
+            "_id": "670c258c9b1d76a2064a5198"
+        },
+        {
+            "title": "Chăm sóc sức khỏe",
+            "content": "Tham gia đầy đủ bảo hiểm theo quy định Nhà nước",
+            "_id": "670c258c9b1d76a2064a5199"
+        },
+        {
+            "title": "Khác",
+            "content": "Môi trường làm việc chuyên nghiệp năng động",
+            "_id": "670c258c9b1d76a2064a519a"
+        }
+    ],
+    "companyLogo": "",
+    "companyStaffName": "Phòng Kế toán Hành Chính",
+    "companyEmail": "nguyenvanb@gmail.com",
+    "keywords": [
+        "Kinh doanh",
+        "Tìm kiếm khách hàng"
+    ],
+    "jobField": "Bán Hàng/Phát Triển Kinh Doanh",
+    "language": "Bất kỳ",
+    "minExperience": 1,
+    "nationality": "any",
+    "educationLevel": "Bất kỳ",
+    "gender": "any",
+    "maritalStatus": "any",
+    "minAge": 20,
+    "maxAge": 30,
+    "jobTitle": "Chuyên Viên Kinh Doanh",
+    "jobDescription": "<p><strong>Báo cáo cho: </strong>Trưởng/Phó trưởng Phòng Kinh doanh</p><p><br></p><p><strong>Mô tả công việc:</strong></p><p>1. Tìm kiếm khách hàng, tiếp thị dịch vụ, tiếp nhận hồ sơ, thẩm định sơ bộ</p><p>2. Thực hiện các công việc sau khi phê duyệt hồ sơ</p><p>3. Phối hợp với Công ty bảo hiểm/ Nhà cung ứng/ Bên môi giới để thực hiện các công việc liên quan</p><p>4. Nhập dữ liệu vào hệ thống</p><p>5. Thực hiện các công việc, báo cáo, nhiệm vụ khác do Lãnh đạo Chi nhánh/ Trưởng phòng phân công.</p><p>---------------------------------------------</p><p><strong>Reports to: </strong>Head/Deputy Head of Business Division</p><p><br></p><p><strong>Job Description</strong></p><p>1. Searching customers, marketing, receiving and preliminary appraisal</p><p>2. Perform works after approval</p><p>3. Coordinate with Insurance Company / Supplier / Broker to perform works related</p><p>4. Input the data into the system</p><p>5. Perform other duties assigned by the Branch leader / Head of the Division.</p>",
+    "jobRequirements": "<p><strong>Các yêu cầu đối với vị trí này:</strong></p><p><strong>Giáo dục/Đào tạo</strong></p><p>-Tốt nghiệp Đại học hoặc cao hơn, chuyên ngành phù hợp</p><p>- Có khả năng sử dụng Tiếng Anh trong công việc.</p><p><br></p><p><strong>Kiến thức và kỹ năng nghiệp vụ</strong></p><p>- Có kiến thức cơ bản và am hiểu về kinh tế, tài chính ngân hàng, luật pháp điều chỉnh hoạt động chuyên môn, nghiệp vụ được giao.</p><p>- Có kỹ năng giao tiếp, kỹ năng thuyết trình;</p><p>- Kỹ năng đàm phán, kỹ năng xây dựng mối quan hệ và xử lý các tình huống phát sinh;</p><p>- Có khả năng làm việc độc lập và làm việc theo nhóm.</p><p>- Không yêu cầu kinh nghiệm</p><p><br></p><p><strong>Ưu tiên:</strong></p><p><strong><em>- </em></strong>Có kinh nghiệm làm việc trong lĩnh lực tài chính/ ngân hàng.</p><p><br></p><p><strong>Liên hệ:</strong></p><p>- Ms. Thủy - Phòng Kế toán hành chính Chi nhánh Hà Nội,</p><p>- Hoặc Ms.Trinh - Phòng Kế toán hành chính Chi nhánh</p><p>-----------------------------------------</p><p><br></p><p><strong>Special Job Requirements:</strong></p><p><br></p><p><strong>Education</strong></p><p>- University graduated or higher, majors appropriate</p><p>- Ability to use English at work.</p><p><br></p><p><strong>Knowledge and technical skills</strong></p><p>- Having basic knowledge and understanding of economics, banking and finance, the laws governing assigned professional activities.</p><p>- Have communication skills, presentation skills;</p><p>- Negotiation skills, relationship building skills and handling situations that arise;</p><p>- Ability to work independently and work in groups.</p><p>- No experience required.</p><p><br></p><p><strong>Preference</strong></p><p><em>- </em>Experience in finance / banking.</p><p><br></p><p><strong>Contact:</strong></p><p>- Ms. Thủy - Accounting and Admin Division</p><p>- Or Ms.Trinh - Accounting and Admin Division</p>",
+    "jobType": "Toàn thời gian",
+    "minSalary": "500",
+    "maxSalary": "1500",
+    "jobLevel": "Nhân viên",
+    "jobIndustry": "Tài Chính"
+},
+{
+    "_id": "670c26c89b1d76a2064a520b",
+    "recruiterId": "670c1e7e9b1d76a2064a4fd1",
+    "jobCompanyInfoId": "670c26c79b1d76a2064a5202",
+    "candidateExpectationsId": "670c26c89b1d76a2064a5209",
+    "jobInfoId": "670c26c79b1d76a2064a5207",
+    "expirationDate": "2024-11-12T17:00:00.000Z",
+    "statusSeeking": true,
+    "statusApproval": false,
+    "postViews": 54,
+    "companyName": "Attivo International Co., Ltd.",
+    "companyAddress": "Main Office: 3rd Floor, HQ Building, 193 C3 Ba Trieu Street, Le Dai Hanh Ward, Hai Ba Trung Dist, Hanoi. Branch Office: A18B Huynh Lan Khanh Street, Ward 2, Tan Binh Dist, HCMC",
+    "companySize": "25 - 99",
+    "companyBenefits": [
+        {
+            "title": "Thưởng",
+            "content": "Salary based on experience.",
+            "_id": "670c26c79b1d76a2064a5203"
+        },
+        {
+            "title": "Chăm sóc sức khỏe",
+            "content": "On-going training, product training and development plan.",
+            "_id": "670c26c79b1d76a2064a5204"
+        },
+        {
+            "title": "Khác",
+            "content": "High commission, bonus policy.",
+            "_id": "670c26c79b1d76a2064a5205"
+        }
+    ],
+    "companyLogo": "",
+    "companyStaffName": "HR Department",
+    "companyEmail": "nguyenvanb@gmail.com",
+    "keywords": [
+        "B2B Sales",
+        "Kinh doanh",
+        "English for Business"
+    ],
+    "jobField": "Bán Hàng/Phát Triển Kinh Doanh",
+    "language": "Tiếng Anh",
+    "minExperience": 2,
+    "nationality": "any",
+    "educationLevel": "Cử nhân",
+    "gender": "any",
+    "maritalStatus": "any",
+    "minAge": 27,
+    "maxAge": 35,
+    "jobTitle": "[Urgent Hanoi] Project Sales – B2B Sales - $800 - $2000+",
+    "jobDescription": "<p>&nbsp;Find and develop sales leads, especially in condo, hotel, fitness center development.</p><p>- Follow and manage commercial projects pipeline.</p><p>- Build &amp; develop relationship with existing &amp; new customers.</p><p>- Present our company’s scope of service to the customer</p><p>- Coordinate with all departments to satisfy customers’ requirements, debt collection, etc.</p><p>- Work with both Vietnamese and foreign customers.</p><p>- Working location:</p><p>- Hanoi (HQ Building, 193C3 Ba Trieu, Le Dai Hanh, Hai Ba Trung, Hanoi).</p>",
+    "jobRequirements": "<p>&nbsp;Good English/Vietnamese.</p><p>- Must have a minimum of 2+ year proven B2B sales experience.</p><p>- Minimum 2 - 3 years of project sales experience</p><p>- Proven professional selling skills.</p><p>- Willing to learn &amp; act proactively to be part of a dynamic and fast growing team.</p><p>- Having good relationships with commercial project developers such as hotels, resorts, apartments, fitness clubs, Spa, Clinic, Hospital, etc. is a advantage.</p><p>- Open to Male &amp; Female.</p><p>- Age: 27 - 35</p><p><strong>* Benefits:</strong></p><p>- Salary based on experience.</p><p>- High commission, bonus policy.</p><p>- On-going training, product training and development plan.</p>",
+    "jobType": "Toàn thời gian",
+    "minSalary": "800",
+    "maxSalary": "2000",
+    "jobLevel": "Trưởng phòng",
+    "jobIndustry": "Dịch vụ Y tế/Chăm sóc sức khỏe"
+},
+{
+    "_id": "670ce3462a96a58b554a2664",
+    "recruiterId": "670cdf942a96a58b554a2648",
+    "jobCompanyInfoId": "670ce3462a96a58b554a265b",
+    "candidateExpectationsId": "670ce3462a96a58b554a2662",
+    "jobInfoId": "670ce3462a96a58b554a2660",
+    "expirationDate": "2024-10-30T17:00:00.000Z",
+    "statusSeeking": true,
+    "statusApproval": false,
+    "postViews": 2,
+    "companyName": "Công Ty Cổ Phần Tư Vấn Thiết Kế Và Xây Dựng Indecons Việt Nam",
+    "companyAddress": "Số 7 Tôn Thất Thuyết, quận Cầu Giấy, Hà Nội",
+    "companySize": "25 - 99",
+    "companyBenefits": [
+        {
+            "title": "Thưởng",
+            "content": "Thưởng các ngày Lễ lớn trong năm, lương tháng 13, chế độ đãi ngộ theo quy định của Công ty.",
+            "_id": "670ce3462a96a58b554a265c"
+        },
+        {
+            "title": "Chăm sóc sức khỏe",
+            "content": "Được hưởng đầy đủ BHXH, BHYT và BHTN theo luật lao động Việt Nam hiện hành.",
+            "_id": "670ce3462a96a58b554a265d"
+        },
+        {
+            "title": "Giải thưởng",
+            "content": "Thưởng các ngày lễ trong năm, lương tháng 13, thưởng cuối năm, thưởng hiệu quả dự án",
+            "_id": "670ce3462a96a58b554a265e"
+        }
+    ],
+    "companyLogo": "",
+    "companyStaffName": "Miss Ngoc",
+    "companyEmail": "nguyenvanc@gmail.com",
+    "keywords": [
+        "Kế toán tổng hợp"
+    ],
+    "jobField": "Kế Toán Tổng Hợp",
+    "language": "Tiếng Việt",
+    "minExperience": 1,
+    "nationality": "any",
+    "educationLevel": "Cử nhân",
+    "gender": "any",
+    "maritalStatus": "any",
+    "minAge": 22,
+    "maxAge": 50,
+    "jobTitle": "Kế Toán Tổng Hợp Upto 17M",
+    "jobDescription": "<p>• Kiểm tra, cân đối các hóa đơn, chứng từ kế toán vào phần mềm.</p><p>• Theo dõi tài khoản phải thu &amp; phải trả và công nợ đối chiếu xác nhận công nợ.</p><p>• Lập báo cáo thuế, báo cáo tài chính, làm việc với cơ quan thuế &amp; ngân hàng.</p><p>• Xuất hóa đơn, nhập dữ liệu hóa đơn vào phần mềm, gửi hóa đơn qua email cho khách hàng.</p><p>• Xây dựng hệ thống kế toán, đề xuất những quy trình làm việc liên quan đến chứng từ, sổ sách kế toán.</p><p>• Kê khai thuế, quyết toán thuế theo kỳ quy định.</p><p>• Phối hợp, báo cáo và giải trình với các cơ quan nhà nước (thuế, thanh tra, thống kê…) hoặc các cơ quan chức năng của đối tác liên quan (ngân hàng cho vay, kiểm toán…).</p><p>• Kiểm tra, kiểm soát các chứng từ thanh toán với NCC.</p><p>• Theo dõi, quản lý các khoản vay ngân hàng.</p><p>• Thực các yêu cầu khác theo nhu cầu quản lý.</p>",
+    "jobRequirements": "<p>• Trình độ: Tốt nghiệp Đại Học chuyên ngành kế toán, kiểm toán, tài chính. ít nhất 1-2 năm kinh nghiệm cho vị trí tương đương.</p><p>• Có khả năng tổng hợp, nắm vững chế độ kế toán.</p><p>• Tổ chức, sắp xêp, xây dựng kế hoạch để thực hiện công việc.</p><p>• Thành thạo tin học VP, các phần mềm kế toán.</p><p>• Nắm vững và am hiểu quy định pháp luật về thuế, chế độ .</p><p>• Ưu tiên: Ứng viên trong ngành xây dựng, sản xuất và gắn bó lâu dài với công ty.</p>",
+    "jobType": "Toàn thời gian",
+    "minSalary": "500",
+    "maxSalary": "600",
+    "jobLevel": "Nhân viên",
+    "jobIndustry": "Kỹ thuật xây dựng/Cơ sở hạ tầng"
+},
+{
+    "_id": "670ce7802a96a58b554a268f",
+    "recruiterId": "670cdf942a96a58b554a2648",
+    "jobCompanyInfoId": "670ce7802a96a58b554a2686",
+    "candidateExpectationsId": "670ce7802a96a58b554a268d",
+    "jobInfoId": "670ce7802a96a58b554a268b",
+    "expirationDate": "2024-11-04T17:00:00.000Z",
+    "statusSeeking": true,
+    "statusApproval": false,
+    "postViews": 12,
+    "companyName": "Công Ty Cổ Phần Sản Xuất Và Kinh Doanh VinFast - Thành Viên Của Vingroup",
+    "companyAddress": "Tòa nhà Symphony, đường Chu Huy Mân, Long Biên, Hà Nội",
+    "companySize": "10000 - 19999",
+    "companyBenefits": [
+        {
+            "title": "Thưởng",
+            "content": "Lương tháng 13",
+            "_id": "670ce7802a96a58b554a2687"
+        },
+        {
+            "title": "Chăm sóc sức khỏe",
+            "content": "Bảo hiểm sức khỏe",
+            "_id": "670ce7802a96a58b554a2688"
+        },
+        {
+            "title": "Xe đưa đón",
+            "content": "Xe bus đưa đón",
+            "_id": "670ce7802a96a58b554a2689"
+        }
+    ],
+    "companyLogo": "",
+    "companyStaffName": "Ms. Hương",
+    "companyEmail": "nguyenvanc@gmail.com",
+    "keywords": [
+        "Kiểm soát nội bộ tài chính"
+    ],
+    "jobField": "Kiểm Soát Viên Tài Chính",
+    "language": "Tiếng Anh",
+    "minExperience": 1,
+    "nationality": "any",
+    "educationLevel": "Bất kỳ",
+    "gender": "any",
+    "maritalStatus": "any",
+    "minAge": 20,
+    "maxAge": 30,
+    "jobTitle": "Chuyên Gia Kiểm Soát Nội Bộ Cao Cấp",
+    "jobDescription": "<p>TỔNG QUAN</p><p>Chuyên gia KSNB cao cấp chịu trách nhiệm thực hiện các hoạt động về kiểm soát tuân thủ, kiểm toán nội bộ, quản trị rủi ro trong toàn công ty dưới sự chỉ đạo, phân công của CBLĐ.</p><p><br></p><p>Chuyên gia KSNB có trách nhiệm :</p><p><br></p><p>- Hỗ trợ CBLĐ trong công tác đánh giá rủi ro và xây dựng Kế hoạch kiểm toán/kiểm soát tuân thủ hàng năm, định hướng rủi ro và công tác báo cáo của Phòng.</p><p>- Hỗ trợ CBLĐ trong việc xây dựng các chương trình/ Kế hoạch kiểm toán nội bộ/kiểm soát tuân thủ chi tiết và hệ thống các biểu mẫu hồ sơ kiểm toán phục vụ hoạt động kiểm tra</p><p>- Lập chương trình kiểm toán phù hợp với từng tính chất cuộc kiểm toán</p><p>- Thực hiện các hoạt động kiểm tra chi tiết theo chương trình/ kế hoạch kiểm toán nội bộ/kiểm soát tuân thủ đã được phê duyệt/hoặc đột xuất theo yêu cầu.</p><p>- Lập báo cáo kiểm toán nội bộ về các phát hiện, rủi ro và khuyến nghị cải tiến hệ thống</p><p>- Thực hiện giám sát đảm bảo các nội dung khuyến nghị trong báo cáo kiểm toán nội bộ được thực hiện khắc phục đầy đủ đúng quy định.</p>",
+    "jobRequirements": "<p>1. Trình độ học vấn/ Trình độ chuyên môn:</p><p>- Tốt nghiệp Đại học trở lên, chuyên ngành Kinh tế, Kế toán, Kiểm toán, Tài chính, Quản trị Kinh doanh</p><p>- Ưu tiên có bằng cấp chuyên môn như CIA/CPA/ACCA</p><p>- Có thể sử dụng Tiếng Anh trong công việc ( tương đương IELTS 6.0/TOEIC 800)</p><p>2. Kinh nghiệm liên quan đến vị trí</p><p>- Có tối thiểu 8 năm kinh nghiệm làm về Kiểm soát nội bộ, Kiểm toán nội bộ tại Công ty kiểm toán, tư vấn lớn (Big4)</p><p>- Ưu tiên có kinh nghiệm về Kiểm toán độc lập, Kiểm soát nội bộ (Khung COSO), Kiểm toán nội bộ, Quản</p><p>trị rủi ro, Kiểm toán tuân thủ đạo luật Sarbanes Oxley Act 2002</p><p>3. Phẩm chất cá nhân:</p><p>- Có tinh thần dấn thân làm việc, chịu trách nhiệm, có tính kỷ luật cao</p><p>- Trung thực, thẳng thắn</p><p>4. Kỹ năng mềm</p><p>- Có khả năng làm việc độc lập, chịu được áp lực cao</p><p>- Có kỹ năng giao tiếp tốt, bao gồm giao tiếp bằng lời nói, kỹ năng viết báo cáo, kỹ năng thuyết trình.</p><p>- Có kỹ năng giải quyết vấn đề; phân tích, tổng hợp dữ liệu; làm việc nhóm</p><p>5. Kiến thức:</p><p>- Có kiến thức về Kiểm toán độc lập, Kiểm toán nội bộ, rủi ro gian lận, tài chính kế toán</p><p>- Có kiến thức về Khung COSO, Tuân thủ và Rủi ro, tuân thủ SOX là một điểm cộng</p><p>- Có kiến thức về ngành sản xuất ô tô là một lợi thế</p>",
+    "jobType": "Toàn thời gian",
+    "minSalary": "1000",
+    "maxSalary": "2000",
+    "jobLevel": "Trưởng phòng",
+    "jobIndustry": "Ô tô"
+},
+{
+    "_id": "670ced562a96a58b554a26b4",
+    "recruiterId": "670cdf942a96a58b554a2648",
+    "jobCompanyInfoId": "670ced562a96a58b554a26ab",
+    "candidateExpectationsId": "670ced562a96a58b554a26b2",
+    "jobInfoId": "670ced562a96a58b554a26b0",
+    "expirationDate": "2024-11-11T17:00:00.000Z",
+    "statusSeeking": true,
+    "statusApproval": false,
+    "postViews": 3,
+    "companyName": "Công Ty Cổ Phần Halcom Việt Nam",
+    "companyAddress": "Tầng 9, Tháp Hòa Bình, 106 Hoàng Quốc Việt, Nghĩa Đô, Cầu Giấy, Hà Nội",
+    "companySize": "25 - 99",
+    "companyBenefits": [
+        {
+            "title": "Thưởng",
+            "content": "Thưởng tháng lương 13, KPI, phúc lợi các ngày Lễ, Tết, du lịch hè, team building...",
+            "_id": "670ced562a96a58b554a26ac"
+        },
+        {
+            "title": "Chăm sóc sức khỏe",
+            "content": "BHXH, khám sức khỏe định kỳ hàng năm",
+            "_id": "670ced562a96a58b554a26ad"
+        },
+        {
+            "title": "Căn-tin",
+            "content": "Môi trường làm việc thân thiện, văn phòng tiêu chuẩn.",
+            "_id": "670ced562a96a58b554a26ae"
+        }
+    ],
+    "companyLogo": "",
+    "companyStaffName": "Phòng Nhân Sự",
+    "companyEmail": "nguyenvanc@gmail.com",
+    "keywords": [
+        "Kế toán tổng hợp"
+    ],
+    "jobField": "Kế Toán Tổng Hợp",
+    "language": "Tiếng Anh",
+    "minExperience": 5,
+    "nationality": "any",
+    "educationLevel": "Cử nhân",
+    "gender": "any",
+    "maritalStatus": "any",
+    "minAge": 20,
+    "maxAge": 30,
+    "jobTitle": "Kế Toán Tổng Hợp",
+    "jobDescription": "<p>Công ty hoạt động theo mô hình Công ty mẹ-con. Vị trí Kế toán tổng hợp này sẽ làm việc tại VP Công ty mẹ và sẽ được phân giao phụ trách kế toán đối với các Công ty con có liên quan.</p><p>Vị trí này sẽ chịu trách nhiệm các công việc bao gồm nhưng không giới hạn như sau và báo cáo cho Kế toán trưởng.</p><p><br></p><p>- Lập báo cáo tài chính</p><p>- Hạch toán các nghiệp vụ phát sinh theo khoản mục kế toán</p><p>- Kiểm tra kiểm soát hồ sơ chứng từ chi tiết</p><p>- Tương tác với các bên liên quan đến công việc được phân công quản lý</p><p>- Những công việc khác theo phân công.</p>",
+    "jobRequirements": "<p><strong>Học vấn:</strong></p><p>- Tốt nghiệp Đại học trở lên chuyên ngành liên quan</p><p>- Ưu tiên có chứng chỉ Kế toán trưởng</p><p><strong>Kinh nghiệm:</strong></p><p>- Có từ 5 năm kinh nghiệm làm việc tại vị trí tương đương tại công ty hoạt động trong ngành xây dựng, năng lượng, đầu tư.</p><p><strong>Kỹ năng:</strong></p><p>- Sử dụng tiếng Anh trong công việc</p><p>- Kỹ năng giao tiếp và làm việc nhóm</p><p>- Kỹ năng tổ chức và thực hiện công việc</p><p><br></p><p><strong>Quyền lợi</strong></p><p>- Thu nhập cạnh tranh</p><p>- Thưởng tháng lương 13, phúc lợi các ngày lễ - tết, du lịch hè, team building</p><p>- BHXH, khám sức khỏe định kỳ hàng năm</p><p>- Đào tạo</p><p><br></p><p><strong>Thời gian làm việc</strong></p><p>- Làm việc từ 8h00– 17h00 các ngày từ thứ Hai – thứ Sáu hàng tuần.</p><p>- Văn phòng làm việc tiêu chuẩn, cung cấp thiết bị làm việc.</p><p><br></p><p><strong>Ngôn ngữ CV</strong></p><p>- Tiếng anh hoặc song ngữ anh - việt</p>",
+    "jobType": "Toàn thời gian",
+    "minSalary": "1000",
+    "maxSalary": "2000",
+    "jobLevel": "Nhân viên",
+    "jobIndustry": "Kỹ thuật xây dựng/Cơ sở hạ tầng"
+},
+{
+    "_id": "670d05762a96a58b554a272d",
+    "recruiterId": "670cdf942a96a58b554a2648",
+    "jobCompanyInfoId": "670d05762a96a58b554a2724",
+    "candidateExpectationsId": "670d05762a96a58b554a272b",
+    "jobInfoId": "670d05762a96a58b554a2729",
+    "expirationDate": "2024-11-13T17:00:00.000Z",
+    "statusSeeking": true,
+    "statusApproval": false,
+    "postViews": 0,
+    "companyName": "SVP Vietnam Co.,Ltd",
+    "companyAddress": "KCN Tân Trường, xã Tân Trường, huyện Cẩm Giàng, Tỉnh Hải Dương",
+    "companySize": "500 - 999",
+    "companyBenefits": [
+        {
+            "title": "Thưởng",
+            "content": "Negotiable, fair and attractive competitive enviroment. Considering annual salary increase + Bonus",
+            "_id": "670d05762a96a58b554a2725"
+        },
+        {
+            "title": "Chăm sóc sức khỏe",
+            "content": "Social insurance, health insurance, unemployment insurance according to the provisions of labor law",
+            "_id": "670d05762a96a58b554a2726"
+        },
+        {
+            "title": "Đào tạo",
+            "content": "Day off: All Saturdays, Sundays and annual leave according to the provisions of the Labor Code.",
+            "_id": "670d05762a96a58b554a2727"
+        }
+    ],
+    "companyLogo": "",
+    "companyStaffName": "Lê Thị Thu Hà",
+    "companyEmail": "nguyenvanc@gmail.com",
+    "keywords": [
+        "Accounting Software",
+        "SAP"
+    ],
+    "jobField": "Kế Toán Tổng Hợp",
+    "language": "Bất kỳ",
+    "minExperience": 4,
+    "nationality": "any",
+    "educationLevel": "Cử nhân",
+    "gender": "any",
+    "maritalStatus": "any",
+    "minAge": 20,
+    "maxAge": 30,
+    "jobTitle": "Accounting Staff (Working Place: Hai Duong)",
+    "jobDescription": "<p><strong>Job Title: Accounting staff</strong></p><p><strong>Department: Accounting /Finance</strong></p><p><strong>Reports To: Ms Nguyen Thi Cam Van</strong></p><p><strong>FLSA Status: (completed by ACC/FIN)</strong></p><p><br></p><p><strong>ABOUT THE POSITION:</strong></p><p><strong>Overview:</strong></p><p>A General accountant is a member who control and calculate cost for project, record costs and follow the result of each project.</p><p>The overall understanding of project with purpose, goals and objectives is necessary.</p><p><br></p><p><strong>Key Responsibilities:</strong></p><p><br></p><p>- Cost of product calculation, analysis and propose improve solution.</p><p>- Control financial performance, capital expenditure of the project.</p><p>- Verify accounting voucher, ensure proper document are enclosed in compliance with regulation and company policy.</p><p>- Support to develop policies and procedures relevant to Finance &amp; Accounting Department.</p><p>- Assist Finance Manager in closing monthly/yearly report.</p><p>- Other works and assignments upon request by management.</p>",
+    "jobRequirements": "<p><strong>QUALIFICATIONS/REQUIREMENTS:</strong></p><p><br></p><p>Experience :</p><p><strong><em>- 4+ years of experience in Finance and Accounting at FDI company, prefer EPE type</em></strong></p><p><br></p><p><em>Skills/personal qualifications :</em></p><p>- Experience with SAP accounting software</p><p>- Deep knowledge of bookkeeping and accounting processes</p><p>- Superb time management skills and detail orientation</p><p>- Ability to maintain confidentiality of company and partner information</p><p>- Attention to detail with strong analytical skills</p><p>- Excellent communication skills</p><p>- Experience in Costing, controlling capital expenditure (Capex), Budget is a plus.</p><p>- English is a must.</p><p><br></p><p><em>Education and Certifications:</em></p><p><strong>- Bachelors degree in accounting or related field (essential).</strong></p><p><br></p><p>PHYSICAL REQUIREMENTS:</p><p>The physical demands described here are representative of those that must be met by an employee to successfully perform the essential functions of this job. Reasonable accommodations may be made to enable individuals with disabilities to perform the essential functions.</p><p><br></p><p>THE INDUSTRY</p><p>The sewing machine industry is a global industry that is experiencing renewed growth. In developed markets, growth rates are projected to outpace GDP growth, according to Global Industry Analysts, Inc., the leading industry data source. Growth in these markets is driven by the millennial generation that is increasingly attracted to personalization, crafts, and self-expression. In developing markets, the industry is expected to grow at 4% annually, fueled by the emerging middle class and the “need to sew” segment that uses sewing machines to support the household.</p><p><br></p><p>THE FUTURE In 2021, SVP Worldwide was acquired by Platinum Equity (www.platinumequity.com), a global investment firm with more than $25 billion of assets under management and a portfolio of approximately 50 operating companies that serve customers around the world. Platinum Equity has committed to fully support SVP’s continued growth and to bring additional financial and operational resources to bear to help accelerate the company’s efforts.</p>",
+    "jobType": "Toàn thời gian",
+    "minSalary": "400",
+    "maxSalary": "800",
+    "jobLevel": "Nhân viên",
+    "jobIndustry": "Tài Chính"
+},
+{
+    "_id": "670d06af2a96a58b554a2794",
+    "recruiterId": "670cdf942a96a58b554a2648",
+    "jobCompanyInfoId": "670d06af2a96a58b554a278b",
+    "candidateExpectationsId": "670d06af2a96a58b554a2792",
+    "jobInfoId": "670d06af2a96a58b554a2790",
+    "expirationDate": "2024-10-28T17:00:00.000Z",
+    "statusSeeking": true,
+    "statusApproval": false,
+    "postViews": 1,
+    "companyName": "BIDV Metlife Life Insurance LLC",
+    "companyAddress": "10th Floor, Tower A, Vincom City Towers, 191 Ba Trieu Street, Le Dai Hanh Ward, Hai Ba Trung District, Hanoi, Vietnam",
+    "companySize": "100 - 499",
+    "companyBenefits": [
+        {
+            "title": "Thưởng",
+            "content": "Competitive Income; Performance recognition; Health care plan for family; Annual leave >= 14 days",
+            "_id": "670d06af2a96a58b554a278c"
+        },
+        {
+            "title": "Chăm sóc sức khỏe",
+            "content": "Training Opportunity: ongoing professional training",
+            "_id": "670d06af2a96a58b554a278d"
+        },
+        {
+            "title": "Nghỉ phép có lương",
+            "content": "Working culture: highly appreciates dynamic, flexibility, team spirit and wellness",
+            "_id": "670d06af2a96a58b554a278e"
+        }
+    ],
+    "companyLogo": "",
+    "companyStaffName": "HR Department",
+    "companyEmail": "nguyenvanc@gmail.com",
+    "keywords": [
+        "Accounting Reports",
+        "Account Reconciliation",
+        "IFRS",
+        "CPA"
+    ],
+    "jobField": "Kế Toán Tài Chính",
+    "language": "Tiếng Anh",
+    "minExperience": 3,
+    "nationality": "any",
+    "educationLevel": "Cử nhân",
+    "gender": "any",
+    "maritalStatus": "any",
+    "minAge": 20,
+    "maxAge": 30,
+    "jobTitle": "Senior Accountant",
+    "jobDescription": "<p><strong>1. Accounting </strong><em>(Insurance &amp; Investment Accounting)</em></p><p>• Participate in the Fund split project and develop the fund split process/manual/documents/workflow in accordance with the Ministry of Finance regulations.</p><p>• Ensure high level of accuracy and completeness for insurance data to be transferred from Core System to Accounting Software and work with related stakeholders (IT/OP…) to fix detected errors.</p><p>• BRD testing, study specifications to define chart of accounts for new products in OnePas.</p><p>• Monthly reconcile the assigned groups of B/S &amp; P/L account balance.</p><p>• Follow Finance Manual on B/S reconciliation process for review, approve and documentation required.</p><p>• Maintain Accounting hierarchy (Chart of Account, Cost center, other accounting dimensions...)</p><p>• Supervise Investment Accounting and follow up with Investment Department</p><p>• Supervise Life insurance related accounting transactions (Reserves, Premium, Commission, Claim &amp; Benefit…)</p><p>• Support Internal and External Audit</p><p>• Liaise with Local Reporting team to prepare data/documentation as requested for periodic and ad-hoc visit of both internal and external parties.</p><p><strong>2. Reporting &amp; Developing System/Progress</strong></p><p>• Prepare MOF, IAV, State Bank, Statistic Department and other regulator reports as required.</p><p>• Prepare Fund Split report.</p><p>• Prepare Regional Reports including Tax report.</p><p>• Prepare &amp; reconcile transactions in premium, expense reinsurance transactions, reserve transactions, funds.</p><p>• Participate in projects such as Accounting System maintenance and enhancement, and IFRS implementation as planned and assigned.</p><p>• Proactively evaluate and develop strategies and develop workflows to automate tasks within the departments.</p><p>• Perform other tasks as assigned by the Chief Financial Officer, Chief Accountant and (co) line-manager(s)</p>",
+    "jobRequirements": "<p><strong>Knowledge/Skills/Competencies Required:</strong></p><p><em>(Include education, skills, competencies and years of experience)</em></p><p><br></p><p>- Bachelor or higher degree in Accounting/Finance or Business.</p><p>- Understanding of international (IFRS) and local accounting principles.</p><p>- At least 3 years of experience in finance and accounting within life insurance companies or related fields.</p><p>- Member of ACCA or CFA, CPA is plus.</p><p>- Proficiency in Excel (Power Query, basic VBA macro…)</p><p>- Good foundation in information technology and can effectively leverage automation tool to improve financial and accounting efficiency.</p><p>- Familiarity with the Microsoft 365 environment</p><p>- Fluent in English for professional settings, such as meetings with the Regional Team.</p>",
+    "jobType": "Toàn thời gian",
+    "minSalary": "700",
+    "maxSalary": "900",
+    "jobLevel": "Nhân viên",
+    "jobIndustry": "Bảo hiểm"
+},
+{
+    "_id": "670d474d5bf05dd0f1b14ce0",
+    "recruiterId": "670d46435bf05dd0f1b14cc6",
+    "jobCompanyInfoId": "670d474d5bf05dd0f1b14cd7",
+    "candidateExpectationsId": "670d474d5bf05dd0f1b14cde",
+    "jobInfoId": "670d474d5bf05dd0f1b14cdc",
+    "expirationDate": "2024-11-12T17:00:00.000Z",
+    "statusSeeking": true,
+    "statusApproval": false,
+    "postViews": 0,
+    "companyName": "Capgemini Vietnam",
+    "companyAddress": "Centre Point, 106 Nguyễn Văn Trỗi, Phường 08, Quận Phú Nhuận, Thành phố Hồ Chí Minh",
+    "companySize": "100 - 499",
+    "companyBenefits": [
+        {
+            "title": "Thưởng",
+            "content": "Competitive salary, health insurance cover for employees and dependents",
+            "_id": "670d474d5bf05dd0f1b14cd8"
+        },
+        {
+            "title": "Đào tạo",
+            "content": "Working on international projects. Professional and dynamic working environment",
+            "_id": "670d474d5bf05dd0f1b14cd9"
+        },
+        {
+            "title": "Khác",
+            "content": "Achieving valuable experience with a variety of projects, new technologies, and hundreds of talents",
+            "_id": "670d474d5bf05dd0f1b14cda"
+        }
+    ],
+    "companyLogo": "",
+    "companyStaffName": "Recruitment team",
+    "companyEmail": "nguyenvand@gmail.com",
+    "keywords": [
+        "Agile Project Management",
+        "Scrum Master",
+        "Project Management",
+        "Stakeholder Management"
+    ],
+    "jobField": "Quản Lý Dự Án Công Nghệ",
+    "language": "Bất kỳ",
+    "minExperience": 8,
+    "nationality": "any",
+    "educationLevel": "Cử nhân",
+    "gender": "any",
+    "maritalStatus": "any",
+    "minAge": 20,
+    "maxAge": 30,
+    "jobTitle": "Release Train Engineer",
+    "jobDescription": "<p><strong>About the Role/position</strong></p><p>A Release Train Engineer (RTE) is responsible for coordinating and managing the release trains in an agile environment. They will act as a Project Manager, coaching and supporting the implementation of more effective ways of working and using Agile methodology. Overall, the Release Train Engineer plays a crucial role in ensuring the successful delivery of software releases and driving business outcomes in an Agile environment.</p><p><br></p><p><strong>Responsibilities:</strong></p><p>These are some of the responsibilities that we would expect you to be able to have experiencedelivering.</p><p>• Facilitate the Agile Release Train (ART) processes and execution, ensuring alignment across multiple teams and stakeholders.</p><p>• Coordinate and facilitate the planning, prioritization, and execution of program increments (PIs) and releases.</p><p>• Work closely with Product Owners, Scrum Masters, and other stakeholders to ensure that the release train is meeting its objectives and delivering value to customers.</p><p>• Identify and resolve any dependencies, issues, or risks that may impact the timely delivery of the release train.</p><p>• Provide visibility and transparency into the progress and health of the release train by tracking key performance metrics and reporting on status to leadership.</p><p>• Coach and mentor team members on agile practices, principles, and methodologies to drive continuous improvement and efficiency.</p><p>• Collaborate with cross-functional teams to ensure alignment on priorities, resources, and deliverables.</p><p>• Support the implementation and adoption of agile practices within the organization.</p><p>• Serve as a servant leader and facilitator to promote collaboration, communication, and teamwork within the release train.</p>",
+    "jobRequirements": "<p><strong>Skills &amp; Experience required</strong></p><p>• At least 8 years of project manager experience within the IT and banking domain</p><p>• Experience working in an agile environment and understanding agile software development life cycles and processes.</p><p>• Fantastic track record of stakeholder and vendor management. Having the ability to navigate a large complex corporation and building relationships with Senior stakeholders via different forms of networks</p><p>• An experienced practitioner of Agile methodology and experience with working in an adaptive environment with reactive and proactive mindsets.</p><p>• Proven skills such as risk, issue and dependency management</p><p>• Capable of strategic planning and project management</p><p>• Experience managing financial reports and on-time release deliveries in large complex corporations, experience working with Web, Cloud and Microservice technologies and a Computer Science or similar degree with a PMP or Scrum Master certification would all be good things to have.</p><p><br></p><p><strong>Benefit</strong></p><p>• Competitive salary, health insurance covered for employee and dependents.</p><p>• Working on international projects. Professional and dynamic working environment</p><p>• Achieving valuable experience with variety projects, new technologies and hundreds of talents</p><p>• Receiving training opportunities including many technical seminars and soft skill training courses</p><p>• Good opportunity for promotion through regular performance review system.</p>",
+    "jobType": "Toàn thời gian",
+    "minSalary": "1000",
+    "maxSalary": "2000",
+    "jobLevel": "Nhân viên",
+    "jobIndustry": "Phần Mềm CNTT/Dịch vụ Phần mềm"
+},
+{
+    "_id": "670d48fa5bf05dd0f1b14cfd",
+    "recruiterId": "670d46435bf05dd0f1b14cc6",
+    "jobCompanyInfoId": "670d48fa5bf05dd0f1b14cf4",
+    "candidateExpectationsId": "670d48fa5bf05dd0f1b14cfb",
+    "jobInfoId": "670d48fa5bf05dd0f1b14cf9",
+    "expirationDate": "2024-10-28T17:00:00.000Z",
+    "statusSeeking": true,
+    "statusApproval": false,
+    "postViews": 0,
+    "companyName": "Công Ty TNHH Qorvo Việt Nam",
+    "companyAddress": "5th Floor, CIC Tower - 219 Trung Kinh Street, Cau Giay District, Hanoi",
+    "companySize": "100 - 499",
+    "companyBenefits": [
+        {
+            "title": "Thưởng",
+            "content": "Competitive salary and bonus",
+            "_id": "670d48fa5bf05dd0f1b14cf5"
+        },
+        {
+            "title": "Chăm sóc sức khỏe",
+            "content": "Social insurance, health insurance, unemployment insurance according to Labor Laws",
+            "_id": "670d48fa5bf05dd0f1b14cf6"
+        },
+        {
+            "title": "Đào tạo",
+            "content": "Good chance to study and develop career path stably",
+            "_id": "670d48fa5bf05dd0f1b14cf7"
+        }
+    ],
+    "companyLogo": "",
+    "companyStaffName": "HR",
+    "companyEmail": "nguyenvand@gmail.com",
+    "keywords": [
+        "PCB Layout",
+        "C/C++ Code Optimization",
+        "Hardware Testing",
+        "Debugging",
+        "I2C Master"
+    ],
+    "jobField": "Phần Cứng Máy Tính",
+    "language": "Bất kỳ",
+    "minExperience": 5,
+    "nationality": "any",
+    "educationLevel": "Cử nhân",
+    "gender": "any",
+    "maritalStatus": "any",
+    "minAge": 20,
+    "maxAge": 30,
+    "jobTitle": "IC TEST Development Engineer",
+    "jobDescription": "<p><strong>SUMMARY:</strong></p><p>• Design test solution for both RD debugging and production test release.</p><p>• Work on yield improvement and test time reduction, etc..</p><p>• Response to customer return case, support AE/QE to analyze failure with ATE test data.</p><p>• Support RD/QE for BI, ESD data analysis.</p><p>• Experience in multi-site test programming, tester platform conversion.</p><p><br></p><p><strong>RESPONSIBILITIES:</strong></p><p>• Hardware design with Altium software.</p><p>• DFT review with designers to optimize test method.</p><p>• Program coding generate, debugging &amp; releasing.</p><p>• ATE evaluation report with yield, bin summary, distribution analysis &amp; full temp test.</p><p>• Subcon sustaining for low yield &amp; Test related issues.</p><p>• ATE support for FA case to analyze failure with ATE test data.</p><p>• Support RD/QE for BI, ESD data test &amp; analysis.</p><p>• Test time reduction to lower test cost.</p><p>• Identify EA, participate in evaluating significant EA, and renew the corresponding info in time.</p><p>• Routine monitoring and checking for internal system operation.</p><p>• Responsible for the inspection and management of special equipment</p>",
+    "jobRequirements": "<p><strong>QUALIFICATIONS:</strong></p><p>• Strong programming skills in C/C++ or other languages.</p><p>• Strong hardware circuit understanding and debugging skills.</p><p>• Relevant work experience of at least 5 years.</p><p>• Bachelor or above degree.</p><p>• Able to use ALTIUM/PADS/PROTEL to design PCB.</p><p>• Strong interpersonal skills, impartial and active working attitude.</p><p>• Good English communication skills and computer operation skills</p><p><br></p><p><strong>BENEFITS:</strong></p><p>• Dynamic, technological, global, and Agile working environment</p><p>• Flexible working arrangement</p><p>• Overseas travel opportunities for training and working related</p><p>• Performance review to adjust salary and title/position.</p><p>• 13 months of salary, bonus paid twice a year and many other side benefits such as lunch allowance, healthcare program, annual health-screen, sport activities, gifts on special occasions…</p>",
+    "jobType": "Toàn thời gian",
+    "minSalary": "1000",
+    "maxSalary": "2000",
+    "jobLevel": "Nhân viên",
+    "jobIndustry": "Điện/Điện tử"
+},
+{
+    "_id": "670d52715bf05dd0f1b14d64",
+    "recruiterId": "670d46435bf05dd0f1b14cc6",
+    "jobCompanyInfoId": "670d52705bf05dd0f1b14d5b",
+    "candidateExpectationsId": "670d52715bf05dd0f1b14d62",
+    "jobInfoId": "670d52705bf05dd0f1b14d60",
+    "expirationDate": "2024-11-04T17:00:00.000Z",
+    "statusSeeking": true,
+    "statusApproval": false,
+    "postViews": 1,
+    "companyName": "CÔNG TY TNHH QORVO VIỆT NAM",
+    "companyAddress": "5th Floor, CIC Tower - 219 Trung Kinh Street, Cau Giay District, Hanoi",
+    "companySize": "100 - 499",
+    "companyBenefits": [
+        {
+            "title": "Thưởng",
+            "content": "13 months of salary, bonus paid twice a year and many other side benefits such as lunch allowance, healthcare program, annual health-screen, sport activities, gifts on special occasions",
+            "_id": "670d52705bf05dd0f1b14d5c"
+        },
+        {
+            "title": "Cơ hội du lịch",
+            "content": "Overseas travel opportunities for training and working related",
+            "_id": "670d52705bf05dd0f1b14d5d"
+        },
+        {
+            "title": "Khác",
+            "content": "Dynamic, technological, global, and Agile working environment\nFlexible working arrangement\nPerformance review to adjust salary and title/position",
+            "_id": "670d52705bf05dd0f1b14d5e"
+        }
+    ],
+    "companyLogo": "",
+    "companyStaffName": "Ms. Minh Phan",
+    "companyEmail": "nguyenvand@gmail.com",
+    "keywords": [
+        "Test Automation Tools"
+    ],
+    "jobField": "QA/QC/Software Testing",
+    "language": "Bất kỳ",
+    "minExperience": 4,
+    "nationality": "any",
+    "educationLevel": "Cử nhân",
+    "gender": "any",
+    "maritalStatus": "any",
+    "minAge": 18,
+    "maxAge": 60,
+    "jobTitle": "Software Test Engineer",
+    "jobDescription": "<p>SUMMARY</p><p>The QA Tester is a key player supporting Enterprise Business Systems’ QA test needs. A successful candidate will be comfortable integrating with our support teams both internal and external to provide efficient QA testing using manual or automated methods. The QA Tester will be familiar with testing best practices and open to learning new systems and processes.</p><p>RESPONSIBILITY</p><p>• Perform hands on manual and automated testing of enterprise business systems including functional unit testing, integration testing, User acceptance testing and regression testing</p><p>• Develop and maintain test scripts</p><p>• Develop and maintain data sheets</p><p>• Review and approve the solution requirements and map solution requirements to the test scripts (RTMs)</p><p>• Participate and contribute to the scrums</p><p>• Proactively contribute to test readiness activities including requirements review and finalization, test scoping efforts, leading test script generation tasks, planning and scheduling test insertions as assigned.</p><p>• Learn and adhere to the Test Management policies and standard procedures. Demonstrate Standard Work usage and maintain a current and efficient standard work model.</p><p>• Actively participate in end-to-end business transformation efforts including support the solution requirements gathering and vetting, test scripts, data sheet, Requirements Traceability Matrix, and to prepare for go-live and subsequent run/maintain.</p><p>• Perform hands on expansion of Testing Automation footprint to drive efficiency. Develop, Review and promote the automated scripts to production.</p><p>• Accountable for the Testing KPIs, collaborate with the teams to meet KPIs and with internal and external customers to drive improvement.</p><p>• Apply LEAN principles and use 8 step problem solving to improve KPI and other related testing processes.</p><p>• Contribute to testing related papers suitable for conferences and benchmarking.</p><p>• Collaborating with our offshore team for efficient delivery.</p>",
+    "jobRequirements": "<p>• At least 3 years of hands-on experience in software testing across different commercial and home-grown applications</p><p>• Software/Engineering background with software testing experience.</p><p>• Demonstrated ability to deliver QA testing results meeting/exceeding KPI targets.</p><p>• Extensive knowledge and experience with at least one automation tool (HP QTP, Test Complete, Tosca, etc.)</p><p>• Good discipline generating ạnd maintaining test artifacts to promote a sustainable process.</p><p>• Able to interpret and present data to various levels of business and management.</p><p>• Experience working with ERP systems like SAP is a plus</p><p>• Experience with load testing is a plus.</p><p>• Able to learn various systems quickly using the standard testing collateral/documents</p><p>• Good English skills</p><p>• Detail-oriented with a focus on maintaining required documentation and follow process consistently</p><p>• Fully organized, well-structured and able to deliver testing results on schedule</p><p>• Strong problem-solving skills.</p><p>• Have the ability to work under pressure and across time zones (Vietnam time-zone and the US time-zone)</p><p><br></p><p>BENEFITS:</p><p>• Dynamic, technological, global, and Agile working environment</p><p>• Flexible working arrangement</p><p>• Overseas travel opportunities for training and working related</p><p>• Performance review to adjust salary and title/position.</p><p>• 13 months of salary, bonus paid twice a year and many other side benefits such as lunch allowance, healthcare program, annual health-screen, sport activities, gifts on special occasions</p>",
+    "jobType": "Toàn thời gian",
+    "minSalary": "1000",
+    "maxSalary": "2000",
+    "jobLevel": "Nhân viên",
+    "jobIndustry": "Điện/Điện tử"
+},
+{
+    "_id": "670d54f95bf05dd0f1b14dd6",
+    "recruiterId": "670d46435bf05dd0f1b14cc6",
+    "jobCompanyInfoId": "670d54f95bf05dd0f1b14dcd",
+    "candidateExpectationsId": "670d54f95bf05dd0f1b14dd4",
+    "jobInfoId": "670d54f95bf05dd0f1b14dd2",
+    "expirationDate": "2024-11-08T17:00:00.000Z",
+    "statusSeeking": true,
+    "statusApproval": false,
+    "postViews": 0,
+    "companyName": "Capgemini Vietnam",
+    "companyAddress": "Centre Point, 106 Nguyễn Văn Trỗi, Phường 08, Quận Phú Nhuận, Thành phố Hồ Chí Minh",
+    "companySize": "100 - 499",
+    "companyBenefits": [
+        {
+            "title": "Thưởng",
+            "content": "Competitive salary, health insurance cover for employees and dependents",
+            "_id": "670d54f95bf05dd0f1b14dce"
+        },
+        {
+            "title": "Đào tạo",
+            "content": "Working on international projects. Professional and dynamic working environment",
+            "_id": "670d54f95bf05dd0f1b14dcf"
+        },
+        {
+            "title": "Khác",
+            "content": "Achieving valuable experience with a variety of projects, new technologies, and hundreds of talents",
+            "_id": "670d54f95bf05dd0f1b14dd0"
+        }
+    ],
+    "companyLogo": "",
+    "companyStaffName": "Recruitment team",
+    "companyEmail": "nguyenvand@gmail.com",
+    "keywords": [
+        "Enterprise Architecture",
+        "Risk Management",
+        "System Integration",
+        "Solution Architecture",
+        "Technical Management"
+    ],
+    "jobField": "Chuyển Đổi Số",
+    "language": "Bất kỳ",
+    "minExperience": 5,
+    "nationality": "any",
+    "educationLevel": "Cử nhân",
+    "gender": "any",
+    "maritalStatus": "any",
+    "minAge": 20,
+    "maxAge": 30,
+    "jobTitle": "Solution Architect",
+    "jobDescription": "<p><strong>About the Role/position</strong></p><p>We are seeking a motivated Solution Architect to join the Enterprise Strategy and Architecture team on our banking client’s project. As a Solution Architect, you will be responsible for designing and implementing complex and innovative solutions to meet the business needs of our client. You will work closely with technical teams and key stakeholders to architect solutions that are both scalable and sustainable.</p><p><br></p><p><strong>Responsibilities:</strong></p><p>These are some of the standard responsibilities that we would expect you to be able to have experience delivering.</p><p>• Design and architect complex solutions delivering an end to end technical outcome that can meet business needs and align with industry best practices</p><p>• Collaborate with technical teams to ensure successful implementation of solutions and ensure the documentation of architectural decisions are compliant and meet regulatory requirements for the domain</p><p>• Drive the technical roadmap according to the project’s technology strategy and architectural patterns, lead the technical direction and provide guidance on technology selection and architecture decisions</p><p>• Conduct technical review sessions with clients and stakeholders and provide technical guidance and advice to the architecture team across the technology lifecycle.</p><p>• Serve as a technical advisor and advocate for best practices in solution design, understanding how these to shape and sequence initiative features.</p><p>• Stay current on industry trends and emerging technologies</p><p>• Work with clients to understand their business requirements and translate them into technical solutions</p><p>• Confirm design artifacts for completion, certifying testability to allow for effective change management of assessments.</p>",
+    "jobRequirements": "<p><strong>Skills &amp; Experience required</strong></p><p>• At least 5 years of experience in solution architecture.</p><p>• You have expert experience and background in technology and development that has led you to becoming a Solution Architect.</p><p>• You are a subject matter expert in technological areas such as Integration Technologies, Web Architecture, AWS and Azure Cloud and Distribution Systems in the banking industry</p><p>• Experience in designing the overall system architecture that aligns with the architectural roadmap and requirements.</p><p>• Experience in communicating and collaborating with stakeholders, including technical teams and business leaders.</p><p>• Experience in understanding the overall system architecture and identifying and mitigating potential risks in it</p><p>• Experience working within a complex and regulated IT environment using subject matter expert knowledge in end-to-end solution architecture design to navigate through various</p><p>scenarios</p><p>• Understanding how to plan and execute the migration of legacy systems to modern architecture.</p><p>• Experience in being able to spot and identify technical debt within existing systems.</p><p>• Experience in aligning technical solutions with long-term business objectives in a strategical manner.</p><p>• Ability to develop roadmaps for business units and influence, triage, prioritize business outcomes.</p><p>• Knowledge of change management principles to enable migration during system transformation.</p><p>• Having experience in areas such as loan origination tailored for business lending, Credit risk assessment and management, leasing / Equipment Finance are highly preferred</p><p><br></p><p><strong>Benefit</strong></p><p>• Competitive salary, health insurance covered for employee and dependents.</p><p>• Working on international projects. Professional and dynamic working environment</p><p>• Achieving valuable experience with variety projects, new technologies and hundreds of talents</p><p>• Receiving training opportunities including many technical seminars and soft skill training courses</p><p>• Good opportunity for promotion through regular performance review system.</p>",
+    "jobType": "Toàn thời gian",
+    "minSalary": "1000",
+    "maxSalary": "2000",
+    "jobLevel": "Nhân viên",
+    "jobIndustry": "Phần Mềm CNTT/Dịch vụ Phần mềm"
+},
+{
+    "_id": "670d57585bf05dd0f1b14e29",
+    "recruiterId": "670d46435bf05dd0f1b14cc6",
+    "jobCompanyInfoId": "670d57575bf05dd0f1b14e20",
+    "candidateExpectationsId": "670d57585bf05dd0f1b14e27",
+    "jobInfoId": "670d57575bf05dd0f1b14e25",
+    "expirationDate": "2024-11-18T17:00:00.000Z",
+    "statusSeeking": true,
+    "statusApproval": false,
+    "postViews": 2,
+    "companyName": "Amkor Technology Vietnam LLC.,",
+    "companyAddress": "Yen Phong II-C IP, Cho Town, Yen Phong District, Bac Ninh, Viet Nam",
+    "companySize": "5000 - 9999",
+    "companyBenefits": [
+        {
+            "title": "Thưởng",
+            "content": "13th Salary, KPI Bonus",
+            "_id": "670d57575bf05dd0f1b14e21"
+        },
+        {
+            "title": "Máy tính xách tay",
+            "content": "Provide laptop for working",
+            "_id": "670d57575bf05dd0f1b14e22"
+        },
+        {
+            "title": "Căn-tin",
+            "content": "Free lunch at canteen company",
+            "_id": "670d57575bf05dd0f1b14e23"
+        }
+    ],
+    "companyLogo": "",
+    "companyStaffName": "Ms Thương",
+    "companyEmail": "nguyenvand@gmail.com",
+    "keywords": [
+        "Java Programming",
+        "JSP Programming",
+        "C# Programming",
+        "Python Programming"
+    ],
+    "jobField": "Quản Lý Công Nghệ Thông Tin",
+    "language": "Tiếng Anh",
+    "minExperience": 1,
+    "nationality": "any",
+    "educationLevel": "Cử nhân",
+    "gender": "any",
+    "maritalStatus": "any",
+    "minAge": 20,
+    "maxAge": 30,
+    "jobTitle": "IT MES/ Web Developer",
+    "jobDescription": "<p>Key Responsibilities</p><p>1. Responsible for MES/Web system management</p><p>2. Analyze program problems and hand-on troubleshooting.</p><p>3. Gather business requirements and design a solution with global MES/Web team.</p><p>4. Develop and implement MES/Web program objects.</p><p>5. Provide training to local users as needed</p>",
+    "jobRequirements": "<p>1. Educational background:</p><p>• Bachelor’s degree in computer science, Information Technology, or related discipline</p><p>2. Experiences:</p><p>• 1 years of experience</p><p>3. Skills:</p><p>• Knowledge of advanced java/jsp skills</p><p>• Programming language: java/jsp – required, c#.net/vb.net/Kotlin/Python - optional.</p><p>• Basic knowledge of RDBMS and SQL</p><p>• Troubleshooting skill</p><p>• Written and verbal communication skills to collaborate with users and other developers.</p><p>• Preferred knowledge of XML</p><p>4. Language</p><p>• English communication skills</p>",
+    "jobType": "Toàn thời gian",
+    "minSalary": "1000",
+    "maxSalary": "2000",
+    "jobLevel": "Mới tốt nghiệp",
+    "jobIndustry": "Phần Mềm CNTT/Dịch vụ Phần mềm"
+},
+{
+    "_id": "670e9cdea33af44d0e9a47ea",
+    "recruiterId": "670e851ffa1761138b83dae0",
+    "jobCompanyInfoId": "670e9cdea33af44d0e9a47e1",
+    "candidateExpectationsId": "670e9cdea33af44d0e9a47e8",
+    "jobInfoId": "670e9cdea33af44d0e9a47e6",
+    "expirationDate": "2024-11-11T17:00:00.000Z",
+    "statusSeeking": true,
+    "statusApproval": false,
+    "postViews": 1,
+    "companyName": "Seoul Semiconductor Vina",
+    "companyAddress": "Dong Van 1 IZ., Duy Tien, Ha Nam",
+    "companySize": "1000 - 4999",
+    "companyBenefits": [
+        {
+            "title": "Thưởng",
+            "content": "13th Month Salary, MBO",
+            "_id": "670e9cdea33af44d0e9a47e2"
+        },
+        {
+            "title": "Máy tính xách tay",
+            "content": "Laptop for employees",
+            "_id": "670e9cdea33af44d0e9a47e3"
+        },
+        {
+            "title": "Xe đưa đón",
+            "content": "Company Bus - Ha Noi to Ha Nam and vice versa",
+            "_id": "670e9cdea33af44d0e9a47e4"
+        }
+    ],
+    "companyLogo": "",
+    "companyStaffName": "HR Department",
+    "companyEmail": "nguyenvane@gmail.com",
+    "keywords": [
+        "Process Engineer",
+        "Bảo dưỡng thiết bị",
+        "Phân tích lỗi sản xuất",
+        "CAD (Computer-Aided Design)"
+    ],
+    "jobField": "Quy Trình & Lắp Ráp",
+    "language": "Bất kỳ",
+    "minExperience": 5,
+    "nationality": "any",
+    "educationLevel": "Cử nhân",
+    "gender": "any",
+    "maritalStatus": "any",
+    "minAge": 20,
+    "maxAge": 30,
+    "jobTitle": "Technical Leader",
+    "jobDescription": "<p>1.Quản lý, điều phối các hoạt động của Phòng Kỹ thuật, chịu trách nhiệm trước Ban.GĐ về hoạt động của Phòng;</p><p><br></p><p>2. Lập kế hoạch bảo dưỡng, sửa chữa, cải tạo thiết bị</p><p><br></p><p>3.Lập kế hoạch thực hiện sửa chữa, bảo dưỡng các thiết bị, lập dự trù vật tư kỹ thuật;</p><p><br></p><p>4.Thực hiện bảo trì bảo dưỡng thiết bị định kỳ để hệ thống luôn hoạt động tốt, tuổi thọ cao.</p><p><br></p><p>5. Sửa chữa ngay những hư hỏng xảy ra trong quá trình sản xuất, giảm tối đa giờ máy hỏng, góp phần tăng năng suất lao động.</p><p><br></p><p>6.Đề xuất và cố vấn cho Ban giám đốc các giải pháp cải tiến về kỹ thuật.</p><p><br></p><p>7.Đôn đốc thực hiện các nội quy an toàn điện, phòng chống cháy nổ, an toàn lao động trong phân xưởng.</p><p><br></p><p>8.Quản lý điều phối nhân lực.</p><p><br></p><p>9.Lập kế hoạch bảo trì, bảo dưỡng các máy, thiết bị, các hệ thống đường ống trong nhà máy.</p><p><br></p><p>10.Lập kế hoạch đào tạo nhân viên mới, đào tạo chuyên môn cho các nhân viên dưới quyền và thực hiện đào tạo định kỳ.</p><p><br></p><p>11.Phân công, hướng dẫn công việc cho các nhân viên cấp dưới theo chức năng, nhiệm vụ của từng nhân viên dựa trên kế hoạch sx của nhà máy.</p>",
+    "jobRequirements": "<p><strong>Yêu cầu công việc:</strong></p><p>1.Tốt nghiệp đại học trở lên</p><p>2. Có kinh nghiệm quản lý thiết bị trên 5 năm ở vị trí tương đương tại công ty sản xuất, đặc biệt trong lĩnh vực LED</p><p>3. Có khả năng lãnh đạo và quản lý để đạt được mục tiêu (UPH, MTBF, MTTR, MTBA, RTF…)</p><p>4. Hiểu biết sâu rộng về công nghệ kỹ thuật và tự động hóa</p><p>5. Kỹ năng mềm và truyền đạt tốt</p><p><br></p><p><strong>Quyền Lợi:</strong></p><p>- Lương cạnh tranh khu vực Hà Nam</p><p>- Được tham gia đóng BHXH ngay từ tháng thử việc</p><p>- Hỗ trợ tất cả các bữa ăn trong ca làm việc bao gồm bữa ăn sáng</p><p>- Thưởng : Lễ, tết, nhân viên xuất sắc theo quy định của công ty. Hưởng các ngày lễ theo quy định của luật và nghỉ phép hằng năm (12 ngày phép/năm)</p><p>- Xe đưa đón 2 chiều Hà Nội - Hà Nam</p><p>- Đảm bảo sức khỏe: khám sức khỏe định kỳ, miễn phí khám sức khoẻ tuyển dụng, mua bảo hiểm sức khỏe 24/7...</p><p>- Chế độ Hiếu, hỉ 2.000.000₫/sự kiện, xe đi lại 2 chiều</p><p>- Môi trường thân thiện, cởi mở : các hoạt động team building gắn kết hàng quý, bản tin hàng tuần, các hoạt động văn hóa- thể thao- nghệ thuật nội bộ (bóng đá, nhảy dây, trang trí...)</p>",
+    "jobType": "Toàn thời gian",
+    "minSalary": "500",
+    "maxSalary": "700",
+    "jobLevel": "Trưởng phòng",
+    "jobIndustry": "Sản xuất"
+},
+{
+    "_id": "670e9fefa33af44d0e9a4835",
+    "recruiterId": "670e851ffa1761138b83dae0",
+    "jobCompanyInfoId": "670e9fefa33af44d0e9a482c",
+    "candidateExpectationsId": "670e9fefa33af44d0e9a4833",
+    "jobInfoId": "670e9fefa33af44d0e9a4831",
+    "expirationDate": "2024-11-04T17:00:00.000Z",
+    "statusSeeking": true,
+    "statusApproval": false,
+    "postViews": 0,
+    "companyName": "Văn Phòng Đại Diện Delta Faucet (China) Co.ltd Tại Tỉnh Tây Ninh",
+    "companyAddress": "Nhà ở thương mại căn D13, Khu phố Lộc An, Phường Trảng Bàng, Thị xã Trảng Bàng, Tỉnh Tây Ninh",
+    "companySize": "100 - 499",
+    "companyBenefits": [
+        {
+            "title": "Thưởng",
+            "content": "Year-end Bonus, Annual Bonus, Other Allowances",
+            "_id": "670e9fefa33af44d0e9a482d"
+        },
+        {
+            "title": "Nghỉ phép có lương",
+            "content": "Public holidays, Annual Leave, Christmas Leave",
+            "_id": "670e9fefa33af44d0e9a482e"
+        },
+        {
+            "title": "Đào tạo",
+            "content": "Training",
+            "_id": "670e9fefa33af44d0e9a482f"
+        }
+    ],
+    "companyLogo": "",
+    "companyStaffName": "HR Dept",
+    "companyEmail": "nguyenvane@gmail.com",
+    "keywords": [
+        "Quality Assurance"
+    ],
+    "jobField": "Đảm Bảo Chất Lượng/Kiểm Soát Chất Lượng/Quản Lý Chất Lượng",
+    "language": "Bất kỳ",
+    "minExperience": 3,
+    "nationality": "any",
+    "educationLevel": "Cử nhân",
+    "gender": "any",
+    "maritalStatus": "any",
+    "minAge": 20,
+    "maxAge": 30,
+    "jobTitle": "Supplier Quality Engineer (SQE) - Requires Chinese",
+    "jobDescription": "<p><strong>Purpose/Role Summary:</strong></p><p>This position focus on Product PPAP execution, supplier capability development and supplier performance management. Also provide on the ground support for DFC supply chain development in Thailand. Report to supplier chain manager of Vietnam office.</p><p><br></p><p><strong>Key Accountabilities:</strong></p><p><strong>1. Sourcing projects execution and conduct products PPAP</strong></p><p>a. Involve initial design review/process review</p><p>b. Approval product through PPAP</p><p><br></p><p><strong>2. Managing suppliers' performance &amp; Support suppliers’ capability development</strong></p><p>a. Report, monitor and work with suppliers execute the actions plan and Trouble shooting with suppliers</p><p>b. Conduct process capability assessments and improvement activities to effectively resolve gaps and full-fill Delta business requirement, including quality management system/manufacturing process /finishing validation /testing qualification.</p><p><br></p><p><strong>3. Sustain supplier’s process / system standard to meet Delta’s requirement (QMS/manufacturing/finishing/testing)</strong></p><p>a. Execute regular audit at suppliers in term of lab testing operations and manufacturing process.</p><p>b. Results reporting, manage progress and verify the corrective actions with suppliers if needed.</p><p><br></p><p><strong>4. Support local source inspection</strong></p><p>a. Proceed source inspection on site per our standard process before shipment.</p><p>b. Manage documents of the inspection reports and report testing results to LM.</p><p><br></p><p><strong>5. Work with ASCM and DUS team, provide on the ground engineering/quality supports</strong></p>",
+    "jobRequirements": "<p><strong>Human Behaviors </strong>(e.g., leadership profile attributes or DFC Values etc.)</p><p>1) Detail, result oriented, independent</p><p>2) Strong sense of ownership and responsibility</p><p><br></p><p><strong>Critical Skills/Knowledge</strong></p><p>1. Bachelor’s degree or above</p><p>2. 5+ years’ experience in Quality assurance or Engineering role, including 3+ years’ experience of Quality assurance or engineering role in international manufacturing environment.</p><p>3. Supplier Quality management knowledge is needed</p><p>4. Familiar with PPAP</p><p>5. Familiar with quality management tools (QC 7 tools)</p><p><strong>6</strong>. <strong>Languages: Mandarin (Chinese) and English: Fluent (Required)</strong></p><p>7. Good PC skills, Microsoft Office is required (Word, Excel, Power point).</p><p>8. SAP skills preferred.</p><p><br></p><p><strong>Metrics</strong></p><p>a. PPAP sustainability ratio</p><p>b. PPAP on time approval</p><p>c. Supplier development project key milestone</p><p>d. Supplier rppm</p><p>e. effectively solve NCM</p><p><br></p><p><strong>Work location:</strong> Trang Bang Office (Khu Pho Mai Anh)</p>",
+    "jobType": "Toàn thời gian",
+    "minSalary": "500",
+    "maxSalary": "700",
+    "jobLevel": "Nhân viên",
+    "jobIndustry": "Sản xuất"
+},
+{
+    "_id": "670ea2bba33af44d0e9a4866",
+    "recruiterId": "670e851ffa1761138b83dae0",
+    "jobCompanyInfoId": "670ea2bba33af44d0e9a485d",
+    "candidateExpectationsId": "670ea2bba33af44d0e9a4864",
+    "jobInfoId": "670ea2bba33af44d0e9a4862",
+    "expirationDate": "2024-11-13T17:00:00.000Z",
+    "statusSeeking": true,
+    "statusApproval": false,
+    "postViews": 0,
+    "companyName": "Công Ty Cổ Phần Nhựa Á Đông (Adc Plastic., Jsc)",
+    "companyAddress": "Số 14-15 A18, BTSL 2, Lê Trọng Tấn, An Khánh, Hoài Đức, Hà Nội",
+    "companySize": "100 - 499",
+    "companyBenefits": [
+        {
+            "title": "Chăm sóc sức khỏe",
+            "content": "Chương trình chăm sóc sức khỏe định kỳ với nhiều hạng mục khám chuyên sâu",
+            "_id": "670ea2bba33af44d0e9a485e"
+        },
+        {
+            "title": "Máy tính xách tay",
+            "content": "Được cung cấp đầy đủ trang thiết bị để làm việc, có xe đưa đón từ văn phòng Hà Nội xuống nhà máy Hưng Yên hàng ngày.",
+            "_id": "670ea2bba33af44d0e9a485f"
+        },
+        {
+            "title": "Căn-tin",
+            "content": "Bữa ăn ngon, đầy đủ dưỡng chất, đảm bảo an toàn vệ sinh lao động",
+            "_id": "670ea2bba33af44d0e9a4860"
+        }
+    ],
+    "companyLogo": "",
+    "companyStaffName": "Phòng Nhân sự",
+    "companyEmail": "nguyenvane@gmail.com",
+    "keywords": [
+        "Production Planning & Control"
+    ],
+    "jobField": "Nghiên Cứu & Phát Triển",
+    "language": "Bất kỳ",
+    "minExperience": 8,
+    "nationality": "any",
+    "educationLevel": "Bất kỳ",
+    "gender": "any",
+    "maritalStatus": "any",
+    "minAge": 20,
+    "maxAge": 30,
+    "jobTitle": "Chuyên Viên Cao Cấp Phát Triển Sản Phẩm",
+    "jobDescription": "<p>Chúng tôi đang tìm kiếm những ĐỒNG NGHIỆP – những người đồng hành có kiến thức, kỹ năng và nhiều kinh nghiệm trong lĩnh vực NGHIÊN CỨU PHÁT TRIỂN SẢN PHẨM gia nhập tổ chức cùng PHÁT TRIỂN SỰ NGHIỆP. Vị trí công việc sẽ chịu trách nhiệm nghiên cứu các sản phẩm đầu cuối của khách hàng, tính năng, nguyên liệu và công nghệ sản xuất ra sản phẩm, tìm hiểu nhu cầu của khách hàng, biến nhu cầu của khách hàng thành sản phẩm thực tế. Thực hiện và giám sát thực hiện kế hoạch phát triển sản phẩm mới, nghiên cứu các loại nguyên liệu tương đường và nguyên liệu thay thế.</p><p>1. TÊN CHỨC DANH: Chuyên viên cao cấp phát triển Sản phẩm (Senior R&amp;D Engineer)</p><p>2. HÌNH THỨC HỢP TÁC VÀ LÀM VIỆC: Toàn thời gian</p><p>3. ĐỊA ĐIỂM LÀM VIỆC: Đường D1, KCN Yên Mỹ II, huyện Yên Mỹ, tỉnh Hưng Yên</p><p>Các địa điểm văn phòng và địa điểm khác theo yêu cầu công việc</p><p>4. MỤC ĐÍCH CÔNG VIỆC</p><p>4.1. Cải tiến và phát triển sản phẩm, mang đến lợi ích cao nhất cho khách hàng</p><p>4.2. Nghiên cứu và phát triển các loại nguyên liệu tương đương và nguyên liệu thay thế</p><p>4.3. Nghiên cứu và phát triển các loại sản phẩm mới phù hợp với xu thế phát triển của khách hàng</p><p>5. NHIỆM VỤ/ TRÁCH NHIỆM/ MÔ TẢ CHI TIẾT CÔNG VIỆC</p><p>5.1. NGHIÊN CỨU PHÁT TRIỂN NGUỒN CUNG NGUYÊN LIỆU</p><p>- Đọc và đánh giá dữ liệu báo cáo nguồn cung nguyên liệu, xác định các nhà cung cấp nguyên liệu phù hợp với yêu cầu của ADC</p><p>- Đánh giá nhà cung cấp, chọn ra các nhà cung cấp phù hợp để thực hiện thử nguyên liệu</p><p>- Thử nguyên liệu, đánh giá chất lượng</p><p>- Tổng hợp các thông tin, lựa chọn nhà cung cấp phù hợp đưa vào danh sách nhà cung cấp được duyệt để cung cấp nguyên liệu, vật tư cho sản xuất.</p><p>5.2. NGHIÊN CỨU, PHÂN TÍCH, ĐÁNH GIÁ XU THẾ CHẤT LƯỢNG</p><p>- Tổng hợp các dữ liệu về chất lượng nguyên vật liệu, chất lượng của từng mã sản phẩm</p><p>- Phân tích dữ liệu, tìm ra xu thế chất lượng của từng loại nguyên liệu, từng mã sản phẩm</p><p>- Báo cáo với cấp trên và đề xuất giải pháp nhằm ổn định và nâng cao chất lượng nguyên vật liệu, chất lượng sản phẩm.</p><p>5.3. ĐÀO TẠO VÀ HUẤN LUYỆN CHO CÔNG NHÂN VẬN HÀNH</p><p>- Viết tài liệu hướng dẫn vận hành dây chuyền sản xuất, các thông số nhiệt độ, tốc độ, áp suất, thời gian, khối lượng, …</p><p>- Tổ chức đào tạo tập trung cho nhân viên, công nhân</p><p>- Huấn luyện thực hành tại dây chuyền sản xuất</p><p>5.4. TIẾP XÚC VÀ PHÁT TRIỂN MỐI QUAN HỆ VỚI CÁC NHÀ CUNG CẤP NGUYÊN LIỆU</p><p>- Thực hiện trao đổi thông tin với các nhà cung cấp thông qua email, gọi điện, gặp trực tiếp</p><p>- Tìm hiểu các thông tin về tính chất của các loại nguyên liệu, thông số kỹ thuật, phương pháp sử dụng và kiểm tra</p><p>- Các loại nguyên liệu có tính chất tương đương</p><p>5.5. TIẾP XÚC VÀ PHÁT TRIỂN MỐI QUAN HỆ VỚI KHÁCH HÀNG</p><p>- Thực hiện trao đổi thông tin với các khách hàng thông qua email, gọi điện, gặp trực tiếp</p><p>- Nghiên cứu, tìm hiểu sản phẩm đầu cuối của khách hàng, công nghệ sản xuất, các yêu cầu về nguyên liệu của khách hàng</p><p>- Trao đổi các thông tin về các tính chất sản phẩm của ADC, hướng dẫn khách hàng sử dụng, phối hợp với khách hàng xử lý các tình huống về công nghệ và chất lượng của khách hàng</p><p>- Nắm được các yêu cầu của khách hàng về tính chất của nguyên liệu, phát triển loại nguyên liệu theo các yêu cầu của khách</p><p><br></p>",
+    "jobRequirements": "<p>1. TRÌNH ĐỘ HỌC VẤN: Kỹ sư trở lên</p><p>2. CHUYÊN NGÀNH ĐÀO TẠO: Hóa, Vật liệu, Điện, Tự động hóa</p><p>3. TRÌNH ĐỘ CHUYÊN MÔN</p><p>- Có hiểu biết sâu sắc về các loại nguyên liệu, phụ gia dùng trong ngành nhựa</p><p>- Có hiểu biết cơ bản về các loại máy gia công trong ngành nhựa</p><p>4. TÍCH LUỸ CẦN ĐẠT ĐƯỢC</p><p>- Có ít nhất 8 năm kinh nghiệm làm việc trong ngành nhựa, 3 năm làm việc ở vị trí tương đương</p><p>– nghiên cứu và phát triển sản phẩm trong ngành nhựa</p><p>- Hiểu nguyên lý hoạt động, cấu tạo và vận hành được hầu hết các loại máy trong ngành nhựa</p><p>- Hiểu biết về hệ thống quản lý chất lượng, có kinh nghiệm soạn thảo, soát xét các tài liệu ISO</p><p>5. NGÔN NGỮ HỒ SƠ ỨNG TUYỂN Song ngữ Anh/Việt</p><p>6. KỸ NĂNG NGOẠI NGỮ: Giao tiếp tiếng Anh thành thạo 4 kỹ năng (Nghe, nói, đọc, viết) Tiếng Anh: TOEIC &gt; 650/ IELTS &gt; 5.0 Hoặc Tiếng Trung: HSK 3</p><p><br></p><p>LỢI ÍCH CỦA ỨNG VIÊN KHI GIA NHẬP ADC</p><p>1. THU NHẬP: ADC PLASTIC CAM KẾT “Với sự đóng góp của mỗi một ĐỒNG NGHIỆP đối với sự phát triển của tổ chức, mức thu nhập sẽ luôn tương xứng với hiệu suất và năng lực”</p><p>2. CƠ HỘI PHÁT TRIỂN SỰ NGHIỆP VÀ GIA TĂNG GIÁ TRỊ ĐÓNG GÓP CHO XÃ HỘI ADC PLASTIC tự hào là môi trường luôn có sẵn cơ hội cho những ĐỒNG NGHIỆP của chúng tôi mở rộng phạm vi công việc, cơ hội học tập và phát triển sự nghiệp với các điều kiện làm việc tốt nhất.</p><p>- Đảm bảo Cơ hội phát triển là công bằng, minh bạch cho tất cả Đồng nghiệp của ADC PLASTIC. Chúng tôi hướng đến mục tiêu chung “Cùng Sự nghiệp – Cùng Năng lực – Cùng Chí Hướng – Cùng Phát triển”</p><p>- Đảm bảo các chính sách phúc lợi, đãi ngộ và tôn vinh giá trị con người và vị thế xã hội</p><p><br></p>",
+    "jobType": "Toàn thời gian",
+    "minSalary": "500",
+    "maxSalary": "700",
+    "jobLevel": "Nhân viên",
+    "jobIndustry": "Sản xuất"
+},
+{
+    "_id": "670ea496a33af44d0e9a48e7",
+    "recruiterId": "670e851ffa1761138b83dae0",
+    "jobCompanyInfoId": "670ea496a33af44d0e9a48de",
+    "candidateExpectationsId": "670ea496a33af44d0e9a48e5",
+    "jobInfoId": "670ea496a33af44d0e9a48e3",
+    "expirationDate": "2024-11-05T17:00:00.000Z",
+    "statusSeeking": true,
+    "statusApproval": false,
+    "postViews": 0,
+    "companyName": "Công Ty TNHH Delta Galil Việt Nam",
+    "companyAddress": "Delta Galil Vietnam Co., LTD. Cat Trinh commune, Phu Cat district, Binh Dinh province",
+    "companySize": "1000 - 4999",
+    "companyBenefits": [
+        {
+            "title": "Thưởng",
+            "content": "13th month salary Payment",
+            "_id": "670ea496a33af44d0e9a48df"
+        },
+        {
+            "title": "Chăm sóc sức khỏe",
+            "content": "15 Annual leaves per year ; 2 Saturdays off per month ; Daily shuttle bus",
+            "_id": "670ea496a33af44d0e9a48e0"
+        },
+        {
+            "title": "Khác",
+            "content": "Health examination once a year; International & Professional Working Environment",
+            "_id": "670ea496a33af44d0e9a48e1"
+        }
+    ],
+    "companyLogo": "",
+    "companyStaffName": "HR Department",
+    "companyEmail": "nguyenvane@gmail.com",
+    "keywords": [
+        "Quality Assurance",
+        "Quality Standards",
+        "QA Engineer",
+        "Textile Quality Assurance"
+    ],
+    "jobField": "Đảm Bảo Chất Lượng/Kiểm Soát Chất Lượng/Quản Lý Chất Lượng",
+    "language": "Bất kỳ",
+    "minExperience": 3,
+    "nationality": "any",
+    "educationLevel": "Bất kỳ",
+    "gender": "any",
+    "maritalStatus": "any",
+    "minAge": 20,
+    "maxAge": 30,
+    "jobTitle": "Development QA - Technical Assistant Manager",
+    "jobDescription": "<p>1. Work closed with Technical, knitting manager, pattern maker to confirm on final fabric (hand feel, stretch…), final pattern on testing sample before going on sending sample.</p><p>2. Call out/ clarify to Customer TD all issues related to fabric, measurement, technical points/ unclear customer comments with customer TD before moving next round sample. Make sure sample under developing will be feasible for bulk.</p><p>3. Responsible to handle Team to make sure correct quality of all samples submits to customer.</p><p>4. Responsible customer systems for TD task &amp; join in VC fitting with RTD weekly.</p><p>5. Suggestion grading with Customer TD &amp; finalize grading spec for bulk.</p><p>6. Review and give approve for internal size set.</p><p>7. Responsible to handle Team for RAS report and present all RAS meeting with DGI &amp; Customer.</p><p>8. Report to Development QA-Technical Assistant Manager , if any critical issue.</p><p><br></p>",
+    "jobRequirements": "<p>• Education: University</p><p>• Level of Using Foreign language: Fluent in Speaking &amp; writing English</p><p>• Computer knowledge: Microsoft Word, Excel, Outlook,</p><p>• Having knowledge of: Understanding garment quality, technical knowledge …</p><p>• Essential skills: Problem solving, innovative thinking, communication skills, execution excellence.</p><p>• Ability: Ability to work under pressure while prioritizing and managing task efficiently.</p><p><br></p><p><strong>Other requirements:</strong></p><p>• Number of experience year: 3 years.</p><p>• Personality: Enthusiasm, open minded, teamwork</p><p>• Working style: Active and characteristic</p><p>• Constitution &amp; health: Good health</p><p><br></p>",
+    "jobType": "Toàn thời gian",
+    "minSalary": "650",
+    "maxSalary": "870",
+    "jobLevel": "Nhân viên",
+    "jobIndustry": "Dệt may/May mặc/Giày dép"
+},
+{
+    "_id": "670ea596a33af44d0e9a4920",
+    "recruiterId": "670e851ffa1761138b83dae0",
+    "jobCompanyInfoId": "670ea596a33af44d0e9a4917",
+    "candidateExpectationsId": "670ea596a33af44d0e9a491e",
+    "jobInfoId": "670ea596a33af44d0e9a491c",
+    "expirationDate": "2024-11-10T17:00:00.000Z",
+    "statusSeeking": true,
+    "statusApproval": false,
+    "postViews": 0,
+    "companyName": "Công Ty TNHH Sagemcom Broadband Hải Phòng",
+    "companyAddress": "Khu công nghiệp Nam Đình Vũ (Khu 1) - Khu kinh tế Đình Vũ-Cát Hải, Phường Đông Hải 2, Quận Hải An, Thành phố Hải Phòng",
+    "companySize": "100 - 499",
+    "companyBenefits": [
+        {
+            "title": "Thưởng",
+            "content": "Attractive Salary",
+            "_id": "670ea596a33af44d0e9a4918"
+        },
+        {
+            "title": "Nghỉ phép có lương",
+            "content": "13 Annual leave days, 24/7 Insurance for Family",
+            "_id": "670ea596a33af44d0e9a4919"
+        },
+        {
+            "title": "Giải thưởng",
+            "content": "13th month of salary +Bonus",
+            "_id": "670ea596a33af44d0e9a491a"
+        }
+    ],
+    "companyLogo": "",
+    "companyStaffName": "Hr Department",
+    "companyEmail": "nguyenvane@gmail.com",
+    "keywords": [
+        "Cơ Khí Chế Tạo",
+        "Shift Management",
+        "Production Management",
+        "Quản Lý Sản Xuất"
+    ],
+    "jobField": "Hoạch Định & Quản Lý Sản Xuất",
+    "language": "Bất kỳ",
+    "minExperience": 3,
+    "nationality": "any",
+    "educationLevel": "Bất kỳ",
+    "gender": "any",
+    "maritalStatus": "any",
+    "minAge": 20,
+    "maxAge": 30,
+    "jobTitle": "Trưởng Ca",
+    "jobDescription": "<p>Chúng tôi đang tìm kiếm một trưởng ca chịu trách nhiệm giám sát các hoạt động và hiệu suất của một ca làm việc, đảm bảo rằng tất cả các nhiệm vụ được hoàn thành hiệu quả và đạt tiêu chuẩn cao nhất. Vai trò này sẽ quản lý công nhân, duy trì các tiêu chuẩn chất lượng và an toàn, và đảm bảo sản xuất theo kế hoạch. Trưởng ca đóng vai trò là đầu mối liên lạc chính của công nhân trong ca làm việc và đóng vai trò quan trọng trong việc duy trì môi trường làm việc hiệu quả và tích cực.</p><p>- Giám sát các hoạt động hàng ngày của ca làm việc được phân công.</p><p>- Quản lý và điều phối các hoạt động của công nhân.</p><p>- Hướng dẫn, đào tạo và hỗ trợ cho công nhân trong ca.</p><p>- Tiến hành các cuộc họp giao ca để đảm bảo rằng tất cả người lao động đều nắm được đầy đủ thông tin.</p><p>- Đảm bảo các nhiệm vụ được hoàn thành hiệu quả và đúng thời hạn.</p><p>- Giải quyết mọi vấn đề hoạt động kịp thời và hiệu quả.</p><p>- Đảm bảo rằng tất cả các thiết bị và máy móc hoạt động chính xác và an toàn.</p><p>- Duy trì các tiêu chuẩn cao về chất lượng trong tất cả các khía cạnh hoạt động của ca.</p><p>- Giải quyết mọi vấn đề kiểm soát chất lượng ngay lập tức và thực hiện các hành động khắc phục.</p><p>- Đảm bảo rằng tất cả nhân viên tuân thủ các quy định an toàn và chính sách của công ty.</p><p>- Chuẩn bị và duy trì các báo cáo ca và tài liệu.</p><p>- Quản lý lịch ca làm việc và đảm bảo đủ biên chế.</p><p>- Liên lạc với các trưởng ca và quản lý khác để đảm bảo chuyển đổi suôn sẻ giữa các ca.</p><p>- Giao tiếp hiệu quả với các thành viên trong nhóm và các bộ phận khác.</p><p>- Các nhiệm vụ khác do người quản lý trực tiếp giao.\"</p>",
+    "jobRequirements": "<p><strong>*** Qualification</strong></p><p>- Tốt nghiệp THPT hoặc tương đương. Có bằng nghề hoặc bằng cấp cao hơn là một lợi thế.</p><p>- Tối thiểu 3 năm kinh nghiệm trong vai trò giám sát hoặc trưởng ca, đặc biệt là trong nhà máy sản xuất.\"</p><p><strong>*** Desired characteristics</strong></p><p>- Kỹ năng lãnh đạo và quản lý nhóm tốt</p><p>- Kỹ năng giao tiếp hiệu quả. \"</p>",
+    "jobType": "Toàn thời gian",
+    "minSalary": "750",
+    "maxSalary": "1000",
+    "jobLevel": "Trưởng phòng",
+    "jobIndustry": "Sản xuất"
+}
+]

@@ -146,7 +146,6 @@ const CompanyDetail = () => {
   const navigate = (id: string) => {
     router.push(`/job/${id}`);
   };
-
   return (
     <>
       <div className="bg-[#F1F2F4]">
@@ -171,7 +170,7 @@ const CompanyDetail = () => {
                   </p>
                 </div>
                 <div>
-                  {detailsCompany?.follower.some(
+                  {detailsCompany?.follower?.some(
                     (item) => item === decodedToken?.userid
                   ) ? (
                     <button

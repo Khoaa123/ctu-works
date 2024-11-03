@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Select from 'react-select';
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   FaBriefcase,
   FaFolder,
@@ -10,7 +10,8 @@ import {
   FaTrashCan,
   FaUser,
   FaUsers,
-  FaPlus
+  FaPlus,
+  FaUpload
 } from "react-icons/fa6";
 import Link from "next/link";
 import { useCookies } from "next-client-cookies";
@@ -43,8 +44,8 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { chatSession } from "../../ai/keyWordSuggest";
 import { chatSessionCreate } from "../../ai/createJobAi";
-
 import * as XLSX from 'xlsx';
+import { Document, Packer, Paragraph, TextRun } from 'docx';
 export interface JwtPayload {
   userid: string;
   email: string;
@@ -164,6 +165,7 @@ const CreateJobPostAI = () => {
 
   const handleInputChange = (e: any) => {
     setInputValue(e.target.value);
+    setInputMethod(e.target.value)
   };
   const handleAddTag = (tag: string) => {
     if (tags?.length < 5) {
@@ -1050,27 +1052,13 @@ const CreateJobPostAI = () => {
   };
   const [data, setData] = useState([]);
   const extractedValues = [''];
-  const handleFileUpload = async (e: any) => {
-    const reader = new FileReader();
-    reader.readAsBinaryString(e.target.files[0]);
-    reader.onload = async (e) => {
-      const data = e.target?.result;
-      const workbook = XLSX.read(data, { type: "binary" });
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-      const parsedData: any = XLSX.utils.sheet_to_json(sheet);
-      setData(parsedData);
-      parsedData.forEach((data: any, index: any) => {
-        Object.keys(data).forEach((key) => {
-          extractedValues.push(data[key]);
-          console.log(`${key}: ${data[key]}`);
-        });
-      });
-
-      const message = `${extractedValues}`;
-      console.log(message, 'message')
+  const handleCreateWithPaste = async (e: any) => {
+    const message = `${textareaValue}`;
+    try {
+      setChoseFile(false)
+      setIsLoading(true)
       const result = await chatSessionCreate.sendMessage(message);
-      console.log(result?.response?.text());
+
       const Test = JSON.parse(result?.response?.text())
       let jobTitle, expirationDate, location, jobDescription, jobRequirements, jobType, minSalary, maxSalary, numberOfPositions, jobLevel, jobIndustry, keywords, jobField, language, minExperience, nationality, educationLevel, gender, minAge, maxAge, maritalStatus, companyName, companyAddress, companySize, companyLogo, companyStaffName, companyBenefits, companyEmail, jobCompanyInfoId, candidateExpectationsId, jobInfoId;
 
@@ -1129,15 +1117,12 @@ const CreateJobPostAI = () => {
       })
       location?.forEach((item: string, index: any) => {
         Location.push({ _id: "", title: item, description: "", used: false })
-        // locations.push({ id: index, title: item });
-        // handleAddLocationCompany(item, index)
-        // Used.push(item?.split(":")[0]);
+
       });
       keywords?.map((key: any) => {
         handleAddTag(key)
       })
-      // const date = new Date(expirationDate)
-      // setDate(date)
+
       companyBenefits?.forEach((item: any, index: any) => {
         handleAddBenefit(item.title, index)
       });
@@ -1154,564 +1139,844 @@ const CreateJobPostAI = () => {
           companyBenefits, companyEmail
         }
       })
-    };
+      setIsLoading(false)
+      setShowInfo(true)
+    } catch (error) {
+      setIsLoading(false)
+      setIsError(true)
+    }
 
   }
-  const Test = () => {
-    console.log(locations)
-    // handleAddLocationCompany("Titlte", 1)
-    // locations.push({ id: 2, title: "okok" })
+  const handleFileUpload = async (e: any) => {
+    const reader = new FileReader();
+
+    try {
+      if (e.target.files[0].name.split(".")[1] === "txt") {
+        reader.readAsText(e.target.files[0]);
+      } else {
+        reader.readAsBinaryString(e.target.files[0]);
+      }
+    } catch (error) {
+      if (e.dataTransfer.files[0].name.split(".")[1] === "txt") {
+        reader.readAsText(e.dataTransfer.files[0]);
+      } else {
+        reader.readAsBinaryString(e.dataTransfer.files[0]);
+      }
+    }
+
+    reader.onload = async (e) => {
+      const data = e.target?.result;
+      const workbook = XLSX.read(data, { type: "binary" });
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const parsedData: any = XLSX.utils.sheet_to_json(sheet);
+      setData(parsedData);
+      parsedData.forEach((data: any, index: any) => {
+        Object.keys(data).forEach((key) => {
+          extractedValues.push(data[key]);
+          // console.log(`${key}: ${data[key]}`);
+        });
+      });
+
+      const message = `${extractedValues}`;
+      try {
+        setChoseFile(false)
+        setIsLoading(true)
+        const result = await chatSessionCreate.sendMessage(message);
+
+        const Test = JSON.parse(result?.response?.text())
+        let jobTitle, expirationDate, location, jobDescription, jobRequirements, jobType, minSalary, maxSalary, numberOfPositions, jobLevel, jobIndustry, keywords, jobField, language, minExperience, nationality, educationLevel, gender, minAge, maxAge, maritalStatus, companyName, companyAddress, companySize, companyLogo, companyStaffName, companyBenefits, companyEmail, jobCompanyInfoId, candidateExpectationsId, jobInfoId;
+
+        if (Test !== undefined) {
+          jobTitle = Test.jobTitle || "";
+          expirationDate = Test.expirationDate || "";
+          location = Test.location || "";
+          jobDescription = Test.jobDescription || "";
+          jobRequirements = Test.jobRequirements || "";
+          jobType = Test.jobType || "";
+          minSalary = Test.minSalary || 1;
+          maxSalary = Test.maxSalary || 1;
+          numberOfPositions = Test.numberOfPositions || "";
+          jobLevel = Test.jobLevel || "";
+          jobIndustry = Test.jobIndustry || "";
+          keywords = Test.keywords || "";
+          jobField = Test.jobField || "";
+          language = Test.language || "";
+          minExperience = Test.minExperience || 1;
+          nationality = Test.nationality || "";
+          educationLevel = Test.educationLevel || "";
+          gender = Test.gender || "";
+          minAge = Test.minAge || 1;
+          maxAge = Test.maxAge || 1;
+          maritalStatus = Test.maritalStatus || "";
+          companyName = Test.companyName || "";
+          companyAddress = Test.companyAddress || "";
+          companySize = Test.companySize || "";
+          companyLogo = Test.companyLogo || "";
+          companyStaffName = Test.companyStaffName || "";
+          companyBenefits = Test.companyBenefits || "";
+          companyEmail = Test.companyEmail || "";
+          jobCompanyInfoId = Test.jobCompanyInfoId || "";
+          candidateExpectationsId = Test.candidateExpectationsId || "";
+          jobInfoId = Test.jobInfoId || "";
+        }
+        const Used: string[] = [];
+        const res1 = await fetchRecruiterInfo();
+        const data1 = res1.data;
+        data1?.locationCompanyId.map(async (data: any) => {
+          const dataLocation = await getLocationCompany(data)
+          const LocationData = dataLocation.data[0]
+          if (LocationData !== null) {
+            Used?.map((item: any) => {
+              if (item === LocationData.title.split(":")[0]) {
+                LocationData.used = true
+              }
+            })
+            Location.push(LocationData);
+            const uniqueArray = Location.filter((obj, index, self) => {
+              return self.findIndex((otherObj) => areObjectsEqual(obj, otherObj)) === index;
+            });
+            uniqueArray.splice(0, 1)
+            setLocation(uniqueArray)
+          }
+        })
+        location?.forEach((item: string, index: any) => {
+          Location.push({ _id: "", title: item, description: "", used: false })
+
+        });
+        keywords?.map((key: any) => {
+          handleAddTag(key)
+        })
+
+        companyBenefits?.forEach((item: any, index: any) => {
+          handleAddBenefit(item.title, index)
+        });
+        setFormData({
+          jobTitle, expirationDate, location, jobDescription, jobRequirements,
+          jobType, minSalary, maxSalary, numberOfPositions,
+          jobInformation: {
+            jobLevel, jobIndustry, keywords,
+            jobField, language, minExperience, nationality, educationLevel, gender, minAge, maxAge,
+            maritalStatus,
+          },
+          companyInfo: {
+            companyName, companyAddress, companySize, companyLogo, companyStaffName,
+            companyBenefits, companyEmail
+          }
+        })
+        setIsLoading(false)
+        setShowInfo(true)
+      } catch (error) {
+        setIsLoading(false)
+        setIsError(true)
+      }
+    };
   }
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const handleButtonClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const customButtonStyle = {
+    padding: '10px 20px',
+    backgroundColor: '#007bff',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+  };
+  const [showInfo, setShowInfo] = useState(false);
+  const [showChoseFile, setChoseFile] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+
+
+  const handleDrop = (event: any) => {
+    event.preventDefault();
+    handleFileUpload(event)
+  };
+
+  const handleDragOver = (event: any) => {
+    event.preventDefault();
+  };
+  const [inputMethod, setInputMethod] = useState('file');
+  const [textareaValue, setTextareaValue] = useState('');
+  const [showContinueButton, setShowContinueButton] = useState(false);
+  const handleTextareaChange = (e: any) => {
+    if (e.target.value.length < 14500) {
+      setTextareaValue(e.target.value);
+      setShowContinueButton(e.target.value.length > 1);
+    }
+  };
   return (
     <>
       <HeaderRecruiter />
       <div className="flex flex-col items-center py-10">
-        <button onClick={Test}>Test</button>
-        <input
-          type="file"
-          accept=".xlsx, .xls"
-          onChange={handleFileUpload}
-        />
-        <div className="w-full max-w-4xl rounded-lg bg-white p-6 shadow-md">
-          <div className="mb-6 flex justify-center">
-            <div className="flex flex-col items-center">
-              <h1 className="text-4xl mt-2 text-blue-500">Thông tin công việc</h1>
-            </div>
-          </div>
-          <Accordion
-            type="single"
-            value={activeItem}
-            onChange={() => handleAccordionChange}
-            collapsible
-          >
-            <AccordionItem value="item-1" className="text-gray-500">
-              <AccordionTrigger onClick={() => handleContinueClick("item-1")}>
-                <h3 className="mb-2 mb-4 flex items-center text-lg font-semibold">
-                  <FaBriefcase className="mr-1" />
-                  <span>Mô tả công việc</span>
-                </h3>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-6">
-                  <div className="rounded-lg border border-gray-300 p-4">
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        {showChoseFile &&
+          <div className="flex justify-center items-center">
+            <div className="bg-white p-8 rounded-lg shadow-md w-full">
+              <h1 className="text-2xl font-bold text-center mb-6">Tạo tin tuyển dụng nhanh chóng từ tập tin có sẵn với CtuWorks AI</h1>
+              <div className="flex">
+                <div className="w-2/3 pr-4">
+                  <h2 className="text-lg font-medium mb-4">Cung cấp thông tin theo cách của bạn</h2>
+                  <div className="flex items-center mb-6">
+                    <label className="mr-4">
+                      <input
+                        type="radio"
+                        name="inputMethod"
+                        value="file"
+                        className="mr-2"
+                        checked={inputMethod === 'file'}
+                        onChange={handleInputChange}
+                      />
+                      Tệp sẵn có
+                    </label>
+                    <label>
+                      <input
+                        type="radio"
+                        name="inputMethod"
+                        value="paste"
+                        className="mr-2"
+                        checked={inputMethod === 'paste'}
+                        onChange={handleInputChange}
+                      />
+                      Sao chép và dán
+                    </label>
+                  </div>
+                  {inputMethod === 'file' ? (
+                    <div>
+                      <div className="border-dashed border-2 border-gray-300 p-6 text-center mb-4"
+                        onDrop={handleDrop}
+                        onDragOver={handleDragOver}>
+                        <i className="fas fa-upload text-2xl mb-2"></i>
+                        <p className="mb-2">Kéo & thả tệp tin của bạn vào đây</p>
+                        <p className="mb-2">Hoặc</p>
                         <div>
-                          <label id="jobTitle" className="block text-gray-700">
-                            Chức danh<span className="text-red-500">*</span>
-                          </label>
                           <input
-                            type="text"
-                            value={formData.jobTitle}
-                            onChange={(e) => {
-                              setFormData({
-                                ...formData,
-                                jobTitle: e.target.value,
-                              });
-                            }}
-                            placeholder="Eg. Senior UX Designer"
-                            className="mt-1 w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400 focus-visible:ring-0"
+                            type="file"
+                            accept=".xlsx, .xls"
+                            onChange={handleFileUpload}
+                            ref={fileInputRef}
+                            style={{ display: 'none' }}
                           />
+                          <button onClick={handleButtonClick} style={customButtonStyle}>
+                            Upload Excel File
+                          </button>
                         </div>
-                        <div>
-                          <label id="jobType" className="block text-gray-700">
-                            Loại việc làm
-                          </label>
-                          <select
-                            value={formData.jobType}
-                            onChange={(e) => {
-                              setFormData({
-                                ...formData,
-                                jobType: e.target.value,
-                              });
-                            }}
-                            className="mt-1 w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400 focus-visible:ring-0"
-                          >
-                            <option>Vui lòng chọn</option>
-                            <option>Toàn thời gian</option>
-                            <option>Bán thời gian</option>
-                            <option>Thực tập</option>
-                            <option>Việc làm online</option>
-                            <option>Nghề tự do</option>
-                            <option>Hợp đồng thời vụ</option>
-                            <option>Khác</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <div>
-                          <label id="jobLevel" className="block text-gray-700">
-                            Cấp bậc<span className="text-red-500">*</span>
-                          </label>
-                          <select
-                            value={formData.jobInformation.jobLevel}
-                            onChange={(e) => {
-                              setFormData({
-                                ...formData,
-                                jobInformation: {
-                                  ...formData.jobInformation,
-                                  jobLevel: e.target.value,
-                                },
+                        <p className="text-sm text-gray-500 mt-2">tệp .txt, .xls, .xlsx; có kích thước nhỏ hơn 2MB</p>
 
-                              });
-                            }}
-                            className="mt-1 w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400 focus-visible:ring-0"
-                          >
-                            <option>Vui lòng chọn</option>
-                            <option>Thực tập sinh/Sinh viên</option>
-                            <option>Mới tốt nghiệp</option>
-                            <option>Nhân viên</option>
-                            <option>Trưởng phòng</option>
-                            <option>Giám đốc và Cấp cao hơn</option>
-                          </select>
-                        </div>
-                        <div>
-                          <label id="jobField" className="block text-gray-700 mb-1">
-                            Ngành nghề chi tiết (Chọn 1 ngành nghề)
-                            <span className="text-red-500">*</span>
-                          </label>
-                          <Select
-                            value={formData.jobInformation.jobField ? { value: formData.jobInformation.jobField, label: formData.jobInformation.jobField } : null}
-                            onChange={handleChange}
-                            options={optionsFeild}
-                            filterOption={filterOption}
-                            placeholder="Tìm kiếm lĩnh vực nghề nghiệp..."
-                          >
-                          </Select>
-                        </div>
                       </div>
-                      <div>
-                        <label id="jobIndustry" className="block text-gray-700">
-                          Lĩnh vực công việc
-                        </label>
-                        <Select
-                          value={formData.jobInformation.jobIndustry ? { value: formData.jobInformation.jobIndustry, label: formData.jobInformation.jobIndustry } : null}
-                          onChange={handleChangeIndustry}
-                          options={optionsIndustry}
-                          filterOption={filterOption}
-                          placeholder="Vui lòng chọn..."
-                        >
-                        </Select>
-                      </div>
-                      <div>
-                        <label id="jobLocation" className="block text-gray-700">
-                          Địa điểm làm việc (Tối đa 3 địa điểm)
-                          <span className="text-red-500">*</span>
-                        </label>
-                        {locations.map((loc) => (
-                          <div key={loc.id} className="mt-1 flex items-center space-x-2">
-                            <select
-                              value={loc.title}
-                              onChange={(e) => {
-                                if (e.target.value === '+ Tạo địa điểm làm việc') {
-                                  openModal();
-                                } else {
-                                  const use = e.target.value.split(':')
-                                  if (loc.title.split(':')[0] !== use[0]) {
-                                    const locationToUpdate = Location.find((location) => loc.title.split(':')[0] === location.title);
-                                    if (locationToUpdate) {
-                                      locationToUpdate.used = false;
-                                    }
-                                  }
-                                  const locationToUpdate = Location.find((location) => use[0] === location.title);
-                                  if (locationToUpdate) {
-                                    locationToUpdate.used = true;
-                                  }
-                                  loc.title = e.target.value;
-                                  setFormData({
-                                    ...formData,
-                                    location: locations,
-                                  });
-                                }
-                              }
-                              }
-                              className="w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400 focus-visible:ring-0"
-                            >
-                              <option>Chọn một địa điểm làm việc</option>
-                              {Location?.map((Loca) => (
-                                <option
-                                  key={Loca._id}
-                                  disabled={Loca.used}
-                                  className="bg-green-100 disabled:bg-gray-100 "
-                                >
-                                  {Loca.title}: {Loca.description}
-                                </option>
-                              ))}
-                              <option className="text-blue-500 cursor-pointer" key={""}>+ Tạo địa điểm làm việc</option>
-                            </select>
-                            {
-                              locations?.length > 1 && (
-                                <button
-                                  onClick={() => handleRemoveLocationCompany(loc.id)}
-                                >
-                                  <FaTrash className="cursor-pointer h-12 w-5" />
-                                </button>
-                              )
-                            }
-                          </div>
-                        ))}
-                        <div>
-                          {locations?.length < 3 && (
-                            <button
-                              className="mt-2 text-blue-500"
-                              onClick={() => handleAddLocationCompany('', '')}
-                            >
-                              + Thêm địa điểm làm việc
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                      <div>
-                        <label id="jobDescription" className="block text-gray-700">
-                          Mô tả<span className="text-red-500">*</span>
-                        </label>
-                        <div className="overflow-hidden rounded-md border border-gray-300">
-                          <ReactQuill
-                            modules={modules}
-                            theme="snow"
-                            value={formData.jobDescription}
-                            onChange={(value) => {
-                              setFormData({
-                                ...formData,
-                                jobDescription: value,
-                              });
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <button className="text-blue-500">
-                          Xem mô tả công việc mẫu
+                      <p className="text-sm text-gray-500 mb-6">Lưu ý: Hệ thống chỉ đọc dữ liệu từ trang tính đầu tiên của Excel. Vui lòng đảm bảo dữ liệu đầy đủ ở trang này trước khi tải lên.</p>
+                    </div>
+                  ) : (
+                    <div className="text-right">
+                      <textarea
+                        value={textareaValue}
+                        onChange={handleTextareaChange}
+                        className="border border-gray-300 p-2 rounded w-full"
+                        style={{ minHeight: '150px' }}
+                      />
+                      <p className="text-gray-500 p-0 m-0 mb-4">
+                        {textareaValue.length} / 14500 ký tự
+                      </p>
+
+                      {showContinueButton && (
+                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                          onClick={handleCreateWithPaste}>
+                          Tiếp tục
                         </button>
-                      </div>
+                      )}
                     </div>
-                  </div>
-                  <div className="rounded-lg border border-gray-300 p-4">
-                    <div className="space-y-4">
-                      <div>
-                        <label id="jobRequirements" className="block text-gray-700">
-                          Yêu cầu công việc
-                          <span className="text-red-500">*</span>
-                        </label>
-                        <div className="overflow-hidden rounded-md border border-gray-300">
-                          <ReactQuill
-                            modules={modules}
-                            theme="snow"
-                            value={formData.jobRequirements}
-                            onChange={(value) => {
-                              setFormData({
-                                ...formData,
-                                jobRequirements: value,
-                              });
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <button className="text-blue-500">
-                          Xem yêu cầu công việc mẫu
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="rounded-lg border border-gray-300 p-4">
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                      <div>
-                        <label id="minSalary" className="block text-gray-700">
-                          Mức lương (USD)<span className="text-red-500">*</span>
-                        </label>
-                        <div className="mt-1 flex items-center space-x-2">
-                          <input
-                            value={formData.minSalary}
-                            onChange={(e) => {
-                              setFormData({
-                                ...formData,
-                                minSalary: Number(e.target.value),
-                              });
-                            }}
-                            type="text"
-                            placeholder="Tối thiểu"
-                            className="w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400 focus-visible:ring-0"
-                          />
-                          <input
-                            value={formData.maxSalary}
-                            onChange={(e) => {
-                              setFormData({
-                                ...formData,
-                                maxSalary: Number(e.target.value),
-                              });
-                            }}
-                            type="text"
-                            placeholder="Tối đa"
-                            className="w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400 focus-visible:ring-0"
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <label id="numberOfPositions" className="block text-gray-700">Số lượng tuyển dụng</label>
-                        <div className="flex items-center space-x-2 mt-1">
-                          <button className="text-gray-500" onClick={handleDecrement}>
-                            <FaMinus className="fas fa-minus" />
-                          </button>
-                          <input
-                            value={numberOfPositions}
-                            onChange={(e) => setNumberOfPositions(Number(e.target.value))}
-                            type="text"
-                            className="w-12 rounded-lg border border-gray-300 p-2 text-center"
-                          />
-                          <button className="text-gray-500" onClick={handleIncrement}>
-                            <FaPlus className="fas fa-plus" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="">
-                      <label id="expirationDate" className="block text-gray-700 mb-2 mt-5">
-                        Ngày ngưng nhập ứng tuyển
-                      </label>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "shadow-none w-full border-gray-300 rounded-sm h-10  justify-start text-left hover:bg-transparent  font-normal data-[state=open]:border-sky-400",
-                              !date && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {date ? (
-                              format(date, "dd/MM/yyyy")
-                            ) : (
-                              <span>Ngày/Tháng/Năm</span>
-                            )}
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            captionLayout="dropdown-buttons"
-                            selected={date}
-                            onSelect={handleDateSelect}
-                            fromYear={1960}
-                            toYear={2030}
-                          />
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                  </div>
-                  <div className="flex justify-end">
-                    <button
-                      className="rounded bg-red-500 px-4 py-2 text-white"
-                      onClick={() => handleContinueClick("item-2")}
-                    >
-                      Tiếp tục
-                    </button>
+                  )}
+                  <div className="text-center">
+                    <a href="/recruiter/create-jobpost" className="text-blue-500">Đăng tin tuyển dụng thủ công</a>
                   </div>
                 </div>
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-2" className="text-gray-500">
-              <AccordionTrigger onClick={() => handleContinueClick("item-2")}>
-                <h3 className="mb-2 mb-4 flex items-center text-lg font-semibold">
-                  <FaAddressCard className="mr-1" />
-                  <span>Kỳ vọng về ứng viên</span>
-                </h3>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-6">
-                  <div className="rounded-lg border border-gray-300 p-4">
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-1 gap-4">
-                        <div className="mb-4">
-                          <label id="keyWord" className="mb-2 block text-sm font-bold text-gray-700">
-                            Thẻ từ khóa{" "}
-                            <span className="text-gray-500">
-                              (Tối đa 5 thẻ)
-                            </span>{" "}
-                            <span className="text-red-500">*</span>
-                          </label>
-                          <div className="flex items-center rounded border border-gray-300 p-2">
-                            {tags.map((tag, index) => (
-                              <div
-                                key={index}
-                                className="mb-2 mr-2 flex items-center rounded-full bg-blue-100 px-3 py-1 text-blue-700"
+                <div className="w-1/3 pl-4">
+                  <div className="bg-gray-100 p-4 rounded-lg">
+                    {inputMethod === 'file' ? (
+                      <img src="https://employer.vietnamworks.com/job-list/static/media/jd-file.52e7a755c3f82ca9b7e43fc6ea11874b.svg" alt="AI illustration" className="mb-4" />
+                    ) : (
+                      <img src="https://employer.vietnamworks.com/job-list/static/media/jd-text.90301e33d620591b54c1e53b30603119.svg" alt="AI illustration" className="mb-4" />
+                    )}
+                    <h2 className="text-lg font-medium mb-2">Tải tập tin có sẵn</h2>
+                    <ol className="list-decimal list-inside text-sm text-gray-700">
+                      <li>Bước 1: Kéo & thả tệp tin</li>
+                      <li>Bước 2: AI sẽ tiến hành trích xuất thông tin</li>
+                      <li>Bước 3: Kiểm tra, điều chỉnh và đăng tin</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+        {isLoading &&
+          <>
+            <div className="bg-white rounded-lg shadow-lg p-8 text-center max-w-lg mx-auto">
+              <h1 className="text-2xl font-semibold mb-2">CtuWorks AI đang xử lý dữ liệu</h1>
+              <p className="text-lg mb-4">Quá trình này sẽ cần từ 10-20 giây</p>
+              <p className="text-gray-500 mb-6">Bạn vui lòng chờ trong giây lát</p>
+              <video autoPlay loop src="https://cdnl.iconscout.com/lottie/premium/thumb/robot-loader-animated-icon-download-in-lottie-json-gif-static-svg-file-formats--loading-processing-process-preloader-pack-user-interface-icons-8319537.mp4" className="mx-auto mb-6" />
+            </div>
+          </>
+        }
+        {isError &&
+          <>
+            <div className="flex flex-col items-center justify-center w-full h-full">
+              <div className="bg-white p-10 rounded-lg shadow-md text-center">
+                <img src="https://employer.vietnamworks.com/job-list/static/media/ErrorUpload.4b62a2183c6836be9a313113b822b90e.svg" alt="Illustration of a computer with a wrench and screwdriver" className="mx-auto mb-4" />
+                <h1 className="text-2xl font-semibold mb-2">Quá trình xử lý bị lỗi</h1>
+                <p className="text-gray-600 mb-4">Vui lòng kiểm tra lại thông tin của bạn hoặc thử lại sau.</p>
+                <button className="bg-orange-500 text-white px-4 py-2 rounded" onClick={() => window.location.reload()}>Làm lại</button>
+              </div>
+            </div>
+          </>}
+        {showInfo &&
+          <>
+
+            <div className="w-full max-w-4xl rounded-lg bg-white p-6 shadow-md">
+              <div className="mb-6 flex justify-center">
+                <div className="flex flex-col items-center">
+                  <h1 className="text-4xl mt-2 text-blue-500">Thông tin công việc</h1>
+                </div>
+              </div>
+              <Accordion
+                type="single"
+                value={activeItem}
+                onChange={() => handleAccordionChange}
+                collapsible
+              >
+                <AccordionItem value="item-1" className="text-gray-500">
+                  <AccordionTrigger onClick={() => handleContinueClick("item-1")}>
+                    <h3 className="mb-2 mb-4 flex items-center text-lg font-semibold">
+                      <FaBriefcase className="mr-1" />
+                      <span>Mô tả công việc</span>
+                    </h3>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-6">
+                      <div className="rounded-lg border border-gray-300 p-4">
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div>
+                              <label id="jobTitle" className="block text-gray-700">
+                                Chức danh<span className="text-red-500">*</span>
+                              </label>
+                              <input
+                                type="text"
+                                value={formData.jobTitle}
+                                onChange={(e) => {
+                                  setFormData({
+                                    ...formData,
+                                    jobTitle: e.target.value,
+                                  });
+                                }}
+                                placeholder="Eg. Senior UX Designer"
+                                className="mt-1 w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400 focus-visible:ring-0"
+                              />
+                            </div>
+                            <div>
+                              <label id="jobType" className="block text-gray-700">
+                                Loại việc làm
+                              </label>
+                              <select
+                                value={formData.jobType}
+                                onChange={(e) => {
+                                  setFormData({
+                                    ...formData,
+                                    jobType: e.target.value,
+                                  });
+                                }}
+                                className="mt-1 w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400 focus-visible:ring-0"
                               >
-                                {tag}
-                                <button
-                                  onClick={() => handleRemoveTag(tag)}
-                                  className="ml-2 text-blue-700"
+                                <option>Vui lòng chọn</option>
+                                <option>Toàn thời gian</option>
+                                <option>Bán thời gian</option>
+                                <option>Thực tập</option>
+                                <option>Việc làm online</option>
+                                <option>Nghề tự do</option>
+                                <option>Hợp đồng thời vụ</option>
+                                <option>Khác</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div>
+                              <label id="jobLevel" className="block text-gray-700">
+                                Cấp bậc<span className="text-red-500">*</span>
+                              </label>
+                              <select
+                                value={formData.jobInformation.jobLevel}
+                                onChange={(e) => {
+                                  setFormData({
+                                    ...formData,
+                                    jobInformation: {
+                                      ...formData.jobInformation,
+                                      jobLevel: e.target.value,
+                                    },
+
+                                  });
+                                }}
+                                className="mt-1 w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400 focus-visible:ring-0"
+                              >
+                                <option>Vui lòng chọn</option>
+                                <option>Thực tập sinh/Sinh viên</option>
+                                <option>Mới tốt nghiệp</option>
+                                <option>Nhân viên</option>
+                                <option>Trưởng phòng</option>
+                                <option>Giám đốc và Cấp cao hơn</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label id="jobField" className="block text-gray-700 mb-1">
+                                Ngành nghề chi tiết (Chọn 1 ngành nghề)
+                                <span className="text-red-500">*</span>
+                              </label>
+                              <Select
+                                value={formData.jobInformation.jobField ? { value: formData.jobInformation.jobField, label: formData.jobInformation.jobField } : null}
+                                onChange={handleChange}
+                                options={optionsFeild}
+                                filterOption={filterOption}
+                                placeholder="Tìm kiếm lĩnh vực nghề nghiệp..."
+                              >
+                              </Select>
+                            </div>
+                          </div>
+                          <div>
+                            <label id="jobIndustry" className="block text-gray-700">
+                              Lĩnh vực công việc
+                            </label>
+                            <Select
+                              value={formData.jobInformation.jobIndustry ? { value: formData.jobInformation.jobIndustry, label: formData.jobInformation.jobIndustry } : null}
+                              onChange={handleChangeIndustry}
+                              options={optionsIndustry}
+                              filterOption={filterOption}
+                              placeholder="Vui lòng chọn..."
+                            >
+                            </Select>
+                          </div>
+                          <div>
+                            <label id="jobLocation" className="block text-gray-700">
+                              Địa điểm làm việc (Tối đa 3 địa điểm)
+                              <span className="text-red-500">*</span>
+                            </label>
+                            {locations.map((loc) => (
+                              <div key={loc.id} className="mt-1 flex items-center space-x-2">
+                                <select
+                                  value={loc.title}
+                                  onChange={(e) => {
+                                    if (e.target.value === '+ Tạo địa điểm làm việc') {
+                                      openModal();
+                                    } else {
+                                      const use = e.target.value.split(':')
+                                      if (loc.title.split(':')[0] !== use[0]) {
+                                        const locationToUpdate = Location.find((location) => loc.title.split(':')[0] === location.title);
+                                        if (locationToUpdate) {
+                                          locationToUpdate.used = false;
+                                        }
+                                      }
+                                      const locationToUpdate = Location.find((location) => use[0] === location.title);
+                                      if (locationToUpdate) {
+                                        locationToUpdate.used = true;
+                                      }
+                                      loc.title = e.target.value;
+                                      setFormData({
+                                        ...formData,
+                                        location: locations,
+                                      });
+                                    }
+                                  }
+                                  }
+                                  className="w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400 focus-visible:ring-0"
                                 >
-                                  <FaTimes className="fas fa-times" />
-                                </button>
+                                  <option>Chọn một địa điểm làm việc</option>
+                                  {Location?.map((Loca) => (
+                                    <option
+                                      key={Loca._id}
+                                      disabled={Loca.used}
+                                      className="bg-green-100 disabled:bg-gray-100 "
+                                    >
+                                      {Loca.title}: {Loca.description}
+                                    </option>
+                                  ))}
+                                  <option className="text-blue-500 cursor-pointer" key={""}>+ Tạo địa điểm làm việc</option>
+                                </select>
+                                {
+                                  locations?.length > 1 && (
+                                    <button
+                                      onClick={() => handleRemoveLocationCompany(loc.id)}
+                                    >
+                                      <FaTrash className="cursor-pointer h-12 w-5" />
+                                    </button>
+                                  )
+                                }
                               </div>
                             ))}
-                            <input
-                              type="text"
-                              value={inputValue}
-                              onChange={handleInputChangeKeyWord}
-                              className="flex-grow p-2 outline-none"
-                              placeholder={
-                                tags?.length > 0
-                                  ? ""
-                                  : "Ví dụ: Anh văn, Giao tiếp..."
-                              }
-                            />
+                            <div>
+                              {locations?.length < 3 && (
+                                <button
+                                  className="mt-2 text-blue-500"
+                                  onClick={() => handleAddLocationCompany('', '')}
+                                >
+                                  + Thêm địa điểm làm việc
+                                </button>
+                              )}
+                            </div>
                           </div>
-                          {inputValue && (
-                            <div className="mt-2 max-h-40 overflow-y-auto rounded border border-gray-300">
-                              {suggestions
-                                .filter(
-                                  (suggestion) => !tags.includes(suggestion)
-                                )
-                                .filter((suggestion) =>
-                                  suggestion
-                                    .toLowerCase()
-                                    .includes(inputValue.toLowerCase())
-                                )
-                                .map((suggestion, index) => (
+                          <div>
+                            <label id="jobDescription" className="block text-gray-700">
+                              Mô tả<span className="text-red-500">*</span>
+                            </label>
+                            <div className="overflow-hidden rounded-md border border-gray-300">
+                              <ReactQuill
+                                modules={modules}
+                                theme="snow"
+                                value={formData.jobDescription}
+                                onChange={(value) => {
+                                  setFormData({
+                                    ...formData,
+                                    jobDescription: value,
+                                  });
+                                }}
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <button className="text-blue-500">
+                              Xem mô tả công việc mẫu
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="rounded-lg border border-gray-300 p-4">
+                        <div className="space-y-4">
+                          <div>
+                            <label id="jobRequirements" className="block text-gray-700">
+                              Yêu cầu công việc
+                              <span className="text-red-500">*</span>
+                            </label>
+                            <div className="overflow-hidden rounded-md border border-gray-300">
+                              <ReactQuill
+                                modules={modules}
+                                theme="snow"
+                                value={formData.jobRequirements}
+                                onChange={(value) => {
+                                  setFormData({
+                                    ...formData,
+                                    jobRequirements: value,
+                                  });
+                                }}
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <button className="text-blue-500">
+                              Xem yêu cầu công việc mẫu
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="rounded-lg border border-gray-300 p-4">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                          <div>
+                            <label id="minSalary" className="block text-gray-700">
+                              Mức lương (USD)<span className="text-red-500">*</span>
+                            </label>
+                            <div className="mt-1 flex items-center space-x-2">
+                              <input
+                                value={formData.minSalary}
+                                onChange={(e) => {
+                                  setFormData({
+                                    ...formData,
+                                    minSalary: Number(e.target.value),
+                                  });
+                                }}
+                                type="text"
+                                placeholder="Tối thiểu"
+                                className="w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400 focus-visible:ring-0"
+                              />
+                              <input
+                                value={formData.maxSalary}
+                                onChange={(e) => {
+                                  setFormData({
+                                    ...formData,
+                                    maxSalary: Number(e.target.value),
+                                  });
+                                }}
+                                type="text"
+                                placeholder="Tối đa"
+                                className="w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400 focus-visible:ring-0"
+                              />
+                            </div>
+                          </div>
+                          <div>
+                            <label id="numberOfPositions" className="block text-gray-700">Số lượng tuyển dụng</label>
+                            <div className="flex items-center space-x-2 mt-1">
+                              <button className="text-gray-500" onClick={handleDecrement}>
+                                <FaMinus className="fas fa-minus" />
+                              </button>
+                              <input
+                                value={numberOfPositions}
+                                onChange={(e) => setNumberOfPositions(Number(e.target.value))}
+                                type="text"
+                                className="w-12 rounded-lg border border-gray-300 p-2 text-center"
+                              />
+                              <button className="text-gray-500" onClick={handleIncrement}>
+                                <FaPlus className="fas fa-plus" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="">
+                          <label id="expirationDate" className="block text-gray-700 mb-2 mt-5">
+                            Ngày ngưng nhập ứng tuyển
+                          </label>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "shadow-none w-full border-gray-300 rounded-sm h-10  justify-start text-left hover:bg-transparent  font-normal data-[state=open]:border-sky-400",
+                                  !date && "text-muted-foreground"
+                                )}
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {date ? (
+                                  format(date, "dd/MM/yyyy")
+                                ) : (
+                                  <span>Ngày/Tháng/Năm</span>
+                                )}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                captionLayout="dropdown-buttons"
+                                selected={date}
+                                onSelect={handleDateSelect}
+                                fromYear={1960}
+                                toYear={2030}
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                      </div>
+                      <div className="flex justify-end">
+                        <button
+                          className="rounded bg-red-500 px-4 py-2 text-white"
+                          onClick={() => handleContinueClick("item-2")}
+                        >
+                          Tiếp tục
+                        </button>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-2" className="text-gray-500">
+                  <AccordionTrigger onClick={() => handleContinueClick("item-2")}>
+                    <h3 className="mb-2 mb-4 flex items-center text-lg font-semibold">
+                      <FaAddressCard className="mr-1" />
+                      <span>Kỳ vọng về ứng viên</span>
+                    </h3>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-6">
+                      <div className="rounded-lg border border-gray-300 p-4">
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-1 gap-4">
+                            <div className="mb-4">
+                              <label id="keyWord" className="mb-2 block text-sm font-bold text-gray-700">
+                                Thẻ từ khóa{" "}
+                                <span className="text-gray-500">
+                                  (Tối đa 5 thẻ)
+                                </span>{" "}
+                                <span className="text-red-500">*</span>
+                              </label>
+                              <div className="flex items-center rounded border border-gray-300 p-2">
+                                {tags.map((tag, index) => (
                                   <div
                                     key={index}
-                                    className="cursor-pointer p-2 hover:bg-gray-100"
-                                    onClick={() => handleAddTag(suggestion)}
+                                    className="mb-2 mr-2 flex items-center rounded-full bg-blue-100 px-3 py-1 text-blue-700"
                                   >
-                                    {suggestion}
+                                    {tag}
+                                    <button
+                                      onClick={() => handleRemoveTag(tag)}
+                                      className="ml-2 text-blue-700"
+                                    >
+                                      <FaTimes className="fas fa-times" />
+                                    </button>
                                   </div>
                                 ))}
+                                <input
+                                  type="text"
+                                  value={inputValue}
+                                  onChange={handleInputChangeKeyWord}
+                                  className="flex-grow p-2 outline-none"
+                                  placeholder={
+                                    tags?.length > 0
+                                      ? ""
+                                      : "Ví dụ: Anh văn, Giao tiếp..."
+                                  }
+                                />
+                              </div>
+                              {inputValue && (
+                                <div className="mt-2 max-h-40 overflow-y-auto rounded border border-gray-300">
+                                  {suggestions
+                                    .filter(
+                                      (suggestion) => !tags.includes(suggestion)
+                                    )
+                                    .filter((suggestion) =>
+                                      suggestion
+                                        .toLowerCase()
+                                        .includes(inputValue.toLowerCase())
+                                    )
+                                    .map((suggestion, index) => (
+                                      <div
+                                        key={index}
+                                        className="cursor-pointer p-2 hover:bg-gray-100"
+                                        onClick={() => handleAddTag(suggestion)}
+                                      >
+                                        {suggestion}
+                                      </div>
+                                    ))}
+                                </div>
+                              )}
                             </div>
-                          )}
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <div className="mb-4">
-                          <label className="mb-2 block text-sm font-bold text-gray-700">
-                            Năm kinh nghiệm tối thiểu
-                          </label>
-                          <div className="flex items-center space-x-2">
-                            <button className="rounded bg-gray-200 px-3 py-1 text-gray-700" onClick={handleDecrementExperience}>
-                              <FaMinus className="fas fa-minus" />
-                            </button>
-                            <input
-                              value={minExperience}
-                              onChange={(e) => {
-                                const newExperience = Math.max(Math.min(Number(e.target.value), 100), 1);
-                                setMinExperience(newExperience);
-                                setFormData({
-                                  ...formData,
-                                  jobInformation: { ...formData.jobInformation, minExperience: newExperience },
-                                });
-                              }}
-                              type="text"
-                              className="w-12 rounded border border-gray-300 px-2 py-1 text-center outline-none focus:border-sky-400"
-                            />
-                            <button className="rounded bg-gray-200 px-3 py-1 text-gray-700" onClick={handleIncrementExperience}>
-                              <FaPlus className="fas fa-plus" />
-                            </button>
                           </div>
-                        </div>
-                        <div className="mb-4">
-                          <label className="mb-2 block text-sm font-bold text-gray-700">
-                            Bằng cấp tối thiểu
-                          </label>
-                          <select
-                            value={formData.jobInformation.educationLevel}
-                            onChange={(e) => {
-                              setFormData({
-                                ...formData,
-                                jobInformation: {
-                                  ...formData.jobInformation,
-                                  educationLevel: e.target.value,
-                                },
-                              });
-                            }}
-                            className="w-full rounded border border-gray-300 px-3 py-2 outline-none focus:border-sky-400"
-                          >
-                            <option>Bất kỳ</option>
-                            <option>Trung học</option>
-                            <option>Trung cấp</option>
-                            <option>Cao đẳng</option>
-                            <option>Cử nhân</option>
-                            <option>Thạc sĩ</option>
-                            <option>Tiến sĩ</option>
-                            <option>Khác</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div>
-                        <div className="mb-4">
-                          <div className="flex items-center space-x-4">
-                            <label className="mb-2 block w-[20%] text-sm font-bold text-gray-700">
-                              Quốc tịch
-                            </label>
-                            <label className="flex w-[15%] items-center">
-                              <input
-                                value={"any"}
-                                checked={
-                                  formData.jobInformation.nationality === "any"
-                                }
-                                onClick={(e) => {
-                                  const target = e.target as HTMLInputElement;
+                          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div className="mb-4">
+                              <label className="mb-2 block text-sm font-bold text-gray-700">
+                                Năm kinh nghiệm tối thiểu
+                              </label>
+                              <div className="flex items-center space-x-2">
+                                <button className="rounded bg-gray-200 px-3 py-1 text-gray-700" onClick={handleDecrementExperience}>
+                                  <FaMinus className="fas fa-minus" />
+                                </button>
+                                <input
+                                  value={minExperience}
+                                  onChange={(e) => {
+                                    const newExperience = Math.max(Math.min(Number(e.target.value), 100), 1);
+                                    setMinExperience(newExperience);
+                                    setFormData({
+                                      ...formData,
+                                      jobInformation: { ...formData.jobInformation, minExperience: newExperience },
+                                    });
+                                  }}
+                                  type="text"
+                                  className="w-12 rounded border border-gray-300 px-2 py-1 text-center outline-none focus:border-sky-400"
+                                />
+                                <button className="rounded bg-gray-200 px-3 py-1 text-gray-700" onClick={handleIncrementExperience}>
+                                  <FaPlus className="fas fa-plus" />
+                                </button>
+                              </div>
+                            </div>
+                            <div className="mb-4">
+                              <label className="mb-2 block text-sm font-bold text-gray-700">
+                                Bằng cấp tối thiểu
+                              </label>
+                              <select
+                                value={formData.jobInformation.educationLevel}
+                                onChange={(e) => {
                                   setFormData({
                                     ...formData,
                                     jobInformation: {
                                       ...formData.jobInformation,
-                                      nationality: target.value,
+                                      educationLevel: e.target.value,
                                     },
                                   });
                                 }}
-                                id="default-radio-1"
-                                type="radio"
-                                name="nationality"
-                                className="form-radio text-blue-500"
-                              />
-                              <span className="ml-2">Bất kỳ</span>
-                            </label>
-                            <label className="flex w-[20%] items-center">
-                              <input
-                                value={"1"}
-                                checked={
-                                  formData.jobInformation.nationality === "1"
-                                }
-                                onClick={(e) => {
-                                  const target = e.target as HTMLInputElement;
-                                  setFormData({
-                                    ...formData,
-                                    jobInformation: {
-                                      ...formData.jobInformation,
-                                      nationality: target.value,
-                                    },
-                                  });
-                                }}
-                                id="default-radio-2"
-                                type="radio"
-                                name="nationality"
-                                className="form-radio text-blue-500"
-                              />
-                              <span className="ml-2">Người Việt Nam</span>
-                            </label>
-                            <label className="flex w-[20%] items-center">
-                              <input
-                                value={"2"}
-                                checked={
-                                  formData.jobInformation.nationality === "2"
-                                }
-                                onClick={(e) => {
-                                  const target = e.target as HTMLInputElement;
-                                  setFormData({
-                                    ...formData,
-                                    jobInformation: {
-                                      ...formData.jobInformation,
-                                      nationality: target.value,
-                                    },
-                                  });
-                                }}
-                                id="default-radio-3"
-                                type="radio"
-                                name="nationality"
-                                className="form-radio text-blue-500"
-                              />
-                              <span className="ml-2">Người nước ngoài</span>
-                            </label>
-                            {/*<label className="flex w-[25%] items-center">
+                                className="w-full rounded border border-gray-300 px-3 py-2 outline-none focus:border-sky-400"
+                              >
+                                <option>Bất kỳ</option>
+                                <option>Trung học</option>
+                                <option>Trung cấp</option>
+                                <option>Cao đẳng</option>
+                                <option>Cử nhân</option>
+                                <option>Thạc sĩ</option>
+                                <option>Tiến sĩ</option>
+                                <option>Khác</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div>
+                            <div className="mb-4">
+                              <div className="flex items-center space-x-4">
+                                <label className="mb-2 block w-[20%] text-sm font-bold text-gray-700">
+                                  Quốc tịch
+                                </label>
+                                <label className="flex w-[15%] items-center">
+                                  <input
+                                    value={"any"}
+                                    checked={
+                                      formData.jobInformation.nationality === "any"
+                                    }
+                                    onClick={(e) => {
+                                      const target = e.target as HTMLInputElement;
+                                      setFormData({
+                                        ...formData,
+                                        jobInformation: {
+                                          ...formData.jobInformation,
+                                          nationality: target.value,
+                                        },
+                                      });
+                                    }}
+                                    id="default-radio-1"
+                                    type="radio"
+                                    name="nationality"
+                                    className="form-radio text-blue-500"
+                                  />
+                                  <span className="ml-2">Bất kỳ</span>
+                                </label>
+                                <label className="flex w-[20%] items-center">
+                                  <input
+                                    value={"1"}
+                                    checked={
+                                      formData.jobInformation.nationality === "1"
+                                    }
+                                    onClick={(e) => {
+                                      const target = e.target as HTMLInputElement;
+                                      setFormData({
+                                        ...formData,
+                                        jobInformation: {
+                                          ...formData.jobInformation,
+                                          nationality: target.value,
+                                        },
+                                      });
+                                    }}
+                                    id="default-radio-2"
+                                    type="radio"
+                                    name="nationality"
+                                    className="form-radio text-blue-500"
+                                  />
+                                  <span className="ml-2">Người Việt Nam</span>
+                                </label>
+                                <label className="flex w-[20%] items-center">
+                                  <input
+                                    value={"2"}
+                                    checked={
+                                      formData.jobInformation.nationality === "2"
+                                    }
+                                    onClick={(e) => {
+                                      const target = e.target as HTMLInputElement;
+                                      setFormData({
+                                        ...formData,
+                                        jobInformation: {
+                                          ...formData.jobInformation,
+                                          nationality: target.value,
+                                        },
+                                      });
+                                    }}
+                                    id="default-radio-3"
+                                    type="radio"
+                                    name="nationality"
+                                    className="form-radio text-blue-500"
+                                  />
+                                  <span className="ml-2">Người nước ngoài</span>
+                                </label>
+                                {/*<label className="flex w-[25%] items-center">
                                <input
                                 type="checkbox"
                                 className="form-checkbox text-blue-500"
@@ -1721,81 +1986,81 @@ const CreateJobPostAI = () => {
                                 Hiển thị cho Ứng Viên
                               </span>
                             </label> */}
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                      <div>
-                        <div className="mb-4">
-                          <div className="flex items-center space-x-4">
-                            <label className="mb-2 block w-[20%] text-sm font-bold text-gray-700">
-                              Giới tính
-                            </label>
-                            <label className="flex w-[15%] items-center">
-                              <input
-                                value={"any"}
-                                checked={
-                                  formData.jobInformation.gender === "any"
-                                }
-                                onClick={(e) => {
-                                  const target = e.target as HTMLInputElement;
-                                  setFormData({
-                                    ...formData,
-                                    jobInformation: {
-                                      ...formData.jobInformation,
-                                      gender: target.value,
-                                    },
-                                  });
-                                }}
-                                id="gender-radio-1"
-                                type="radio"
-                                name="gender"
-                                className="form-radio text-blue-500"
-                              />
-                              <span className="ml-2">Bất kỳ</span>
-                            </label>
-                            <label className="flex w-[20%] items-center">
-                              <input
-                                value={"1"}
-                                checked={formData.jobInformation.gender === "1"}
-                                onClick={(e) => {
-                                  const target = e.target as HTMLInputElement;
-                                  setFormData({
-                                    ...formData,
-                                    jobInformation: {
-                                      ...formData.jobInformation,
-                                      gender: target.value,
-                                    },
-                                  });
-                                }}
-                                id="gender-radio-2"
-                                type="radio"
-                                name="gender"
-                                className="form-radio text-blue-500"
-                              />
-                              <span className="ml-2">Nam</span>
-                            </label>
-                            <label className="flex w-[20%] items-center">
-                              <input
-                                value={"2"}
-                                checked={formData.jobInformation.gender === "2"}
-                                onClick={(e) => {
-                                  const target = e.target as HTMLInputElement;
-                                  setFormData({
-                                    ...formData,
-                                    jobInformation: {
-                                      ...formData.jobInformation,
-                                      gender: target.value,
-                                    },
-                                  });
-                                }}
-                                id="gender-radio-3"
-                                type="radio"
-                                name="gender"
-                                className="form-radio text-blue-500"
-                              />
-                              <span className="ml-2">Nữ</span>
-                            </label>
-                            {/* <label className="flex w-[25%] items-center">
+                          <div>
+                            <div className="mb-4">
+                              <div className="flex items-center space-x-4">
+                                <label className="mb-2 block w-[20%] text-sm font-bold text-gray-700">
+                                  Giới tính
+                                </label>
+                                <label className="flex w-[15%] items-center">
+                                  <input
+                                    value={"any"}
+                                    checked={
+                                      formData.jobInformation.gender === "any"
+                                    }
+                                    onClick={(e) => {
+                                      const target = e.target as HTMLInputElement;
+                                      setFormData({
+                                        ...formData,
+                                        jobInformation: {
+                                          ...formData.jobInformation,
+                                          gender: target.value,
+                                        },
+                                      });
+                                    }}
+                                    id="gender-radio-1"
+                                    type="radio"
+                                    name="gender"
+                                    className="form-radio text-blue-500"
+                                  />
+                                  <span className="ml-2">Bất kỳ</span>
+                                </label>
+                                <label className="flex w-[20%] items-center">
+                                  <input
+                                    value={"1"}
+                                    checked={formData.jobInformation.gender === "1"}
+                                    onClick={(e) => {
+                                      const target = e.target as HTMLInputElement;
+                                      setFormData({
+                                        ...formData,
+                                        jobInformation: {
+                                          ...formData.jobInformation,
+                                          gender: target.value,
+                                        },
+                                      });
+                                    }}
+                                    id="gender-radio-2"
+                                    type="radio"
+                                    name="gender"
+                                    className="form-radio text-blue-500"
+                                  />
+                                  <span className="ml-2">Nam</span>
+                                </label>
+                                <label className="flex w-[20%] items-center">
+                                  <input
+                                    value={"2"}
+                                    checked={formData.jobInformation.gender === "2"}
+                                    onClick={(e) => {
+                                      const target = e.target as HTMLInputElement;
+                                      setFormData({
+                                        ...formData,
+                                        jobInformation: {
+                                          ...formData.jobInformation,
+                                          gender: target.value,
+                                        },
+                                      });
+                                    }}
+                                    id="gender-radio-3"
+                                    type="radio"
+                                    name="gender"
+                                    className="form-radio text-blue-500"
+                                  />
+                                  <span className="ml-2">Nữ</span>
+                                </label>
+                                {/* <label className="flex w-[25%] items-center">
                               <input
                                 type="checkbox"
                                 className="form-checkbox text-blue-500"
@@ -1804,83 +2069,83 @@ const CreateJobPostAI = () => {
                                 Hiển thị cho Ứng Viên
                               </span>
                             </label> */}
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                      <div>
-                        <div className="mb-4">
-                          <div className="flex items-center space-x-4">
-                            <label className="mb-2 block w-[20%] text-sm font-bold text-gray-700">
-                              Tình trạng hôn nhân
-                            </label>
-                            <label className="flex w-[15%] items-center">
-                              <input
-                                value={"any"}
-                                checked={
-                                  formData.jobInformation.maritalStatus ===
-                                  "any"
-                                }
-                                onClick={(e) => {
-                                  const target = e.target as HTMLInputElement;
-                                  setFormData({
-                                    ...formData,
-                                    jobInformation: {
-                                      ...formData.jobInformation,
-                                      maritalStatus: target.value,
-                                    },
-                                  });
-                                }}
-                                type="radio"
-                                name="marital_status"
-                                className="form-radio text-blue-500"
-                              />
-                              <span className="ml-2">Bất kỳ</span>
-                            </label>
-                            <label className="flex w-[20%] items-center">
-                              <input
-                                value={"1"}
-                                checked={
-                                  formData.jobInformation.maritalStatus === "1"
-                                }
-                                onClick={(e) => {
-                                  const target = e.target as HTMLInputElement;
-                                  setFormData({
-                                    ...formData,
-                                    jobInformation: {
-                                      ...formData.jobInformation,
-                                      maritalStatus: target.value,
-                                    },
-                                  });
-                                }}
-                                type="radio"
-                                name="marital_status"
-                                className="form-radio text-blue-500"
-                              />
-                              <span className="ml-2">Độc thân</span>
-                            </label>
-                            <label className="flex w-[20%] items-center">
-                              <input
-                                value={"2"}
-                                checked={
-                                  formData.jobInformation.maritalStatus === "2"
-                                }
-                                onClick={(e) => {
-                                  const target = e.target as HTMLInputElement;
-                                  setFormData({
-                                    ...formData,
-                                    jobInformation: {
-                                      ...formData.jobInformation,
-                                      maritalStatus: target.value,
-                                    },
-                                  });
-                                }}
-                                type="radio"
-                                name="marital_status"
-                                className="form-radio text-blue-500"
-                              />
-                              <span className="ml-2">Đã kết hôn</span>
-                            </label>
-                            {/* <label className="flex w-[25%] items-center">
+                          <div>
+                            <div className="mb-4">
+                              <div className="flex items-center space-x-4">
+                                <label className="mb-2 block w-[20%] text-sm font-bold text-gray-700">
+                                  Tình trạng hôn nhân
+                                </label>
+                                <label className="flex w-[15%] items-center">
+                                  <input
+                                    value={"any"}
+                                    checked={
+                                      formData.jobInformation.maritalStatus ===
+                                      "any"
+                                    }
+                                    onClick={(e) => {
+                                      const target = e.target as HTMLInputElement;
+                                      setFormData({
+                                        ...formData,
+                                        jobInformation: {
+                                          ...formData.jobInformation,
+                                          maritalStatus: target.value,
+                                        },
+                                      });
+                                    }}
+                                    type="radio"
+                                    name="marital_status"
+                                    className="form-radio text-blue-500"
+                                  />
+                                  <span className="ml-2">Bất kỳ</span>
+                                </label>
+                                <label className="flex w-[20%] items-center">
+                                  <input
+                                    value={"1"}
+                                    checked={
+                                      formData.jobInformation.maritalStatus === "1"
+                                    }
+                                    onClick={(e) => {
+                                      const target = e.target as HTMLInputElement;
+                                      setFormData({
+                                        ...formData,
+                                        jobInformation: {
+                                          ...formData.jobInformation,
+                                          maritalStatus: target.value,
+                                        },
+                                      });
+                                    }}
+                                    type="radio"
+                                    name="marital_status"
+                                    className="form-radio text-blue-500"
+                                  />
+                                  <span className="ml-2">Độc thân</span>
+                                </label>
+                                <label className="flex w-[20%] items-center">
+                                  <input
+                                    value={"2"}
+                                    checked={
+                                      formData.jobInformation.maritalStatus === "2"
+                                    }
+                                    onClick={(e) => {
+                                      const target = e.target as HTMLInputElement;
+                                      setFormData({
+                                        ...formData,
+                                        jobInformation: {
+                                          ...formData.jobInformation,
+                                          maritalStatus: target.value,
+                                        },
+                                      });
+                                    }}
+                                    type="radio"
+                                    name="marital_status"
+                                    className="form-radio text-blue-500"
+                                  />
+                                  <span className="ml-2">Đã kết hôn</span>
+                                </label>
+                                {/* <label className="flex w-[25%] items-center">
                               <input
                                 type="checkbox"
                                 className="form-checkbox text-blue-500"
@@ -1889,52 +2154,52 @@ const CreateJobPostAI = () => {
                                 Hiển thị cho Ứng Viên
                               </span>
                             </label> */}
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                      <div>
-                        <div className="mb-4">
-                          <div className="flex items-center space-x-2">
-                            <label className="mb-2 block w-[20%] text-sm font-bold text-gray-700">
-                              Độ tuổi mong muốn
-                            </label>
-                            <input
-                              value={
-                                formData.jobInformation.minAge < 1
-                                  ? 1
-                                  : formData.jobInformation.minAge
-                              }
-                              onChange={(e) => {
-                                setFormData({
-                                  ...formData,
-                                  jobInformation: {
-                                    ...formData.jobInformation,
-                                    minAge: Number(e.target.value),
-                                  },
-                                });
-                              }}
-                              type="text"
-                              className="w-12 w-[30%] rounded border border-gray-300 px-2 py-1 text-center outline-none focus:border-sky-400"
-                            />
-                            <input
-                              value={
-                                formData.jobInformation.maxAge > 100
-                                  ? 100
-                                  : formData.jobInformation.maxAge
-                              }
-                              onChange={(e) => {
-                                setFormData({
-                                  ...formData,
-                                  jobInformation: {
-                                    ...formData.jobInformation,
-                                    maxAge: Number(e.target.value),
-                                  },
-                                });
-                              }}
-                              type="text"
-                              className="w-12 w-[30%] rounded border border-gray-300 px-2 py-1 text-center outline-none focus:border-sky-400"
-                            />
-                            {/* <label className="ml-5 flex w-[25%] items-center">
+                          <div>
+                            <div className="mb-4">
+                              <div className="flex items-center space-x-2">
+                                <label className="mb-2 block w-[20%] text-sm font-bold text-gray-700">
+                                  Độ tuổi mong muốn
+                                </label>
+                                <input
+                                  value={
+                                    formData.jobInformation.minAge < 1
+                                      ? 1
+                                      : formData.jobInformation.minAge
+                                  }
+                                  onChange={(e) => {
+                                    setFormData({
+                                      ...formData,
+                                      jobInformation: {
+                                        ...formData.jobInformation,
+                                        minAge: Number(e.target.value),
+                                      },
+                                    });
+                                  }}
+                                  type="text"
+                                  className="w-12 w-[30%] rounded border border-gray-300 px-2 py-1 text-center outline-none focus:border-sky-400"
+                                />
+                                <input
+                                  value={
+                                    formData.jobInformation.maxAge > 100
+                                      ? 100
+                                      : formData.jobInformation.maxAge
+                                  }
+                                  onChange={(e) => {
+                                    setFormData({
+                                      ...formData,
+                                      jobInformation: {
+                                        ...formData.jobInformation,
+                                        maxAge: Number(e.target.value),
+                                      },
+                                    });
+                                  }}
+                                  type="text"
+                                  className="w-12 w-[30%] rounded border border-gray-300 px-2 py-1 text-center outline-none focus:border-sky-400"
+                                />
+                                {/* <label className="ml-5 flex w-[25%] items-center">
                               <input
                                 type="checkbox"
                                 className="form-checkbox text-blue-500"
@@ -1943,371 +2208,374 @@ const CreateJobPostAI = () => {
                                 Hiển thị cho Ứng Viên
                               </span>
                             </label> */}
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <div className="mb-4">
+                              <label className="mb-2 block text-sm font-bold text-gray-700">
+                                Nhận hồ sơ bằng ngôn ngữ
+                              </label>
+                              <select
+                                value={formData.jobInformation.language}
+                                onChange={(e) => {
+                                  setFormData({
+                                    ...formData,
+                                    jobInformation: {
+                                      ...formData.jobInformation,
+                                      language: e.target.value,
+                                    },
+                                  });
+                                }}
+                                className="w-full rounded border border-gray-300 px-3 py-2 outline-none focus:border-sky-400"
+                              >
+                                <option>Bất kỳ</option>
+                                <option>Tiếng Anh</option>
+                                <option>Tiếng Việt</option>
+                                <option>Tiếng Nhật</option>
+                                <option>Tiếng Trung Quốc</option>
+                                <option>Tiếng Hàn</option>
+                                <option>Tiếng Pháp</option>
+                                <option>Tiếng Tây Ban Nha</option>
+                                <option>Tiếng Ý</option>
+                              </select>
+                            </div>
+                            <div className="flex justify-end">
+                              <button
+                                className="rounded bg-red-500 px-4 py-2 text-white"
+                                onClick={() => handleContinueClick("item-3")}
+                              >
+                                Tiếp tục
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
-                      <div>
-                        <div className="mb-4">
-                          <label className="mb-2 block text-sm font-bold text-gray-700">
-                            Nhận hồ sơ bằng ngôn ngữ
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-3" className="text-gray-500">
+                  <AccordionTrigger onClick={() => handleContinueClick("item-3")}>
+                    <h3 className="mb-4 flex items-center text-lg font-semibold">
+                      <FaBuilding className="mr-1" />
+                      <span>Thông tin công ty</span>
+                    </h3>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-6">
+                      <div className="mb-6">
+                        <label
+                          className="mb-2 block text-sm font-bold text-gray-700"
+                          htmlFor="companyName"
+                        >
+                          Tên công ty <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          value={formData.companyInfo?.companyName}
+                          onChange={(e) => {
+                            setFormData({
+                              ...formData,
+                              companyInfo: {
+                                ...formData.companyInfo,
+                                companyName: e.target.value,
+                              },
+                            });
+                          }}
+                          id="companyName"
+                          type="text"
+                          placeholder="VNC Company"
+                          className="w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow outline-none focus:border-sky-400 focus:shadow-none focus:outline-none"
+                        />
+                      </div>
+                      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div>
+                          <label className="block text-gray-700">
+                            Người liên hệ<span className="text-red-500">*</span>
                           </label>
-                          <select
-                            value={formData.jobInformation.language}
+                          <input
+                            value={formData.companyInfo?.companyStaffName}
                             onChange={(e) => {
                               setFormData({
                                 ...formData,
-                                jobInformation: {
-                                  ...formData.jobInformation,
-                                  language: e.target.value,
+                                companyInfo: {
+                                  ...formData.companyInfo,
+                                  companyStaffName: e.target.value,
                                 },
                               });
                             }}
-                            className="w-full rounded border border-gray-300 px-3 py-2 outline-none focus:border-sky-400"
-                          >
-                            <option>Bất kỳ</option>
-                            <option>Tiếng Anh</option>
-                            <option>Tiếng Việt</option>
-                            <option>Tiếng Nhật</option>
-                            <option>Tiếng Trung Quốc</option>
-                            <option>Tiếng Hàn</option>
-                            <option>Tiếng Pháp</option>
-                            <option>Tiếng Tây Ban Nha</option>
-                            <option>Tiếng Ý</option>
-                          </select>
+                            type="text"
+                            placeholder="Mr.Chuong"
+                            className="mt-1 w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400"
+                          />
                         </div>
-                        <div className="flex justify-end">
-                          <button
-                            className="rounded bg-red-500 px-4 py-2 text-white"
-                            onClick={() => handleContinueClick("item-3")}
-                          >
-                            Tiếp tục
-                          </button>
+                        <div>
+                          <label className="block text-gray-700">
+                            Địa chỉ email
+                            <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            value={formData.companyInfo?.companyEmail}
+                            onChange={(e) => {
+                              setFormData({
+                                ...formData,
+                                companyInfo: {
+                                  ...formData.companyInfo,
+                                  companyEmail: e.target.value,
+                                },
+                              });
+                            }}
+                            type="email"
+                            placeholder="Ví dụ: ctuwork@gmail.com"
+                            className="mt-1 w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400"
+                            readOnly
+                          />
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="item-3" className="text-gray-500">
-              <AccordionTrigger onClick={() => handleContinueClick("item-3")}>
-                <h3 className="mb-4 flex items-center text-lg font-semibold">
-                  <FaBuilding className="mr-1" />
-                  <span>Thông tin công ty</span>
-                </h3>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="space-y-6">
-                  <div className="mb-6">
-                    <label
-                      className="mb-2 block text-sm font-bold text-gray-700"
-                      htmlFor="companyName"
-                    >
-                      Tên công ty <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      value={formData.companyInfo?.companyName}
-                      onChange={(e) => {
-                        setFormData({
-                          ...formData,
-                          companyInfo: {
-                            ...formData.companyInfo,
-                            companyName: e.target.value,
-                          },
-                        });
-                      }}
-                      id="companyName"
-                      type="text"
-                      placeholder="VNC Company"
-                      className="w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow outline-none focus:border-sky-400 focus:shadow-none focus:outline-none"
-                    />
-                  </div>
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                    <div>
-                      <label className="block text-gray-700">
-                        Người liên hệ<span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        value={formData.companyInfo?.companyStaffName}
-                        onChange={(e) => {
-                          setFormData({
-                            ...formData,
-                            companyInfo: {
-                              ...formData.companyInfo,
-                              companyStaffName: e.target.value,
-                            },
-                          });
-                        }}
-                        type="text"
-                        placeholder="Mr.Chuong"
-                        className="mt-1 w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-700">
-                        Địa chỉ email
-                        <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        value={formData.companyInfo?.companyEmail}
-                        onChange={(e) => {
-                          setFormData({
-                            ...formData,
-                            companyInfo: {
-                              ...formData.companyInfo,
-                              companyEmail: e.target.value,
-                            },
-                          });
-                        }}
-                        type="email"
-                        placeholder="Ví dụ: ctuwork@gmail.com"
-                        className="mt-1 w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400"
-                        readOnly
-                      />
-                    </div>
-                  </div>
-                  <div className="mb-6">
-                    <label
-                      className="mb-2 block text-sm font-bold text-gray-700"
-                      htmlFor="companyAddress"
-                    >
-                      Địa chỉ công ty
-                    </label>
-                    <input
-                      value={formData.companyInfo?.companyAddress}
-                      onChange={(e) => {
-                        setFormData({
-                          ...formData,
-                          companyInfo: {
-                            ...formData.companyInfo,
-                            companyAddress: e.target.value,
-                          },
-                        });
-                      }}
-                      id="companyAddress"
-                      type="text"
-                      placeholder="Ví dụ: 130 Suong Nguyet Anh, Ben Thanh Ward, District 1"
-                      className="w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow outline-none focus:border-sky-400 focus:shadow-none focus:outline-none"
-                    />
-                  </div>
-                  <div className="mb-6">
-                    <label
-                      className="mb-2 block text-sm font-bold text-gray-700"
-                      htmlFor="companySize"
-                    >
-                      Quy mô công ty
-                    </label>
-                    <select
-                      value={formData.companyInfo?.companySize}
-                      onChange={(e) => {
-                        setFormData({
-                          ...formData,
-                          companyInfo: {
-                            ...formData.companyInfo,
-                            companySize: e.target.value,
-                          },
-                        });
-                      }}
-                      id="companySize"
-                      className="w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow outline-none focus:border-sky-400 focus:shadow-none focus:outline-none"
-                    >
-                      <option>Vui lòng chọn</option>
-                      <option>Ít hơn 10</option>
-                      <option>10 - 24</option>
-                      <option>25 - 99</option>
-                      <option>100 - 499</option>
-                      <option>500 - 999</option>
-                      <option>1000 - 4999</option>
-                      <option>5000 - 9999</option>
-                      <option>10000 - 19999</option>
-                      <option>20000 - 49999</option>
-                      <option>Hơn 50000</option>
-                    </select>
-                  </div>
-
-                  <div className="mb-6">
-                    <label className="mb-2 block text-sm font-bold text-gray-700">
-                      Phúc lợi từ công ty{" "}
-                      <span className="text-red-500">*</span>
-                    </label>
-                    {benefits.map((benefit) => (
-                      <div key={benefit.id} className="mb-2 flex space-x-4">
-                        <select
-                          value={formData?.companyInfo?.companyBenefits[benefit.id]?.title}
-                          onChange={(e) => {
-                            setFormData({
-                              ...formData,
-                              companyInfo: {
-                                ...formData.companyInfo,
-                                companyBenefits: {
-                                  ...formData.companyInfo?.companyBenefits,
-                                  [benefit.id]: {
-                                    ...formData.companyInfo?.companyBenefits[
-                                    benefit.id
-                                    ],
-                                    title: e.target.value,
-                                    content:
-                                      formData.companyInfo?.companyBenefits[
-                                        benefit.id
-                                      ]?.content,
-                                  },
-                                },
-                              },
-                            });
-                          }}
-                          id="companyBenefits"
-                          className="h-1/2 w-1/2 appearance-none rounded border border-black px-3 py-2 leading-tight text-gray-700 shadow outline-none focus:border-sky-400 focus:shadow-none focus:outline-none"
+                      <div className="mb-6">
+                        <label
+                          className="mb-2 block text-sm font-bold text-gray-700"
+                          htmlFor="companyAddress"
                         >
-                          {benefitoptions.map((item) => (
-                            <option
-                              key={item.name}
-                              value={item.name}
-                              disabled={
-                                usedBenefits.includes(item.name) &&
-                                item.name !==
-                                formData.companyInfo?.companyBenefits[
-                                  benefit.id
-                                ]?.title
-                              }
-                            >
-                              {item.name}{" "}
-                              {usedBenefits.includes(item.name) ? "\u2713" : ""}
-                            </option>
-                          ))}
-                        </select>
-                        <textarea
-                          value={
-                            formData.companyInfo?.companyBenefits[benefit.id]
-                              ?.content
-                          }
+                          Địa chỉ công ty
+                        </label>
+                        <input
+                          value={formData.companyInfo?.companyAddress}
                           onChange={(e) => {
                             setFormData({
                               ...formData,
                               companyInfo: {
                                 ...formData.companyInfo,
-                                companyBenefits: {
-                                  ...formData.companyInfo?.companyBenefits,
-                                  [benefit.id]: {
-                                    title:
-                                      formData.companyInfo?.companyBenefits[
-                                        benefit.id
-                                      ]?.title,
-                                    content: e.target.value,
-                                  },
-                                },
+                                companyAddress: e.target.value,
                               },
                             });
                           }}
-                          className="w-full rounded border border-gray-300 px-4 py-2 outline-none focus:border-sky-400"
-                          placeholder={
-                            benefitoptions.find(
-                              (option) =>
-                                option.name ===
+                          id="companyAddress"
+                          type="text"
+                          placeholder="Ví dụ: 130 Suong Nguyet Anh, Ben Thanh Ward, District 1"
+                          className="w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow outline-none focus:border-sky-400 focus:shadow-none focus:outline-none"
+                        />
+                      </div>
+                      <div className="mb-6">
+                        <label
+                          className="mb-2 block text-sm font-bold text-gray-700"
+                          htmlFor="companySize"
+                        >
+                          Quy mô công ty
+                        </label>
+                        <select
+                          value={formData.companyInfo?.companySize}
+                          onChange={(e) => {
+                            setFormData({
+                              ...formData,
+                              companyInfo: {
+                                ...formData.companyInfo,
+                                companySize: e.target.value,
+                              },
+                            });
+                          }}
+                          id="companySize"
+                          className="w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow outline-none focus:border-sky-400 focus:shadow-none focus:outline-none"
+                        >
+                          <option>Vui lòng chọn</option>
+                          <option>Ít hơn 10</option>
+                          <option>10 - 24</option>
+                          <option>25 - 99</option>
+                          <option>100 - 499</option>
+                          <option>500 - 999</option>
+                          <option>1000 - 4999</option>
+                          <option>5000 - 9999</option>
+                          <option>10000 - 19999</option>
+                          <option>20000 - 49999</option>
+                          <option>Hơn 50000</option>
+                        </select>
+                      </div>
+
+                      <div className="mb-6">
+                        <label className="mb-2 block text-sm font-bold text-gray-700">
+                          Phúc lợi từ công ty{" "}
+                          <span className="text-red-500">*</span>
+                        </label>
+                        {benefits.map((benefit) => (
+                          <div key={benefit.id} className="mb-2 flex space-x-4">
+                            <select
+                              value={formData?.companyInfo?.companyBenefits[benefit.id]?.title}
+                              onChange={(e) => {
+                                setFormData({
+                                  ...formData,
+                                  companyInfo: {
+                                    ...formData.companyInfo,
+                                    companyBenefits: {
+                                      ...formData.companyInfo?.companyBenefits,
+                                      [benefit.id]: {
+                                        ...formData.companyInfo?.companyBenefits[
+                                        benefit.id
+                                        ],
+                                        title: e.target.value,
+                                        content:
+                                          formData.companyInfo?.companyBenefits[
+                                            benefit.id
+                                          ]?.content,
+                                      },
+                                    },
+                                  },
+                                });
+                              }}
+                              id="companyBenefits"
+                              className="h-1/2 w-1/2 appearance-none rounded border border-black px-3 py-2 leading-tight text-gray-700 shadow outline-none focus:border-sky-400 focus:shadow-none focus:outline-none"
+                            >
+                              {benefitoptions.map((item) => (
+                                <option
+                                  key={item.name}
+                                  value={item.name}
+                                  disabled={
+                                    usedBenefits.includes(item.name) &&
+                                    item.name !==
+                                    formData.companyInfo?.companyBenefits[
+                                      benefit.id
+                                    ]?.title
+                                  }
+                                >
+                                  {item.name}{" "}
+                                  {usedBenefits.includes(item.name) ? "\u2713" : ""}
+                                </option>
+                              ))}
+                            </select>
+                            <textarea
+                              value={
                                 formData.companyInfo?.companyBenefits[benefit.id]
-                                  ?.title
-                            )?.placeholder || "Nhập chi tiết phúc lợi"
-                          }
-                        ></textarea>
-                        {benefits?.length > 1 && (
+                                  ?.content
+                              }
+                              onChange={(e) => {
+                                setFormData({
+                                  ...formData,
+                                  companyInfo: {
+                                    ...formData.companyInfo,
+                                    companyBenefits: {
+                                      ...formData.companyInfo?.companyBenefits,
+                                      [benefit.id]: {
+                                        title:
+                                          formData.companyInfo?.companyBenefits[
+                                            benefit.id
+                                          ]?.title,
+                                        content: e.target.value,
+                                      },
+                                    },
+                                  },
+                                });
+                              }}
+                              className="w-full rounded border border-gray-300 px-4 py-2 outline-none focus:border-sky-400"
+                              placeholder={
+                                benefitoptions.find(
+                                  (option) =>
+                                    option.name ===
+                                    formData.companyInfo?.companyBenefits[benefit.id]
+                                      ?.title
+                                )?.placeholder || "Nhập chi tiết phúc lợi"
+                              }
+                            ></textarea>
+                            {benefits?.length > 1 && (
+                              <button
+                                onClick={() => handleRemoveBenefit(benefit.id)}
+                              >
+                                <FaTrash className="h-12 w-5" />
+                              </button>
+                            )}
+                          </div>
+                        ))}
+                        {benefits?.length < 3 && (
                           <button
-                            onClick={() => handleRemoveBenefit(benefit.id)}
+                            className="mt-2 text-blue-500"
+                            onClick={() => handleAddBenefit('', '')}
                           >
-                            <FaTrash className="h-12 w-5" />
+                            + Thêm phúc lợi
                           </button>
                         )}
                       </div>
-                    ))}
-                    {benefits?.length < 3 && (
-                      <button
-                        className="mt-2 text-blue-500"
-                        onClick={() => handleAddBenefit('', '')}
-                      >
-                        + Thêm phúc lợi
-                      </button>
-                    )}
-                  </div>
 
-                  <div className="mb-6">
-                    <label
-                      className="mb-2 block text-sm font-bold text-gray-700"
-                      htmlFor="companyLogo"
-                    >
-                      Logo công ty
-                    </label>
-                    <div className="rounded-lg border-2 border-dashed border-gray-300 p-4 text-center">
-                      <input
-                        value={formData.companyInfo?.companyLogo}
+                      <div className="mb-6">
+                        <label
+                          className="mb-2 block text-sm font-bold text-gray-700"
+                          htmlFor="companyLogo"
+                        >
+                          Logo công ty
+                        </label>
+                        <div className="rounded-lg border-2 border-dashed border-gray-300 p-4 text-center">
+                          <input
+                            value={formData.companyInfo?.companyLogo}
+                            onChange={(e) => {
+                              setFormData({
+                                ...formData,
+                                companyInfo: {
+                                  ...formData.companyInfo,
+                                  companyLogo: e.target.value,
+                                },
+                              });
+                            }}
+                            id="companyLogo"
+                            type="file"
+                            accept=".jpg, .jpeg, .png, .gif"
+                            max-size="5242880"
+                          />
+                          <p className="text-xs text-gray-500">
+                            (Tập tin với phần mở rộng .jpg, .jpeg, .png, .gif và
+                            kích thước &lt;5MB)
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </div>
+            <div className="fixed bottom-0 flex h-20 w-full justify-center bg-gray-100">
+              <button
+                onClick={handleSubmit}
+                className="mt-4 h-12 rounded bg-orange-500 px-4 py-2 text-white"
+              >
+                Lưu
+              </button>
+            </div>
+            {isModalOpen && (
+              <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+                <div className="bg-white p-6 rounded-lg shadow-lg relative">
+                  <h2 className="text-xl font-semibold mb-4">Tạo địa điểm làm việc</h2>
+                  <form className="w-96">
+                    <div className="mb-4">
+                      <label className="block text-gray-700">Tên Văn Phòng</label>
+                      <input type="text" className="w-full border border-gray-300 rounded-lg p-2 mt-1" defaultValue={currentOffice ? currentOffice.title : ''}
                         onChange={(e) => {
-                          setFormData({
-                            ...formData,
-                            companyInfo: {
-                              ...formData.companyInfo,
-                              companyLogo: e.target.value,
-                            },
+                          setCurrentOffice({
+                            ...currentOffice,
+                            title: e.target.value,
                           });
                         }}
-                        id="companyLogo"
-                        type="file"
-                        accept=".jpg, .jpeg, .png, .gif"
-                        max-size="5242880"
                       />
-                      <p className="text-xs text-gray-500">
-                        (Tập tin với phần mở rộng .jpg, .jpeg, .png, .gif và
-                        kích thước &lt;5MB)
-                      </p>
+
                     </div>
-                  </div>
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </div>
-        <div className="fixed bottom-0 flex h-20 w-full justify-center bg-gray-100">
-          <button
-            onClick={handleSubmit}
-            className="mt-4 h-12 rounded bg-orange-500 px-4 py-2 text-white"
-          >
-            Lưu
-          </button>
-        </div>
-        {isModalOpen && (
-          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-6 rounded-lg shadow-lg relative">
-              <h2 className="text-xl font-semibold mb-4">Tạo địa điểm làm việc</h2>
-              <form className="w-96">
-                <div className="mb-4">
-                  <label className="block text-gray-700">Tên Văn Phòng</label>
-                  <input type="text" className="w-full border border-gray-300 rounded-lg p-2 mt-1" defaultValue={currentOffice ? currentOffice.title : ''}
-                    onChange={(e) => {
-                      setCurrentOffice({
-                        ...currentOffice,
-                        title: e.target.value,
-                      });
-                    }}
-                  />
+                    <div className="mb-4">
+                      <label className="block text-gray-700">Địa Chỉ</label>
+                      <input type="text"
+                        className="w-full border border-gray-300 rounded-lg p-2 mt-1" defaultValue={currentOffice ? currentOffice.description : ''}
+                        onChange={(e) => {
+                          setCurrentOffice({
+                            ...currentOffice,
+                            description: e.target.value,
+                          });
+                        }}
+                      />
 
+                    </div>
+                    <div className="flex justify-end">
+                      <button type="button" onClick={closeModal} className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg mr-2">Hủy</button>
+                      <button type="button" onClick={handleAddLocation} className="bg-orange-500 text-white px-4 py-2 rounded-lg">Tạo</button>
+                    </div>
+                  </form>
                 </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700">Địa Chỉ</label>
-                  <input type="text"
-                    className="w-full border border-gray-300 rounded-lg p-2 mt-1" defaultValue={currentOffice ? currentOffice.description : ''}
-                    onChange={(e) => {
-                      setCurrentOffice({
-                        ...currentOffice,
-                        description: e.target.value,
-                      });
-                    }}
-                  />
+              </div>
 
-                </div>
-                <div className="flex justify-end">
-                  <button type="button" onClick={closeModal} className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg mr-2">Hủy</button>
-                  <button type="button" onClick={handleAddLocation} className="bg-orange-500 text-white px-4 py-2 rounded-lg">Tạo</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
+            )}
+          </>
+        }
       </div >
     </>
   );

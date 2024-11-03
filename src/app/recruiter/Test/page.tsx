@@ -17,6 +17,7 @@ import { useCookies } from "next-client-cookies";
 import { toast } from "react-toastify";
 import { title } from "process";
 import { chatSessionCreate } from "../../ai/createJobAi";
+import { chatSessionTest } from "../../ai/Test";
 
 import * as XLSX from 'xlsx';
 import CreateJobPostAI from "../create-jobpost-ai/page";
@@ -102,12 +103,25 @@ const Login = () => {
     }
     const Test = async () => {
         console.log(data)
+    }
+    const DataTest = require("../../ai/DataTest.json");
 
+    const Test1 = async () => {
+        // const res = await fetch(
+        //     "http://localhost:3001/api/jobpost/get-all-jobpost"
+        // );
+        // const data = await res.json();
+        // console.log(DataTest)
+        const dataTestString = JSON.stringify(DataTest);
+        const result = await chatSessionTest.sendMessage(`Tôi có kỹ năng C#, Java. bạn nghĩ tôi phù hợp những công việc gì`);
+        console.log(result?.response?.text());
     }
     return (
         <div>
             <h1>Gợi ý công việc</h1>
             <button onClick={Test}>Test</button>
+            <button onClick={Test1}>Test1</button>
+
             <form onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="skills">Kỹ năng:</label>
@@ -167,7 +181,7 @@ const Login = () => {
                         {data.map((row, index) => (
                             <tr key={index}>
                                 {Object.values(row).map((value, index) => (
-                                    <td key={index}>{}</td>
+                                    <td key={index}>{ }</td>
                                 ))}
                             </tr>
                         ))}
