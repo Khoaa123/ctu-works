@@ -54,7 +54,7 @@ const CompanyDetail = () => {
     };
     fetchData();
   }, []);
-  
+
   const fetchDetailsCompany = async () => {
     const id = location.pathname.split("/company/")[1];
     const res = await fetch(
@@ -83,7 +83,7 @@ const CompanyDetail = () => {
     const fetchData = async () => {
       const data = await fetchJobPostCompany();
       setJobPostCompany(data.data);
-      // console.log(data.data);
+      console.log(data.data);
     };
     fetchData();
   }, []);

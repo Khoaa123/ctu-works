@@ -11,12 +11,14 @@ const SearchWrapper = () => {
     pathname === "/salary-calculator" ||
     pathname === "/interview-questions" ||
     pathname === "/login" ||
+    pathname === "/company-search" ||
     pathname.startsWith("/career-path/") ||
     pathname.startsWith("/job-search/") ||
     pathname.startsWith("/admin") ||
     pathname === "/recruiter" ||
     pathname.startsWith("/profile") ||
-    pathname.startsWith("/news");
+    pathname.startsWith("/news")
+
 
   if (isHiddenPage) {
     return null;
