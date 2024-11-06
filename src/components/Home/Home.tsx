@@ -42,6 +42,9 @@ const HomePage = () => {
   const [current3, setCurrent3] = React.useState(0);
   const carouselLength2 = 2;
   const [jobPosts, setJobPosts] = useState<jobPosts[]>([]);
+  const [recentJobPosts, setRecentJobPosts] = useState<jobPosts[]>([]);
+  const [companies, setCompanies] = useState<any[]>([]);
+
   const [news, setNews] = useState<any[]>([]);
 
   React.useEffect(() => {
@@ -80,14 +83,14 @@ const HomePage = () => {
     });
   }, [api3]);
 
-  const groupedJobPosts = [];
-  for (let i = 0; i < jobPosts.length; i += 9) {
-    groupedJobPosts.push(jobPosts.slice(i, i + 9));
+  const groupedRecentJobPosts = [];
+  for (let i = 0; i < recentJobPosts.length; i += 9) {
+    groupedRecentJobPosts.push(recentJobPosts.slice(i, i + 9));
   }
 
-  const groupedItems2 = [];
-  for (let i = 0; i < items2.length; i += 9) {
-    groupedItems2.push(items2.slice(i, i + 9));
+  const groupedAllJobPosts = [];
+  for (let i = 0; i < jobPosts.length; i += 9) {
+    groupedAllJobPosts.push(jobPosts.slice(i, i + 9));
   }
 
   useEffect(() => {
@@ -108,6 +111,46 @@ const HomePage = () => {
     };
 
     fetchJobPosts();
+  }, []);
+
+  useEffect(() => {
+    const fetchRecentJobPosts = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobpost/get-all-jobpost?days=3`
+        );
+        const data = await res.json();
+        if (data.status === "OK") {
+          setRecentJobPosts(data.data);
+        } else {
+          console.error("Failed to fetch recent job posts");
+        }
+      } catch (error) {
+        console.error("Error fetching recent job posts:", error);
+      }
+    };
+
+    fetchRecentJobPosts();
+  }, []);
+
+  useEffect(() => {
+    const fetchFeaturedCompanies = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:3001/api/company/top-companies?limit=3`
+        );
+        const data = await res.json();
+        if (data.status === "OK") {
+          setCompanies(data.data);
+        } else {
+          console.error("Failed to fetch featured companies");
+        }
+      } catch (error) {
+        console.error("Error fetching featured companies:", error);
+      }
+    };
+
+    fetchFeaturedCompanies();
   }, []);
 
   useEffect(() => {
@@ -137,7 +180,7 @@ const HomePage = () => {
           <div className="w-full rounded-md border border-solid border-[#ccdeff]">
             <div className="flex justify-between bg-[#f2f7ff]">
               <span className="px-6 py-3 text-xl font-bold">
-                Việc Làm Tốt Nhất
+                Việc Làm Mới Nhất
               </span>
               <Link href="#">
                 <button className="px-6 py-3 uppercase text-blue-500">
@@ -154,20 +197,20 @@ const HomePage = () => {
                 className="w-full"
               >
                 <CarouselContent>
-                  {groupedJobPosts.map((group, index) => (
+                  {groupedRecentJobPosts.map((group, index) => (
                     <CarouselItem key={index} className="w-full">
                       <div className="grid grid-cols-3 gap-4">
                         {group.map((job, subIndex) => (
                           <div key={subIndex} className="p-1">
                             <Link href={`/job/${job._id}`}>
                               <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]">
-                                <Image
+                                {/* <Image
                                   src={job.companyInfo?.companyLogo}
                                   alt="logo"
                                   height={80}
                                   width={80}
                                   className="h-20 w-20"
-                                />
+                                /> */}
 
                                 <div>
                                   <h1 className="mb-1 line-clamp-1 text-xl font-bold">
@@ -205,7 +248,7 @@ const HomePage = () => {
                     }
                   />
                 </button>
-                {groupedJobPosts.map((_, i) => (
+                {groupedRecentJobPosts.map((_, i) => (
                   <div
                     key={i}
                     className={`mx-1 h-2 w-2 rounded-full cursor-pointer ${
@@ -217,15 +260,15 @@ const HomePage = () => {
                 <button
                   onClick={() => api?.scrollTo(current + 1)}
                   className={`flex h-8 w-8 group items-center justify-center rounded-full border border-gray-600 transition ${
-                    current === groupedJobPosts.length - 1
+                    current === groupedRecentJobPosts.length - 1
                       ? "opacity-25 cursor-not-allowed"
                       : "hover:border-yellow-500"
                   }`}
-                  disabled={current === groupedJobPosts.length - 1}
+                  disabled={current === groupedRecentJobPosts.length - 1}
                 >
                   <FaAngleRight
                     className={
-                      current === groupedJobPosts.length - 1
+                      current === groupedRecentJobPosts.length - 1
                         ? ""
                         : "group-hover:text-yellow-500"
                     }
@@ -271,46 +314,38 @@ const HomePage = () => {
           <div className="my-8">
             <p className="text-xl font-bold">Nhà Tuyển Dụng Nổi Bật</p>
             <Carousel
-              setApi={setApi2}
-              opts={{
-                align: "start",
-              }}
+              setApi={setApi}
+              opts={{ align: "start" }}
               className="my-2 w-full"
             >
               <CarouselContent>
-                {Array.from({ length: carouselLength2 }).map((_, index) => (
-                  <CarouselItem key={index}>
+                {companies.map((company, index) => (
+                  <CarouselItem key={company._id}>
                     <div className="h-fit p-1">
                       <div
                         style={{
-                          backgroundImage:
-                            "url('https://images.vietnamworks.com/logo/panasonic_cpbn_127875.png')",
+                          backgroundImage: `url(${company.companyLogo})`,
                           backgroundSize: "cover",
-                          backgroundRepeat: "no-repeat",
                           width: "100%",
                           height: "350px",
                         }}
                       ></div>
                       <div className="z-50 mx-auto -mt-20 h-fit w-3/4 rounded-md bg-[#f4f4f7] p-5">
                         <div className="flex items-center gap-6 rounded-md bg-white p-4">
-                          <Image
-                            src={nexon}
+                          <img
+                            src={company.companyLogo}
                             alt="logo"
                             width={100}
                             height={70}
                           />
                           <div className="flex flex-col gap-1">
                             <p className="text-lg font-semibold">
-                              Panasonic Việt Nam
+                              {company.companyName}
                             </p>
                             <p className="text-sm italic text-[#ff7d55]">
-                              Making People before Making Products
+                              {company.companyDescription}
                             </p>
-                            <p>
-                              Panasonic Vietnam is the first 100% foreign owned
-                              company to hold the role of a managing company in
-                              Vietnam consisting of 7 companies.
-                            </p>
+                            <p>{company.companyAddress}</p>
                           </div>
                         </div>
                       </div>
@@ -319,27 +354,28 @@ const HomePage = () => {
                 ))}
               </CarouselContent>
             </Carousel>
+
             <div className="mt-4 flex items-center justify-center gap-4">
               <button
-                onClick={() => api2?.scrollTo(current2 - 1)}
-                className={`flex h-8 w-8 items-center justify-center rounded-full border border-gray-600 transition ${
-                  current2 === 0
+                onClick={() => api?.scrollTo(current - 1)}
+                className={`flex h-8 w-8 items-center justify-center rounded-full border ${
+                  current === 0
                     ? "opacity-25 cursor-not-allowed"
                     : "group hover:border-yellow-500"
                 }`}
-                disabled={current2 === 0}
+                disabled={current === 0}
               >
                 <FaAngleLeft />
               </button>
 
               <button
-                onClick={() => api2?.scrollTo(current2 + 1)}
-                className={`flex h-8 w-8 items-center justify-center rounded-full border border-gray-600 transition ${
-                  current2 === carouselLength2 - 1
+                onClick={() => api?.scrollTo(current + 1)}
+                className={`flex h-8 w-8 items-center justify-center rounded-full border ${
+                  current === companies.length - 1
                     ? "opacity-25 cursor-not-allowed"
                     : "group hover:border-yellow-500"
                 }`}
-                disabled={current2 === carouselLength2 - 1}
+                disabled={current === companies.length - 1}
               >
                 <FaAngleRight />
               </button>
@@ -366,29 +402,31 @@ const HomePage = () => {
                 className="w-full"
               >
                 <CarouselContent>
-                  {groupedItems2.map((group, index) => (
+                  {groupedAllJobPosts.map((group, index) => (
                     <CarouselItem key={index} className="w-full">
                       <div className="grid grid-cols-3 gap-4">
-                        {group.map((_, subIndex) => (
+                        {group.map((job, subIndex) => (
                           <div key={subIndex} className="p-1">
-                            <Link href="/job/1">
+                            <Link href={`/job/${job._id}`}>
                               <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]">
-                                <Image
-                                  src={vinfast}
-                                  alt=""
+                                {/* <Image
+                                  src={job.companyInfo?.companyLogo}
+                                  alt="logo"
                                   height={80}
                                   width={80}
-                                />
+                                  className="h-20 w-20"
+                                /> */}
+
                                 <div>
                                   <h1 className="mb-1 line-clamp-1 text-xl font-bold">
-                                    Inventory Reserve Accountant
+                                    {job.jobTitle}
                                   </h1>
-                                  <p>VINFAST TRADING AND PRODUCTION JSC</p>
+                                  <p>{job.companyInfo?.companyName}</p>
                                   <p className="my-1 text-sm text-amber-600">
-                                    Thương lượng
+                                    {job.minSalary?.toLocaleString()} -{" "}
+                                    {job.maxSalary?.toLocaleString()} VNĐ
                                   </p>
-                                  <p className="text-sm">Hải Phòng</p>{" "}
-                                  {index * 9 + subIndex + 1}
+                                  <p className="text-sm">{job.location}</p>
                                 </div>
                               </div>
                             </Link>
@@ -415,7 +453,7 @@ const HomePage = () => {
                     }
                   />
                 </button>
-                {groupedItems2.map((_, i) => (
+                {groupedAllJobPosts.map((_, i) => (
                   <div
                     key={i}
                     className={`mx-1 h-2 w-2 rounded-full cursor-pointer ${
@@ -427,15 +465,15 @@ const HomePage = () => {
                 <button
                   onClick={() => api3?.scrollTo(current3 + 1)}
                   className={`flex h-8 w-8 group items-center justify-center rounded-full border border-gray-600 transition ${
-                    current3 === groupedItems2.length - 1
+                    current3 === groupedAllJobPosts.length - 1
                       ? "opacity-25 cursor-not-allowed"
                       : "hover:border-yellow-500"
                   }`}
-                  disabled={current3 === groupedItems2.length - 1}
+                  disabled={current3 === groupedAllJobPosts.length - 1}
                 >
                   <FaAngleRight
                     className={
-                      current3 === groupedItems2.length - 1
+                      current3 === groupedAllJobPosts.length - 1
                         ? ""
                         : "group-hover:text-yellow-500"
                     }

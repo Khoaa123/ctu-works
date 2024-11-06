@@ -234,8 +234,9 @@ const CompanyDetail = () => {
                   </p>
                 </div>
                 <div
-                  className={` transition-all duration-400 ease-in-out overflow-hidden ${isExpanded ? "max-h-[1000px]" : "max-h-[170px]"
-                    }`}
+                  className={` transition-all duration-400 ease-in-out overflow-hidden ${
+                    isExpanded ? "max-h-[1000px]" : "max-h-[170px]"
+                  }`}
                 >
                   <div className="my-4">
                     <p className="text-sm">
@@ -339,12 +340,12 @@ const CompanyDetail = () => {
                         key={index}
                         className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]"
                       >
-                        <Image
+                        {/* <Image
                           src={item?.companyLogo}
                           alt="companyLogo"
                           height={80}
                           width={80}
-                        />
+                        /> */}
                         <div>
                           <h1
                             className="mb-1 line-clamp-1 text-xl font-bold"
@@ -358,7 +359,12 @@ const CompanyDetail = () => {
                           </p>
                           <p className="text-sm">
                             {item?.location?.map((loc, locIndex) => (
-                              <p key={locIndex}>{loc}{locIndex < item.location.length - 1 ? ', ' : ''}</p>
+                              <p key={locIndex}>
+                                {loc}
+                                {locIndex < item.location.length - 1
+                                  ? ", "
+                                  : ""}
+                              </p>
                             ))}
                           </p>
                         </div>
