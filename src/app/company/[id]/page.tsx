@@ -106,21 +106,25 @@ const CompanyDetail = () => {
   const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
 
   const addFollow = async () => {
-    const id = location.pathname.split("/company/")[1];
-    const userId = decodedToken?.userid;
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/follow/create-follow/${id}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: userId,
-        }),
-      }
-    );
-    return res.json();
+    if (!accessToken) {
+      router.push('/login')
+    } else {
+      const id = location.pathname.split("/company/")[1];
+      const userId = decodedToken?.userid;
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/follow/create-follow/${id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: userId,
+          }),
+        }
+      );
+      return res.json();
+    }
   };
 
   const unFollow = async () => {

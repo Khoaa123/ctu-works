@@ -14,6 +14,8 @@ import {
   FaBell,
   FaEye,
   FaLock,
+  FaBuilding,
+  FaBriefcase,
 } from "react-icons/fa6";
 import { FaCog, FaSignOutAlt } from "react-icons/fa";
 import {
@@ -128,9 +130,11 @@ const Header = () => {
                 <p className="cursor-pointer hover:text-[#00b14f]">Việc làm</p>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="px-2">
-                <DropdownMenuItem className="my-[6px] bg-[#F1F1F1]">
-                  Tìm việc làm
-                </DropdownMenuItem>
+                <Link href={`/job-search/all`}>
+                  <DropdownMenuItem className="my-[6px] bg-[#F1F1F1]">
+                    Tìm việc làm
+                  </DropdownMenuItem>
+                </Link>
                 <DropdownMenuItem className="my-[6px] bg-[#F1F1F1]">
                   Việc làm phù hợp
                 </DropdownMenuItem>
@@ -139,24 +143,27 @@ const Header = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <p className="cursor-pointer hover:text-[#00b14f]">
-                  CV / Hồ Sơ
+                  Việc của tôi
                 </p>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem>Option 1</DropdownMenuItem>
-                <DropdownMenuItem>Option 2</DropdownMenuItem>
-                <DropdownMenuItem>Option 3</DropdownMenuItem>
+                <Link href={`/profile/my-job`}>
+                  <DropdownMenuItem>Việc đã lưu</DropdownMenuItem>
+                </Link>
+                <Link href={`/profile/my-job`}>
+                  <DropdownMenuItem>Việc đã ứng tuyển</DropdownMenuItem>
+                </Link>
+                <Link href={``}>
+                  <DropdownMenuItem>Việc dành cho bạn</DropdownMenuItem>
+                </Link>
               </DropdownMenuContent>
             </DropdownMenu>
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <p className="cursor-pointer hover:text-[#00b14f]">Công ty</p>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem>Option 1</DropdownMenuItem>
-                <DropdownMenuItem>Option 2</DropdownMenuItem>
-                <DropdownMenuItem>Option 3</DropdownMenuItem>
-              </DropdownMenuContent>
+              <Link href="/company-search">
+                <DropdownMenuTrigger asChild>
+                  <p className="cursor-pointer hover:text-[#00b14f]">Công ty</p>
+                </DropdownMenuTrigger>
+              </Link>
             </DropdownMenu>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -250,11 +257,10 @@ const Header = () => {
                           {notifications.map((notification) => (
                             <li
                               key={notification._id}
-                              className={`cursor-pointer list-none rounded-md p-2 ${
-                                notification.isRead
-                                  ? "bg-gray-100"
-                                  : "bg-sky-100"
-                              }`}
+                              className={`cursor-pointer list-none rounded-md p-2 ${notification.isRead
+                                ? "bg-gray-100"
+                                : "bg-sky-100"
+                                }`}
                               onClick={() => handleMarkAsRead(notification._id)}
                             >
                               <p className="text-sm">{notification.message}</p>
@@ -294,16 +300,30 @@ const Header = () => {
                           Hồ sơ của tôi
                         </DropdownMenuItem>
                       </Link>
+                      <Link href="/profile/my-company">
+                        <DropdownMenuItem className="my-[6px] flex items-center gap-3 bg-[#F6FAFB] p-3 font-medium">
+                          <FaBuilding size={16} color="#00b14f" />
+                          Công ty của tôi
+                        </DropdownMenuItem>
+                      </Link>
+                      <Link href="/profile/my-job">
+                        <DropdownMenuItem className="my-[6px] flex items-center gap-3 bg-[#F6FAFB] p-3 font-medium">
+                          <FaBriefcase size={16} color="#00b14f" />
+                          Việc làm của tôi
+                        </DropdownMenuItem>
+                      </Link>
                       <Link href="/blog/knowledge">
                         <DropdownMenuItem className="my-[6px] flex items-center gap-3 bg-[#F6FAFB] p-3 font-medium">
                           <FaBell size={16} color="#00b14f" />
                           Thông báo việc làm
                         </DropdownMenuItem>
                       </Link>
-                      <DropdownMenuItem className="my-[6px] flex items-center gap-3 bg-[#F6FAFB] p-3 font-medium">
-                        <FaEye size={16} color="#00b14f" />
-                        Nhà tuyển dụng xem hồ sơ
-                      </DropdownMenuItem>
+                      <Link href="/profile">
+                        <DropdownMenuItem className="my-[6px] flex items-center gap-3 bg-[#F6FAFB] p-3 font-medium">
+                          <FaEye size={16} color="#00b14f" />
+                          Nhà tuyển dụng xem hồ sơ
+                        </DropdownMenuItem>
+                      </Link>
                       <DropdownMenuItem className="my-[6px] flex items-center gap-3 bg-[#F6FAFB] p-3 font-medium">
                         <FaCog size={16} color="#00b14f" />
                         Cài đặt gợi ý việc làm

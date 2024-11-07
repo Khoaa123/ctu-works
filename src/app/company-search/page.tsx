@@ -136,14 +136,18 @@ const CompanySearch = () => {
     };
     const addFollow = async (id: any) => {
         try {
-            const res = await handleAddFollow(id);
-            if (res.status === "OK") {
-                toast.success("Theo dõi công ty thành công");
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
+            if (!accessToken) {
+                router.push('/login')
             } else {
-                toast.error("Bạn đã Theo dõi công ty này rồi");
+                const res = await handleAddFollow(id);
+                if (res.status === "OK") {
+                    toast.success("Theo dõi công ty thành công");
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    toast.error("Bạn đã Theo dõi công ty này rồi");
+                }
             }
         } catch (error) {
             toast.error("Cập nhật thất bại. Vui lòng thử lại sau.");
