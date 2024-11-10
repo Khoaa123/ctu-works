@@ -14,6 +14,8 @@ import Image from "next/image";
 import nexon from "@images/nexon.png";
 import vinfast from "@images/vinfast.png";
 import science from "@images/image-science.png";
+import Chatbot from "@/app/recruiter/Test/Test1/page";
+import ChatBotWrapper from "../client/ChatBotWrapper";
 
 type CompanyInfo = {
   companyName: string;

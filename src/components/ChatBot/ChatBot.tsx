@@ -1,9 +1,29 @@
 // pages/chatbot.js
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { chatSessionTest } from "../../../ai/Test";
+import { chatSessionTest } from "../../app/ai/Test";
+
 const Chatbot = () => {
   const [jobPosts, setJobPosts] = useState([]);
+  const [messages, setMessages] = useState<any>([]);
+  const [userInput, setUserInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const [detailsCompany, setDetailsCompany] = useState([
+    {
+      companyLogo: "",
+      companyName: "",
+      companyScale: "",
+      companyIndustries: "",
+      fullName: "",
+      companyAddress: "",
+      companyDescription: "",
+      following: -1,
+      follower: [],
+      recruiterId: "",
+      _id: "",
+    },
+  ]);
 
   useEffect(() => {
     const fetchJobPosts = async () => {
@@ -24,26 +44,7 @@ const Chatbot = () => {
 
     fetchJobPosts();
   }, []);
-  const [messages, setMessages] = useState<any>([]);
-  const [userInput, setUserInput] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-  const [showChat, setShowChat] = useState(false);
 
-  const [detailsCompany, setDetailsCompany] = useState([
-    {
-      companyLogo: "",
-      companyName: "",
-      companyScale: "",
-      companyIndustries: "",
-      fullName: "",
-      companyAddress: "",
-      companyDescription: "",
-      following: -1,
-      follower: [],
-      recruiterId: "",
-      _id: "",
-    },
-  ]);
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchDetailsCompany();
@@ -64,6 +65,7 @@ const Chatbot = () => {
     );
     return res.json();
   };
+
   const sendMessage = async () => {
     if (userInput.trim() === "") return;
 
@@ -91,6 +93,7 @@ const Chatbot = () => {
       setIsTyping(false);
     }
   };
+
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -98,6 +101,7 @@ const Chatbot = () => {
       inputRef.current.focus();
     }
   }, [showChat]);
+
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
@@ -110,10 +114,11 @@ const Chatbot = () => {
       sendMessage();
     }
   };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      {showChat && (
-        <div className="relative ml-4 w-full max-w-md overflow-hidden rounded-lg bg-white shadow-md">
+    <div className="fixed bottom-4 right-4 z-50">
+      {showChat ? (
+        <div className="relative w-full max-w-md overflow-hidden rounded-lg bg-white shadow-md">
           <div className="relative bg-indigo-500 px-4 py-3 text-center font-bold text-white">
             Chatbot
             <button
@@ -162,6 +167,7 @@ const Chatbot = () => {
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
               onKeyDown={handleKeyDown}
+              ref={inputRef}
             />
             <button
               className="rounded-r-md bg-indigo-500 px-4 text-white hover:bg-indigo-600 focus:outline-none"
@@ -171,14 +177,16 @@ const Chatbot = () => {
             </button>
           </div>
         </div>
+      ) : (
+        <button
+          className="rounded-md bg-indigo-500 px-4 py-2 text-white hover:bg-indigo-600 focus:outline-none"
+          onClick={() => setShowChat(!showChat)}
+        >
+          Chat với hỗ trợ AI
+        </button>
       )}
-      <button
-        className="absolute bottom-4 right-4 rounded-md bg-indigo-500 px-4 py-2 text-white hover:bg-indigo-600 focus:outline-none" // Thêm absolute, bottom-4, right-4
-        onClick={() => setShowChat(!showChat)}
-      >
-        Chat với hỗ trợ AI
-      </button>
     </div>
   );
 };
+
 export default Chatbot;

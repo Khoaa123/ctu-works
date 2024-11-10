@@ -9,6 +9,7 @@ import { ToastContainer } from "react-toastify";
 import { CookiesProvider } from "next-client-cookies/server";
 import "react-toastify/dist/ReactToastify.css";
 import ProgressBarProvider from "@/components/ProgressBarProvider";
+import ChatBotWrapper from "@/components/client/ChatBotWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,6 +33,7 @@ export default function RootLayout({
               <ProgressBarProvider>
                 <div className="flex-grow">{children}</div>
               </ProgressBarProvider>
+              <ChatBotWrapper />
               <FooterWrapper />
             </div>
             <ToastContainer closeOnClick draggable />
