@@ -27,6 +27,7 @@ import {
   FaUtensils,
   FaPercent,
   FaChild,
+  FaRegClock,
 } from "react-icons/fa6";
 import {
   FaBirthdayCake,
@@ -36,6 +37,7 @@ import {
   FaEllipsisH,
   FaHeart,
   FaMapMarkedAlt,
+  FaMapMarkerAlt,
   FaMoneyCheckAlt,
 } from "react-icons/fa";
 import nexon from "@images/nexon.png";
@@ -256,6 +258,7 @@ const JobDetail = () => {
     jobTitle: "",
     minSalary: 0,
     maxSalary: 0,
+    canDeal: false,
     postViews: 0,
     location: [],
     recruiterId: "",
@@ -651,10 +654,17 @@ const JobDetail = () => {
                           <div className="rounded-full bg-[#f1f2f4] p-2">
                             <AiOutlineDollarCircle color="grey" size={14} />
                           </div>
-                          <span className="text-sm">
-                            {jobPostDetails?.minSalary}$ -
-                            {jobPostDetails?.maxSalary}$
-                          </span>
+                          {jobPostDetails?.canDeal === true ? (
+                              <span className="text-sm text-orange-500">
+                              Thương lượng
+                            </span>
+                          ) : (
+                              <span className="text-sm">
+                              {jobPostDetails?.minSalary}$ {" - "}
+                              {jobPostDetails?.maxSalary}$
+                            </span>
+                          )}
+          
                         </div>
                         <div className="flex items-center gap-2">
                           <div className="rounded-full bg-[#f1f2f4] p-2">
@@ -668,15 +678,19 @@ const JobDetail = () => {
                           <div className="rounded-full bg-[#f1f2f4] p-2">
                             <FaLocationDot color="grey" size={14} />
                           </div>
-                          <span className="text-sm">
-                            {jobPostDetails?.location?.map((loc, locIndex) => (
-                              <span key={locIndex}>
-                                {loc}
-                                {locIndex < jobPostDetails?.location.length - 1
-                                  ? ", "
-                                  : ""}
-                              </span>
-                            ))}
+                          <span className="truncate text-sm">
+                            {jobPostDetails?.location?.map((loc: string, locIndex) => {
+
+                              const locationName = loc.split(':')[1].trim();
+
+                              const locationWithoutCountry = locationName.replace('Việt Nam', '').trim();
+                              return (
+                                <span key={locIndex}>
+                                  {locationWithoutCountry}
+                                  {locIndex < jobPostDetails?.location.length - 1 ? " " : ""}
+                                </span>
+                              );
+                            })}
                           </span>
                         </div>
                       </div>
@@ -1675,13 +1689,19 @@ const JobDetail = () => {
                           <h2 className="text-xl font-semibold text-gray-800">
                             {jobPostDetails?.jobTitle}
                           </h2>
-                          <div className="flex items-center text-sm text-gray-500">
-                            <span className="text-red-500">
-                              {jobPostDetails?.minSalary}$ -
-                              {jobPostDetails?.maxSalary}$
-                            </span>
+                          <div className="flex items-center text-sm text-black-500">
+                            {jobPostDetails?.canDeal === true ? (
+                              <span className="text-red-500">
+                                Thương lượng
+                              </span>
+                            ) : (
+                              <span className="text-red-500">
+                                {jobPostDetails?.minSalary}$ {" - "}
+                                {jobPostDetails?.maxSalary}$
+                              </span>
+                            )}
                             <span className="mx-2">|</span>
-                            <i className="fas fa-clock"></i>
+                            <FaRegClock className="fas fa-clock text-gray-500" />
                             <span className="ml-1">
                               {new Date(
                                 jobPostDetails?.expirationDate
@@ -1695,16 +1715,20 @@ const JobDetail = () => {
                               )} ngày)`}
                             </span>
                             <span className="mx-2">|</span>
-                            <i className="fas fa-map-marker-alt"></i>
+                            <FaMapMarkerAlt className="fas fa-map-marker-alt text-gray-500" />
                             <span className="ml-1">
-                              {jobPostDetails?.location?.map((loc, locIndex) => (
-                                <span key={locIndex}>
-                                  {loc}
-                                  {locIndex < jobPostDetails?.location.length - 1
-                                    ? ", "
-                                    : ""}
-                                </span>
-                              ))}
+                              {jobPostDetails?.location?.map((loc: string, locIndex) => {
+
+                                const locationName = loc.split(':')[1].trim();
+
+                                const locationWithoutCountry = locationName.replace('Việt Nam', '').trim();
+                                return (
+                                  <span key={locIndex}>
+                                    {locationWithoutCountry}
+                                    {locIndex < jobPostDetails?.location.length - 1 ? " " : ""}
+                                  </span>
+                                );
+                              })}
                             </span>
                           </div>
                         </div>
@@ -1730,15 +1754,20 @@ const JobDetail = () => {
                         className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]"
                         key={index}
                       >
-                        {/* <Image src={nexon} alt="" height={80} width={80} /> */}
+
                         <div>
                           <h1 className="mb-1 line-clamp-1 text-xl font-bold">
                             {job.jobTitle}
                           </h1>
-                          {/* <p>Nexon Networks Vina Co.Ltd</p> */}
-                          <p className="my-1 text-sm text-amber-600">
-                            {job.minSalary} - {job.maxSalary}
-                          </p>
+                          {job?.canDeal === true ? (
+                            <p className="my-1 text-sm text-amber-600">
+                              Thương lượng
+                            </p>
+                          ) : (
+                            <p className="my-1 text-sm text-amber-600">
+                              {job.minSalary}$ {" - "} {job.maxSalary}$
+                            </p>
+                          )}
                           <p className="text-sm">Vị trí: {job.jobLevel}</p>
                         </div>
                       </Link>
@@ -1794,8 +1823,8 @@ const JobDetail = () => {
             </div>
           </div>
         </div>
-      </div>{" "}
-      <ScrollToTopButton />
+      </div > {" "}
+      < ScrollToTopButton />
     </>
   );
 };

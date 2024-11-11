@@ -190,14 +190,10 @@ const CompanySearch = () => {
     const navigate = (id: string) => {
         router.push(`/job/${id}`);
     };
-    const Test = () => {
-        console.log(jobPostCompany)
-    }
     return (
         <>
             <div className="container mx-auto p-4">
                 <header className="text-center mb-8">
-                    <button onClick={Test}>Test</button>
                     <h1 className="text-4xl font-bold text-blue-900">Khám Phá Văn Hoá Công Ty</h1>
                     <p className="text-lg text-gray-600">Tìm hiểu văn hoá công ty và chọn cho bạn nơi làm việc phù hợp nhất.</p>
                     <div className="mt-4 flex justify-center">
@@ -244,7 +240,7 @@ const CompanySearch = () => {
                                                 <>
                                                     <Link href={`/job/${company?._id}`}>
                                                         <p key={companyIndex} className="truncate mb-1 text-sm font-medium hover:text-sky-700">
-                                                            {company?.companyName}
+                                                            {company?.jobTitle}
                                                         </p>
                                                     </Link>
                                                     <p key={companyIndex} className="truncate mb-4 text-sm text-red-500">

@@ -6,6 +6,7 @@ import {
   FaBell,
   FaBriefcase,
   FaBuilding,
+  FaEye,
 } from "react-icons/fa6";
 import { RiFileUserFill } from "react-icons/ri";
 import { BiLogOut } from "react-icons/bi";
@@ -105,7 +106,7 @@ const RecruiterSidebar = () => {
         <div className="cursor-pointer rounded-md border bg-white p-4 transition duration-300 hover:border-sky-200 hover:bg-[#ebf2ff]">
           <Link href="/recruiter/history-view-user">
             <div className="flex items-center gap-3">
-              <FaBriefcase color="grey" size={20} />
+              <FaEye color="grey" size={20} />
               <p>Các ứng viên đã xem gần đây</p>
             </div>
           </Link>

@@ -42,6 +42,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { chatSession } from "../../../ai/keyWordSuggest";
+import { Switch } from "antd";
 
 export interface JwtPayload {
   userid: string;
@@ -104,6 +105,7 @@ const EditJob = () => {
     jobType: string;
     minSalary: number;
     maxSalary: number;
+    canDeal: boolean;
     numberOfPositions: number;
     jobInformation: JobInformation;
     companyInfo: CompanyInfo;
@@ -128,6 +130,7 @@ const EditJob = () => {
     jobType: "",
     minSalary: 0,
     maxSalary: 0,
+    canDeal: false,
     numberOfPositions: 0,
     jobInformation: {
       jobLevel: "",
@@ -559,6 +562,7 @@ const EditJob = () => {
             jobType,
             minSalary,
             maxSalary,
+            canDeal,
             numberOfPositions,
 
             jobLevel,
@@ -623,6 +627,7 @@ const EditJob = () => {
             jobType,
             minSalary,
             maxSalary,
+            canDeal,
             numberOfPositions, jobInformation, companyInfo
           }
 
@@ -778,7 +783,6 @@ const EditJob = () => {
     { value: "NGO/Phi Lợi Nhuận", label: "NGO/Phi Lợi Nhuận" },
     { value: "Bảo Mật Công Nghệ Thông Tin", label: "Bảo Mật Công Nghệ Thông Tin" },
     { value: "Chuyển Đổi Số", label: "Chuyển Đổi Số" },
-    { value: "Data Engineer/Data Analyst/AI", label: "Data Engineer/Data Analyst/AI" },
     { value: "IT Support/Help Desk", label: "IT Support/Help Desk" },
     { value: "Phần Cứng Máy Tính", label: "Phần Cứng Máy Tính" },
     { value: "Phần Mềm Máy Tính", label: "Phần Mềm Máy Tính" },
@@ -788,30 +792,13 @@ const EditJob = () => {
     { value: "Quản Lý Dự Án Công Nghệ", label: "Quản Lý Dự Án Công Nghệ" },
     { value: "Quản Trị Cơ Sở Dữ Liệu", label: "Quản Trị Cơ Sở Dữ Liệu" },
     { value: "System/Cloud/DevOps Engineer", label: "System/Cloud/DevOps Engineer" },
-    { value: "UX/UI Design", label: "UX/UI Design" },
     { value: "Viễn Thông", label: "Viễn Thông" },
     { value: "Phát Triển Sản Phẩm May Mặc", label: "Phát Triển Sản Phẩm May Mặc" },
-    { value: "Quản Lý Đơn Hàng", label: "Quản Lý Đơn Hàng" },
     { value: "Đầu Bếp", label: "Đầu Bếp" },
     { value: "Quản Lý F&B", label: "Quản Lý F&B" },
-    { value: "Bảo Mật Công Nghệ Thông Tin", label: "Bảo Mật Công Nghệ Thông Tin" },
-    { value: "Chuyển Đổi Số", label: "Chuyển Đổi Số" },
     { value: "Data Engineer/Data Analyst/AI", label: "Data Engineer/Data Analyst/AI" },
-    { value: "IT Support/Help Desk", label: "IT Support/Help Desk" },
-    { value: "Phần Cứng Máy Tính", label: "Phần Cứng Máy Tính" },
-    { value: "Phần Mềm Máy Tính", label: "Phần Mềm Máy Tính" },
-    { value: "Phân Tích Kinh Doanh/Phân Tích Hệ Thống", label: "Phân Tích Kinh Doanh/Phân Tích Hệ Thống" },
-    { value: "QA/QC/Software Testing", label: "QA/QC/Software Testing" },
-    { value: "Quản Lý Công Nghệ Thông Tin", label: "Quản Lý Công Nghệ Thông Tin" },
-    { value: "Quản Lý Dự Án Công Nghệ", label: "Quản Lý Dự Án Công Nghệ" },
-    { value: "Quản Trị Cơ Sở Dữ Liệu", label: "Quản Trị Cơ Sở Dữ Liệu" },
-    { value: "System/Cloud/DevOps Engineer", label: "System/Cloud/DevOps Engineer" },
     { value: "UX/UI Design", label: "UX/UI Design" },
-    { value: "Viễn Thông", label: "Viễn Thông" },
-    { value: "Phát Triển Sản Phẩm May Mặc", label: "Phát Triển Sản Phẩm May Mặc" },
     { value: "Quản Lý Đơn Hàng", label: "Quản Lý Đơn Hàng" },
-    { value: "Đầu Bếp", label: "Đầu Bếp" },
-    { value: "Quản Lý F&B", label: "Quản Lý F&B" },
     { value: "Quầy Bar/Đồ Uống/Phục vụ", label: "Quầy Bar/Đồ Uống/Phục vụ" },
     { value: "Dịch Vụ Khách Hàng", label: "Dịch Vụ Khách Hàng" },
     { value: "Dịch Vụ Khách Hàng - Call Center", label: "Dịch Vụ Khách Hàng - Call Center" },
@@ -829,7 +816,6 @@ const EditJob = () => {
     { value: "Lễ Tân/Tiếp Tân", label: "Lễ Tân/Tiếp Tân" },
     { value: "Quản Lý Văn Phòng", label: "Quản Lý Văn Phòng" },
     { value: "Thư Ký", label: "Thư Ký" },
-    { value: "Thu Mua", label: "Thu Mua" },
     { value: "Trợ Lý Kinh Doanh", label: "Trợ Lý Kinh Doanh" },
     { value: "Quản Lý Chuỗi Cung Ứng", label: "Quản Lý Chuỗi Cung Ứng" },
     { value: "Quản Lý Kho & Phân Phối", label: "Quản Lý Kho & Phân Phối" },
@@ -1282,7 +1268,7 @@ const EditJob = () => {
                     </div>
                   </div>
                   <div className="rounded-lg border border-gray-300 p-4">
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                       <div>
                         <label id="minSalary" className="block text-gray-700">
                           Mức lương (USD)<span className="text-red-500">*</span>
@@ -1313,6 +1299,20 @@ const EditJob = () => {
                             className="w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400 focus-visible:ring-0"
                           />
                         </div>
+                      </div>
+                      <div className="text-center">
+                        <label
+                          id="numberOfPositions"
+                          className="block text-gray-700"
+                        >
+                          Lương có thể thương lượng
+                        </label>
+                        <Switch className="mt-2" value={formData.canDeal}
+                          onChange={
+                            () => {
+                              setFormData({ ...formData, canDeal: !formData.canDeal });
+                            }
+                          } />
                       </div>
                       <div>
                         <label id="numberOfPositions" className="block text-gray-700">Số lượng tuyển dụng</label>

@@ -123,7 +123,9 @@ const jobPage = () => {
       .then((response) => {
         if (response.status === "OK") {
           toast.success("Xóa việc làm thành công!");
-          window.location.reload();
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
         } else {
           toast.error("Xóa việc làm thất bại");
         }
@@ -149,7 +151,9 @@ const jobPage = () => {
       .then((response) => {
         if (response.status === "OK") {
           toast.success("Cập nhật thành công!");
-          window.location.reload();
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
         } else {
           toast.error("Cập nhật thất bại");
         }
@@ -218,7 +222,9 @@ const jobPage = () => {
                         <FaPencilAlt className="fas fa-pencil-alt cursor-pointer" />
                       </Link>
                       <i className="fas fa-copy" />
-                      <FaEye className="fas fa-eye cursor-pointer" />
+                      <Link href={`/job/${job?._id}`}>
+                        <FaEye className="fas fa-eye cursor-pointer" />
+                      </Link>
                       <i className="fas fa-users" />
                       <FaTrash
                         onClick={() => handleDeleteJob(job?._id)}

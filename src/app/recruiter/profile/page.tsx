@@ -17,6 +17,10 @@ export interface JwtPayload {
   fullName: string;
   role: string;
 }
+interface Benefits {
+  id: number;
+  name: string;
+}
 const Profile = () => {
   const cookies = useCookies();
   const accessToken = cookies.get("accessTokenRecruiter");
@@ -43,8 +47,8 @@ const Profile = () => {
     companyScale: "",
     companyBenefits: [
       {
-        benefitId: "",
-        benefitDescription: "",
+        title: "",
+        content: "",
       },
     ],
   });
@@ -123,18 +127,30 @@ const Profile = () => {
       placeholder: "Ví dụ: Cấp Misfix cho mỗi nhân viên",
     },
   ];
-  const [benefits, setBenefits] = useState([{ id: 0, name: "Thưởng" }]);
+  const [benefits, setBenefits] = useState<Benefits[]>([]);
   const [benefitId, setBenefitId] = useState(1);
-  const handleAddBenefit = () => {
-    if (benefits.length < 3) {
-      setBenefits((prevBenefits) => [
-        ...prevBenefits,
-        {
-          id: benefitId,
-          name: "",
-        },
-      ]);
-      setBenefitId((prevId) => prevId + 1);
+  const handleAddBenefit = (item: any, index: any) => {
+    if (benefits?.length < 3) {
+      if (item?.length > 1) {
+        setBenefits((prevBenefits) => [
+          ...prevBenefits,
+          {
+            id: index,
+            name: item,
+          }
+        ]);
+        setBenefitId((prevId) => prevId + 1);
+
+      } else {
+        setBenefits((prevBenefits) => [
+          ...prevBenefits,
+          {
+            id: benefitId,
+            name: "",
+          },
+        ]);
+        setBenefitId((prevId) => prevId + 1);
+      }
     }
   };
 
@@ -152,7 +168,7 @@ const Profile = () => {
     });
   };
   const usedBenefits = Object.values(formData?.companyBenefits).map(
-    (benefit) => benefit.benefitId
+    (benefit) => benefit.title
   );
   const optionsIndustry = [{ value: "Bán lẻ/Bán sỉ", label: "Bán lẻ/Bán sỉ" },
   { value: "Bao bì/In ấn/Dán nhãn", label: "Bao bì/In ấn/Dán nhãn" },
@@ -250,14 +266,28 @@ const Profile = () => {
         console.log("Error!", error);
       });
   };
+  let run = 0
 
   useEffect(() => {
-    const fetchData = async () => {
-      const res = await fetchRecruiterInfo();
-      const data = res.data;
-      setFormData(data);
-    };
-    fetchData();
+    if (run < 1) {
+      try {
+        const fetchData = async () => {
+          const res = await fetchRecruiterInfo();
+          const data = res.data;
+          const {
+            companyBenefits,
+          } = data
+          companyBenefits?.forEach((item: any, index: any) => {
+            handleAddBenefit(item.title, index)
+          });
+          setFormData(data);
+        };
+        run = 1
+        fetchData();
+      } catch (error) {
+        console.log(error)
+      }
+    }
   }, []);
   const fetchRecruiterInfo = async () => {
     const id = decodedToken?.userid;
@@ -443,18 +473,21 @@ const Profile = () => {
                   {benefits.map((benefit) => (
                     <div key={benefit.id} className="mb-2 flex space-x-4">
                       <select
+                        value={formData?.companyBenefits[benefit.id]?.title}
                         onChange={(e) => {
                           setFormData({
                             ...formData,
-
                             companyBenefits: {
                               ...formData?.companyBenefits,
                               [benefit.id]: {
-                                ...formData?.companyBenefits[benefit.id],
-                                benefitId: e.target.value,
-                                benefitDescription:
-                                  formData?.companyBenefits[benefit.id]
-                                    ?.benefitDescription,
+                                ...formData?.companyBenefits[
+                                benefit.id
+                                ],
+                                title: e.target.value,
+                                content:
+                                  formData?.companyBenefits[
+                                    benefit.id
+                                  ]?.content,
                               },
                             },
                           });
@@ -462,7 +495,6 @@ const Profile = () => {
                         id="companyBenefits"
                         className="h-1/2 w-1/2 appearance-none rounded border border-black px-3 py-2 leading-tight text-gray-700 shadow outline-none focus:border-sky-400 focus:shadow-none focus:outline-none"
                       >
-                        {/* {benefitoptions.map((item) => ( */}
                         {benefitoptions.map((item) => (
                           <option
                             key={item.name}
@@ -470,7 +502,9 @@ const Profile = () => {
                             disabled={
                               usedBenefits.includes(item.name) &&
                               item.name !==
-                              formData?.companyBenefits[benefit.id]?.benefitId
+                              formData?.companyBenefits[
+                                benefit.id
+                              ]?.title
                             }
                           >
                             {item.name}{" "}
@@ -481,7 +515,7 @@ const Profile = () => {
                       <textarea
                         value={
                           formData?.companyBenefits[benefit.id]
-                            ?.benefitDescription
+                            ?.content
                         }
                         onChange={(e) => {
                           setFormData({
@@ -489,10 +523,11 @@ const Profile = () => {
                             companyBenefits: {
                               ...formData?.companyBenefits,
                               [benefit.id]: {
-                                benefitId:
-                                  formData?.companyBenefits[benefit.id]
-                                    ?.benefitId,
-                                benefitDescription: e.target.value,
+                                title:
+                                  formData?.companyBenefits[
+                                    benefit.id
+                                  ]?.title,
+                                content: e.target.value,
                               },
                             },
                           });
@@ -502,21 +537,24 @@ const Profile = () => {
                           benefitoptions.find(
                             (option) =>
                               option.name ===
-                              formData?.companyBenefits[benefit.id]?.benefitId
+                              formData?.companyBenefits[benefit.id]
+                                ?.title
                           )?.placeholder || "Nhập chi tiết phúc lợi"
                         }
                       ></textarea>
-                      {benefits.length > 1 && (
-                        <button onClick={() => handleRemoveBenefit(benefit.id)}>
+                      {benefits?.length > 1 && (
+                        <button
+                          onClick={() => handleRemoveBenefit(benefit.id)}
+                        >
                           <FaTrash className="h-12 w-5" />
                         </button>
                       )}
                     </div>
                   ))}
-                  {benefits.length < 3 && (
+                  {benefits?.length < 3 && (
                     <button
                       className="mt-2 text-blue-500"
-                      onClick={handleAddBenefit}
+                      onClick={() => handleAddBenefit('', '')}
                     >
                       + Thêm phúc lợi
                     </button>

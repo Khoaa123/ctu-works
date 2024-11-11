@@ -348,15 +348,16 @@ const CreateJobPostAI = () => {
     });
   };
   const fetchUpdateJob = async (formData: any) => {
-    const id = location.pathname.split("/recruiter/edit-job/")[1];
+   const id = decodedToken?.userid;
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobpost/update/${id}`,
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobpost/create`,
       {
-        method: "PUT",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          recruiterId: id,
           formData,
         }),
       }
@@ -541,132 +542,132 @@ const CreateJobPostAI = () => {
     }
   }
   let run = 0
-  useEffect(() => {
-    if (run < 1) {
-      try {
-        const fetchData = async () => {
-          const res = await fetchJobPost();
-          const data = res.data;
+  // useEffect(() => {
+  //   if (run < 1) {
+  //     try {
+  //       const fetchData = async () => {
+  //         const res = await fetchJobPost();
+  //         const data = res.data;
 
-          const {
-            jobTitle,
-            expirationDate,
-            location,
-            jobDescription,
-            jobRequirements,
-            jobType,
-            minSalary,
-            maxSalary,
-            numberOfPositions,
+  //         const {
+  //           jobTitle,
+  //           expirationDate,
+  //           location,
+  //           jobDescription,
+  //           jobRequirements,
+  //           jobType,
+  //           minSalary,
+  //           maxSalary,
+  //           numberOfPositions,
 
-            jobLevel,
-            jobIndustry,
-            keywords,
-            jobField,
-            language,
-            minExperience,
-            nationality,
-            educationLevel,
-            gender,
-            minAge,
-            maxAge,
-            maritalStatus,
+  //           jobLevel,
+  //           jobIndustry,
+  //           keywords,
+  //           jobField,
+  //           language,
+  //           minExperience,
+  //           nationality,
+  //           educationLevel,
+  //           gender,
+  //           minAge,
+  //           maxAge,
+  //           maritalStatus,
 
-            companyName,
-            companyAddress,
-            companySize,
-            companyLogo,
-            companyStaffName,
-            companyBenefits,
-            companyEmail,
-            // companyInfo,
-            jobCompanyInfoId,
-            candidateExpectationsId,
-            jobInfoId,
-          } = data[0]
+  //           companyName,
+  //           companyAddress,
+  //           companySize,
+  //           companyLogo,
+  //           companyStaffName,
+  //           companyBenefits,
+  //           companyEmail,
+  //           // companyInfo,
+  //           jobCompanyInfoId,
+  //           candidateExpectationsId,
+  //           jobInfoId,
+  //         } = data[0]
 
-          const companyInfo = {
-            companyName,
-            companyAddress,
-            companySize,
-            companyLogo,
-            companyStaffName,
-            companyBenefits,
-            companyEmail,
-            // companyInfo,
-          }
-          const jobInformation = {
-            jobLevel,
-            jobIndustry,
-            keywords,
-            jobField,
-            language,
-            minExperience,
-            nationality,
-            educationLevel,
-            gender,
-            minAge,
-            maxAge,
-            maritalStatus,
-          }
-          const jobData = {
-            jobCompanyInfoId,
-            candidateExpectationsId,
-            jobInfoId,
-            jobTitle,
-            expirationDate,
-            location,
-            jobDescription,
-            jobRequirements,
-            jobType,
-            minSalary,
-            maxSalary,
-            numberOfPositions, jobInformation, companyInfo
-          }
+  //         const companyInfo = {
+  //           companyName,
+  //           companyAddress,
+  //           companySize,
+  //           companyLogo,
+  //           companyStaffName,
+  //           companyBenefits,
+  //           companyEmail,
+  //           // companyInfo,
+  //         }
+  //         const jobInformation = {
+  //           jobLevel,
+  //           jobIndustry,
+  //           keywords,
+  //           jobField,
+  //           language,
+  //           minExperience,
+  //           nationality,
+  //           educationLevel,
+  //           gender,
+  //           minAge,
+  //           maxAge,
+  //           maritalStatus,
+  //         }
+  //         const jobData = {
+  //           jobCompanyInfoId,
+  //           candidateExpectationsId,
+  //           jobInfoId,
+  //           jobTitle,
+  //           expirationDate,
+  //           location,
+  //           jobDescription,
+  //           jobRequirements,
+  //           jobType,
+  //           minSalary,
+  //           maxSalary,
+  //           numberOfPositions, jobInformation, companyInfo
+  //         }
 
-          const Used: string[] = [];
-          location?.forEach((item: string, index: any) => {
-            handleAddLocationCompany(item, index);
+  //         const Used: string[] = [];
+  //         location?.forEach((item: string, index: any) => {
+  //           handleAddLocationCompany(item, index);
 
-            Used.push(item?.split(":")[0]);
-          });
-          const res1 = await fetchRecruiterInfo();
-          const data1 = res1.data;
-          data1?.locationCompanyId.map(async (data: any) => {
-            const dataLocation = await getLocationCompany(data)
-            const LocationData = dataLocation.data[0]
-            if (LocationData !== null) {
-              Used?.map((item: any) => {
-                if (item === LocationData.title.split(":")[0]) {
-                  LocationData.used = true
-                }
-              })
-              Location.push(LocationData);
-              const uniqueArray = Location.filter((obj, index, self) => {
-                return self.findIndex((otherObj) => areObjectsEqual(obj, otherObj)) === index;
-              });
-              uniqueArray.splice(0, 1)
-              setLocation(uniqueArray)
-            }
-          })
+  //           Used.push(item?.split(":")[0]);
+  //         });
+  //         const res1 = await fetchRecruiterInfo();
+  //         const data1 = res1.data;
+  //         data1?.locationCompanyId.map(async (data: any) => {
+  //           const dataLocation = await getLocationCompany(data)
+  //           const LocationData = dataLocation.data[0]
+  //           if (LocationData !== null) {
+  //             Used?.map((item: any) => {
+  //               if (item === LocationData.title.split(":")[0]) {
+  //                 LocationData.used = true
+  //               }
+  //             })
+  //             Location.push(LocationData);
+  //             const uniqueArray = Location.filter((obj, index, self) => {
+  //               return self.findIndex((otherObj) => areObjectsEqual(obj, otherObj)) === index;
+  //             });
+  //             uniqueArray.splice(0, 1)
+  //             setLocation(uniqueArray)
+  //           }
+  //         })
 
-          keywords?.map((key: any) => {
-            handleAddTag(key)
-          })
-          companyBenefits?.forEach((item: any, index: any) => {
-            handleAddBenefit(item.title, index)
-          });
-          const date = new Date(expirationDate)
-          setDate(date)
-          setFormData(jobData)
-        };
-        run = 1
-        fetchData();
-      } catch (error) {
-        console.log(error)
-      }
-    }
-  }, []);
+  //         keywords?.map((key: any) => {
+  //           handleAddTag(key)
+  //         })
+  //         companyBenefits?.forEach((item: any, index: any) => {
+  //           handleAddBenefit(item.title, index)
+  //         });
+  //         const date = new Date(expirationDate)
+  //         setDate(date)
+  //         setFormData(jobData)
+  //       };
+  //       run = 1
+  //       fetchData();
+  //     } catch (error) {
+  //       console.log(error)
+  //     }
+  //   }
+  // }, []);
   const fetchRecruiterInfo = async () => {
     const id = decodedToken?.userid;
     const res = await fetch(

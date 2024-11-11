@@ -8,7 +8,14 @@ import { jwtDecode } from "jwt-decode";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import HeaderRecruiter from "@/components/HeaderRecruiter/HeaderRecruiter";
 import { FaCloudUploadAlt, FaInfoCircle, FaSearch, FaThLarge } from "react-icons/fa";
-
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { toast } from "react-toastify";
 export interface JwtPayload {
     userid: string;
     email: string;
@@ -21,7 +28,7 @@ const tabs = [
     { id: "application", label: "Lời mời ứng tuyển" },
 ];
 
-const MyCompany = () => {
+const MyCandidate = () => {
     const cookies = useCookies();
     const accessToken = cookies.get("accessTokenRecruiter");
     const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
@@ -39,21 +46,10 @@ const MyCompany = () => {
     ]);
 
     const [applyJob, setApplyJob] = useState([[
-        // {
-        //     companyLogo: "",
-        //     companyName: "",
-        //     jobSalary: "",
-        //     jobTitle: "",
-        //     jobLocation: [],
-        //     jobPostId: '',
-        //     jobPostTitle: '',
-        //     status: '',
-        //     fullName: '',
-        //     email: '',
-        //     address: '',
-        //     phoneNumber: '',
-        //     _id: "",
-        // },
+        {
+            status: '',
+            _id: '',
+        },
     ]]);
     const [myJobpost, setMyJobpost] = useState([
         {
@@ -155,6 +151,33 @@ const MyCompany = () => {
         );
         return res.json();
     };
+    const updateApply = async (id: any, status: any) => {
+        const res = await handleUpdateApply(id, status)
+        if (res.status === "OK") {
+            toast.success("Cập nhật thành công");
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } else {
+            toast.error("Cập nhật thất bại");
+        }
+    }
+    const handleUpdateApply = async (id: any, status: any) => {
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/apply/update/${id}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    id: id,
+                    status: status
+                }),
+            }
+        );
+        return res.json();
+    };
     const [activeTab, setActiveTab] = useState("profileViews");
 
     function areObjectsEqual(obj1: any, obj2: any) {
@@ -178,11 +201,15 @@ const MyCompany = () => {
     const handleSelectJob = (job: any) => {
         setApplySelect(job)
     }
+    const Test = () => {
+        console.log(applyJob, applySelect)
+    }
     return (
         <div>
             <HeaderRecruiter />
             <div className="p-4">
                 <div className="p-4">
+                    <button onClick={Test}>Test</button>
                     <div className="flex items-center justify-between border-b pb-2 mb-4">
                         <div className="flex items-center space-x-4">
                             <div className="flex items-center space-x-2">
@@ -278,7 +305,7 @@ const MyCompany = () => {
                 </div>
                 <div className="flex flex-col min-h-80 bg-white border border-gray-300 rounded p-2 gap-4 overflow-y-auto">
                     {applyJob[applySelect]?.length > 0 ? (
-                        userApplyDetail[applySelect].map((job: any) => (
+                        userApplyDetail[applySelect].map((job: any, index: any) => (
                             <Link
                                 key={job.userId}
                                 href={`/profileuser/${job._id}`}
@@ -302,9 +329,38 @@ const MyCompany = () => {
                                     </div>
                                 </div>
                                 <div className="flex flex-shrink-0 items-center space-x-4">
-                                    <button disabled className="whitespace-nowrap rounded-lg bg-orange-400 px-4 py-2 text-white transition-colors hover:bg-orange-500">
-                                        {myJobpost[applySelect].status}
-                                    </button>
+                                    <Select
+                                        value={applyJob[applySelect][index].status}
+                                        onValueChange={(value) =>
+                                            updateApply(applyJob[applySelect][index]._id, value)
+                                        }
+                                    >
+                                        <SelectTrigger className={`whitespace-nowrap rounded-lg px-4 py-2 text-white transition-colors hover:bg-orange-500 
+                                            ${applyJob[applySelect][index].status === 'Chờ phản hồi' ? 'bg-yellow-600' : ''} 
+                                            ${applyJob[applySelect][index].status === 'Mời phỏng vấn' ? 'bg-sky-500' : ''} 
+                                            ${applyJob[applySelect][index].status === 'Từ chối' ? 'bg-red-500' : ''} 
+                                            ${applyJob[applySelect][index].status === 'Chấp nhận' ? 'bg-green-500' : ''}`}
+                                        >
+                                        <SelectValue placeholder="Vui lòng chọn..." />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem  className="text-yellow-600" value="Chờ phản hồi">
+                                                Chờ phản hồi
+                                            </SelectItem>
+                                            <SelectItem  className="text-sky-500" value="Mời phỏng vấn">
+                                                Mời phỏng vấn
+                                            </SelectItem>
+                                            <SelectItem className="text-red-500" value="Từ chối">
+                                                Từ chối
+                                            </SelectItem>
+                                            <SelectItem  className="text-green-500" value="Chấp nhận">
+                                                Chấp nhận
+                                            </SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    {/* <button disabled className="whitespace-nowrap rounded-lg bg-orange-400 px-4 py-2 text-white transition-colors hover:bg-orange-500">
+                                        {applyJob[applySelect][index].status}
+                                    </button> */}
                                 </div>
                             </Link>
                         ))
@@ -325,4 +381,4 @@ const MyCompany = () => {
     );
 };
 
-export default MyCompany;
+export default MyCandidate;

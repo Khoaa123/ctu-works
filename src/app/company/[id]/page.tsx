@@ -16,7 +16,7 @@ import ScrollToTopButton from "@/components/ScrollToTopButton/ScrollToTopButotn"
 import { useCookies } from "next-client-cookies";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
-
+import { toast } from "react-toastify";
 export interface JwtPayload {
   userid: string;
   email: string;
@@ -104,8 +104,26 @@ const CompanyDetail = () => {
   const cookies = useCookies();
   const accessToken = cookies.get("accessToken");
   const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
-
   const addFollow = async () => {
+    try {
+      if (!accessToken) {
+        router.push('/login')
+      } else {
+        const res = await handleAddFollow();
+        if (res.status === "OK") {
+          toast.success("Theo dõi công ty thành công");
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        } else {
+          toast.error("Bạn đã Theo dõi công ty này rồi");
+        }
+      }
+    } catch (error) {
+      toast.error("Cập nhật thất bại. Vui lòng thử lại sau.");
+    }
+  };
+  const handleAddFollow = async () => {
     if (!accessToken) {
       router.push('/login')
     } else {
@@ -126,8 +144,22 @@ const CompanyDetail = () => {
       return res.json();
     }
   };
-
   const unFollow = async () => {
+    try {
+      const res = await HandleUnFollow();
+      if (res.status === "OK") {
+        toast.success("Hủy theo dõi công ty thành công");
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } else {
+        toast.error("Lỗi, vui lòng kiểm tra lại.");
+      }
+    } catch (error) {
+      toast.error("Cập nhật thất bại. Vui lòng thử lại sau.");
+    }
+  };
+  const HandleUnFollow = async () => {
     const id = location.pathname.split("/company/")[1];
     const userId = decodedToken?.userid;
     const res = await fetch(
@@ -238,9 +270,8 @@ const CompanyDetail = () => {
                   </p>
                 </div>
                 <div
-                  className={` transition-all duration-400 ease-in-out overflow-hidden ${
-                    isExpanded ? "max-h-[1000px]" : "max-h-[170px]"
-                  }`}
+                  className={` transition-all duration-400 ease-in-out overflow-hidden ${isExpanded ? "max-h-[1000px]" : "max-h-[170px]"
+                    }`}
                 >
                   <div className="my-4">
                     <p className="text-sm">

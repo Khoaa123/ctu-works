@@ -10,6 +10,8 @@ import {
   FaUser,
   FaEye,
   FaLock,
+  FaLocationArrow,
+  FaBuilding,
 } from "react-icons/fa6";
 import { RiRefreshLine } from "react-icons/ri";
 import { FaCog, FaFileAlt, FaSignOutAlt } from "react-icons/fa";
@@ -138,68 +140,23 @@ const HeaderRecruiter = () => {
               </Link>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Link href="/recruiter/my-company">
-                    <p className="cursor-pointer transition-colors duration-300 hover:text-[#ff7d55] data-[state=open]:text-[#ff7d55]">
-                      Ứng viên
-                    </p>
+                  <p className="cursor-pointer transition-colors duration-300 hover:text-[#ff7d55] data-[state=open]:text-[#ff7d55]">
+                    Ứng viên
+                  </p>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start">
+                  <Link href="/recruiter/my-candidate">
+                    <DropdownMenuItem className="flex items-center gap-3">
+                      Ứng viên ứng tuyển{" "}
+                    </DropdownMenuItem>
                   </Link>
-                </DropdownMenuTrigger>
-                {/* <DropdownMenuContent align="start">
-                  <DropdownMenuItem className="flex items-center gap-3">
-                    Quản lý theo việc đăng tuyển{" "}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="flex items-center gap-3">
-                    Quản lý theo thư mục và thẻ{" "}
-                  </DropdownMenuItem>
-                </DropdownMenuContent> */}
-              </DropdownMenu>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <p className="cursor-pointer transition-colors duration-300 hover:text-[#ff7d55] data-[state=open]:text-[#ff7d55]">
-                    Onboarding
-                  </p>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start">
-                  <DropdownMenuItem className="flex items-center gap-3">
-                    <FaUsers size={18} />
-                    Quản lý Nhân Viên
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="flex items-center gap-3">
-                    <RiRefreshLine size={18} />
-                    Sửa quy trình Onboarding
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="flex items-center gap-3">
-                    <FaFileAlt size={18} />
-                    Mẫu thông tin Nhân Viên
-                  </DropdownMenuItem>{" "}
-                  <DropdownMenuItem className="flex items-center gap-3">
-                    <FaClipboardList size={18} />
-                    Khảo sát nhân viên
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="flex items-center gap-3">
-                    <FaLayerGroup size={18} />
-                    Tài liệu onboarding
-                  </DropdownMenuItem>
+                  <Link href="/recruiter/my-invite-candidate">
+                    <DropdownMenuItem className="flex items-center gap-3">
+                      Ứng viên đã gửi lời mời{" "}
+                    </DropdownMenuItem>
+                  </Link>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <p className="cursor-pointer transition-colors duration-300 hover:text-[#ff7d55] data-[state=open]:text-[#ff7d55]">
-                    Đơn hàng
-                  </p>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start">
-                  <DropdownMenuItem className="flex items-center gap-3">
-                    Danh sách đơn hàng
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="flex items-center gap-3">
-                    Danh sách chia sẻ sản phẩm
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <p className="cursor-pointer transition-colors duration-300 hover:text-[#ff7d55]">
-                Báo cáo
-              </p>
             </div>
             <div className="flex gap-4 text-white">
               <Link href="/recruiter/create-jobpost">
@@ -219,7 +176,7 @@ const HeaderRecruiter = () => {
               </Link>
             </div>
             <div className="flex flex-1 items-center justify-end gap-8">
-              <FaCartShopping size={24} className="cursor-pointer text-white" />
+              {/* <FaCartShopping size={24} className="cursor-pointer text-white" /> */}
               {/* <FaBell size={24} className="cursor-pointer text-white" /> */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -249,9 +206,8 @@ const HeaderRecruiter = () => {
                         {notifications.map((notification) => (
                           <li
                             key={notification._id}
-                            className={`cursor-pointer list-none rounded-md p-2 ${
-                              notification.isRead ? "bg-gray-100" : "bg-sky-100"
-                            }`}
+                            className={`cursor-pointer list-none rounded-md p-2 ${notification.isRead ? "bg-gray-100" : "bg-sky-100"
+                              }`}
                             onClick={() => handleMarkAsRead(notification._id)}
                           >
                             <p className="text-sm">{notification.message}</p>
@@ -292,20 +248,22 @@ const HeaderRecruiter = () => {
                           Hồ sơ của tôi
                         </DropdownMenuItem>
                       </Link>
-                      <Link href="/blog/knowledge">
+                      <Link href="/recruiter/location">
                         <DropdownMenuItem className="my-[6px] flex cursor-pointer items-center gap-3 bg-[#F6FAFB] p-3 font-medium">
-                          <FaBell size={16} color="#00b14f" />
-                          Thông tin công ty
+                          <FaBuilding size={16} color="#00b14f" />
+                          Địa điểm làm việc
                         </DropdownMenuItem>
                       </Link>
-                      <DropdownMenuItem className="my-[6px] flex cursor-pointer items-center gap-3 bg-[#F6FAFB] p-3 font-medium">
-                        <FaEye size={16} color="#00b14f" />
-                        Các ứng viên đã xem gần đây
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="my-[6px] flex cursor-pointer items-center gap-3 bg-[#F6FAFB] p-3 font-medium">
+                      <Link href="/recruiter/history-view-user">
+                        <DropdownMenuItem className="my-[6px] flex cursor-pointer items-center gap-3 bg-[#F6FAFB] p-3 font-medium">
+                          <FaEye size={16} color="#00b14f" />
+                          Các ứng viên đã xem gần đây
+                        </DropdownMenuItem>
+                      </Link>
+                      {/* <DropdownMenuItem className="my-[6px] flex cursor-pointer items-center gap-3 bg-[#F6FAFB] p-3 font-medium">
                         <FaCog size={16} color="#00b14f" />
                         Cài đặt gợi ý việc làm
-                      </DropdownMenuItem>
+                      </DropdownMenuItem> */}
                       <DropdownMenuItem className="my-[6px] flex cursor-pointer items-center gap-3 bg-[#F6FAFB] p-3 font-medium">
                         <FaLock size={16} color="#00b14f" />
                         Đổi mật khẩu

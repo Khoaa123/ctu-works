@@ -65,7 +65,7 @@ const CareerPath = () => {
             <SelectContent>
               <SelectItem value="hanoi">Hà Nội</SelectItem>
               <SelectItem value="hochiminh">Thành phố Hồ Chí Minh</SelectItem>
-              <SelectItem value="cantho">Cần Thơ</SelectItem>
+              <SelectItem value="cantho">Cần Thơ 1</SelectItem>
             </SelectContent>
           </Select>
           <button className="rounded-md bg-amber-600 px-4 py-2 text-white transition duration-300 hover:bg-amber-700">

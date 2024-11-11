@@ -26,6 +26,8 @@ const MyJob = () => {
   const cookies = useCookies();
   const accessToken = cookies.get("accessToken");
   const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
+  const router = useRouter();
+
   const [saveJob, setSaveJob] = useState([
     {
       companyLogo: "",
@@ -51,16 +53,20 @@ const MyJob = () => {
     },
   ]);
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchSaveJob();
-      setSaveJob(data.data);
-    };
-    const fetchViewHistoryData = async () => {
-      const data = await fetchViewHistory();
-      setViewHistory(data.data);
+    if (!accessToken) {
+      router.push('/login')
+    } else {
+      const fetchData = async () => {
+        const data = await fetchSaveJob();
+        setSaveJob(data.data);
+      };
+      const fetchViewHistoryData = async () => {
+        const data = await fetchViewHistory();
+        setViewHistory(data.data);
+      }
+      fetchData();
+      fetchViewHistoryData()
     }
-    fetchData();
-    fetchViewHistoryData()
   }, []);
   const fetchViewHistory = async () => {
     const id = decodedToken?.userid;
