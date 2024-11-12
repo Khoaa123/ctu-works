@@ -9,7 +9,7 @@ import { useCookies } from "next-client-cookies";
 import { jwtDecode } from "jwt-decode";
 import HeaderRecruiter from "@/components/HeaderRecruiter/HeaderRecruiter";
 import RecruiterSidebar from "@/components/UserSidebar/RecruiterSidebar";
-import Select from 'react-select';
+import Select from "react-select";
 
 export interface JwtPayload {
   userid: string;
@@ -137,10 +137,9 @@ const Profile = () => {
           {
             id: index,
             name: item,
-          }
+          },
         ]);
         setBenefitId((prevId) => prevId + 1);
-
       } else {
         setBenefits((prevBenefits) => [
           ...prevBenefits,
@@ -170,68 +169,102 @@ const Profile = () => {
   const usedBenefits = Object.values(formData?.companyBenefits).map(
     (benefit) => benefit.title
   );
-  const optionsIndustry = [{ value: "Bán lẻ/Bán sỉ", label: "Bán lẻ/Bán sỉ" },
-  { value: "Bao bì/In ấn/Dán nhãn", label: "Bao bì/In ấn/Dán nhãn" },
-  { value: "Bảo hiểm", label: "Bảo hiểm" },
-  { value: "Bất Động Sản/Cho thuê", label: "Bất Động Sản/Cho thuê" },
-  { value: "Chính phủ & NGO", label: "Chính phủ & NGO" },
-  { value: "Chứng khoán", label: "Chứng khoán" },
-  { value: "Chuỗi cung ứng", label: "Chuỗi cung ứng" },
-  { value: "Cơ khí/Máy móc/Thiết bị công nghiệp", label: "Cơ khí/Máy móc/Thiết bị công nghiệp" },
-  { value: "Cung cấp nhân lực", label: "Cung cấp nhân lực" },
-  { value: "Dệt may/May mặc/Giày dép", label: "Dệt may/May mặc/Giày dép" },
-  { value: "Dịch vụ kho bãi", label: "Dịch vụ kho bãi" },
-  { value: "Dịch vụ lưu trú/Nhà hàng/Khách sạn/Du lịch", label: "Dịch vụ lưu trú/Nhà hàng/Khách sạn/Du lịch" },
-  { value: "Dịch vụ môi trường/Chất thải", label: "Dịch vụ môi trường/Chất thải" },
-  { value: "Dịch vụ Y tế/Chăm sóc sức khỏe", label: "Dịch vụ Y tế/Chăm sóc sức khỏe" },
-  { value: "Điện/Điện tử", label: "Điện/Điện tử" },
-  { value: "Dược phẩm", label: "Dược phẩm" },
-  { value: "Giáo dục/Đào Tạo", label: "Giáo dục/Đào Tạo" },
-  { value: "Hàng tiêu dùng", label: "Hàng tiêu dùng" },
-  { value: "Hậu cần/Giao nhận", label: "Hậu cần/Giao nhận" },
-  { value: "Hệ thống CNTT & Thiết bị", label: "Hệ thống CNTT & Thiết bị" },
-  { value: "Hoá chất/Hoá sinh", label: "Hoá chất/Hoá sinh" },
-  { value: "Kế toán", label: "Kế toán" },
-  { value: "Khai khoáng/Dầu khí", label: "Khai khoáng/Dầu khí" },
-  { value: "Kiến trúc/Thiết kế nội thất", label: "Kiến trúc/Thiết kế nội thất" },
-  { value: "Kỹ thuật xây dựng/Cơ sở hạ tầng", label: "Kỹ thuật xây dựng/Cơ sở hạ tầng" },
-  { value: "Làm đẹp (Mỹ phẩm) & Chăm sóc cá nhân", label: "Làm đẹp (Mỹ phẩm) & Chăm sóc cá nhân" },
-  { value: "Luật/Dịch vụ pháp lý", label: "Luật/Dịch vụ pháp lý" },
-  { value: "Ngân hàng", label: "Ngân hàng" },
-  { value: "Nghệ thuật/Giải trí", label: "Nghệ thuật/Giải trí" },
-  { value: "Nghiên cứu", label: "Nghiên cứu" },
-  { value: "Nhập khẩu/Xuất khẩu", label: "Nhập khẩu/Xuất khẩu" },
-  { value: "Nhựa & Cao su", label: "Nhựa & Cao su" },
-  { value: "Nội thất/Gỗ", label: "Nội thất/Gỗ" },
-  { value: "Nông nghiệp/Lâm nghiệp/Nuôi trồng thủy sản", label: "Nông nghiệp/Lâm nghiệp/Nuôi trồng thủy sản" },
-  { value: "Ô tô", label: "Ô tô" },
-  { value: "Phần Mềm CNTT/Dịch vụ Phần mềm", label: "Phần Mềm CNTT/Dịch vụ Phần mềm" },
-  { value: "Sản xuất", label: "Sản xuất" },
-  { value: "Sản xuất và Phân phối Điện/Khí đốt/Nước", label: "Sản xuất và Phân phối Điện/Khí đốt/Nước" },
-  { value: "Tài Chính", label: "Tài Chính" },
-  { value: "Thiết bị y tế", label: "Thiết bị y tế" },
-  { value: "Thời trang/Trang sức", label: "Thời trang/Trang sức" },
-  { value: "Thú y", label: "Thú y" },
-  { value: "Thương mại điện tử", label: "Thương mại điện tử" },
-  { value: "Truyền thông/Báo chí/Quảng cáo", label: "Truyền thông/Báo chí/Quảng cáo" },
-  { value: "Tự động hoá", label: "Tự động hoá" },
-  { value: "Vận tải", label: "Vận tải" },
-  { value: "Vật liệu xây dựng", label: "Vật liệu xây dựng" },
-  { value: "Viễn thông", label: "Viễn thông" },
-  { value: "Khác", label: "Khác" }]
+  const optionsIndustry = [
+    { value: "Bán lẻ/Bán sỉ", label: "Bán lẻ/Bán sỉ" },
+    { value: "Bao bì/In ấn/Dán nhãn", label: "Bao bì/In ấn/Dán nhãn" },
+    { value: "Bảo hiểm", label: "Bảo hiểm" },
+    { value: "Bất Động Sản/Cho thuê", label: "Bất Động Sản/Cho thuê" },
+    { value: "Chính phủ & NGO", label: "Chính phủ & NGO" },
+    { value: "Chứng khoán", label: "Chứng khoán" },
+    { value: "Chuỗi cung ứng", label: "Chuỗi cung ứng" },
+    {
+      value: "Cơ khí/Máy móc/Thiết bị công nghiệp",
+      label: "Cơ khí/Máy móc/Thiết bị công nghiệp",
+    },
+    { value: "Cung cấp nhân lực", label: "Cung cấp nhân lực" },
+    { value: "Dệt may/May mặc/Giày dép", label: "Dệt may/May mặc/Giày dép" },
+    { value: "Dịch vụ kho bãi", label: "Dịch vụ kho bãi" },
+    {
+      value: "Dịch vụ lưu trú/Nhà hàng/Khách sạn/Du lịch",
+      label: "Dịch vụ lưu trú/Nhà hàng/Khách sạn/Du lịch",
+    },
+    {
+      value: "Dịch vụ môi trường/Chất thải",
+      label: "Dịch vụ môi trường/Chất thải",
+    },
+    {
+      value: "Dịch vụ Y tế/Chăm sóc sức khỏe",
+      label: "Dịch vụ Y tế/Chăm sóc sức khỏe",
+    },
+    { value: "Điện/Điện tử", label: "Điện/Điện tử" },
+    { value: "Dược phẩm", label: "Dược phẩm" },
+    { value: "Giáo dục/Đào Tạo", label: "Giáo dục/Đào Tạo" },
+    { value: "Hàng tiêu dùng", label: "Hàng tiêu dùng" },
+    { value: "Hậu cần/Giao nhận", label: "Hậu cần/Giao nhận" },
+    { value: "Hệ thống CNTT & Thiết bị", label: "Hệ thống CNTT & Thiết bị" },
+    { value: "Hoá chất/Hoá sinh", label: "Hoá chất/Hoá sinh" },
+    { value: "Kế toán", label: "Kế toán" },
+    { value: "Khai khoáng/Dầu khí", label: "Khai khoáng/Dầu khí" },
+    {
+      value: "Kiến trúc/Thiết kế nội thất",
+      label: "Kiến trúc/Thiết kế nội thất",
+    },
+    {
+      value: "Kỹ thuật xây dựng/Cơ sở hạ tầng",
+      label: "Kỹ thuật xây dựng/Cơ sở hạ tầng",
+    },
+    {
+      value: "Làm đẹp (Mỹ phẩm) & Chăm sóc cá nhân",
+      label: "Làm đẹp (Mỹ phẩm) & Chăm sóc cá nhân",
+    },
+    { value: "Luật/Dịch vụ pháp lý", label: "Luật/Dịch vụ pháp lý" },
+    { value: "Ngân hàng", label: "Ngân hàng" },
+    { value: "Nghệ thuật/Giải trí", label: "Nghệ thuật/Giải trí" },
+    { value: "Nghiên cứu", label: "Nghiên cứu" },
+    { value: "Nhập khẩu/Xuất khẩu", label: "Nhập khẩu/Xuất khẩu" },
+    { value: "Nhựa & Cao su", label: "Nhựa & Cao su" },
+    { value: "Nội thất/Gỗ", label: "Nội thất/Gỗ" },
+    {
+      value: "Nông nghiệp/Lâm nghiệp/Nuôi trồng thủy sản",
+      label: "Nông nghiệp/Lâm nghiệp/Nuôi trồng thủy sản",
+    },
+    { value: "Ô tô", label: "Ô tô" },
+    {
+      value: "Phần Mềm CNTT/Dịch vụ Phần mềm",
+      label: "Phần Mềm CNTT/Dịch vụ Phần mềm",
+    },
+    { value: "Sản xuất", label: "Sản xuất" },
+    {
+      value: "Sản xuất và Phân phối Điện/Khí đốt/Nước",
+      label: "Sản xuất và Phân phối Điện/Khí đốt/Nước",
+    },
+    { value: "Tài Chính", label: "Tài Chính" },
+    { value: "Thiết bị y tế", label: "Thiết bị y tế" },
+    { value: "Thời trang/Trang sức", label: "Thời trang/Trang sức" },
+    { value: "Thú y", label: "Thú y" },
+    { value: "Thương mại điện tử", label: "Thương mại điện tử" },
+    {
+      value: "Truyền thông/Báo chí/Quảng cáo",
+      label: "Truyền thông/Báo chí/Quảng cáo",
+    },
+    { value: "Tự động hoá", label: "Tự động hoá" },
+    { value: "Vận tải", label: "Vận tải" },
+    { value: "Vật liệu xây dựng", label: "Vật liệu xây dựng" },
+    { value: "Viễn thông", label: "Viễn thông" },
+    { value: "Khác", label: "Khác" },
+  ];
   const handleChangeIndustry = (selectedOption: any) => {
     setFormData({
       ...formData,
       companyIndustries: selectedOption.value,
     });
     console.log(selectedOption.value);
-    console.log(formData.companyIndustries)
+    console.log(formData.companyIndustries);
   };
   const filterOption = (option: any, inputValue: any) => {
     return (
       option.label.toLowerCase().includes(inputValue.toLowerCase()) ||
       option.value.toLowerCase().includes(inputValue.toLowerCase())
-
     );
   };
   const updateCompanyInfo = async (formData: any) => {
@@ -266,7 +299,7 @@ const Profile = () => {
         console.log("Error!", error);
       });
   };
-  let run = 0
+  let run = 0;
 
   useEffect(() => {
     if (run < 1) {
@@ -274,18 +307,16 @@ const Profile = () => {
         const fetchData = async () => {
           const res = await fetchRecruiterInfo();
           const data = res.data;
-          const {
-            companyBenefits,
-          } = data
+          const { companyBenefits } = data;
           companyBenefits?.forEach((item: any, index: any) => {
-            handleAddBenefit(item.title, index)
+            handleAddBenefit(item.title, index);
           });
           setFormData(data);
         };
-        run = 1
+        run = 1;
         fetchData();
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
   }, []);
@@ -385,13 +416,19 @@ const Profile = () => {
                     Lĩnh vực công ty
                   </label>
                   <Select
-                    value={formData.companyIndustries ? { value: formData.companyIndustries, label: formData.companyIndustries } : null}
+                    value={
+                      formData.companyIndustries
+                        ? {
+                            value: formData.companyIndustries,
+                            label: formData.companyIndustries,
+                          }
+                        : null
+                    }
                     onChange={handleChangeIndustry}
                     options={optionsIndustry}
                     filterOption={filterOption}
                     placeholder="Vui lòng chọn..."
-                  >
-                  </Select>
+                  ></Select>
                 </div>
                 <div className="mb-6">
                   <label
@@ -480,14 +517,11 @@ const Profile = () => {
                             companyBenefits: {
                               ...formData?.companyBenefits,
                               [benefit.id]: {
-                                ...formData?.companyBenefits[
-                                benefit.id
-                                ],
+                                ...formData?.companyBenefits[benefit.id],
                                 title: e.target.value,
                                 content:
-                                  formData?.companyBenefits[
-                                    benefit.id
-                                  ]?.content,
+                                  formData?.companyBenefits[benefit.id]
+                                    ?.content,
                               },
                             },
                           });
@@ -502,9 +536,7 @@ const Profile = () => {
                             disabled={
                               usedBenefits.includes(item.name) &&
                               item.name !==
-                              formData?.companyBenefits[
-                                benefit.id
-                              ]?.title
+                                formData?.companyBenefits[benefit.id]?.title
                             }
                           >
                             {item.name}{" "}
@@ -513,10 +545,7 @@ const Profile = () => {
                         ))}
                       </select>
                       <textarea
-                        value={
-                          formData?.companyBenefits[benefit.id]
-                            ?.content
-                        }
+                        value={formData?.companyBenefits[benefit.id]?.content}
                         onChange={(e) => {
                           setFormData({
                             ...formData,
@@ -524,9 +553,7 @@ const Profile = () => {
                               ...formData?.companyBenefits,
                               [benefit.id]: {
                                 title:
-                                  formData?.companyBenefits[
-                                    benefit.id
-                                  ]?.title,
+                                  formData?.companyBenefits[benefit.id]?.title,
                                 content: e.target.value,
                               },
                             },
@@ -537,15 +564,12 @@ const Profile = () => {
                           benefitoptions.find(
                             (option) =>
                               option.name ===
-                              formData?.companyBenefits[benefit.id]
-                                ?.title
+                              formData?.companyBenefits[benefit.id]?.title
                           )?.placeholder || "Nhập chi tiết phúc lợi"
                         }
                       ></textarea>
                       {benefits?.length > 1 && (
-                        <button
-                          onClick={() => handleRemoveBenefit(benefit.id)}
-                        >
+                        <button onClick={() => handleRemoveBenefit(benefit.id)}>
                           <FaTrash className="h-12 w-5" />
                         </button>
                       )}
@@ -554,7 +578,7 @@ const Profile = () => {
                   {benefits?.length < 3 && (
                     <button
                       className="mt-2 text-blue-500"
-                      onClick={() => handleAddBenefit('', '')}
+                      onClick={() => handleAddBenefit("", "")}
                     >
                       + Thêm phúc lợi
                     </button>

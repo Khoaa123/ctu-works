@@ -8,12 +8,7 @@ const FooterWrapper = () => {
   const isHiddenPage =
     pathname === "/register" ||
     pathname === "/employer/register" ||
-    pathname === "/recruiter" ||
-    pathname === "/recruiter/my-company" ||
-    pathname === "/recruiter/create-jobpost" ||
-    pathname === "/recruiter/register" ||
-    pathname === "/recruiter/create-jobpost-ai" ||
-
+    pathname.startsWith("/recruiter") ||
     // pathname === `/profileuser/:${id}` ||
     pathname.startsWith("/admin");
 
