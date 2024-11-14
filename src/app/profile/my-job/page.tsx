@@ -45,7 +45,7 @@ const MyJob = () => {
       companyName: "",
       jobSalary: "",
       jobTitle: "",
-      jobLocation: [],
+      location: [],
       jobPostId: '',
       minSalary: '',
       maxSalary: '',
@@ -152,11 +152,15 @@ const MyJob = () => {
     return res.json();
   };
   const [activeTab, setActiveTab] = useState("saved");
+  const Test = () => {
+    console.log(viewHistory)
+  }
   return (
     <div className="">
       <h1 className="mb-3 rounded-md border bg-white p-4 font-bold">
         Việc Làm Của Tôi
       </h1>
+      <button onClick={Test}>Tset</button>
       <div className="rounded-md border bg-white">
         <div className="flex border-b">
           {tabs.map((tab) => (
@@ -263,13 +267,13 @@ const MyJob = () => {
             <div className="space-y-4">
               {viewHistory?.map((job) => (
                 <Link
-                  href={`/job/${job.jobPostId}`}
-                  key={job.jobPostId}
+                  href={`/job/${job?._id}`}
+                  key={job?._id}
                   className="group flex cursor-pointer items-center justify-between rounded-lg border bg-white p-4 transition-all duration-300 hover:bg-[#f9fcff]"
                 >
                   <div className="flex flex-grow items-center gap-6">
                     <Image
-                      src={job.companyLogo}
+                      src={job?.companyLogo}
                       alt={`logo`}
                       className="rounded-lg"
                       width={60}
@@ -277,15 +281,22 @@ const MyJob = () => {
                     />
                     <div className="max-w-[calc(100%-200px)] flex-grow">
                       <h3 className="line-clamp-2 text-lg font-medium duration-300 group-hover:text-[#ff7d55] group-hover:transition-all">
-                        {job.jobTitle}
+                        {job?.jobTitle}
                       </h3>
-                      <p className="truncate text-gray-600">{job.companyName}</p>
+                      <p className="truncate text-gray-600">{job?.companyName}</p>
                       <p className="text-sm text-gray-500">
-                        {job?.jobLocation?.map((loc, locIndex) => (
-                          <span key={locIndex}>{loc}{locIndex < job.jobLocation.length - 1 ? ', ' : ''}</span>
-                        ))}
+                        {job?.location?.map((loc: string, locIndex) => {
+                          const locationName = loc.split(':')[1].trim();
+                          const locationWithoutCountry = locationName.replace(', Việt Nam', '').trim();
+                          return (
+                            <span key={locIndex}>
+                              {locationWithoutCountry}
+                              {locIndex < job?.location.length - 1 ? ", " : ""}
+                            </span>
+                          );
+                        })}
                       </p>
-                      <p className="text-sm text-[#ff7d55]">{job.minSalary}-{job.maxSalary}</p>
+                      <p className="text-sm text-[#ff7d55]">{job?.minSalary}${" - "}{job?.maxSalary}$</p>
                     </div>
                   </div>
                 </Link>

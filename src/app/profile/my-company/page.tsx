@@ -40,7 +40,7 @@ const MyCompany = () => {
             companyLogo: "",
             companyIndustries: "",
             companyJob: 0,
-            companyFollowing: 0,
+            follower: [],
             jobPostId: '',
             recruiterId: '',
             _id: "",
@@ -51,7 +51,7 @@ const MyCompany = () => {
             const data = await fetchFollowing();
             const dataProfileViews = await fecthGetHistory();
             setProfileViews(dataProfileViews.data)
-            console.log(dataProfileViews.data)
+            console.log(data.data)
             setFollowing(data.data);
         };
         fetchData();
@@ -143,11 +143,7 @@ const MyCompany = () => {
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <FaUsers size={15} color="gray" />
-
-                                                <span className="truncate text-gray-600">{company?.companyFollowing || 0} lượt theo dõi</span>
-                                                <FaBriefcase size={15} color="gray" />
-
-                                                <span className="truncate text-gray-600">{company?.companyJob || 0} việc làm</span>
+                                                <span className="truncate text-gray-600">{company?.follower.length || 0} lượt theo dõi</span>
                                             </div>
                                         </div>
 
@@ -181,7 +177,7 @@ const MyCompany = () => {
                                             </Link>
                                             <div className="flex items-center gap-2">
                                                 <FaFolderOpen size={15} color="gray" />
-                                                <p className="truncate text-gray-600">{company.companyIndustries}</p>
+                                                <p className="truncate text-gray-600">{company.companyIndustries || "Chưa cập nhật"}</p>
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <FaUsers size={15} color="gray" />

@@ -89,6 +89,7 @@ const Search = () => {
     const fetchData = async () => {
       const data = await fetchGetUsers();
       setUserData(data.data);
+      console.log(data.data,"okok")
       setSelectedProfile(data.data[0]);
     };
     fetchData();

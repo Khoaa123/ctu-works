@@ -46,6 +46,7 @@ import { chatSession } from "../../ai/keyWordSuggest";
 import { chatSessionCreate } from "../../ai/createJobAi";
 import * as XLSX from 'xlsx';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
+import { Switch } from "antd";
 export interface JwtPayload {
   userid: string;
   email: string;
@@ -105,6 +106,7 @@ const CreateJobPostAI = () => {
     jobType: string;
     minSalary: number;
     maxSalary: number;
+    canDeal: boolean;
     numberOfPositions: number;
     jobInformation: JobInformation;
     companyInfo: CompanyInfo;
@@ -126,6 +128,7 @@ const CreateJobPostAI = () => {
     jobType: "",
     minSalary: 0,
     maxSalary: 0,
+    canDeal: false,
     numberOfPositions: 0,
     jobInformation: {
       jobLevel: "",
@@ -348,7 +351,7 @@ const CreateJobPostAI = () => {
     });
   };
   const fetchUpdateJob = async (formData: any) => {
-   const id = decodedToken?.userid;
+    const id = decodedToken?.userid;
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobpost/create`,
       {
@@ -1061,7 +1064,7 @@ const CreateJobPostAI = () => {
       const result = await chatSessionCreate.sendMessage(message);
 
       const Test = JSON.parse(result?.response?.text())
-      let jobTitle, expirationDate, location, jobDescription, jobRequirements, jobType, minSalary, maxSalary, numberOfPositions, jobLevel, jobIndustry, keywords, jobField, language, minExperience, nationality, educationLevel, gender, minAge, maxAge, maritalStatus, companyName, companyAddress, companySize, companyLogo, companyStaffName, companyBenefits, companyEmail, jobCompanyInfoId, candidateExpectationsId, jobInfoId;
+      let jobTitle, expirationDate, location, jobDescription, jobRequirements, jobType, minSalary, maxSalary, canDeal, numberOfPositions, jobLevel, jobIndustry, keywords, jobField, language, minExperience, nationality, educationLevel, gender, minAge, maxAge, maritalStatus, companyName, companyAddress, companySize, companyLogo, companyStaffName, companyBenefits, companyEmail, jobCompanyInfoId, candidateExpectationsId, jobInfoId;
 
       if (Test !== undefined) {
         jobTitle = Test.jobTitle || "";
@@ -1072,6 +1075,7 @@ const CreateJobPostAI = () => {
         jobType = Test.jobType || "";
         minSalary = Test.minSalary || 1;
         maxSalary = Test.maxSalary || 1;
+        canDeal = Test.canDeal || false;
         numberOfPositions = Test.numberOfPositions || "";
         jobLevel = Test.jobLevel || "";
         jobIndustry = Test.jobIndustry || "";
@@ -1129,7 +1133,7 @@ const CreateJobPostAI = () => {
       });
       setFormData({
         jobTitle, expirationDate, location, jobDescription, jobRequirements,
-        jobType, minSalary, maxSalary, numberOfPositions,
+        jobType, minSalary, maxSalary, canDeal, numberOfPositions,
         jobInformation: {
           jobLevel, jobIndustry, keywords,
           jobField, language, minExperience, nationality, educationLevel, gender, minAge, maxAge,
@@ -1186,7 +1190,7 @@ const CreateJobPostAI = () => {
         const result = await chatSessionCreate.sendMessage(message);
 
         const Test = JSON.parse(result?.response?.text())
-        let jobTitle, expirationDate, location, jobDescription, jobRequirements, jobType, minSalary, maxSalary, numberOfPositions, jobLevel, jobIndustry, keywords, jobField, language, minExperience, nationality, educationLevel, gender, minAge, maxAge, maritalStatus, companyName, companyAddress, companySize, companyLogo, companyStaffName, companyBenefits, companyEmail, jobCompanyInfoId, candidateExpectationsId, jobInfoId;
+        let jobTitle, expirationDate, location, jobDescription, jobRequirements, jobType, minSalary, maxSalary, canDeal, numberOfPositions, jobLevel, jobIndustry, keywords, jobField, language, minExperience, nationality, educationLevel, gender, minAge, maxAge, maritalStatus, companyName, companyAddress, companySize, companyLogo, companyStaffName, companyBenefits, companyEmail, jobCompanyInfoId, candidateExpectationsId, jobInfoId;
 
         if (Test !== undefined) {
           jobTitle = Test.jobTitle || "";
@@ -1197,6 +1201,7 @@ const CreateJobPostAI = () => {
           jobType = Test.jobType || "";
           minSalary = Test.minSalary || 1;
           maxSalary = Test.maxSalary || 1;
+          canDeal = Test.canDeal || false;
           numberOfPositions = Test.numberOfPositions || "";
           jobLevel = Test.jobLevel || "";
           jobIndustry = Test.jobIndustry || "";
@@ -1254,7 +1259,7 @@ const CreateJobPostAI = () => {
         });
         setFormData({
           jobTitle, expirationDate, location, jobDescription, jobRequirements,
-          jobType, minSalary, maxSalary, numberOfPositions,
+          jobType, minSalary, maxSalary, canDeal, numberOfPositions,
           jobInformation: {
             jobLevel, jobIndustry, keywords,
             jobField, language, minExperience, nationality, educationLevel, gender, minAge, maxAge,
@@ -1681,7 +1686,7 @@ const CreateJobPostAI = () => {
                         </div>
                       </div>
                       <div className="rounded-lg border border-gray-300 p-4">
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                           <div>
                             <label id="minSalary" className="block text-gray-700">
                               Mức lương (USD)<span className="text-red-500">*</span>
@@ -1711,6 +1716,20 @@ const CreateJobPostAI = () => {
                                 placeholder="Tối đa"
                                 className="w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400 focus-visible:ring-0"
                               />
+                            </div>
+                            <div className="text-center">
+                              <label
+                                id="numberOfPositions"
+                                className="block text-gray-700"
+                              >
+                                Lương có thể thương lượng
+                              </label>
+                              <Switch className="mt-2" value={formData.canDeal}
+                                onChange={
+                                  () => {
+                                    setFormData({ ...formData, canDeal: !formData.canDeal });
+                                  }
+                                } />
                             </div>
                           </div>
                           <div>

@@ -186,6 +186,9 @@ const JobDetail = () => {
   useEffect(() => {
     const checkSaveJob = async () => {
       const id = location.pathname.split("/job/")[1];
+      if (id == "undefined") {
+        router.push("/")
+      }
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/savejob/check-save`,
         {
@@ -204,6 +207,8 @@ const JobDetail = () => {
         setIsSaved(true);
         setsaveJobDetails(data.data);
       }
+
+
     };
     checkSaveJob();
   }, []);
@@ -251,7 +256,7 @@ const JobDetail = () => {
     companyName: "",
     companySize: "",
     companyStaffName: "",
-
+    statusSeeking: true,
     jobDescription: "",
     jobRequirements: "",
     expirationDate: "",
@@ -285,7 +290,7 @@ const JobDetail = () => {
       const fetchData = async () => {
         const data = await fetchJobPostDetails();
         setJobPostDetails(data.data);
-        setJobInfoId(data.data.jobInfoId);
+        setJobInfoId(data.data?.jobInfoId);
       };
       run = 1;
       fetchData();
@@ -619,6 +624,7 @@ const JobDetail = () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+  const toDate = new Date()
   return (
     <>
       <div className="bg-[#F1F2F4]">
@@ -655,16 +661,16 @@ const JobDetail = () => {
                             <AiOutlineDollarCircle color="grey" size={14} />
                           </div>
                           {jobPostDetails?.canDeal === true ? (
-                              <span className="text-sm text-orange-500">
+                            <span className="text-sm text-orange-500">
                               Thương lượng
                             </span>
                           ) : (
-                              <span className="text-sm">
+                            <span className="text-sm">
                               {jobPostDetails?.minSalary}$ {" - "}
                               {jobPostDetails?.maxSalary}$
                             </span>
                           )}
-          
+
                         </div>
                         <div className="flex items-center gap-2">
                           <div className="rounded-full bg-[#f1f2f4] p-2">
@@ -683,11 +689,11 @@ const JobDetail = () => {
 
                               const locationName = loc.split(':')[1].trim();
 
-                              const locationWithoutCountry = locationName.replace('Việt Nam', '').trim();
+                              const locationWithoutCountry = locationName.replace(', Việt Nam', '').trim();
                               return (
                                 <span key={locIndex}>
                                   {locationWithoutCountry}
-                                  {locIndex < jobPostDetails?.location.length - 1 ? " " : ""}
+                                  {locIndex < jobPostDetails?.location.length - 1 ? ", " : ""}
                                 </span>
                               );
                             })}
@@ -696,12 +702,21 @@ const JobDetail = () => {
                       </div>
                       <div className="flex items-center justify-between gap-4">
                         <Dialog>
-                          <DialogTrigger id="dialogtrigger" onClick={handleCheckLogin} asChild>
-                            <button className="flex w-3/4 items-center justify-center gap-3 rounded-lg bg-[#ff7d55] p-2 text-sm text-white transition hover:bg-[#fd916f]">
-                              <FaRegPaperPlane size={16} />
-                              Ứng tuyển ngay
-                            </button>
-                          </DialogTrigger>
+                          {new Date(jobPostDetails?.expirationDate) > toDate && jobPostDetails?.statusSeeking == true ? (
+                            <DialogTrigger id="dialogtrigger" onClick={handleCheckLogin} asChild>
+                              <button
+                                className="flex w-3/4 items-center justify-center gap-3 rounded-lg bg-[#ff7d55] p-2 text-sm text-white transition hover:bg-[#fd916f]"
+                                disabled={new Date(jobPostDetails?.expirationDate) <= toDate}
+                              >
+                                <FaRegPaperPlane size={16} />
+                                Ứng tuyển ngay
+                              </button>
+                            </DialogTrigger>
+                          ) : (
+                            <div className="flex w-3/4 items-center justify-center gap-3 rounded-lg bg-gray-400 p-2 text-sm text-white">
+                              Ứng tuyển đã đóng
+                            </div>
+                          )}
 
                           <DialogContent className="max-w-5xl p-0">
                             <DialogHeader className="flex justify-between border-b border-gray-300 px-6 py-4">

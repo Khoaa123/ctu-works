@@ -2,23 +2,11 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import {
-  FaBriefcase,
-  FaFolder,
-  FaFolderOpen,
-  FaHeart,
   FaList,
-  FaUser,
-  FaUsers,
 } from "react-icons/fa6";
 import Link from "next/link";
 import { useCookies } from "next-client-cookies";
 import { jwtDecode } from "jwt-decode";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import HeaderRecruiter from "@/components/HeaderRecruiter/HeaderRecruiter";
 import {
   FaCloudUploadAlt,
@@ -34,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "react-toastify";
+import { set } from "date-fns";
 
 export interface JwtPayload {
   userid: string;
@@ -42,27 +31,10 @@ export interface JwtPayload {
   role: string;
 }
 
-const tabs = [
-  { id: "profileViews", label: "Đã xem gần đây" },
-  { id: "application", label: "Lời mời ứng tuyển" },
-];
-
 const MyCandidate = () => {
   const cookies = useCookies();
   const accessToken = cookies.get("accessTokenRecruiter");
   const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
-  const [following, setFollowing] = useState([
-    {
-      companyName: "",
-      companyLogo: "",
-      companyIndustries: "",
-      companyJob: 0,
-      companyFollowing: 0,
-      jobPostId: "",
-      recruiterId: "",
-      _id: "",
-    },
-  ]);
 
   const [applyJob, setApplyJob] = useState([
     [
@@ -96,6 +68,8 @@ const MyCandidate = () => {
   const [userApplyDetail, setUserApplyDetail] = useState([
     [
       {
+        status: "",
+        applyId: "",
         fullName: "",
         email: "",
         address: "",
@@ -122,7 +96,7 @@ const MyCandidate = () => {
               item.map(async (item: any) => {
                 const id = item.userId;
                 const res = await fetchDetailsUser(id);
-                return res.data;
+                return { ...res.data, status: item.status, applyId: item._id };
               })
             );
             return dataUser;
@@ -188,6 +162,13 @@ const MyCandidate = () => {
           jobs.map((job) => (job._id === id ? { ...job, status: status } : job))
         )
       );
+      setUserApplyDetail((prevUserApplyDetail) =>
+        prevUserApplyDetail.map((users, userIndex) =>
+          users.map((user) =>
+            user.applyId === id ? { ...user, status: status } : user
+          )
+        )
+      );
     } else {
       toast.error("Cập nhật thất bại");
     }
@@ -210,41 +191,33 @@ const MyCandidate = () => {
     return res.json();
   };
 
-  const [activeTab, setActiveTab] = useState("profileViews");
-
-  function areObjectsEqual(obj1: any, obj2: any) {
-    if (Object.keys(obj1)?.length !== Object.keys(obj2)?.length) {
-      return false;
-    }
-    for (const key in obj1) {
-      if (typeof obj1[key] === "object" && typeof obj2[key] === "object") {
-        if (!areObjectsEqual(obj1[key], obj2[key])) {
-          return false;
-        }
-      } else {
-        if (obj1[key] !== obj2[key]) {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
   const [applySelect, setApplySelect] = useState(0);
   const handleSelectJob = (job: any) => {
     setApplySelect(job);
   };
 
-  const Test = () => {
-    console.log(applyJob, applySelect);
+  const countStatus = (status: any) => {
+    return applyJob[applySelect].filter((application) => application.status === status).length;
   };
-
+  const [filteredApplies, setFilteredApplies] = useState([{}]);
+  useEffect(() => {
+    setFilteredApplies(userApplyDetail[applySelect]);
+  }, [applyJob, applySelect]);
+  const setFillter = (status: any) => {
+    if (status === "all") {
+      setFilteredApplies(userApplyDetail[applySelect])
+    } else {
+      const filtered = userApplyDetail[applySelect].filter(
+        (apply) => apply.status === status
+      );
+      setFilteredApplies(filtered);
+    }
+  }
   return (
     <div>
       <HeaderRecruiter />
-      <div className="p-4">
-        <div className="p-4">
-          <button onClick={Test}>Test</button>
+      <div className="p-1 pl-2">
+        <div className="p-2">
           <div className="mb-4 flex items-center justify-between border-b pb-2">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
@@ -279,16 +252,16 @@ const MyCandidate = () => {
           </div>
           <div className="flex items-center space-x-4">
             <div className="relative">
-              <button className="rounded border bg-blue-100 px-4 py-2">
+              <button className="rounded border bg-blue-100 px-4 py-2" onClick={() => setFillter("all")}>
                 Tất cả
               </button>
             </div>
-            <div className="relative">
+            {/* <div className="relative">
               <button className="rounded border px-4 py-2">Kinh nghiệm</button>
             </div>
             <div className="relative">
               <button className="rounded border px-4 py-2">Mức lương</button>
-            </div>
+            </div> */}
             <button className="rounded bg-gray-200 px-4 py-2">
               Tất cả bộ lọc
             </button>
@@ -297,58 +270,44 @@ const MyCandidate = () => {
         <div className="flex w-full space-x-2">
           <div className="mb-4 flex flex-1 items-center justify-between rounded border border-gray-300 bg-white p-4">
             <div className="flex items-center space-x-2">
-              <span className="text-gray-700">1. Nhận hồ sơ</span>
-              <span className="rounded-full bg-red-500 px-2 text-white">0</span>
+              <button className="text-gray-700" onClick={() => setFillter("Chờ phản hồi")}>1. Chờ phản hồi</button>
+              <span className="rounded-full bg-red-500 px-2 text-white">{countStatus("Chờ phản hồi")}</span>
             </div>
             <FaCloudUploadAlt className="fas fa-cloud-upload-alt text-gray-500" />
           </div>
           <div className="mb-4 flex flex-1 items-center justify-between rounded border border-gray-300 bg-white p-4">
             <div className="flex items-center space-x-2">
-              <span className="text-gray-700">2. Duyệt hồ sơ</span>
-              <span className="rounded-full bg-red-500 px-2 text-white">0</span>
+              <button className="text-gray-700" onClick={() => setFillter("Mời phỏng vấn")}>2. Mời phỏng vấn</button>
+              <span className="rounded-full bg-red-500 px-2 text-white">{countStatus("Mời phỏng vấn")}</span>
             </div>
             <FaCloudUploadAlt className="fas fa-cloud-upload-alt text-gray-500" />
           </div>
           <div className="mb-4 flex flex-1 items-center justify-between rounded border border-gray-300 bg-white p-4">
             <div className="flex items-center space-x-2">
-              <span className="text-gray-700">3. Đề nghị nhận việc</span>
-              <span className="rounded-full bg-red-500 px-2 text-white">0</span>
+              <button className="text-gray-700" onClick={() => setFillter("Từ chối")}>3. Từ chối</button>
+              <span className="rounded-full bg-red-500 px-2 text-white">{countStatus("Từ chối")}</span>
             </div>
             <FaCloudUploadAlt className="fas fa-cloud-upload-alt text-gray-500" />
           </div>
           <div className="mb-4 flex flex-1 items-center justify-between rounded border border-gray-300 bg-white p-4">
             <div className="flex items-center space-x-2">
-              <span className="text-gray-700">4. Đã tuyển</span>
-              <span className="rounded-full bg-red-500 px-2 text-white">0</span>
-            </div>
-            <FaCloudUploadAlt className="fas fa-cloud-upload-alt text-gray-500" />
-          </div>
-          <div className="mb-4 flex flex-1 items-center justify-between rounded border border-gray-300 bg-white p-4">
-            <div className="flex items-center space-x-2">
-              <span className="text-gray-700">5. Không đạt</span>
-              <span className="rounded-full bg-red-500 px-2 text-white">0</span>
-            </div>
-            <FaCloudUploadAlt className="fas fa-cloud-upload-alt text-gray-500" />
-          </div>
-          <div className="mb-4 flex flex-1 items-center justify-between rounded border border-gray-300 bg-white p-4">
-            <div className="flex items-center space-x-2">
-              <span className="text-gray-700">6. Ứng viên từ chối</span>
-              <span className="rounded-full bg-red-500 px-2 text-white">0</span>
+              <button className="text-gray-700" onClick={() => setFillter("Chấp nhận")}>4. Chấp nhận</button>
+              <span className="rounded-full bg-red-500 px-2 text-white">{countStatus("Chấp nhận")}</span>
             </div>
             <FaCloudUploadAlt className="fas fa-cloud-upload-alt text-gray-500" />
           </div>
         </div>
-        <div className="flex min-h-80 flex-col gap-4 overflow-y-auto rounded border border-gray-300 bg-white p-2">
+        <div className="flex min-h-80 flex-col gap-4 overflow-y-scroll rounded border border-gray-300 bg-white p-2">
           {applyJob[applySelect]?.length > 0 ? (
-            userApplyDetail[applySelect].map((job: any, index: any) => (
+            filteredApplies.map((job: any, index: any) => (
               <Link
-                key={job.userId}
-                href={`/profileuser/${job._id}`}
+                key={job?.userId}
+                href={`/profileuser/${job?._id}`}
                 className="group flex w-full cursor-pointer items-center justify-between rounded-lg border border-blue-400 bg-white p-4 transition-all duration-300 hover:bg-[#f9fcff]"
               >
                 <div className="flex flex-grow items-center gap-6">
                   <Image
-                    src={myJobpost[applySelect].companyLogo}
+                    src={myJobpost[applySelect]?.companyLogo}
                     alt={`companylogo`}
                     className="rounded-lg"
                     width={60}
@@ -365,37 +324,33 @@ const MyCandidate = () => {
                 </div>
                 <div className="flex flex-shrink-0 items-center space-x-4">
                   <Select
-                    value={applyJob[applySelect][index].status}
+                    value={job?.status}
                     onValueChange={(value) =>
-                      updateApply(applyJob[applySelect][index]._id, value)
+                      updateApply(job?.applyId, value)
                     }
                   >
                     <SelectTrigger
                       className={`whitespace-nowrap rounded-lg px-4 py-2 text-white transition-colors hover:bg-orange-500 
-                                            ${
-                                              applyJob[applySelect][index]
-                                                .status === "Chờ phản hồi"
-                                                ? "bg-yellow-600"
-                                                : ""
-                                            } 
-                                            ${
-                                              applyJob[applySelect][index]
-                                                .status === "Mời phỏng vấn"
-                                                ? "bg-sky-500"
-                                                : ""
-                                            } 
-                                            ${
-                                              applyJob[applySelect][index]
-                                                .status === "Từ chối"
-                                                ? "bg-red-500"
-                                                : ""
-                                            } 
-                                            ${
-                                              applyJob[applySelect][index]
-                                                .status === "Chấp nhận"
-                                                ? "bg-green-500"
-                                                : ""
-                                            }`}
+                                            ${job
+                          .status === "Chờ phản hồi"
+                          ? "bg-yellow-600"
+                          : ""
+                        } 
+                                            ${job
+                          .status === "Mời phỏng vấn"
+                          ? "bg-sky-500"
+                          : ""
+                        } 
+                                            ${job
+                          .status === "Từ chối"
+                          ? "bg-red-500"
+                          : ""
+                        } 
+                                            ${job
+                          .status === "Chấp nhận"
+                          ? "bg-green-500"
+                          : ""
+                        }`}
                     >
                       <SelectValue placeholder="Vui lòng chọn..." />
                     </SelectTrigger>
@@ -436,12 +391,12 @@ const MyCandidate = () => {
             </div>
           )}
         </div>
-        <div className="mt-4 flex items-center space-x-2 rounded bg-blue-100 p-4 text-blue-700">
+        {/* <div className="mt-4 flex items-center space-x-2 rounded bg-blue-100 p-4 text-blue-700">
           <FaInfoCircle className="fas fa-info-circle" />
           <span>
             Hồ sơ sẽ được lưu trữ tại trang Quản Lý Tuyển Dụng lên tới 24 tháng.
           </span>
-        </div>
+        </div> */}
       </div>
     </div>
   );

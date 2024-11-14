@@ -99,7 +99,7 @@ const CreateJobpost = () => {
   interface FormData {
     jobTitle: string;
     expirationDate: string;
-    jobLocation: object[];
+    location: object[];
     jobDescription: string;
     jobRequirements: string;
     jobType: string;
@@ -114,7 +114,7 @@ const CreateJobpost = () => {
   const [formData, setFormData] = useState<FormData>({
     jobTitle: "",
     expirationDate: "",
-    jobLocation: [],
+    location: [],
     jobDescription: "",
     jobRequirements: "",
     jobType: "",
@@ -310,11 +310,11 @@ const CreateJobpost = () => {
     );
 
     setFormData((prevFormData) => {
-      const { jobLocation } = prevFormData;
-      delete jobLocation[idToRemove];
+      const { location } = prevFormData;
+      delete location[idToRemove];
       return {
         ...prevFormData,
-        jobLocation: [jobLocation],
+        location: [location],
       };
     });
   };
@@ -371,7 +371,7 @@ const CreateJobpost = () => {
               return "Chức danh";
             case "expirationDate":
               return "Ngày hết hạn";
-            case "jobLocation":
+            case "location":
               return "Địa điểm làm việc";
             case "jobDescription":
               return "Mô tả công việc";
@@ -1234,7 +1234,7 @@ const CreateJobpost = () => {
                         ></Select>
                       </div>
                       <div>
-                        <label id="jobLocation" className="block text-gray-700">
+                        <label id="location" className="block text-gray-700">
                           Địa điểm làm việc (Tối đa 3 địa điểm)
                           <span className="text-red-500">*</span>
                         </label>
@@ -1272,7 +1272,7 @@ const CreateJobpost = () => {
                                   loc.title = e.target.value;
                                   setFormData({
                                     ...formData,
-                                    jobLocation: locations,
+                                    location: locations,
                                   });
                                 }
                               }}
