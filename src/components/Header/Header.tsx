@@ -177,6 +177,11 @@ const Header = () => {
                     Tính lương GROSS - NET
                   </DropdownMenuItem>
                 </Link>
+                <Link href="/salary-calculator">
+                  <DropdownMenuItem className="my-[6px] bg-[#F6FAFB] p-3">
+                    Tạo CV
+                  </DropdownMenuItem>
+                </Link>
               </DropdownMenuContent>
             </DropdownMenu>
             <DropdownMenu>
@@ -257,10 +262,11 @@ const Header = () => {
                           {notifications.map((notification) => (
                             <li
                               key={notification._id}
-                              className={`cursor-pointer list-none rounded-md p-2 ${notification.isRead
-                                ? "bg-gray-100"
-                                : "bg-sky-100"
-                                }`}
+                              className={`cursor-pointer list-none rounded-md p-2 ${
+                                notification.isRead
+                                  ? "bg-gray-100"
+                                  : "bg-sky-100"
+                              }`}
                               onClick={() => handleMarkAsRead(notification._id)}
                             >
                               <p className="text-sm">{notification.message}</p>
