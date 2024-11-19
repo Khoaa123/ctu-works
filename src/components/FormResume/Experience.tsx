@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import React, { useContext, useEffect, useState } from "react";
 import { ResumeInfoContext } from "@/context/ResumeInfoContext";
-import { LoaderCircle } from "lucide-react";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
@@ -19,31 +18,47 @@ const formField = {
 };
 
 function Experience({ setEnabledNext }: any) {
-  const [experinceList, setExperinceList] = useState<any[]>([formField]);
-  const [isSkipped, setIsSkipped] = useState(false);
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
-  const [loading, setLoading] = useState(false);
+  const [experinceList, setExperinceList] = useState<any[]>(
+    resumeInfo.experience || [formField]
+  );
+  const [isSkipped, setIsSkipped] = useState(false);
 
   useEffect(() => {
     setResumeInfo({
       ...resumeInfo,
       experience: isSkipped ? [] : experinceList,
     });
+    checkIfFormIsValid(experinceList);
   }, [experinceList, isSkipped]);
 
   const handleChange = (index: any, event: any) => {
-    setEnabledNext(false);
     const newEntries = [...experinceList];
     const { name, value } = event.target;
     newEntries[index][name] = value;
     setExperinceList(newEntries);
+    checkIfFormIsValid(newEntries);
   };
 
   const handleRichTextEditor = (value: string, index: number) => {
-    setEnabledNext(false);
     const newEntries = [...experinceList];
     newEntries[index].workSummery = value;
     setExperinceList(newEntries);
+    checkIfFormIsValid(newEntries);
+  };
+
+  const checkIfFormIsValid = (list: any[]) => {
+    const isValid = list.every(
+      (item) =>
+        item.title &&
+        item.companyName &&
+        item.city &&
+        item.state &&
+        item.startDate &&
+        item.endDate &&
+        item.workSummery
+    );
+    setEnabledNext(isValid);
   };
 
   const AddNewExperience = () => {
@@ -51,18 +66,9 @@ function Experience({ setEnabledNext }: any) {
   };
 
   const RemoveExperience = () => {
-    setExperinceList((prev) => prev.slice(0, -1));
-  };
-
-  const onSave = (e: any) => {
-    e.preventDefault();
-    const form = e.target;
-    if (form.checkValidity()) {
-      setEnabledNext(true);
-      toast.success("Lưu thành công");
-    } else {
-      toast.error("Vui lòng nhập đầy đủ thông tin");
-    }
+    const newEntries = experinceList.slice(0, -1);
+    setExperinceList(newEntries);
+    checkIfFormIsValid(newEntries);
   };
 
   const handleSkip = () => {
@@ -102,12 +108,12 @@ function Experience({ setEnabledNext }: any) {
           + Thêm Kinh Nghiệm
         </Button>
       ) : (
-        <form onSubmit={onSave}>
+        <form>
           {experinceList.map((item, index) => (
             <div key={index}>
               <div className="my-5 grid grid-cols-2 gap-3 rounded-lg border p-3">
                 <div>
-                  <label className="text-xs">Position Title</label>
+                  <label className="text-xs">Vị trí</label>
                   <Input
                     name="title"
                     required
@@ -130,7 +136,6 @@ function Experience({ setEnabledNext }: any) {
                     required
                     name="city"
                     onChange={(event) => handleChange(index, event)}
-                    defaultValue={item?.city}
                     value={item?.city}
                   />
                 </div>
@@ -140,7 +145,6 @@ function Experience({ setEnabledNext }: any) {
                     required
                     name="state"
                     onChange={(event) => handleChange(index, event)}
-                    defaultValue={item?.state}
                     value={item?.state}
                   />
                 </div>
@@ -151,7 +155,6 @@ function Experience({ setEnabledNext }: any) {
                     type="date"
                     name="startDate"
                     onChange={(event) => handleChange(index, event)}
-                    defaultValue={item?.startDate}
                     value={item?.startDate}
                   />
                 </div>
@@ -162,7 +165,6 @@ function Experience({ setEnabledNext }: any) {
                     type="date"
                     name="endDate"
                     onChange={(event) => handleChange(index, event)}
-                    defaultValue={item?.endDate}
                     value={item?.endDate}
                   />
                 </div>
@@ -170,7 +172,6 @@ function Experience({ setEnabledNext }: any) {
                   theme="snow"
                   value={item?.workSummery}
                   onChange={(value) => handleRichTextEditor(value, index)}
-                  defaultValue={item?.workSummery}
                   modules={modules}
                   formats={formats}
                   className="col-span-2 mt-1 w-full rounded-lg border p-2"
@@ -190,9 +191,6 @@ function Experience({ setEnabledNext }: any) {
                 </Button>
               )}
             </div>
-            <Button type="submit" disabled={loading}>
-              {loading ? <LoaderCircle className="animate-spin" /> : "Lưu"}
-            </Button>
           </div>
         </form>
       )}

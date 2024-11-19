@@ -12,16 +12,18 @@ const prompt =
 
 const Summery = ({ setEnabledNext }: any) => {
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
-  const [summery, setSummery] = useState<any>("");
+  const [summery, setSummery] = useState<string>(resumeInfo.summery || "");
   const [loading, setLoading] = useState(false);
-  const [aiGeneratedSummeryList, setAiGenerateSummeryList] = useState<any>();
+  const [aiGeneratedSummeryList, setAiGenerateSummeryList] = useState<any[]>(
+    []
+  );
 
   useEffect(() => {
-    summery &&
-      setResumeInfo({
-        ...resumeInfo,
-        summery: summery,
-      });
+    setResumeInfo({
+      ...resumeInfo,
+      summery: summery,
+    });
+    checkIfFormIsValid(summery);
   }, [summery]);
 
   const GenerateSummeryFromAI = async () => {
@@ -29,61 +31,65 @@ const Summery = ({ setEnabledNext }: any) => {
 
     const PROMPT = prompt.replace("{jobTitle}", resumeInfo?.jobTitle);
     console.log(PROMPT);
-    const result = await AIChatSession.sendMessage(PROMPT);
-    console.log(result.response.text());
-    console.log(JSON.parse(result.response.text()));
-    setAiGenerateSummeryList(JSON.parse(result.response.text()));
-    setLoading(false);
-  };
-  console.log("nè", aiGeneratedSummeryList);
-
-  const onSave = (e: any) => {
-    e.preventDefault();
-    if (!summery.trim()) {
-      toast.error("Vui lòng nhập tóm tắt!");
-      return;
+    try {
+      const result = await AIChatSession.sendMessage(PROMPT);
+      const responseText = await result.response.text();
+      const aiSummaries = JSON.parse(responseText);
+      setAiGenerateSummeryList(aiSummaries);
+    } catch (error) {
+      console.error("Error generating summary from AI:", error);
+      toast.error("Có lỗi xảy ra khi tạo tóm tắt từ AI");
+    } finally {
+      setLoading(false);
     }
-    setResumeInfo({ ...resumeInfo, summery });
-    setEnabledNext(true);
-    toast.success("Lưu thành công!");
   };
+
+  const checkIfFormIsValid = (summery: string) => {
+    const isValid = summery.trim().length > 0;
+    setEnabledNext(isValid);
+  };
+
+  const handleTextareaChange = (e: any) => {
+    const value = e.target.value;
+    setSummery(value);
+    checkIfFormIsValid(value);
+  };
+
   return (
     <div>
       <div className="mt-10 rounded-lg border-t-4 border-t-primary p-5 shadow-lg">
-        <h2 className="text-lg font-bold">Summery</h2>
-        <p>Add Summery for your job title</p>
-
-        <form className="mt-7" onSubmit={onSave}>
+        <h2 className="text-lg font-bold">Mục tiêu nghề nghiệp</h2>
+        <div className="mt-7">
           <div className="flex items-end justify-between">
-            <label>Add Summery</label>
             <Button
               variant="outline"
               type="button"
               size="sm"
-              onClick={() => GenerateSummeryFromAI()}
+              onClick={GenerateSummeryFromAI}
               className="flex gap-2 border-primary text-primary"
+              disabled={loading}
             >
-              <Brain className="h-4 w-4" /> Generate from AI
+              {loading ? (
+                <LoaderCircle className="h-4 w-4 animate-spin" />
+              ) : (
+                <Brain className="h-4 w-4" />
+              )}
+              Generate from AI
             </Button>
           </div>
           <Textarea
             className="mt-5 min-h-32"
             required
-            onChange={(e) => setSummery(e.target.value)}
-            defaultValue={resumeInfo?.summery}
+            onChange={handleTextareaChange}
+            value={summery}
           />
-          <div className="mt-3 flex justify-end">
-            <Button type="submit" disabled={loading}>
-              {loading ? <LoaderCircle className="animate-spin" /> : "Lưu"}
-            </Button>
-          </div>
-        </form>
+        </div>
       </div>
-      {/* 
-      {aiGeneratedSummeryList && (
+
+      {aiGeneratedSummeryList.length > 0 && (
         <div className="my-5">
-          <h2 className="text-lg font-bold">Suggestions</h2>
-          {aiGeneratedSummeryList?.map((item: any, index: any) => (
+          <h2 className="text-lg font-bold">Gợi ý</h2>
+          {aiGeneratedSummeryList.map((item: any, index: any) => (
             <div
               key={index}
               onClick={() => setSummery(item?.summary)}
@@ -96,7 +102,7 @@ const Summery = ({ setEnabledNext }: any) => {
             </div>
           ))}
         </div>
-      )} */}
+      )}
     </div>
   );
 };

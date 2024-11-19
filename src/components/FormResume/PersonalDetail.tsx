@@ -1,90 +1,91 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ResumeInfoContext } from "@/context/ResumeInfoContext";
-import { LoaderCircle } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
-// import { useParams } from "react-router-dom";
-// import GlobalApi from "./../../../../../service/GlobalApi";
 import { toast } from "react-toastify";
 
 function PersonalDetail({ setEnabledNext }: any) {
-  //   const params = useParams();
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
 
-  const [formData, setFormData] = useState<any>();
-  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState<any>(resumeInfo || {});
+
   useEffect(() => {
-    console.log("---", resumeInfo);
-  }, []);
+    setFormData(resumeInfo);
+    checkIfFormIsValid(resumeInfo);
+  }, [resumeInfo]);
 
   const handleInputChange = (e: any) => {
-    setEnabledNext(false);
     const { name, value } = e.target;
 
-    setFormData({
+    const updatedFormData = {
       ...formData,
       [name]: value,
-    });
-    setResumeInfo({
-      ...resumeInfo,
-      [name]: value,
-    });
+    };
+
+    setFormData(updatedFormData);
+    setResumeInfo(updatedFormData);
+    checkIfFormIsValid(updatedFormData);
   };
 
-  const onSave = (e: any) => {
-    e.preventDefault();
-    setEnabledNext(true);
-    toast.success("Lưu thành công");
+  const checkIfFormIsValid = (data: any) => {
+    const isValid =
+      data.firstName &&
+      data.lastName &&
+      data.jobTitle &&
+      data.address &&
+      data.phone &&
+      data.email;
+    setEnabledNext(isValid);
   };
+
   return (
     <div className="mt-6 rounded-lg border-t-4 border-t-sky-300 p-5 shadow-lg">
       <h2 className="text-lg font-bold">Thông tin chi tiết</h2>
-      <p>Get Started with the basic information</p>
 
-      <form onSubmit={onSave}>
+      <form>
         <div className="mt-5 grid grid-cols-2 gap-3">
           <div>
-            <label className="text-sm">First Name</label>
+            <label className="text-sm">Họ</label>
             <Input
               name="firstName"
-              defaultValue={resumeInfo?.firstName}
+              value={formData.firstName || ""}
               required
               onChange={handleInputChange}
             />
           </div>
           <div>
-            <label className="text-sm">Last Name</label>
+            <label className="text-sm">Tên</label>
             <Input
               name="lastName"
+              value={formData.lastName || ""}
               required
               onChange={handleInputChange}
-              defaultValue={resumeInfo?.lastName}
             />
           </div>
           <div className="col-span-2">
-            <label className="text-sm">Job Title</label>
+            <label className="text-sm">Vị trí</label>
             <Input
               name="jobTitle"
+              value={formData.jobTitle || ""}
               required
-              defaultValue={resumeInfo?.jobTitle}
               onChange={handleInputChange}
             />
           </div>
           <div className="col-span-2">
-            <label className="text-sm">Address</label>
+            <label className="text-sm">Địa chỉ</label>
             <Input
               name="address"
+              value={formData.address || ""}
               required
-              defaultValue={resumeInfo?.address}
               onChange={handleInputChange}
             />
           </div>
           <div>
-            <label className="text-sm">Phone</label>
+            <label className="text-sm">Số điện thoại</label>
             <Input
               name="phone"
+              value={formData.phone || ""}
               required
-              defaultValue={resumeInfo?.phone}
               onChange={handleInputChange}
             />
           </div>
@@ -92,14 +93,11 @@ function PersonalDetail({ setEnabledNext }: any) {
             <label className="text-sm">Email</label>
             <Input
               name="email"
+              value={formData.email || ""}
               required
-              defaultValue={resumeInfo?.email}
               onChange={handleInputChange}
             />
           </div>
-        </div>
-        <div className="mt-3 flex justify-end">
-          <Button type="submit">Lưu</Button>
         </div>
       </form>
     </div>

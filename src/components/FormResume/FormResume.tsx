@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import PersonalDetail from "./PersonalDetail";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Download } from "lucide-react";
@@ -24,6 +24,10 @@ export default function FormResume({
   const [enabledNext, setEnabledNext] = useState(false);
   const { resumeInfo } = useContext(ResumeInfoContext);
 
+  useEffect(() => {
+    checkIfFormIsValid();
+  }, [resumeInfo]);
+
   const handleNext = () => {
     if (enabledNext) {
       setActiveFormIndex(activeFormIndex + 1);
@@ -33,6 +37,44 @@ export default function FormResume({
 
   const handlePrevious = () => {
     setActiveFormIndex(activeFormIndex - 1);
+    checkIfFormIsValid();
+  };
+
+  const checkIfFormIsValid = () => {
+    const isValid =
+      resumeInfo.firstName &&
+      resumeInfo.lastName &&
+      resumeInfo.jobTitle &&
+      resumeInfo.address &&
+      resumeInfo.phone &&
+      resumeInfo.email &&
+      resumeInfo.summery &&
+      resumeInfo.education.every(
+        (item: any) =>
+          item.universityName &&
+          item.degree &&
+          item.major &&
+          item.startDate &&
+          item.endDate
+      ) &&
+      resumeInfo.experience.every(
+        (item: any) =>
+          item.title &&
+          item.companyName &&
+          item.city &&
+          item.state &&
+          item.startDate &&
+          item.endDate &&
+          item.workSummery
+      ) &&
+      resumeInfo.personalProjects.every(
+        (item: any) =>
+          item.title &&
+          item.description &&
+          item.technologies.length > 0 &&
+          item.link
+      );
+    setEnabledNext(isValid);
   };
 
   const handleDownloadPDF = async () => {
@@ -65,6 +107,7 @@ export default function FormResume({
                 {activeFormIndex > 1 && (
                   <Button
                     size="sm"
+                    variant="outline"
                     className="flex items-center gap-2"
                     onClick={handlePrevious}
                   >
@@ -112,10 +155,7 @@ export default function FormResume({
         </>
       ) : (
         <div className="col-span-2 flex flex-col items-center">
-          <div className="w-full max-w-4xl">
-            <PreviewResume />
-          </div>
-          <div className="mt-8 flex justify-center gap-4">
+          <div className="mb-8 flex justify-center gap-4">
             <Button
               onClick={handlePrevious}
               variant="outline"
@@ -131,6 +171,10 @@ export default function FormResume({
               <Download className="h-4 w-4" />
               Tải xuống PDF
             </Button>
+          </div>
+
+          <div className="w-full max-w-4xl">
+            <PreviewResume />
           </div>
         </div>
       )}

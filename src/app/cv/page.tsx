@@ -87,8 +87,7 @@ export default function Component() {
 
   return (
     <div className="flex min-h-screen">
-      {/* Left Side - Template Selection */}
-      <div className="w-1/2 border-r bg-gray-50 p-6">
+      <div className="w-full border-r bg-gray-50 p-6">
         <h2 className="mb-6 text-2xl font-bold">Chọn mẫu CV</h2>
         <div className="grid grid-cols-2 gap-4">
           {templates.map((template) => (
@@ -128,23 +127,6 @@ export default function Component() {
               </CardContent>
             </Card>
           ))}
-        </div>
-      </div>
-
-      {/* Right Side - CV Preview */}
-      <div className="w-1/2 p-6">
-        <div className="rounded-lg bg-white p-6 shadow-lg">
-          {error ? (
-            <p className="text-red-500">{error}</p>
-          ) : htmlContent ? (
-            <div
-              className="prose prose-sm max-w-none"
-              contentEditable
-              dangerouslySetInnerHTML={{ __html: htmlContent }}
-            />
-          ) : (
-            <p className="text-gray-500">Không có nội dung để hiển thị.</p>
-          )}
         </div>
       </div>
     </div>

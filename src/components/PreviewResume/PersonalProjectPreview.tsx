@@ -9,7 +9,7 @@ function PersonalProjectPreview({ resumeInfo }: any) {
           color: resumeInfo?.themeColor,
         }}
       >
-        Personal Projects
+        Dự Án
       </h2>
       <hr
         style={{
@@ -29,13 +29,13 @@ function PersonalProjectPreview({ resumeInfo }: any) {
           </h2>
 
           <div className="my-2 text-xs">
-            <strong>Technologies:</strong>{" "}
+            <strong>Công nghệ:</strong>{" "}
             {Array.isArray(project?.technologies)
               ? project.technologies.join(", ")
               : project?.technologies}
           </div>
           <div className="my-2 text-xs">
-            <strong>Description:</strong>
+            <strong>Mô tả:</strong>
             <div
               className="my-2"
               dangerouslySetInnerHTML={{ __html: project?.description }}

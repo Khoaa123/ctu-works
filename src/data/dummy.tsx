@@ -1,69 +1,49 @@
 export default {
-  firstName: "James",
-  lastName: "Carter",
-  jobTitle: "full stack developer",
-  address: "525 N tryon Street, NC 28117",
-  phone: "(123)-456-7890",
-  email: "exmaple@gmail.com",
+  firstName: "Nguyễn",
+  lastName: "Văn A",
+  jobTitle: "Lập Trình Viên Full Stack",
+  address: "Ninh Kiều, Cần Thơ",
+  phone: "123456789",
+  email: "example@gmail.com",
   themeColor: "#ff6666",
   summery:
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    "Học tập thêm nhiều kiến thức liên quan về Nodejs và Reactjs để trở thành Full Stack Developer, nâng cao kinh nghiệm bản thân để phát triển sản phẩm và mang lại những giá trị cho công ty.",
   experience: [
     {
       id: 1,
-      title: "Full Stack Developer",
-      companyName: "Amazon",
-      city: "New York",
+      title: "Lập Trình Viên Full Stack",
+      companyName: "Công ty ABC",
+      city: "Cần Thơ",
       state: "NY",
-      startDate: "Jan 2021",
-      endDate: "",
-      currentlyWorking: true,
+      startDate: "2021-08-01",
+      endDate: "2021-12-01",
+      currentlyWorking: false,
       workSummery:
-        " Designed, developed, and maintained full-stack applications using React and Node.js.\n" +
-        "• Implemented responsive user interfaces with React, ensuring seamless user experiences across\n" +
-        "various devices and browsers.\n" +
-        "• Maintaining the React Native in-house organization application." +
-        "• CreatedRESTfulAPIs withNode.js and Express,facilitating data communicationbetween the front-end" +
-        "and back-end systems.",
+        "Thiết kế, phát triển và duy trì các ứng dụng full-stack sử dụng React và Node.js. Triển khai giao diện người dùng đáp ứng với React, đảm bảo trải nghiệm người dùng liền mạch trên các thiết bị và trình duyệt khác nhau. Duy trì ứng dụng nội bộ của tổ chức sử dụng React Native. Tạo các API RESTful với Node.js và Express, tạo điều kiện giao tiếp dữ liệu giữa hệ thống front-end và back-end.",
     },
     {
       id: 2,
-      title: "Frontend Developer",
-      companyName: "Google",
-      city: "Charlotte",
+      title: "Lập Trình Viên Frontend",
+      companyName: "Công Ty XYZ",
+      city: "Cần Thơ",
       state: "NC",
-      startDate: "May 2019",
-      endDate: "Jan 2021",
+      startDate: "2021-08-01",
+      endDate: "2021-09-01",
       currentlyWorking: false,
       workSummery:
-        " Designed, developed, and maintained full-stack applications using React and Node.js." +
-        "• Implemented responsive user interfaces with React, ensuring seamless user experiences across" +
-        "various devices and browsers." +
-        "• Maintaining the React Native in-house organization application." +
-        "• CreatedRESTfulAPIs withNode.js and Express,facilitating data communicationbetween the front-end" +
-        "and back-end systems.",
+        "Thiết kế, phát triển và duy trì các ứng dụng full-stack sử dụng React và Node.js. Triển khai giao diện người dùng đáp ứng với React, đảm bảo trải nghiệm người dùng liền mạch trên các thiết bị và trình duyệt khác nhau. Duy trì ứng dụng nội bộ của tổ chức sử dụng React Native. Tạo các API RESTful với Node.js và Express, tạo điều kiện giao tiếp dữ liệu giữa hệ thống front-end và back-end.",
     },
   ],
   education: [
     {
       id: 1,
-      universityName: "Western Illinois University",
-      startDate: "Aug 2018",
-      endDate: "Dec:2019",
-      degree: "Master",
-      major: "Computer Science",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud",
-    },
-    {
-      id: 2,
-      universityName: "Western Illinois University",
-      startDate: "Aug 2018",
-      endDate: "Dec:2019",
-      degree: "Master",
-      major: "Computer Science",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud",
+      universityName: "Đại học Cần Thơ",
+      startDate: "2021-08-01",
+      endDate: "2021-09-01",
+      degree: "Kỹ Sư",
+      major: "Kỹ Thuật Phần Mềm",
+      // description:
+      //   "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud",
     },
   ],
   skills: [
@@ -73,17 +53,17 @@ export default {
       rating: 80,
     },
     {
-      id: 1,
+      id: 2,
       name: "React",
       rating: 100,
     },
     {
-      id: 1,
+      id: 3,
       name: "MySql",
       rating: 80,
     },
     {
-      id: 1,
+      id: 4,
       name: "React Native",
       rating: 100,
     },
@@ -91,17 +71,17 @@ export default {
   personalProjects: [
     {
       id: 1,
-      title: "Personal Portfolio Website",
+      title: "Trang Web Cá Nhân",
       description:
-        "A personal portfolio website to showcase my projects and skills.",
+        "Một trang web cá nhân để giới thiệu các dự án và kỹ năng của tôi.",
       technologies: ["React", "Next.js", "Tailwind CSS"],
       link: "https://example.com",
     },
     {
       id: 2,
-      title: "Weather App",
+      title: "Ứng Dụng Thời Tiết",
       description:
-        "A weather application that provides current weather information.",
+        "Một ứng dụng thời tiết cung cấp thông tin thời tiết hiện tại.",
       technologies: ["React", "OpenWeatherMap API"],
       link: "https://example.com",
     },

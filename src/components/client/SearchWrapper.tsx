@@ -17,8 +17,8 @@ const SearchWrapper = () => {
     pathname.startsWith("/admin") ||
     pathname === "/recruiter" ||
     pathname.startsWith("/profile") ||
-    pathname.startsWith("/news")
-
+    pathname.startsWith("/cv") ||
+    pathname.startsWith("/news");
 
   if (isHiddenPage) {
     return null;

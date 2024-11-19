@@ -11,9 +11,11 @@ const formField = {
 };
 
 function Skills({ setEnabledNext }: any) {
-  const [skillsList, setSkillsList] = useState<any[]>([formField]);
-  const [isSkipped, setIsSkipped] = useState(false);
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
+  const [skillsList, setSkillsList] = useState<any[]>(
+    resumeInfo.skills || [formField]
+  );
+  const [isSkipped, setIsSkipped] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -64,16 +66,16 @@ function Skills({ setEnabledNext }: any) {
 
   return (
     <div className="mt-10 rounded-lg border-t-4 border-t-primary p-5 shadow-lg">
-      <h2 className="text-lg font-bold">Skills</h2>
+      <h2 className="text-lg font-bold">Kỹ Năng</h2>
       <p>
         {isSkipped
-          ? "You have skipped this section. If you want to add, please enable it!"
-          : "Add your skills or skip if you don't have any."}
+          ? "Bạn đã bỏ qua phần này. Nếu muốn thêm, hãy bật lại!"
+          : "Thêm các kỹ năng của bạn hoặc bỏ qua nếu không có."}
       </p>
 
       {isSkipped ? (
         <Button variant="outline" className="mt-4" onClick={handleAddSkill}>
-          + Add Skill
+          + Thêm Kỹ Năng
         </Button>
       ) : (
         <form onSubmit={onSave}>
@@ -83,7 +85,7 @@ function Skills({ setEnabledNext }: any) {
               className="my-5 grid grid-cols-2 gap-3 rounded-lg border p-3"
             >
               <div>
-                <label className="text-xs">Skill Name</label>
+                <label className="text-xs">Tên Kỹ Năng</label>
                 <Input
                   name="name"
                   required
@@ -92,7 +94,7 @@ function Skills({ setEnabledNext }: any) {
                 />
               </div>
               <div>
-                <label className="text-xs">Rating</label>
+                <label className="text-xs">Đánh Giá</label>
                 <Input
                   name="rating"
                   type="number"
@@ -105,7 +107,7 @@ function Skills({ setEnabledNext }: any) {
               </div>
               <div className="col-span-2 flex justify-end">
                 <Button variant="outline" onClick={() => RemoveSkill(index)}>
-                  - Remove Skill
+                  - Xóa Kỹ Năng
                 </Button>
               </div>
             </div>
@@ -114,11 +116,11 @@ function Skills({ setEnabledNext }: any) {
           <div className="mt-4 flex justify-between">
             <div className="flex gap-2">
               <Button variant="outline" onClick={AddNewSkill}>
-                + Add Skill
+                + Thêm Kỹ Năng
               </Button>
             </div>
             <Button type="submit" disabled={loading}>
-              {loading ? <LoaderCircle className="animate-spin" /> : "Save"}
+              {loading ? <LoaderCircle className="animate-spin" /> : "Lưu"}
             </Button>
           </div>
         </form>
@@ -129,7 +131,7 @@ function Skills({ setEnabledNext }: any) {
           className="ml-4 mt-4 text-red-500"
           onClick={handleSkip}
         >
-          Skip This Section
+          Bỏ Qua Phần Này
         </Button>
       )}
     </div>

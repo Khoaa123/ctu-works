@@ -1,132 +1,128 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { ResumeInfoContext } from "@/context/ResumeInfoContext";
-import { LoaderCircle } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
-// import { useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+import { ResumeInfoContext } from "@/context/ResumeInfoContext";
 
-function Education({ setEnabledNext }: any) {
-  const [loading, setLoading] = useState(false);
+const formField = {
+  universityName: "",
+  degree: "",
+  major: "",
+  startDate: "",
+  endDate: "",
+  description: "",
+};
+
+function Education({
+  setEnabledNext,
+}: {
+  setEnabledNext: (enabled: boolean) => void;
+}) {
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
-  //   const params = useParams();
-  const [educationalList, setEducationalList] = useState<any[]>([
-    {
-      universityName: "",
-      degree: "",
-      major: "",
-      startDate: "",
-      endDate: "",
-      description: "",
-    },
-  ]);
+  const [educationalList, setEducationalList] = useState<(typeof formField)[]>(
+    resumeInfo.education || [formField]
+  );
 
-  useEffect(() => {
-    resumeInfo && setEducationalList(resumeInfo?.education);
-  }, []);
-  const handleChange = (event: any, index: any) => {
-    const newEntries = educationalList.slice();
-    const { name, value } = event.target;
-    newEntries[index][name] = value;
-    setEducationalList(newEntries);
-  };
-
-  const AddNewEducation = () => {
-    setEducationalList([
-      ...educationalList,
-      {
-        universityName: "",
-        degree: "",
-        major: "",
-        startDate: "",
-        endDate: "",
-        description: "",
-      },
-    ]);
-  };
-  const RemoveEducation = () => {
-    setEducationalList((educationalList) => educationalList.slice(0, -1));
-  };
-  const onSave = (e: any) => {
-    e.preventDefault();
-    const form = e.target;
-    if (form.checkValidity()) {
-      setEnabledNext(true);
-      toast.success("Lưu thành công");
-    } else {
-      toast.error("Vui lòng nhập đầy đủ thông tin");
-    }
-  };
   useEffect(() => {
     setResumeInfo({
       ...resumeInfo,
       education: educationalList,
     });
+    checkIfFormIsValid(educationalList);
   }, [educationalList]);
+
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const { name, value } = event.target;
+
+    // Nếu là trường date, kiểm tra và định dạng lại nếu cần
+    const formattedValue =
+      name === "startDate" || name === "endDate"
+        ? new Date(value).toISOString().split("T")[0] // Định dạng YYYY-MM-DD
+        : value;
+
+    const newEntries = [...educationalList];
+    newEntries[index] = { ...newEntries[index], [name]: formattedValue };
+    setEducationalList(newEntries);
+    checkIfFormIsValid(newEntries);
+  };
+
+  const checkIfFormIsValid = (list: (typeof formField)[]) => {
+    const isValid = list.every(
+      (item) =>
+        item.universityName &&
+        item.degree &&
+        item.major &&
+        item.startDate &&
+        item.endDate
+    );
+    setEnabledNext(isValid);
+  };
+
+  const AddNewEducation = () => {
+    setEducationalList([...educationalList, { ...formField }]);
+  };
+
+  const RemoveEducation = () => {
+    const newEntries = educationalList.slice(0, -1);
+    setEducationalList(newEntries);
+    checkIfFormIsValid(newEntries);
+  };
+
   return (
     <div className="mt-10 rounded-lg border-t-4 border-t-primary p-5 shadow-lg">
-      <h2 className="text-lg font-bold">Education</h2>
-      <p>Add Your educational details</p>
+      <h2 className="text-lg font-bold">Học vấn</h2>
 
-      <form onSubmit={onSave}>
+      <form>
         {educationalList.map((item, index) => (
-          <div>
+          <div key={index}>
             <div className="my-5 grid grid-cols-2 gap-3 rounded-lg border p-3">
               <div className="col-span-2">
-                <label>University Name</label>
+                <label>Tên Trường</label>
                 <Input
                   name="universityName"
                   required
                   onChange={(e) => handleChange(e, index)}
-                  defaultValue={item?.universityName}
+                  value={item.universityName}
                 />
               </div>
               <div>
-                <label>Degree</label>
+                <label>Bằng cấp</label>
                 <Input
                   name="degree"
                   required
                   onChange={(e) => handleChange(e, index)}
-                  defaultValue={item?.degree}
+                  value={item.degree}
                 />
               </div>
               <div>
-                <label>Major</label>
+                <label>Chuyên ngành</label>
                 <Input
                   name="major"
                   required
                   onChange={(e) => handleChange(e, index)}
-                  defaultValue={item?.major}
+                  value={item.major}
                 />
               </div>
               <div>
-                <label>Start Date</label>
+                <label>Ngày bắt đầu</label>
                 <Input
                   type="date"
                   required
                   name="startDate"
                   onChange={(e) => handleChange(e, index)}
-                  defaultValue={item?.startDate}
+                  value={item.startDate}
                 />
               </div>
               <div>
-                <label>End Date</label>
+                <label>Ngày kết thúc</label>
                 <Input
                   type="date"
                   required
                   name="endDate"
                   onChange={(e) => handleChange(e, index)}
-                  defaultValue={item?.endDate}
-                />
-              </div>
-              <div className="col-span-2">
-                <label>Description</label>
-                <Textarea
-                  name="description"
-                  required
-                  onChange={(e) => handleChange(e, index)}
-                  defaultValue={item?.description}
+                  value={item.endDate}
                 />
               </div>
             </div>
@@ -135,25 +131,24 @@ function Education({ setEnabledNext }: any) {
         <div className="flex justify-between">
           <div className="flex gap-2">
             <Button
+              type="button"
               variant="outline"
               onClick={AddNewEducation}
               className="text-primary"
             >
-              {" "}
               + Thêm Học Vấn
             </Button>
-            <Button
-              variant="outline"
-              onClick={RemoveEducation}
-              className="text-primary"
-            >
-              {" "}
-              - Xóa Học Vấn
-            </Button>
+            {educationalList.length > 1 && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={RemoveEducation}
+                className="text-primary"
+              >
+                - Xóa Học Vấn
+              </Button>
+            )}
           </div>
-          <Button disabled={loading} type="submit">
-            {loading ? <LoaderCircle className="animate-spin" /> : "Lưu"}
-          </Button>
         </div>
       </form>
     </div>

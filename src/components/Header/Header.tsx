@@ -177,7 +177,7 @@ const Header = () => {
                     Tính lương GROSS - NET
                   </DropdownMenuItem>
                 </Link>
-                <Link href="/salary-calculator">
+                <Link href="/cv/edit-cv">
                   <DropdownMenuItem className="my-[6px] bg-[#F6FAFB] p-3">
                     Tạo CV
                   </DropdownMenuItem>

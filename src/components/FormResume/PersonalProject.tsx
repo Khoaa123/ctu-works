@@ -2,11 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import React, { useContext, useEffect, useState } from "react";
 import { ResumeInfoContext } from "@/context/ResumeInfoContext";
-import { LoaderCircle } from "lucide-react";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
-import { toast } from "react-toastify";
 
 const formField = {
   title: "",
@@ -16,24 +14,26 @@ const formField = {
 };
 
 function PersonalProject({ setEnabledNext }: any) {
-  const [projectList, setProjectList] = useState<any[]>([formField]);
-  const [isSkipped, setIsSkipped] = useState(false);
   const { resumeInfo, setResumeInfo } = useContext(ResumeInfoContext);
-  const [loading, setLoading] = useState(false);
+  const [projectList, setProjectList] = useState<any[]>(
+    resumeInfo.personalProjects || [formField]
+  );
+  const [isSkipped, setIsSkipped] = useState(false);
 
   useEffect(() => {
     setResumeInfo({
       ...resumeInfo,
       personalProjects: isSkipped ? [] : projectList,
     });
+    checkIfFormIsValid(projectList);
   }, [projectList, isSkipped]);
 
   const handleChange = (index: any, event: any) => {
-    setEnabledNext(false);
     const newEntries = [...projectList];
     const { name, value } = event.target;
     newEntries[index][name] = value;
     setProjectList(newEntries);
+    checkIfFormIsValid(newEntries);
   };
 
   const handleTechnologyChange = (
@@ -41,17 +41,28 @@ function PersonalProject({ setEnabledNext }: any) {
     techIndex: any,
     event: any
   ) => {
-    setEnabledNext(false);
     const newEntries = [...projectList];
     newEntries[projectIndex].technologies[techIndex] = event.target.value;
     setProjectList(newEntries);
+    checkIfFormIsValid(newEntries);
   };
 
   const handleRichTextEditor = (value: string, index: number) => {
-    setEnabledNext(false);
     const newEntries = [...projectList];
     newEntries[index].description = value;
     setProjectList(newEntries);
+    checkIfFormIsValid(newEntries);
+  };
+
+  const checkIfFormIsValid = (list: any[]) => {
+    const isValid = list.every(
+      (item) =>
+        item.title &&
+        item.description &&
+        item.technologies.length > 0 &&
+        item.link
+    );
+    setEnabledNext(isValid);
   };
 
   const AddNewProject = () => {
@@ -59,7 +70,9 @@ function PersonalProject({ setEnabledNext }: any) {
   };
 
   const RemoveProject = () => {
-    setProjectList((prev) => prev.slice(0, -1));
+    const newEntries = projectList.slice(0, -1);
+    setProjectList(newEntries);
+    checkIfFormIsValid(newEntries);
   };
 
   const AddTechnology = (projectIndex: any) => {
@@ -72,17 +85,7 @@ function PersonalProject({ setEnabledNext }: any) {
     const newEntries = [...projectList];
     newEntries[projectIndex].technologies.splice(techIndex, 1);
     setProjectList(newEntries);
-  };
-
-  const onSave = (e: any) => {
-    e.preventDefault();
-    const form = e.target;
-    if (form.checkValidity()) {
-      setEnabledNext(true);
-      toast.success("Lưu thành công");
-    } else {
-      toast.error("Vui lòng nhập đầy đủ thông tin");
-    }
+    checkIfFormIsValid(newEntries);
   };
 
   const handleSkip = () => {
@@ -106,24 +109,24 @@ function PersonalProject({ setEnabledNext }: any) {
 
   return (
     <div className="mt-10 rounded-lg border-t-4 border-t-primary p-5 shadow-lg">
-      <h2 className="text-lg font-bold">Personal Projects</h2>
+      <h2 className="text-lg font-bold">Dự Án Cá Nhân</h2>
       <p>
         {isSkipped
-          ? "You have skipped this section. If you want to add, please enable it!"
-          : "Add your personal projects or skip if you don't have any."}
+          ? "Bạn đã bỏ qua phần này. Nếu muốn thêm, hãy bật lại!"
+          : "Thêm các dự án cá nhân của bạn hoặc bỏ qua nếu không có."}
       </p>
 
       {isSkipped ? (
         <Button variant="outline" className="mt-4" onClick={handleAddProject}>
-          + Add Project
+          + Thêm Dự Án
         </Button>
       ) : (
-        <form onSubmit={onSave}>
+        <form>
           {projectList.map((item, projectIndex) => (
             <div key={projectIndex}>
               <div className="my-5 grid grid-cols-2 gap-3 rounded-lg border p-3">
                 <div className="col-span-2">
-                  <label className="text-xs">Project Title</label>
+                  <label className="text-xs">Tên Dự Án</label>
                   <Input
                     name="title"
                     required
@@ -133,7 +136,7 @@ function PersonalProject({ setEnabledNext }: any) {
                 </div>
 
                 <div className="col-span-2">
-                  <label className="text-xs">Technologies</label>
+                  <label className="text-xs">Công Nghệ</label>
                   {item.technologies.map((tech: string, techIndex: number) => (
                     <div
                       key={techIndex}
@@ -165,7 +168,7 @@ function PersonalProject({ setEnabledNext }: any) {
                   </Button>
                 </div>
                 <div className="col-span-2">
-                  <label className="text-xs">Description</label>
+                  <label className="text-xs">Mô Tả</label>
                   <ReactQuill
                     theme="snow"
                     value={item?.description}
@@ -178,7 +181,7 @@ function PersonalProject({ setEnabledNext }: any) {
                   />
                 </div>
                 <div className="col-span-2">
-                  <label className="text-xs">Link</label>
+                  <label className="text-xs">Liên Kết</label>
                   <Input
                     name="link"
                     required
@@ -193,29 +196,26 @@ function PersonalProject({ setEnabledNext }: any) {
           <div className="mt-4 flex justify-between">
             <div className="flex gap-2">
               <Button variant="outline" onClick={AddNewProject}>
-                + Add Project
+                + Thêm Dự Án
               </Button>
               {projectList.length > 1 && (
                 <Button variant="outline" onClick={RemoveProject}>
-                  - Remove Project
+                  - Xóa Dự Án
                 </Button>
               )}
             </div>
-            <Button type="submit" disabled={loading}>
-              {loading ? <LoaderCircle className="animate-spin" /> : "Save"}
-            </Button>
           </div>
         </form>
       )}
-      {/* {!isSkipped && (
+      {!isSkipped && (
         <Button
           variant="ghost"
           className="ml-4 mt-4 text-red-500"
           onClick={handleSkip}
         >
-          Skip This Section
+          Bỏ Qua Phần Này
         </Button>
-      )} */}
+      )}
     </div>
   );
 }
