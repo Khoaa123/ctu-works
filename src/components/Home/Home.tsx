@@ -194,103 +194,106 @@ const HomePage = () => {
 
     fetchJobIndustries();
   }, []);
+  console.log("dá", groupedRecentJobPosts);
 
   return (
     <>
       <div className="container">
         <div className="mt-5">
-          <div className="w-full rounded-md border border-solid border-[#ccdeff]">
-            <div className="flex justify-between bg-[#f2f7ff]">
-              <span className="px-6 py-3 text-xl font-bold">
-                Việc Làm Mới Nhất
-              </span>
-              <Link href="#">
-                <button className="px-6 py-3 uppercase text-blue-500">
-                  Xem tất cả
-                </button>
-              </Link>
-            </div>
-            <div className="mt-2 px-6 py-3">
-              <Carousel
-                setApi={setApi}
-                opts={{
-                  align: "start",
-                }}
-                className="w-full"
-              >
-                <CarouselContent>
-                  {groupedRecentJobPosts.map((group, index) => (
-                    <CarouselItem key={index} className="w-full">
-                      <div className="grid grid-cols-3 gap-4">
-                        {group.map((job, subIndex) => (
-                          <div key={subIndex} className="p-1">
-                            <Link href={`/job/${job._id}`}>
-                              <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]">
-                                <div>
-                                  <h1 className="mb-1 line-clamp-1 text-xl font-bold">
-                                    {job.jobTitle}
-                                  </h1>
-                                  <p>{job.companyInfo?.companyName}</p>
-                                  <p className="my-1 text-sm text-amber-600">
-                                    {job.minSalary?.toLocaleString()} -{" "}
-                                    {job.maxSalary?.toLocaleString()} VNĐ
-                                  </p>
-                                  <p className="text-sm">{job.location}</p>
+          {groupedRecentJobPosts && groupedRecentJobPosts.length > 0 && (
+            <div className="w-full rounded-md border border-solid border-[#ccdeff]">
+              <div className="flex justify-between bg-[#f2f7ff]">
+                <span className="px-6 py-3 text-xl font-bold">
+                  Việc Làm Mới Nhất
+                </span>
+                <Link href="#">
+                  <button className="px-6 py-3 uppercase text-blue-500">
+                    Xem tất cả
+                  </button>
+                </Link>
+              </div>
+              <div className="mt-2 px-6 py-3">
+                <Carousel
+                  setApi={setApi}
+                  opts={{
+                    align: "start",
+                  }}
+                  className="w-full"
+                >
+                  <CarouselContent>
+                    {groupedRecentJobPosts.map((group, index) => (
+                      <CarouselItem key={index} className="w-full">
+                        <div className="grid grid-cols-3 gap-4">
+                          {group.map((job, subIndex) => (
+                            <div key={subIndex} className="p-1">
+                              <Link href={`/job/${job._id}`}>
+                                <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]">
+                                  <div>
+                                    <h1 className="mb-1 line-clamp-1 text-xl font-bold">
+                                      {job.jobTitle}
+                                    </h1>
+                                    <p>{job.companyInfo?.companyName}</p>
+                                    <p className="my-1 text-sm text-amber-600">
+                                      {job.minSalary?.toLocaleString()} -{" "}
+                                      {job.maxSalary?.toLocaleString()} VNĐ
+                                    </p>
+                                    <p className="text-sm">{job.location}</p>
+                                  </div>
                                 </div>
-                              </div>
-                            </Link>
-                          </div>
-                        ))}
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-              </Carousel>
-              <div className="mt-4 flex items-center justify-center gap-4">
-                <button
-                  onClick={() => api?.scrollTo(current - 1)}
-                  className={`flex h-8 w-8 items-center justify-center rounded-full border border-gray-600 transition ${
-                    current === 0
-                      ? "opacity-25 cursor-not-allowed"
-                      : "group hover:border-yellow-500"
-                  }`}
-                  disabled={current === 0}
-                >
-                  <FaAngleLeft
-                    className={
-                      current === 0 ? "" : "group-hover:text-yellow-500"
-                    }
-                  />
-                </button>
-                {groupedRecentJobPosts.map((_, i) => (
-                  <div
-                    key={i}
-                    className={`mx-1 h-2 w-2 rounded-full cursor-pointer ${
-                      i === current ? "bg-blue-500" : "bg-gray-300"
+                              </Link>
+                            </div>
+                          ))}
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                </Carousel>
+                <div className="mt-4 flex items-center justify-center gap-4">
+                  <button
+                    onClick={() => api?.scrollTo(current - 1)}
+                    className={`flex h-8 w-8 items-center justify-center rounded-full border border-gray-600 transition ${
+                      current === 0
+                        ? "opacity-25 cursor-not-allowed"
+                        : "group hover:border-yellow-500"
                     }`}
-                    onClick={() => api?.scrollTo(i)}
-                  />
-                ))}
-                <button
-                  onClick={() => api?.scrollTo(current + 1)}
-                  className={`flex h-8 w-8 group items-center justify-center rounded-full border border-gray-600 transition ${
-                    current === groupedRecentJobPosts.length - 1
-                      ? "opacity-25 cursor-not-allowed"
-                      : "hover:border-yellow-500"
-                  }`}
-                  disabled={current === groupedRecentJobPosts.length - 1}
-                >
-                  <FaAngleRight
-                    className={
+                    disabled={current === 0}
+                  >
+                    <FaAngleLeft
+                      className={
+                        current === 0 ? "" : "group-hover:text-yellow-500"
+                      }
+                    />
+                  </button>
+                  {groupedRecentJobPosts.map((_, i) => (
+                    <div
+                      key={i}
+                      className={`mx-1 h-2 w-2 rounded-full cursor-pointer ${
+                        i === current ? "bg-blue-500" : "bg-gray-300"
+                      }`}
+                      onClick={() => api?.scrollTo(i)}
+                    />
+                  ))}
+                  <button
+                    onClick={() => api?.scrollTo(current + 1)}
+                    className={`flex h-8 w-8 group items-center justify-center rounded-full border border-gray-600 transition ${
                       current === groupedRecentJobPosts.length - 1
-                        ? ""
-                        : "group-hover:text-yellow-500"
-                    }
-                  />
-                </button>
+                        ? "opacity-25 cursor-not-allowed"
+                        : "hover:border-yellow-500"
+                    }`}
+                    disabled={current === groupedRecentJobPosts.length - 1}
+                  >
+                    <FaAngleRight
+                      className={
+                        current === groupedRecentJobPosts.length - 1
+                          ? ""
+                          : "group-hover:text-yellow-500"
+                      }
+                    />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           <div className="my-8">
             <p className="text-xl font-bold">Ngành Nghề Trọng Điểm</p>
@@ -398,34 +401,35 @@ const HomePage = () => {
             </div>
           </div>
 
-          <div className="w-full rounded-md border border-solid border-[#ccdeff]">
-            <div className="flex justify-between bg-[#f2f7ff]">
-              <span className="px-6 py-3 text-xl font-bold">
-                Việc Làm Tốt Nhất
-              </span>
-              <Link href="#">
-                <button className="px-6 py-3 uppercase text-blue-500">
-                  Xem tất cả
-                </button>
-              </Link>
-            </div>
-            <div className="mt-2 px-6 py-3">
-              <Carousel
-                setApi={setApi3}
-                opts={{
-                  align: "start",
-                }}
-                className="w-full"
-              >
-                <CarouselContent>
-                  {groupedAllJobPosts.map((group, index) => (
-                    <CarouselItem key={index} className="w-full">
-                      <div className="grid grid-cols-3 gap-4">
-                        {group.map((job, subIndex) => (
-                          <div key={subIndex} className="p-1">
-                            <Link href={`/job/${job._id}`}>
-                              <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]">
-                                {/* <Image
+          {groupedAllJobPosts && groupedAllJobPosts.length > 0 && (
+            <div className="w-full rounded-md border border-solid border-[#ccdeff]">
+              <div className="flex justify-between bg-[#f2f7ff]">
+                <span className="px-6 py-3 text-xl font-bold">
+                  Việc Làm Tốt Nhất
+                </span>
+                <Link href="#">
+                  <button className="px-6 py-3 uppercase text-blue-500">
+                    Xem tất cả
+                  </button>
+                </Link>
+              </div>
+              <div className="mt-2 px-6 py-3">
+                <Carousel
+                  setApi={setApi3}
+                  opts={{
+                    align: "start",
+                  }}
+                  className="w-full"
+                >
+                  <CarouselContent>
+                    {groupedAllJobPosts.map((group, index) => (
+                      <CarouselItem key={index} className="w-full">
+                        <div className="grid grid-cols-3 gap-4">
+                          {group.map((job, subIndex) => (
+                            <div key={subIndex} className="p-1">
+                              <Link href={`/job/${job._id}`}>
+                                <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]">
+                                  {/* <Image
                                   src={job.companyInfo?.companyLogo}
                                   alt="logo"
                                   height={80}
@@ -433,71 +437,72 @@ const HomePage = () => {
                                   className="h-20 w-20"
                                 /> */}
 
-                                <div>
-                                  <h1 className="mb-1 line-clamp-1 text-xl font-bold">
-                                    {job.jobTitle}
-                                  </h1>
-                                  <p>{job.companyInfo?.companyName}</p>
-                                  <p className="my-1 text-sm text-amber-600">
-                                    {job.minSalary?.toLocaleString()} -{" "}
-                                    {job.maxSalary?.toLocaleString()} VNĐ
-                                  </p>
-                                  <p className="text-sm">{job.location}</p>
+                                  <div>
+                                    <h1 className="mb-1 line-clamp-1 text-xl font-bold">
+                                      {job.jobTitle}
+                                    </h1>
+                                    <p>{job.companyInfo?.companyName}</p>
+                                    <p className="my-1 text-sm text-amber-600">
+                                      {job.minSalary?.toLocaleString()} -{" "}
+                                      {job.maxSalary?.toLocaleString()} VNĐ
+                                    </p>
+                                    <p className="text-sm">{job.location}</p>
+                                  </div>
                                 </div>
-                              </div>
-                            </Link>
-                          </div>
-                        ))}
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-              </Carousel>
-              <div className="mt-4 flex items-center justify-center gap-4">
-                <button
-                  onClick={() => api3?.scrollTo(current3 - 1)}
-                  className={`flex h-8 w-8 items-center justify-center rounded-full border border-gray-600 transition ${
-                    current3 === 0
-                      ? "opacity-25 cursor-not-allowed"
-                      : "group hover:border-yellow-500"
-                  }`}
-                  disabled={current3 === 0}
-                >
-                  <FaAngleLeft
-                    className={
-                      current3 === 0 ? "" : "group-hover:text-yellow-500"
-                    }
-                  />
-                </button>
-                {groupedAllJobPosts.map((_, i) => (
-                  <div
-                    key={i}
-                    className={`mx-1 h-2 w-2 rounded-full cursor-pointer ${
-                      i === current3 ? "bg-blue-500" : "bg-gray-300"
+                              </Link>
+                            </div>
+                          ))}
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                </Carousel>
+                <div className="mt-4 flex items-center justify-center gap-4">
+                  <button
+                    onClick={() => api3?.scrollTo(current3 - 1)}
+                    className={`flex h-8 w-8 items-center justify-center rounded-full border border-gray-600 transition ${
+                      current3 === 0
+                        ? "opacity-25 cursor-not-allowed"
+                        : "group hover:border-yellow-500"
                     }`}
-                    onClick={() => api3?.scrollTo(i)}
-                  />
-                ))}
-                <button
-                  onClick={() => api3?.scrollTo(current3 + 1)}
-                  className={`flex h-8 w-8 group items-center justify-center rounded-full border border-gray-600 transition ${
-                    current3 === groupedAllJobPosts.length - 1
-                      ? "opacity-25 cursor-not-allowed"
-                      : "hover:border-yellow-500"
-                  }`}
-                  disabled={current3 === groupedAllJobPosts.length - 1}
-                >
-                  <FaAngleRight
-                    className={
+                    disabled={current3 === 0}
+                  >
+                    <FaAngleLeft
+                      className={
+                        current3 === 0 ? "" : "group-hover:text-yellow-500"
+                      }
+                    />
+                  </button>
+                  {groupedAllJobPosts.map((_, i) => (
+                    <div
+                      key={i}
+                      className={`mx-1 h-2 w-2 rounded-full cursor-pointer ${
+                        i === current3 ? "bg-blue-500" : "bg-gray-300"
+                      }`}
+                      onClick={() => api3?.scrollTo(i)}
+                    />
+                  ))}
+                  <button
+                    onClick={() => api3?.scrollTo(current3 + 1)}
+                    className={`flex h-8 w-8 group items-center justify-center rounded-full border border-gray-600 transition ${
                       current3 === groupedAllJobPosts.length - 1
-                        ? ""
-                        : "group-hover:text-yellow-500"
-                    }
-                  />
-                </button>
+                        ? "opacity-25 cursor-not-allowed"
+                        : "hover:border-yellow-500"
+                    }`}
+                    disabled={current3 === groupedAllJobPosts.length - 1}
+                  >
+                    <FaAngleRight
+                      className={
+                        current3 === groupedAllJobPosts.length - 1
+                          ? ""
+                          : "group-hover:text-yellow-500"
+                      }
+                    />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           <div className="my-8 grid grid-cols-1 gap-6 md:grid-cols-2">
             <div className="flex items-center justify-center gap-8 rounded-md bg-[#ebf2ff] p-4">
