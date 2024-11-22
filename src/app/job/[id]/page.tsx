@@ -138,7 +138,7 @@ const JobDetail = () => {
   const [relatedJobs, setRelatedJobs] = useState<any>([]);
   const [jobInfoId, setJobInfoId] = useState("");
 
-  const router = useRouter()
+  const router = useRouter();
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       setFile(event.target.files[0]);
@@ -187,7 +187,7 @@ const JobDetail = () => {
     const checkSaveJob = async () => {
       const id = location.pathname.split("/job/")[1];
       if (id == "undefined") {
-        router.push("/")
+        router.push("/");
       }
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/savejob/check-save`,
@@ -207,15 +207,12 @@ const JobDetail = () => {
         setIsSaved(true);
         setsaveJobDetails(data.data);
       }
-
-
     };
     checkSaveJob();
   }, []);
   const handleSaveClick = async () => {
-
     if (!accessToken) {
-      router.push('/login')
+      router.push("/login");
     } else {
       if (!isSaved) {
         const save = await saveJob();
@@ -240,16 +237,15 @@ const JobDetail = () => {
         )
       );
     }
-
   };
 
   const [jobPostDetails, setJobPostDetails] = useState({
     companyAddress: "",
     companyBenefits: [
       {
-        title: '',
-        content: '',
-      }
+        title: "",
+        content: "",
+      },
     ],
     companyEmail: "",
     companyLogo: "",
@@ -391,14 +387,14 @@ const JobDetail = () => {
               timeSpent: timeSpent,
             }),
           })
-            .then((response) => { })
-            .catch((error) => { });
+            .then((response) => {})
+            .catch((error) => {});
         }
       }
     });
 
     return () => {
-      window.removeEventListener("beforeunload", () => { });
+      window.removeEventListener("beforeunload", () => {});
     };
   }, []);
   const fetchDetailsUser = async () => {
@@ -600,13 +596,13 @@ const JobDetail = () => {
 
   const handleCheckLogin = () => {
     if (!accessToken) {
-      router.push('/login')
+      router.push("/login");
     }
-  }
+  };
   const handleGoToApplyButton = () => {
-    const dialogElement = document.getElementById('dialogtrigger');
+    const dialogElement = document.getElementById("dialogtrigger");
     if (dialogElement) {
-      dialogElement.scrollIntoView({ behavior: 'smooth' });
+      dialogElement.scrollIntoView({ behavior: "smooth" });
     }
   };
   const [showButton, setShowButton] = useState(false);
@@ -619,12 +615,12 @@ const JobDetail = () => {
   };
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-  const toDate = new Date()
+  const toDate = new Date();
   return (
     <>
       <div className="bg-[#F1F2F4]">
@@ -656,7 +652,7 @@ const JobDetail = () => {
                         </span>
                       </div>
                       <div className="flex gap-6">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 md:min-w-36">
                           <div className="rounded-full bg-[#f1f2f4] p-2">
                             <AiOutlineDollarCircle color="grey" size={14} />
                           </div>
@@ -670,9 +666,8 @@ const JobDetail = () => {
                               {jobPostDetails?.maxSalary}$
                             </span>
                           )}
-
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 md:min-w-36">
                           <div className="rounded-full bg-[#f1f2f4] p-2">
                             <HiMiniUserGroup color="grey" size={14} />
                           </div>
@@ -680,33 +675,47 @@ const JobDetail = () => {
                             {jobPostDetails?.postViews} lượt xem
                           </span>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-1 items-center gap-2">
                           <div className="rounded-full bg-[#f1f2f4] p-2">
                             <FaLocationDot color="grey" size={14} />
                           </div>
-                          <span className="truncate text-sm">
-                            {jobPostDetails?.location?.map((loc: string, locIndex) => {
+                          <span className="line-clamp-1 text-sm">
+                            {jobPostDetails?.location?.map(
+                              (loc: string, locIndex) => {
+                                const locationName = loc.split(":")[1].trim();
 
-                              const locationName = loc.split(':')[1].trim();
-
-                              const locationWithoutCountry = locationName.replace(', Việt Nam', '').trim();
-                              return (
-                                <span key={locIndex}>
-                                  {locationWithoutCountry}
-                                  {locIndex < jobPostDetails?.location.length - 1 ? ", " : ""}
-                                </span>
-                              );
-                            })}
+                                const locationWithoutCountry = locationName
+                                  .replace(", Việt Nam", "")
+                                  .trim();
+                                return (
+                                  <span key={locIndex}>
+                                    {locationWithoutCountry}
+                                    {locIndex <
+                                    jobPostDetails?.location.length - 1
+                                      ? ", "
+                                      : ""}
+                                  </span>
+                                );
+                              }
+                            )}
                           </span>
                         </div>
                       </div>
                       <div className="flex items-center justify-between gap-4">
                         <Dialog>
-                          {new Date(jobPostDetails?.expirationDate) > toDate && jobPostDetails?.statusSeeking == true ? (
-                            <DialogTrigger id="dialogtrigger" onClick={handleCheckLogin} asChild>
+                          {new Date(jobPostDetails?.expirationDate) > toDate &&
+                          jobPostDetails?.statusSeeking == true ? (
+                            <DialogTrigger
+                              id="dialogtrigger"
+                              onClick={handleCheckLogin}
+                              asChild
+                            >
                               <button
                                 className="flex w-3/4 items-center justify-center gap-3 rounded-lg bg-[#ff7d55] p-2 text-sm text-white transition hover:bg-[#fd916f]"
-                                disabled={new Date(jobPostDetails?.expirationDate) <= toDate}
+                                disabled={
+                                  new Date(jobPostDetails?.expirationDate) <=
+                                  toDate
+                                }
                               >
                                 <FaRegPaperPlane size={16} />
                                 Ứng tuyển ngay
@@ -849,7 +858,7 @@ const JobDetail = () => {
                                                   className={cn(
                                                     "shadow-none w-full border-gray-300 rounded-sm h-10  justify-start text-left hover:bg-transparent  font-normal data-[state=open]:border-sky-400",
                                                     !date &&
-                                                    "text-muted-foreground"
+                                                      "text-muted-foreground"
                                                   )}
                                                 >
                                                   <CalendarIcon className="mr-2 h-4 w-4" />
@@ -1305,16 +1314,16 @@ const JobDetail = () => {
                                                 onChange={
                                                   handleCompanyJobFunctionChange
                                                 }
-                                              // onChange={(e) => {
-                                              //   setWorkingPreferences((prev) => ({
-                                              //     ...prev,
-                                              //     jobFunction: e.target.value,
-                                              //   }));
-                                              //   setFormData((prevFormData) => ({
-                                              //     ...prevFormData,
-                                              //     workingPreferences: workingPreferences,
-                                              //   }))
-                                              // }}
+                                                // onChange={(e) => {
+                                                //   setWorkingPreferences((prev) => ({
+                                                //     ...prev,
+                                                //     jobFunction: e.target.value,
+                                                //   }));
+                                                //   setFormData((prevFormData) => ({
+                                                //     ...prevFormData,
+                                                //     workingPreferences: workingPreferences,
+                                                //   }))
+                                                // }}
                                               />
                                             </div>
                                             <div className="col-span-1 flex flex-col gap-1">
@@ -1385,13 +1394,13 @@ const JobDetail = () => {
                                                 onChange={
                                                   handleCompanySalaryChange
                                                 }
-                                              // onChange={(e) => {
-                                              //   setWorkingPreferences((prev) => ({
-                                              //     ...prev,
-                                              //     salary: e.target.value,
+                                                // onChange={(e) => {
+                                                //   setWorkingPreferences((prev) => ({
+                                                //     ...prev,
+                                                //     salary: e.target.value,
 
-                                              //   }))
-                                              // }}
+                                                //   }))
+                                                // }}
                                               />
                                             </div>
 
@@ -1414,12 +1423,12 @@ const JobDetail = () => {
                                                     value
                                                   )
                                                 }
-                                              // onValueChange={(value) =>
-                                              //   setWorkingPreferences((prev) => ({
-                                              //     ...prev,
-                                              //     desiredJobLevel: value,
-                                              //   }))
-                                              // }
+                                                // onValueChange={(value) =>
+                                                //   setWorkingPreferences((prev) => ({
+                                                //     ...prev,
+                                                //     desiredJobLevel: value,
+                                                //   }))
+                                                // }
                                               >
                                                 <SelectTrigger className="h-10 bg-white shadow-none focus:ring-0">
                                                   <SelectValue placeholder="Vui lòng chọn..." />
@@ -1466,10 +1475,11 @@ const JobDetail = () => {
                         </Dialog>
 
                         <button
-                          className={`flex flex-1 justify-center items-center gap-3 rounded-lg border px-4 py-2 transition ${isSaved
-                            ? "border-[#005aff] text-[#005aff] hover:bg-[#347bff26] "
-                            : "border-gray-300 "
-                            }`}
+                          className={`flex flex-1 justify-center items-center gap-3 rounded-lg border px-4 py-2 transition ${
+                            isSaved
+                              ? "border-[#005aff] text-[#005aff] hover:bg-[#347bff26] "
+                              : "border-gray-300 "
+                          }`}
                           onClick={handleSaveClick}
                         >
                           {isSaved ? (
@@ -1500,26 +1510,58 @@ const JobDetail = () => {
                   </div>
 
                   <div className="mt-8">
-                    <h1 className="text-xl font-semibold mb-4">Các phúc lợi dành cho bạn</h1>
+                    <h1 className="mb-4 text-xl font-semibold">
+                      Các phúc lợi dành cho bạn
+                    </h1>
                     <div className="space-y-4">
                       {jobPostDetails?.companyBenefits?.map((item) => (
-                        <div className="p-4 border rounded-lg bg-white shadow-sm">
-                          <div className="flex items-center mb-2">
-                            {item.title === "Thưởng" && <FaDollarSign className="fas fa-dollar-sign text-blue-500 mr-2" />}
-                            {item.title === "Chăm sóc sức khỏe" && <FaBed className="fas fa-bed text-blue-500 mr-2" />}
-                            {item.title === "Nghỉ phép có lương" && <FaMoneyCheckAlt className="fas fa-book-open text-blue-500 mr-2" />}
-                            {item.title === "Đào tạo" && <FaChalkboardTeacher className="fas fa-dollar-sign text-blue-500 mr-2" />}
-                            {item.title === "Giải thưởng" && <FaTrophy className="fas fa-dollar-sign text-blue-500 mr-2" />}
-                            {item.title === "Thư viện" && <FaBookOpen className="fas fa-book-open text-blue-500 mr-2" />}
-                            {item.title === "Máy tính xách tay" && <FaLaptop className="fas fa-dollar-sign text-blue-500 mr-2" />}
-                            {item.title === "Điện thoại" && <FaPhone className="fas fa-dollar-sign text-blue-500 mr-2" />}
-                            {item.title === "Cơ hội du lịch" && <FaPlane className="fas fa-plane text-blue-500 mr-2" />}
-                            {item.title === "Hoạt động nhóm" && <FaUsers className="fas fa-dollar-sign text-blue-500 mr-2" />}
-                            {item.title === "Xe đưa đón" && <FaBus className="fas fa-dollar-sign text-blue-500 mr-2" />}
-                            {item.title === "Căn-tin" && <FaUtensils className="fas fa-dollar-sign text-blue-500 mr-2" />}
-                            {item.title === "Phiếu giảm giá" && <FaPercent className="fas fa-dollar-sign text-blue-500 mr-2" />}
-                            {item.title === "Nhà trẻ" && <FaChild className="fas fa-dollar-sign text-blue-500 mr-2" />}
-                            {item.title === "Khác" && <FaEllipsisH className="fas fa-dollar-sign text-blue-500 mr-2" />}
+                        <div className="rounded-lg border bg-white p-4 shadow-sm">
+                          <div className="mb-2 flex items-center">
+                            {item.title === "Thưởng" && (
+                              <FaDollarSign className="fas fa-dollar-sign mr-2 text-blue-500" />
+                            )}
+                            {item.title === "Chăm sóc sức khỏe" && (
+                              <FaBed className="fas fa-bed mr-2 text-blue-500" />
+                            )}
+                            {item.title === "Nghỉ phép có lương" && (
+                              <FaMoneyCheckAlt className="fas fa-book-open mr-2 text-blue-500" />
+                            )}
+                            {item.title === "Đào tạo" && (
+                              <FaChalkboardTeacher className="fas fa-dollar-sign mr-2 text-blue-500" />
+                            )}
+                            {item.title === "Giải thưởng" && (
+                              <FaTrophy className="fas fa-dollar-sign mr-2 text-blue-500" />
+                            )}
+                            {item.title === "Thư viện" && (
+                              <FaBookOpen className="fas fa-book-open mr-2 text-blue-500" />
+                            )}
+                            {item.title === "Máy tính xách tay" && (
+                              <FaLaptop className="fas fa-dollar-sign mr-2 text-blue-500" />
+                            )}
+                            {item.title === "Điện thoại" && (
+                              <FaPhone className="fas fa-dollar-sign mr-2 text-blue-500" />
+                            )}
+                            {item.title === "Cơ hội du lịch" && (
+                              <FaPlane className="fas fa-plane mr-2 text-blue-500" />
+                            )}
+                            {item.title === "Hoạt động nhóm" && (
+                              <FaUsers className="fas fa-dollar-sign mr-2 text-blue-500" />
+                            )}
+                            {item.title === "Xe đưa đón" && (
+                              <FaBus className="fas fa-dollar-sign mr-2 text-blue-500" />
+                            )}
+                            {item.title === "Căn-tin" && (
+                              <FaUtensils className="fas fa-dollar-sign mr-2 text-blue-500" />
+                            )}
+                            {item.title === "Phiếu giảm giá" && (
+                              <FaPercent className="fas fa-dollar-sign mr-2 text-blue-500" />
+                            )}
+                            {item.title === "Nhà trẻ" && (
+                              <FaChild className="fas fa-dollar-sign mr-2 text-blue-500" />
+                            )}
+                            {item.title === "Khác" && (
+                              <FaEllipsisH className="fas fa-dollar-sign mr-2 text-blue-500" />
+                            )}
                             <span className="font-semibold">{item.title}</span>
                           </div>
                           <p>{item.content}</p>
@@ -1646,8 +1688,8 @@ const JobDetail = () => {
                           {jobPostDetails?.nationality === "1"
                             ? "Người Việt"
                             : jobPostDetails?.nationality === "2"
-                              ? "Người nước ngoài"
-                              : "Bất kỳ"}
+                            ? "Người nước ngoài"
+                            : "Bất kỳ"}
                         </div>
 
                         <div className="mb-2 flex items-center">
@@ -1658,8 +1700,8 @@ const JobDetail = () => {
                           {jobPostDetails?.gender === "1"
                             ? "Nam"
                             : jobPostDetails?.gender === "2"
-                              ? "Nữ"
-                              : "Bất kỳ"}
+                            ? "Nữ"
+                            : "Bất kỳ"}
                         </div>
 
                         <div className="mb-2 flex items-center">
@@ -1672,8 +1714,8 @@ const JobDetail = () => {
                           {jobPostDetails?.maritalStatus === "1"
                             ? "Chưa kết hôn"
                             : jobPostDetails?.maritalStatus === "2"
-                              ? "Đã kết hôn"
-                              : "Bất kỳ"}
+                            ? "Đã kết hôn"
+                            : "Bất kỳ"}
                         </div>
                       </div>
                     </div>
@@ -1689,7 +1731,6 @@ const JobDetail = () => {
                   </div>
                 </div>
                 {showButton && (
-
                   <div className="fixed bottom-0 left-0 right-0 border-t border-gray-200 bg-white p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
@@ -1704,11 +1745,9 @@ const JobDetail = () => {
                           <h2 className="text-xl font-semibold text-gray-800">
                             {jobPostDetails?.jobTitle}
                           </h2>
-                          <div className="flex items-center text-sm text-black-500">
+                          <div className="text-black-500 flex items-center text-sm">
                             {jobPostDetails?.canDeal === true ? (
-                              <span className="text-red-500">
-                                Thương lượng
-                              </span>
+                              <span className="text-red-500">Thương lượng</span>
                             ) : (
                               <span className="text-red-500">
                                 {jobPostDetails?.minSalary}$ {" - "}
@@ -1732,28 +1771,44 @@ const JobDetail = () => {
                             <span className="mx-2">|</span>
                             <FaMapMarkerAlt className="fas fa-map-marker-alt text-gray-500" />
                             <span className="ml-1">
-                              {jobPostDetails?.location?.map((loc: string, locIndex) => {
+                              {jobPostDetails?.location?.map(
+                                (loc: string, locIndex) => {
+                                  const locationName = loc.split(":")[1].trim();
 
-                                const locationName = loc.split(':')[1].trim();
-
-                                const locationWithoutCountry = locationName.replace('Việt Nam', '').trim();
-                                return (
-                                  <span key={locIndex}>
-                                    {locationWithoutCountry}
-                                    {locIndex < jobPostDetails?.location.length - 1 ? " " : ""}
-                                  </span>
-                                );
-                              })}
+                                  const locationWithoutCountry = locationName
+                                    .replace("Việt Nam", "")
+                                    .trim();
+                                  return (
+                                    <span key={locIndex}>
+                                      {locationWithoutCountry}
+                                      {locIndex <
+                                      jobPostDetails?.location.length - 1
+                                        ? " "
+                                        : ""}
+                                    </span>
+                                  );
+                                }
+                              )}
                             </span>
                           </div>
                         </div>
                       </div>
                       <div className="mr-[10%] flex items-center">
-                        <button onClick={handleGoToApplyButton} className="rounded-md bg-orange-500 px-4 py-2 text-white">
+                        <button
+                          onClick={handleGoToApplyButton}
+                          className="rounded-md bg-orange-500 px-4 py-2 text-white"
+                        >
                           Nộp đơn
                         </button>
                         <button className="ml-4 rounded-md border border-gray-300 p-2">
-                          {isSaved ? <FaHeart onClick={handleSaveClick} color="#005aff" /> : <FaRegHeart onClick={handleSaveClick} />}
+                          {isSaved ? (
+                            <FaHeart
+                              onClick={handleSaveClick}
+                              color="#005aff"
+                            />
+                          ) : (
+                            <FaRegHeart onClick={handleSaveClick} />
+                          )}
                         </button>
                       </div>
                     </div>
@@ -1769,7 +1824,6 @@ const JobDetail = () => {
                         className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]"
                         key={index}
                       >
-
                         <div>
                           <h1 className="mb-1 line-clamp-1 text-xl font-bold">
                             {job.jobTitle}
@@ -1838,8 +1892,8 @@ const JobDetail = () => {
             </div>
           </div>
         </div>
-      </div > {" "}
-      < ScrollToTopButton />
+      </div>{" "}
+      <ScrollToTopButton />
     </>
   );
 };

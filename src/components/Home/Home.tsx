@@ -48,6 +48,7 @@ const HomePage = () => {
   const [companies, setCompanies] = useState<any[]>([]);
 
   const [news, setNews] = useState<any[]>([]);
+  const [jobIndustries, setJobIndustries] = useState<any[]>([]);
 
   React.useEffect(() => {
     if (!api) {
@@ -174,7 +175,26 @@ const HomePage = () => {
     fetchNews();
   }, []);
 
-  // console.log("env", process.env.NEXT_PUBLIC_API_BASE_URL);
+  useEffect(() => {
+    const fetchJobIndustries = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:3001/api/job-info/job-industry-counts`
+        );
+        const data = await res.json();
+        if (data.status === "OK") {
+          setJobIndustries(data.data);
+        } else {
+          console.error("Failed to fetch industries");
+        }
+      } catch (error) {
+        console.error("Error fetching job industries:", error);
+      }
+    };
+
+    fetchJobIndustries();
+  }, []);
+
   return (
     <>
       <div className="container">
@@ -206,14 +226,6 @@ const HomePage = () => {
                           <div key={subIndex} className="p-1">
                             <Link href={`/job/${job._id}`}>
                               <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]">
-                                {/* <Image
-                                  src={job.companyInfo?.companyLogo}
-                                  alt="logo"
-                                  height={80}
-                                  width={80}
-                                  className="h-20 w-20"
-                                /> */}
-
                                 <div>
                                   <h1 className="mb-1 line-clamp-1 text-xl font-bold">
                                     {job.jobTitle}
@@ -289,19 +301,21 @@ const HomePage = () => {
               className="my-2 w-full"
             >
               <CarouselContent>
-                {Array.from({ length: 10 }).map((_, index) => (
+                {jobIndustries.map((industry, index) => (
                   <CarouselItem
                     key={index}
                     className="md:basis-1/2 lg:basis-1/5"
                   >
                     <div className="p-1">
                       <div>
-                        <div className="flex flex-col items-center justify-center gap-4 rounded-md bg-[#005aff0d] p-6">
-                          <Image src={science} alt="" height={80} width={80} />
-                          <span className="text-base font-bold">
-                            KHOA HỌC & KỸ THUẬT
+                        <div className="flex cursor-pointer flex-col items-center justify-center gap-4 rounded-md bg-[#005aff0d] p-6">
+                          {/* <Image src={science} alt="" height={80} width={80} /> */}
+                          <span className="line-clamp-1 text-base font-bold">
+                            {industry.jobIndustry}
                           </span>
-                          <span className="text-gray-400">480 việc làm</span>
+                          <span className="text-gray-400">
+                            {industry.count} việc làm
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -316,7 +330,7 @@ const HomePage = () => {
           <div className="my-8">
             <p className="text-xl font-bold">Nhà Tuyển Dụng Nổi Bật</p>
             <Carousel
-              setApi={setApi}
+              setApi={setApi2}
               opts={{ align: "start" }}
               className="my-2 w-full"
             >
@@ -359,25 +373,25 @@ const HomePage = () => {
 
             <div className="mt-4 flex items-center justify-center gap-4">
               <button
-                onClick={() => api?.scrollTo(current - 1)}
+                onClick={() => api2?.scrollTo(current - 1)}
                 className={`flex h-8 w-8 items-center justify-center rounded-full border ${
-                  current === 0
+                  current2 === 0
                     ? "opacity-25 cursor-not-allowed"
                     : "group hover:border-yellow-500"
                 }`}
-                disabled={current === 0}
+                disabled={current2 === 0}
               >
                 <FaAngleLeft />
               </button>
 
               <button
-                onClick={() => api?.scrollTo(current + 1)}
+                onClick={() => api2?.scrollTo(current + 1)}
                 className={`flex h-8 w-8 items-center justify-center rounded-full border ${
-                  current === companies.length - 1
+                  current2 === companies.length - 1
                     ? "opacity-25 cursor-not-allowed"
                     : "group hover:border-yellow-500"
                 }`}
-                disabled={current === companies.length - 1}
+                disabled={current2 === companies.length - 1}
               >
                 <FaAngleRight />
               </button>
