@@ -366,11 +366,11 @@ const Search = () => {
                         {selectedProfile?.currentDegree}
                       </div>
                       <div className="mb-2">
-                        <span className="font-bold">Ngành nghề:</span>
+                        <span className="font-bold">Ngành nghề:</span>{" "}
                         {selectedProfile?.currentJobFunction}
                       </div>
                       <div className="mb-2">
-                        <span className="font-bold">Lĩnh Vực:</span>
+                        <span className="font-bold">Lĩnh Vực:</span>{" "}
                         {selectedProfile?.currentIndustries}
                       </div>
                       <div className="mb-2">
@@ -385,7 +385,7 @@ const Search = () => {
                     </div>
                     <div>
                       <div className="mb-2">
-                        <span className="font-bold">Ngày sinh:</span>
+                        <span className="font-bold">Ngày sinh:</span>{" "}
                         {selectedProfile?.dateOfBirth}
                       </div>
                       <div className="mb-2">
@@ -397,7 +397,7 @@ const Search = () => {
                         {selectedProfile?.maritalStatusId}
                       </div>
                       <div className="mb-2">
-                        <span className="font-bold">Địa chỉ:</span>
+                        <span className="font-bold">Địa chỉ:</span>{" "}
                         {selectedProfile?.address}
                       </div>
                       <div className="mb-2">
@@ -407,7 +407,7 @@ const Search = () => {
                         {selectedProfile?.workingPreferences.locations || "--"}
                       </div>
                       <div className="mb-2">
-                        <span className="font-bold">Bằng cấp:</span>
+                        <span className="font-bold">Bằng cấp:</span>{" "}
                         {selectedProfile?.highestDegree}
                       </div>
                     </div>

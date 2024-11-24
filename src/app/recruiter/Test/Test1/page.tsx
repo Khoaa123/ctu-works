@@ -127,16 +127,14 @@ const Chatbot = () => {
             {messages.map((message: any, index: any) => (
               <div
                 key={index}
-                className={`flex ${
-                  message.sender === "user" ? "justify-end" : "justify-start"
-                } mb-2`}
+                className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"
+                  } mb-2`}
               >
                 <div
-                  className={`${
-                    message.sender === "user"
+                  className={`${message.sender === "user"
                       ? "bg-blue-500 text-white"
                       : "bg-gray-200"
-                  } rounded-lg py-2 px-4 max-w-xs`}
+                    } rounded-lg py-2 px-4 max-w-xs`}
                 >
                   <div
                     dangerouslySetInnerHTML={{

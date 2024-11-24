@@ -50,8 +50,10 @@ const JobSearch = () => {
 
   useEffect(() => {
     const query = location.pathname.split("/job-search/")[1];
+    const search = location.pathname.split("/job-search/keyword=")[1].split("&")[0]
+    console.log(query,"asdadas")
     if (query) {
-      setSearchQuery(decodeURIComponent(query));
+      setSearchQuery(decodeURIComponent(search));
       fetchSearchJob(query);
     }
     fetchSearhData();
@@ -74,19 +76,19 @@ const JobSearch = () => {
 
     return res.json();
   };
-  const fetchSearhData = () => {};
+  const fetchSearhData = () => { };
+
   const handleSearch = (e: any) => {
     e.preventDefault();
     if (searchQuery) {
       createSearch(searchQuery);
-      router.push(`/job-search/${searchQuery}`);
+      router.push(`/job-search/keyword=${searchQuery}`);
     }
   };
 
-  console.log("job data nef", jobData);
   const fetchSearchJob = async (query: any) => {
     const res = await fetch(
-      `http://localhost:3001/api/search/search?keyword=${query}`
+      `http://localhost:3001/api/search/search?${query}`
     );
     const data = await res.json();
     setJobData(data.data);
@@ -98,6 +100,32 @@ const JobSearch = () => {
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
+  };
+
+
+  const [jobLevelFilter, setJobLevelFilter] = useState('')
+  const [jobTypeFilter, setJobTypeFilter] = useState('')
+  const handleSearchFilter = (e: any) => {
+    e.preventDefault();
+    const path = location.pathname.split("&")[0]
+    // if (searchQuery) {
+    createSearch(searchQuery);
+    if (jobLevelFilter === "all" && jobTypeFilter === "all") {
+      router.push(`${path}`);
+    } else {
+      if (jobLevelFilter !== "all" && jobTypeFilter !== "all") {
+        router.push(`${path}&jobType=${jobTypeFilter}&jobLevel=${jobLevelFilter}`);
+      } else {
+
+        if (jobLevelFilter !== "all") {
+          router.push(`${path}&jobLevel=${jobLevelFilter}`);
+        }
+        if (jobTypeFilter !== "all") {
+          router.push(`${path}&jobType=${jobTypeFilter}`);
+        }
+      }
+    }
+    // }
   };
   return (
     <>
@@ -194,7 +222,7 @@ const JobSearch = () => {
                 <SelectItem value="Khác">Khác</SelectItem>
               </SelectContent>
             </Select>
-            <Drawer direction="right">
+            <Drawer direction="left" >
               <DrawerTrigger asChild>
                 <button className="flex items-center gap-2 rounded-md border border-solid px-3">
                   {" "}
@@ -202,7 +230,7 @@ const JobSearch = () => {
                   Lọc nâng cao
                 </button>
               </DrawerTrigger>
-              <DrawerContent className="right-0 top-0 mt-0 h-full rounded-none pb-5 outline-none">
+              <DrawerContent className="w-96 right-0 top-0 mt-0 h-full rounded-none pb-5 outline-none">
                 <DrawerHeader>
                   <div className="flex items-center justify-between gap-6">
                     <DrawerTitle>Bộ lọc</DrawerTitle>
@@ -211,35 +239,39 @@ const JobSearch = () => {
                     </DrawerClose>
                   </div>
                 </DrawerHeader>
-                <ScrollArea className="h-4/5 py-4">
+                <ScrollArea className=" h-4/5 py-4">
                   <div className="px-4">
-                    <div className="my-3 flex flex-col gap-2">
-                      <p>Địa điểm</p>
-                      <Select>
+                    <div className="flex flex-col gap-2">
+                      <p>Loại công việc</p>{" "}
+                      <Select onValueChange={setJobTypeFilter}>
                         <SelectTrigger className="w-full bg-white py-5 shadow-none focus:ring-0">
-                          <SelectValue placeholder="Tất cả địa điểm" />
+                          <SelectValue placeholder="Tất cả loại công việc" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="hanoi">Hà Nội</SelectItem>
-                          <SelectItem value="hochiminh">
-                            Thành phố Hồ Chí Minh
-                          </SelectItem>
-                          <SelectItem value="cantho">Cần Thơ</SelectItem>
+                          <SelectItem value="all">Tất cả</SelectItem>
+                          <SelectItem value="Toàn thời gian">Toàn thời gian</SelectItem>
+                          <SelectItem value="Bán thời gian">Bán thời gian</SelectItem>
+                          <SelectItem value="Thực tập">Thực tập</SelectItem>
+                          <SelectItem value="Việc làm online">Việc làm online</SelectItem>
+                          <SelectItem value="Nghề tự do">Nghề tự do</SelectItem>
+                          <SelectItem value="Hợp đồng thời vụ">Hợp đồng thời vụ</SelectItem>
+                          <SelectItem value="Khác">Khác</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div className="flex flex-col gap-2">
-                      <p>Tên công ty</p>{" "}
-                      <Select>
+                      <p>Cấp bậc</p>{" "}
+                      <Select onValueChange={setJobLevelFilter}>
                         <SelectTrigger className="w-full bg-white py-5 shadow-none focus:ring-0">
-                          <SelectValue placeholder="Tất cả địa điểm" />
+                          <SelectValue placeholder="Tất cả cấp bậc" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="hanoi">Hà Nội</SelectItem>
-                          <SelectItem value="hochiminh">
-                            Thành phố Hồ Chí Minh
-                          </SelectItem>
-                          <SelectItem value="cantho">Cần Thơ</SelectItem>
+                          <SelectItem value="all">Tất cả</SelectItem>
+                          <SelectItem value="Thực tập sinh/Sinh viên">Thực tập sinh/Sinh viên</SelectItem>
+                          <SelectItem value="Mới tốt nghiệp">Mới tốt nghiệp</SelectItem>
+                          <SelectItem value="Nhân viên">Nhân viên</SelectItem>
+                          <SelectItem value="Trưởng phòng">Trưởng phòng</SelectItem>
+                          <SelectItem value="Giám đốc và Cấp cao hơn">Giám đốc và Cấp cao hơn</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -324,7 +356,7 @@ const JobSearch = () => {
                   <button className="rounded-md bg-[#ff7d55] p-2 text-white">
                     Xóa bộ lọc
                   </button>
-                  <button className="rounded-md bg-[#ff7d55] p-2 text-white">
+                  <button onClick={handleSearchFilter} className="rounded-md bg-[#ff7d55] p-2 text-white">
                     Tìm kiếm
                   </button>
                 </div>
@@ -335,8 +367,8 @@ const JobSearch = () => {
           <div className="my-3 rounded-sm border border-solid p-4">
             <div className="flex items-center justify-between text-base">
               <p>
-                {jobData.length} việc làm{" "}
-                <span className="font-bold">"{searchQuery}"</span> phù hợp
+                {jobData?.length || 0} việc làm{" "}
+                <span className="font-bold">"{searchQuery} "</span> phù hợp
               </p>
               <button className="flex items-center gap-3">
                 Tạo thông báo việc làm
@@ -351,38 +383,34 @@ const JobSearch = () => {
           <div className="flex items-center gap-3 text-sm">
             <span>Sắp xếp theo</span>
             <button
-              className={`rounded-md text-gray-600  ${
-                isActive === "all"
-                  ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
-                  : "bg-white"
-              } py-1 px-2 `}
+              className={`rounded-md text-gray-600  ${isActive === "all"
+                ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
+                : "bg-white"
+                } py-1 px-2 `}
             >
               Tất cả
             </button>
             <button
-              className={`rounded-md text-gray-600  ${
-                isActive === "salary"
-                  ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
-                  : "bg-white"
-              } py-1 px-2 `}
+              className={`rounded-md text-gray-600  ${isActive === "salary"
+                ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
+                : "bg-white"
+                } py-1 px-2 `}
             >
               Lương (cao - thấp)
             </button>
             <button
-              className={`rounded-md text-gray-600  ${
-                isActive === "newest"
-                  ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
-                  : "bg-white"
-              } py-1 px-2 `}
+              className={`rounded-md text-gray-600  ${isActive === "newest"
+                ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
+                : "bg-white"
+                } py-1 px-2 `}
             >
               Ngày đăng (mới nhất)
             </button>
             <button
-              className={`rounded-md text-gray-600  ${
-                isActive === "oldest"
-                  ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
-                  : "bg-white"
-              } py-1 px-2 `}
+              className={`rounded-md text-gray-600  ${isActive === "oldest"
+                ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
+                : "bg-white"
+                } py-1 px-2 `}
             >
               Ngày đăng (cũ nhất)
             </button>
@@ -390,7 +418,7 @@ const JobSearch = () => {
 
           <div>
             <div className="mt-4 flex flex-col gap-4">
-              {jobData.map((job, index) => (
+              {jobData?.map((job, index) => (
                 <Link
                   href={`/job/${job.jobPostId}`}
                   className="flex items-center gap-5 rounded-md border border-solid border-[#a0c1ff] bg-[#eff5ff] p-4 transition hover:border-sky-200 hover:bg-[#f9fbff]"

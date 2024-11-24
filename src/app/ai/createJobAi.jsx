@@ -4,7 +4,7 @@ import {
   HarmBlockThreshold,
 } from "@google/generative-ai"
 // const apiKey = process.env.GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI("AIzaSyCV5t9AYBtDsRP-NsISJFkqZL-FXQ60x6U");
+const genAI = new GoogleGenerativeAI("AIzaSyCRcv0OYDv0g_whs3ljcJ9V-rGw14OH-dc");
 const model = genAI.getGenerativeModel({
   model: "gemini-1.5-pro",
 });
@@ -28,8 +28,12 @@ export const chatSessionCreate = model.startChat({
         { text: "Nếu cảm thấy thông tin được cung cấp không đủ dữ liệu cần thiết thì trả về lỗi" },
         { text: "không trả về null" },
         { text: "chuyển jobRequirements và jobDescription vào trong <p></p> mỗi câu và trả về nằm trên 1 dòng" },
-        { text: "change gender Nam to 1 , Nữ to 2, Bất kỳ or other to any\nmaritalStatus Chưa kết hôn to 1 , Đã kết hôn to 2, Bất kỳ or other  to any\nnationality Người Việt Nam to 1, Người nước ngoài to 2,  Bất kỳ or other  to any" },
+        { text: "Nếu người dùng cung cấp ngày hoặc tháng không hợp lệ thì trả về ngày/tháng gần nhất với ngày/tháng mà người dùng cung cấp, nếu hợp lệ thì giữ nguyên" },
+        { text: "change gender Nam to 1 , Nữ to 2, Bất kỳ or other to any, maritalStatus Chưa kết hôn to 1 , Đã kết hôn to 2, Bất kỳ or other  to any, nationality Người Việt Nam to 1, Người nước ngoài to 2,  Bất kỳ or other  to any" },
         { text: "Phân tích jobType và trả về giá trị phù hợp thuộc 1 trong: Toàn thời gian, Bán thời gian, Thực tập, Việc làm online, Nghề tự do, Hợp đồng thời vụ, Khác," },
+        { text: "Phân tích companySize và trả về giá trị phù hợp thuộc 1 trong: Ít hơn 10, 10 - 24,25 - 99,100 - 499,500 - 999,1000 - 4999,5000 - 9999,10000 - 19999,20000 - 49999,Hơn 50000" },
+        { text: "Phân tích educationLevel và trả về giá trị phù hợp thuộc 1 trong: Bất kỳ, Trung học, Trung cấp, Cao đẳng, Cử nhân, Thạc sĩ, Tiến sĩ, Khác" },
+        { text: "expirationDate trả về định dạng yyyy/mm/dd" },
         { text: "location chỉ là array string" },
         { text: "Mỗi phúc lợi chỉ được chọn 1 lần, nếu bạn phân tích thấy 2 phúc lợi này cùng loại thì gộp chúng lại, còn không thì không gộp và không được quá 250 ký tự" },
       ],

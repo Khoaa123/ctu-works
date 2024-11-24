@@ -4,7 +4,7 @@ import {
     HarmBlockThreshold,
 } from "@google/generative-ai"
 import { useState } from "react";
-const genAI = new GoogleGenerativeAI("AIzaSyCV5t9AYBtDsRP-NsISJFkqZL-FXQ60x6U");
+const genAI = new GoogleGenerativeAI("AIzaSyCRcv0OYDv0g_whs3ljcJ9V-rGw14OH-dc");
 const model = genAI.getGenerativeModel({
     model: "gemini-1.5-pro-002",
 });

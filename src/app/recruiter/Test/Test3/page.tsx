@@ -42,11 +42,49 @@ import { format, setDefaultOptions } from "date-fns";
 import { cn } from "@/lib/utils";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { chatSession } from "../../ai/keyWordSuggest";
-import { chatSessionCreate } from "../../ai/createJobAi";
+import { chatSession } from "../../../ai/keyWordSuggest";
+import { chatSessionCreate } from "../../../ai/createJobAi";
 import * as XLSX from 'xlsx';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { Switch } from "antd";
+import "regenerator-runtime"
+import speech, { useSpeechRecognition } from "react-speech-recognition"
+
+interface FormDataVoice {
+  jobTitle: string;
+  expirationDate: string;
+  location: { [key: string]: any }[]; // Thay đổi kiểu dữ liệu cho phù hợp
+  jobDescription: string;
+  jobRequirements: string;
+  jobType: string;
+  minSalary: number;
+  maxSalary: number;
+  canDeal: boolean;
+  numberOfPositions: number;
+
+  jobLevel: string;
+  jobIndustry: string;
+  keywords: string[];
+  jobField: string;
+  language: string;
+  minExperience: number;
+  nationality: string;
+  educationLevel: string;
+  gender: string;
+  minAge: number;
+  maxAge: number;
+  maritalStatus: string;
+
+
+  companyName: string;
+  companyAddress: string;
+  companySize: string;
+  companyLogo: string;
+  companyStaffName: string;
+  companyBenefits: { title: string; content: string }[];
+  companyEmail: string;
+
+}
 export interface JwtPayload {
   userid: string;
   email: string;
@@ -59,7 +97,7 @@ const tabs = [
   { id: "application", label: "Lời mời ứng tuyển" },
 ];
 
-const CreateJobPostAI = () => {
+const CreateJobPostAIVoice = () => {
   const cookies = useCookies();
   const accessToken = cookies.get("accessTokenRecruiter");
   const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
@@ -160,6 +198,42 @@ const CreateJobPostAI = () => {
     },
   });
 
+  const [formDataVoice, setFormDataVoice] = useState<FormDataVoice>({
+    jobTitle: "",
+    expirationDate: '',
+    location: [{}],
+    jobDescription: "",
+    jobRequirements: "",
+    jobType: "",
+    minSalary: 0,
+    maxSalary: 0,
+    canDeal: false,
+    numberOfPositions: 0,
+    jobLevel: "",
+    jobIndustry: "",
+    keywords: [],
+    jobField: "",
+    language: "",
+    minExperience: 0,
+    nationality: "",
+    educationLevel: "",
+    gender: "",
+    minAge: 20,
+    maxAge: 30,
+    maritalStatus: "",
+    companyName: "",
+    companyAddress: "",
+    companySize: "",
+    companyLogo: "",
+    companyStaffName: "",
+    companyBenefits: [
+      {
+        title: "",
+        content: "",
+      },
+    ],
+    companyEmail: "",
+  });
 
   const [tags, setTags] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
@@ -544,7 +618,133 @@ const CreateJobPostAI = () => {
       console.log(error)
     }
   }
+  let run = 0
+  // useEffect(() => {
+  //   if (run < 1) {
+  //     try {
+  //       const fetchData = async () => {
+  //         const res = await fetchJobPost();
+  //         const data = res.data;
 
+  //         const {
+  //           jobTitle,
+  //           expirationDate,
+  //           location,
+  //           jobDescription,
+  //           jobRequirements,
+  //           jobType,
+  //           minSalary,
+  //           maxSalary,
+  //           numberOfPositions,
+
+  //           jobLevel,
+  //           jobIndustry,
+  //           keywords,
+  //           jobField,
+  //           language,
+  //           minExperience,
+  //           nationality,
+  //           educationLevel,
+  //           gender,
+  //           minAge,
+  //           maxAge,
+  //           maritalStatus,
+
+  //           companyName,
+  //           companyAddress,
+  //           companySize,
+  //           companyLogo,
+  //           companyStaffName,
+  //           companyBenefits,
+  //           companyEmail,
+  //           // companyInfo,
+  //           jobCompanyInfoId,
+  //           candidateExpectationsId,
+  //           jobInfoId,
+  //         } = data[0]
+
+  //         const companyInfo = {
+  //           companyName,
+  //           companyAddress,
+  //           companySize,
+  //           companyLogo,
+  //           companyStaffName,
+  //           companyBenefits,
+  //           companyEmail,
+  //           // companyInfo,
+  //         }
+  //         const jobInformation = {
+  //           jobLevel,
+  //           jobIndustry,
+  //           keywords,
+  //           jobField,
+  //           language,
+  //           minExperience,
+  //           nationality,
+  //           educationLevel,
+  //           gender,
+  //           minAge,
+  //           maxAge,
+  //           maritalStatus,
+  //         }
+  //         const jobData = {
+  //           jobCompanyInfoId,
+  //           candidateExpectationsId,
+  //           jobInfoId,
+  //           jobTitle,
+  //           expirationDate,
+  //           location,
+  //           jobDescription,
+  //           jobRequirements,
+  //           jobType,
+  //           minSalary,
+  //           maxSalary,
+  //           numberOfPositions, jobInformation, companyInfo
+  //         }
+
+  //         const Used: string[] = [];
+  //         location?.forEach((item: string, index: any) => {
+  //           handleAddLocationCompany(item, index);
+
+  //           Used.push(item?.split(":")[0]);
+  //         });
+  //         const res1 = await fetchRecruiterInfo();
+  //         const data1 = res1.data;
+  //         data1?.locationCompanyId.map(async (data: any) => {
+  //           const dataLocation = await getLocationCompany(data)
+  //           const LocationData = dataLocation.data[0]
+  //           if (LocationData !== null) {
+  //             Used?.map((item: any) => {
+  //               if (item === LocationData.title.split(":")[0]) {
+  //                 LocationData.used = true
+  //               }
+  //             })
+  //             Location.push(LocationData);
+  //             const uniqueArray = Location.filter((obj, index, self) => {
+  //               return self.findIndex((otherObj) => areObjectsEqual(obj, otherObj)) === index;
+  //             });
+  //             uniqueArray.splice(0, 1)
+  //             setLocation(uniqueArray)
+  //           }
+  //         })
+
+  //         keywords?.map((key: any) => {
+  //           handleAddTag(key)
+  //         })
+  //         companyBenefits?.forEach((item: any, index: any) => {
+  //           handleAddBenefit(item.title, index)
+  //         });
+  //         const date = new Date(expirationDate)
+  //         setDate(date)
+  //         setFormData(jobData)
+  //       };
+  //       run = 1
+  //       fetchData();
+  //     } catch (error) {
+  //       console.log(error)
+  //     }
+  //   }
+  // }, []);
   const fetchRecruiterInfo = async () => {
     const id = decodedToken?.userid;
     const res = await fetch(
@@ -931,7 +1131,7 @@ const CreateJobPostAI = () => {
   const [data, setData] = useState([]);
   const extractedValues = [''];
   const handleCreateWithPaste = async (e: any) => {
-    const message = `${textareaValue}`;
+    const message = `Hãy phân tích dữ liệu ${dataVoice} và trả về giá trị phù hợp với trường của nó`;
     try {
       setChoseFile(false)
       setIsLoading(true)
@@ -1005,9 +1205,6 @@ const CreateJobPostAI = () => {
       companyBenefits?.forEach((item: any, index: any) => {
         handleAddBenefit(item.title, index)
       });
-      console.log(expirationDate, "asdasdasd")
-      const newDate = new Date(expirationDate);
-      handleDateSelect(newDate)
       setFormData({
         jobTitle, expirationDate, location, jobDescription, jobRequirements,
         jobType, minSalary, maxSalary, canDeal, numberOfPositions,
@@ -1130,12 +1327,10 @@ const CreateJobPostAI = () => {
         keywords?.map((key: any) => {
           handleAddTag(key)
         })
+
         companyBenefits?.forEach((item: any, index: any) => {
           handleAddBenefit(item.title, index)
         });
-        console.log(expirationDate, "asdasdasd")
-        const newDate = new Date(expirationDate);
-        handleDateSelect(newDate)
         setFormData({
           jobTitle, expirationDate, location, jobDescription, jobRequirements,
           jobType, minSalary, maxSalary, canDeal, numberOfPositions,
@@ -1149,7 +1344,6 @@ const CreateJobPostAI = () => {
             companyBenefits, companyEmail
           }
         })
-
         setIsLoading(false)
         setShowInfo(true)
       } catch (error) {
@@ -1196,8 +1390,150 @@ const CreateJobPostAI = () => {
       setShowContinueButton(e.target.value.length > 1);
     }
   };
+  const { listening, transcript, resetTranscript } = useSpeechRecognition()
+  const [currentField, setCurrentField] = useState<keyof FormDataVoice>(
+    'jobTitle' as keyof FormDataVoice
+  );
+  useEffect(() => {
+    TextToSpeech("")
+  })
+  const Done = async () => {
+    speech.stopListening()
+    const result = await chatSessionCreate.sendMessage(`${dataVoice}`);
+    console.log("result", result?.response?.text())
+  }
+  const Respeak = async () => {
+    await speech.stopListening()
+    resetTranscript()
+    const key = currentField;
+    const vnKey = changeToVietnamese(key)
+    TextToSpeech(`Vui lòng nhập vào ${vnKey}`)
+    startListening(currentField)
+  }
+  const startEnterForm = () => {
+    TextToSpeech(`Vui lòng nhập vào chức danh`)
+    startListening("jobTitle")
+  }
+  const startListening = async (field: any) => {
+    await speech.startListening({ language: 'vi-VN', continuous: true })
+  }
+  const TextToSpeech = (data: any) => {
+    const text = `${data}`;
+    const options = new SpeechSynthesisUtterance(text);
+    let vietnameseVoice = null;
+    const voices = window.speechSynthesis.getVoices();
+    for (const voice of voices) {
+      if (voice.lang.startsWith('vi') || voice.name.includes('Vietnamese')) {
+        vietnameseVoice = voice;
+        break;
+      }
+    }
+    if (vietnameseVoice) {
+      options.voice = vietnameseVoice;
+      window.speechSynthesis.speak(options);
+    } else {
+      console.warn('Vietnamese voice not found. Using the default voice.');
+    }
+  };
+  const changeToVietnamese = (word: any) => {
+    switch (word) {
+      case "jobTitle":
+        return "Chức danh";
+      case "expirationDate":
+        return "Ngày hết hạn";
+      case "location":
+        return "Địa điểm làm việc";
+      case "jobDescription":
+        return "Mô tả công việc";
+      case "jobRequirements":
+        return "Yêu cầu công việc";
+      case "jobType":
+        return "Loại công việc";
+      case "minSalary":
+        return "Mức lương tối thiểu";
+      case "maxSalary":
+        return "Mức lương tối đa";
+      case "canDeal":
+        return "Mức lương có thể thương lượng hay không";
+      case "numberOfPositions":
+        return "Số lượng vị trí";
+      case "jobLevel":
+        return "Cấp độ công việc";
+      case "jobIndustry":
+        return "Lĩnh vực công việc";
+      case "keywords":
+        return "Từ khóa";
+      case "jobField":
+        return "Ngành nghề chi tiết";
+      case "language":
+        return "Ngôn ngữ";
+      case "minExperience":
+        return "Kinh nghiệm tối thiểu";
+      case "nationality":
+        return "Quốc tịch";
+      case "educationLevel":
+        return "Bằng cấp tối thiểu";
+      case "gender":
+        return "Giới tính";
+      case "minAge":
+        return "Tuổi tối thiểu";
+      case "maxAge":
+        return "Tuổi tối đa";
+      case "maritalStatus":
+        return "Tình trạng hôn nhân";
+      case "companyName":
+        return "Tên công ty";
+      case "companyAddress":
+        return "Địa chỉ công ty";
+      case "companySize":
+        return "Quy mô công ty";
+      case "companyStaffName":
+        return "Tên nhân viên công ty";
+      case "companyBenefits":
+        return "Lợi ích công ty";
+      case "companyEmail":
+        return "Email công ty";
+      case "companyInfo":
+        return "Thông tin công ty";
+      default:
+        return word;
+    }
+  }
+
+  const [dataVoice, setDataVoice] = useState<any>([]);
+  const handleNextField = () => {
+    resetTranscript()
+    const keys = Object.keys(formDataVoice) as (keyof FormDataVoice)[];
+    setDataVoice([...dataVoice, `${currentField} : ${transcript}`]);
+    const currentIndex = keys.indexOf(currentField);
+    const nextIndex = currentIndex + 1;
+    if (nextIndex < keys.length) {
+      const key = keys[nextIndex];
+      const vnKey = changeToVietnamese(key)
+      setCurrentField(keys[nextIndex]);
+      TextToSpeech(`Vui lòng nhập vào ${vnKey}`)
+      startListening(keys[nextIndex])
+    } else {
+      console.log('Đã điền xong tất cả các trường:', formData);
+      TextToSpeech(`'Đã điền xong tất cả các trường vui lòng kiểm tra lại thông tin.`)
+    }
+  };
+  const handlePreviousField = () => {
+    resetTranscript()
+    const keys = Object.keys(formDataVoice) as (keyof FormDataVoice)[];
+    const currentIndex = keys.indexOf(currentField);
+    const previousIndex = currentIndex - 1;
+    if (previousIndex >= 0) {
+      const key = keys[previousIndex];
+      const vnKey = changeToVietnamese(key)
+      setCurrentField(keys[previousIndex]);
+      TextToSpeech(`Vui lòng nhập vào ${vnKey}`)
+      startListening(keys[previousIndex])
+    }
+  }
   const Test = () => {
-    const dateTest = new Date("22-11-2024");
+    console.log(formData)
+    const dateTest = new Date("2024-11-22");
     setShowInfo(true)
     handleDateSelect(dateTest)
   }
@@ -1207,101 +1543,20 @@ const CreateJobPostAI = () => {
       <div className="flex flex-col items-center py-10">
         <button onClick={Test}>Test</button>
         {showChoseFile &&
-          <div className="flex justify-center items-center">
-            <div className="bg-white p-8 rounded-lg shadow-md w-full">
-              <h1 className="text-2xl font-bold text-center mb-6">Tạo tin tuyển dụng nhanh chóng từ tập tin có sẵn với CtuWorks AI</h1>
-              <div className="flex">
-                <div className="w-2/3 pr-4">
-                  <h2 className="text-lg font-medium mb-4">Cung cấp thông tin theo cách của bạn</h2>
-                  <div className="flex items-center mb-6">
-                    <label className="mr-4">
-                      <input
-                        type="radio"
-                        name="inputMethod"
-                        value="file"
-                        className="mr-2"
-                        checked={inputMethod === 'file'}
-                        onChange={handleInputChange}
-                      />
-                      Tệp sẵn có
-                    </label>
-                    <label>
-                      <input
-                        type="radio"
-                        name="inputMethod"
-                        value="paste"
-                        className="mr-2"
-                        checked={inputMethod === 'paste'}
-                        onChange={handleInputChange}
-                      />
-                      Sao chép và dán
-                    </label>
-                  </div>
-                  {inputMethod === 'file' ? (
-                    <div>
-                      <div className="border-dashed border-2 border-gray-300 p-6 text-center mb-4"
-                        onDrop={handleDrop}
-                        onDragOver={handleDragOver}>
-                        <i className="fas fa-upload text-2xl mb-2"></i>
-                        <p className="mb-2">Kéo & thả tệp tin của bạn vào đây</p>
-                        <p className="mb-2">Hoặc</p>
-                        <div>
-                          <input
-                            type="file"
-                            accept=".xlsx, .xls, .txt"
-                            onChange={handleFileUpload}
-                            ref={fileInputRef}
-                            style={{ display: 'none' }}
-                          />
-                          <button onClick={handleButtonClick} style={customButtonStyle}>
-                            Upload File
-                          </button>
-                        </div>
-                        <p className="text-sm text-gray-500 mt-2">tệp .txt, .xls, .xlsx; có kích thước nhỏ hơn 2MB</p>
-
-                      </div>
-                      <p className="text-sm text-gray-500 mb-6">Lưu ý: Hệ thống chỉ đọc dữ liệu từ trang tính đầu tiên của Excel. Vui lòng đảm bảo dữ liệu đầy đủ ở trang này trước khi tải lên.</p>
-                    </div>
-                  ) : (
-                    <div className="text-right">
-                      <textarea
-                        value={textareaValue}
-                        onChange={handleTextareaChange}
-                        className="border border-gray-300 p-2 rounded w-full"
-                        style={{ minHeight: '150px' }}
-                      />
-                      <p className="text-gray-500 p-0 m-0 mb-4">
-                        {textareaValue.length} / 14500 ký tự
-                      </p>
-
-                      {showContinueButton && (
-                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                          onClick={handleCreateWithPaste}>
-                          Tiếp tục
-                        </button>
-                      )}
-                    </div>
-                  )}
-                  <div className="text-center">
-                    <a href="/recruiter/create-jobpost" className="text-blue-500">Đăng tin tuyển dụng thủ công</a>
-                  </div>
-                </div>
-                <div className="w-1/3 pl-4">
-                  <div className="bg-gray-100 p-4 rounded-lg">
-                    {inputMethod === 'file' ? (
-                      <img src="https://employer.vietnamworks.com/job-list/static/media/jd-file.52e7a755c3f82ca9b7e43fc6ea11874b.svg" alt="AI illustration" className="mb-4" />
-                    ) : (
-                      <img src="https://employer.vietnamworks.com/job-list/static/media/jd-text.90301e33d620591b54c1e53b30603119.svg" alt="AI illustration" className="mb-4" />
-                    )}
-                    <h2 className="text-lg font-medium mb-2">Tải tập tin có sẵn</h2>
-                    <ol className="list-decimal list-inside text-sm text-gray-700">
-                      <li>Bước 1: Kéo & thả tệp tin</li>
-                      <li>Bước 2: AI sẽ tiến hành trích xuất thông tin</li>
-                      <li>Bước 3: Kiểm tra, điều chỉnh và đăng tin</li>
-                    </ol>
-                  </div>
-                </div>
-              </div>
+          <div className="flex flex-col items-center">
+            <div className="block mb-4">
+              <p>Transcript: </p>
+              {transcript && <p>
+                {transcript}
+              </p>
+              }
+            </div>
+            <div className="flex">
+              <button style={customButtonStyle} className="m-2" onClick={startEnterForm}>Start</button>
+              <button style={customButtonStyle} className="m-2" onClick={handlePreviousField}>Previous</button>
+              <button style={customButtonStyle} className="m-2" onClick={handleNextField}>Next</button>
+              <button style={customButtonStyle} className="m-2" onClick={Respeak}>Respeak</button>
+              <button style={customButtonStyle} className="m-2" onClick={handleCreateWithPaste}>Done</button>
             </div>
           </div>
         }
@@ -1625,7 +1880,7 @@ const CreateJobPostAI = () => {
                                 <FaMinus className="fas fa-minus" />
                               </button>
                               <input
-                                value={formData?.numberOfPositions}
+                                value={numberOfPositions}
                                 onChange={(e) => setNumberOfPositions(Number(e.target.value))}
                                 type="text"
                                 className="w-12 rounded-lg border border-gray-300 p-2 text-center"
@@ -2487,4 +2742,4 @@ const CreateJobPostAI = () => {
   );
 };
 
-export default CreateJobPostAI;
+export default CreateJobPostAIVoice;
