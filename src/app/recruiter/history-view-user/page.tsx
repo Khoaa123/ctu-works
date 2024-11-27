@@ -76,8 +76,8 @@ const HistoryViewUser = () => {
                                                 className="group flex cursor-pointer items-center justify-between rounded-lg border bg-white p-4 transition-all duration-300 hover:bg-[#f9fcff]"
                                             >
                                                 <div className="flex flex-grow items-center gap-6">
-                                                    <Image
-                                                        src={item?.avatar}
+                                                    <img
+                                                        src={item?.avatar || "https://cdn-icons-png.flaticon.com/128/149/149071.png"}
                                                         alt={`avatar`}
                                                         className="rounded-lg"
                                                         width={60}

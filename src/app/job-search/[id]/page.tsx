@@ -49,9 +49,9 @@ const JobSearch = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const query = location.pathname.split("/job-search/")[1];
-    const search = location.pathname.split("/job-search/keyword=")[1].split("&")[0]
-    console.log(query,"asdadas")
+    const query = location.pathname?.split("/job-search/")[1];
+    const search = location.pathname?.split("/job-search/keyword=")[1]?.split("&")[0]
+    console.log(query, "asdadas")
     if (query) {
       setSearchQuery(decodeURIComponent(search));
       fetchSearchJob(query);
@@ -107,7 +107,7 @@ const JobSearch = () => {
   const [jobTypeFilter, setJobTypeFilter] = useState('')
   const handleSearchFilter = (e: any) => {
     e.preventDefault();
-    const path = location.pathname.split("&")[0]
+    const path = location.pathname?.split("&")[0]
     // if (searchQuery) {
     createSearch(searchQuery);
     if (jobLevelFilter === "all" && jobTypeFilter === "all") {
@@ -126,6 +126,10 @@ const JobSearch = () => {
       }
     }
     // }
+  };
+  const handleLocationChange = (value: any) => {
+    const path = location.pathname?.split("&")[0]
+    router.push(`${path}&location=${value}`)
   };
   return (
     <>
@@ -149,15 +153,17 @@ const JobSearch = () => {
               Tìm kiếm
             </button>
 
-            <Select>
+            <Select onValueChange={handleLocationChange}>
               <SelectTrigger className="w-fit bg-white py-5 shadow-none focus:ring-0">
                 <SelectValue placeholder="Tất cả địa điểm" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Quốc tế">Quốc tế</SelectItem>
-                <SelectItem value="Hải Phòng">Hải Phòng</SelectItem>
+                <SelectItem value="Hà Nội">Hà Nội</SelectItem>
+                <SelectItem value="Hồ Chí Minh">Hồ Chí Minh</SelectItem>
                 <SelectItem value="Đà Nẵng">Đà Nẵng</SelectItem>
                 <SelectItem value="Cần Thơ">Cần Thơ</SelectItem>
+                <SelectItem value="Hải Phòng">Hải Phòng</SelectItem>
                 <SelectItem value="Bà Rịa - Vũng Tàu">
                   Bà Rịa - Vũng Tàu
                 </SelectItem>
@@ -219,7 +225,7 @@ const JobSearch = () => {
                 <SelectItem value="Vĩnh Long">Vĩnh Long</SelectItem>
                 <SelectItem value="Vĩnh Phúc">Vĩnh Phúc</SelectItem>
                 <SelectItem value="Yên Bái">Yên Bái</SelectItem>
-                <SelectItem value="Khác">Khác</SelectItem>
+                <SelectItem value="all">Khác</SelectItem>
               </SelectContent>
             </Select>
             <Drawer direction="left" >

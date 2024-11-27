@@ -9,10 +9,7 @@ import { useCookies } from "next-client-cookies";
 import { jwtDecode } from "jwt-decode";
 import HeaderRecruiter from "@/components/HeaderRecruiter/HeaderRecruiter";
 import {
-  FaCloudUploadAlt,
-  FaInfoCircle,
   FaSearch,
-  FaThLarge,
 } from "react-icons/fa";
 import {
   Select,
@@ -22,7 +19,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "react-toastify";
-import { set } from "date-fns";
 
 export interface JwtPayload {
   userid: string;
@@ -197,7 +193,11 @@ const MyCandidate = () => {
   };
 
   const countStatus = (status: any) => {
-    return applyJob[applySelect].filter((application) => application.status === status).length;
+    if (status === "all") {
+      return userApplyDetail[applySelect].length;
+    } else {
+      return applyJob[applySelect].filter((application) => application.status === status).length;
+    }
   };
   const [filteredApplies, setFilteredApplies] = useState([{}]);
   useEffect(() => {
@@ -213,6 +213,12 @@ const MyCandidate = () => {
       setFilteredApplies(filtered);
     }
   }
+
+  const handleSearch = (e: any) => {
+    const filtered = userApplyDetail[applySelect].filter((apply) => apply.fullName.toLowerCase().includes(e.target.value.toLowerCase()) || apply.email.toLowerCase().includes(e.target.value.toLowerCase()) || apply.phoneNumber.toString().toLowerCase().includes(e.target.value.toString().toLowerCase()))
+    setFilteredApplies(filtered)
+  }
+
   return (
     <div>
       <HeaderRecruiter />
@@ -237,64 +243,47 @@ const MyCandidate = () => {
                 </div>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4 w-[30%]">
               <input
                 type="text"
                 placeholder="Tìm kiếm theo email, tên hoặc số điện thoại"
-                className="rounded border px-2 py-1"
+                onChange={(e) => handleSearch(e)}
+                className="rounded border px-2 py-1 w-[100%]"
               />
               <FaSearch className="fas fa-search" />
-              <div className="flex items-center space-x-2">
-                <FaThLarge className="fas fa-th-large" />
-                <FaList className="fas fa-list" />
-              </div>
             </div>
-          </div>
-          <div className="flex items-center space-x-4">
-            <div className="relative">
-              <button className="rounded border bg-blue-100 px-4 py-2" onClick={() => setFillter("all")}>
-                Tất cả
-              </button>
-            </div>
-            {/* <div className="relative">
-              <button className="rounded border px-4 py-2">Kinh nghiệm</button>
-            </div>
-            <div className="relative">
-              <button className="rounded border px-4 py-2">Mức lương</button>
-            </div> */}
-            <button className="rounded bg-gray-200 px-4 py-2">
-              Tất cả bộ lọc
-            </button>
           </div>
         </div>
         <div className="flex w-full space-x-2">
           <div className="mb-4 flex flex-1 items-center justify-between rounded border border-gray-300 bg-white p-4">
             <div className="flex items-center space-x-2">
-              <button className="text-gray-700" onClick={() => setFillter("Chờ phản hồi")}>1. Chờ phản hồi</button>
+              <button className="text-gray-700" onClick={() => setFillter("all")}>1. Tất cả ứng viên</button>
+              <span className="rounded-full bg-red-500 px-2 text-white">{countStatus("all")}</span>
+            </div>
+          </div>
+          <div className="mb-4 flex flex-1 items-center justify-between rounded border border-gray-300 bg-white p-4">
+            <div className="flex items-center space-x-2">
+              <button className="text-gray-700" onClick={() => setFillter("Chờ phản hồi")}>2. Chờ phản hồi</button>
               <span className="rounded-full bg-red-500 px-2 text-white">{countStatus("Chờ phản hồi")}</span>
             </div>
-            <FaCloudUploadAlt className="fas fa-cloud-upload-alt text-gray-500" />
           </div>
           <div className="mb-4 flex flex-1 items-center justify-between rounded border border-gray-300 bg-white p-4">
             <div className="flex items-center space-x-2">
-              <button className="text-gray-700" onClick={() => setFillter("Mời phỏng vấn")}>2. Mời phỏng vấn</button>
+              <button className="text-gray-700" onClick={() => setFillter("Mời phỏng vấn")}>3. Mời phỏng vấn</button>
               <span className="rounded-full bg-red-500 px-2 text-white">{countStatus("Mời phỏng vấn")}</span>
             </div>
-            <FaCloudUploadAlt className="fas fa-cloud-upload-alt text-gray-500" />
           </div>
           <div className="mb-4 flex flex-1 items-center justify-between rounded border border-gray-300 bg-white p-4">
             <div className="flex items-center space-x-2">
-              <button className="text-gray-700" onClick={() => setFillter("Từ chối")}>3. Từ chối</button>
+              <button className="text-gray-700" onClick={() => setFillter("Từ chối")}>4. Từ chối</button>
               <span className="rounded-full bg-red-500 px-2 text-white">{countStatus("Từ chối")}</span>
             </div>
-            <FaCloudUploadAlt className="fas fa-cloud-upload-alt text-gray-500" />
           </div>
           <div className="mb-4 flex flex-1 items-center justify-between rounded border border-gray-300 bg-white p-4">
             <div className="flex items-center space-x-2">
-              <button className="text-gray-700" onClick={() => setFillter("Chấp nhận")}>4. Chấp nhận</button>
+              <button className="text-gray-700" onClick={() => setFillter("Chấp nhận")}>5. Chấp nhận</button>
               <span className="rounded-full bg-red-500 px-2 text-white">{countStatus("Chấp nhận")}</span>
             </div>
-            <FaCloudUploadAlt className="fas fa-cloud-upload-alt text-gray-500" />
           </div>
         </div>
         <div className="flex min-h-80 flex-col gap-4 overflow-y-scroll rounded border border-gray-300 bg-white p-2">
@@ -306,9 +295,9 @@ const MyCandidate = () => {
                 className="group flex w-full cursor-pointer items-center justify-between rounded-lg border border-blue-400 bg-white p-4 transition-all duration-300 hover:bg-[#f9fcff]"
               >
                 <div className="flex flex-grow items-center gap-6">
-                  <Image
-                    src={myJobpost[applySelect]?.companyLogo}
-                    alt={`companylogo`}
+                  <img
+                    src={myJobpost[applySelect]?.companyLogo || "https://cdn-icons-png.flaticon.com/128/149/149071.png"}
+                    alt={`avatar`}
                     className="rounded-lg"
                     width={60}
                     height={60}

@@ -655,15 +655,20 @@ const EditJob = () => {
               setLocation(uniqueArray)
             }
           })
+          location?.forEach((item: string, index: any) => {
+            Location.push({ _id: "", title: item, description: "", used: true })
+            locations.push({ id: index, title: item })
+          });
           keywords?.map((key: any) => {
             handleAddTag(key);
           });
-
+          setNumberOfPositions(numberOfPositions)
           companyBenefits?.forEach((item: any, index: any) => {
             handleAddBenefit(item.title, index)
           });
-          const date = new Date(expirationDate)
-          setDate(date)
+          const newDate = new Date(expirationDate);
+          handleDateSelect(newDate)
+   
           setFormData(jobData)
         };
         run = 1
@@ -1184,6 +1189,7 @@ const EditJob = () => {
                               {Location?.map((Loca) => (
                                 <option
                                   key={Loca._id}
+                                  value={`${Loca.title}`}
                                   disabled={Loca.used}
                                   className="bg-green-100 disabled:bg-gray-100 "
                                 >
@@ -1458,7 +1464,7 @@ const EditJob = () => {
                               <FaMinus className="fas fa-minus" />
                             </button>
                             <input
-                              value={minExperience}
+                              value={formData?.jobInformation?.minExperience}
                               onChange={(e) => {
                                 const newExperience = Math.max(Math.min(Number(e.target.value), 100), 1);
                                 setMinExperience(newExperience);

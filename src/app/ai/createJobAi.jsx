@@ -33,7 +33,7 @@ export const chatSessionCreate = model.startChat({
         { text: "Phân tích jobType và trả về giá trị phù hợp thuộc 1 trong: Toàn thời gian, Bán thời gian, Thực tập, Việc làm online, Nghề tự do, Hợp đồng thời vụ, Khác," },
         { text: "Phân tích companySize và trả về giá trị phù hợp thuộc 1 trong: Ít hơn 10, 10 - 24,25 - 99,100 - 499,500 - 999,1000 - 4999,5000 - 9999,10000 - 19999,20000 - 49999,Hơn 50000" },
         { text: "Phân tích educationLevel và trả về giá trị phù hợp thuộc 1 trong: Bất kỳ, Trung học, Trung cấp, Cao đẳng, Cử nhân, Thạc sĩ, Tiến sĩ, Khác" },
-        { text: "expirationDate trả về định dạng yyyy/mm/dd" },
+        { text: "expirationDate đã nhận là dạng dd/mm/yyy hãy xử lí và trả về định dạng yyyy/mm/dd và ngày trả về không được nhỏ hơn ngày hôm nay" },
         { text: "location chỉ là array string" },
         { text: "Mỗi phúc lợi chỉ được chọn 1 lần, nếu bạn phân tích thấy 2 phúc lợi này cùng loại thì gộp chúng lại, còn không thì không gộp và không được quá 250 ký tự" },
       ],

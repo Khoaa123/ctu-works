@@ -42,6 +42,10 @@ const Login = () => {
   })
   const Login = async () => {
     try {
+      if (!formData.email || !formData.password) {
+        toast.error("Vui lòng nhập đầy đủ thông tin");
+        return;
+      }
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/recruiter/sign-in-recruiter`,
         {
@@ -56,20 +60,23 @@ const Login = () => {
         }
       );
 
-      console.log(res);
-
       if (!res.ok) {
+        toast.error("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
         throw new Error("Đăng nhập thất bại");
       } else {
         const data = await res.json();
+        console.log(data)
         if (data.status === "OK") {
-          console.log("Đăng nhập thành công");
           cookies.set("accessTokenRecruiter", data.access_token);
           cookies.set("refreshTokenRecruiter", data.refresh_token);
           toast.success("Đăng nhập thành công");
           router.push("/recruiter");
         } else {
-          console.error("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
+          if (data.message == "Account not verified") {
+            toast.error("Tài khoản chưa được xác thực. Vui lòng kiểm tra email để xác thực tài khoản");
+            return;
+          }
+          toast.error("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
         }
         return data;
       }
@@ -115,6 +122,7 @@ const Login = () => {
                   <Input
                     id="password"
                     type={passwordVisible ? "text" : "password"}
+                       placeholder="Nhập mật khẩu của bạn"
                     value={formData.password}
                     onChange={(e) => handleChange(e)}
                     className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-sky-400 focus-visible:ring-0"

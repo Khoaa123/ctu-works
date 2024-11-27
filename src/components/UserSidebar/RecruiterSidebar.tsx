@@ -7,6 +7,7 @@ import {
   FaBriefcase,
   FaBuilding,
   FaEye,
+  FaLock,
 } from "react-icons/fa6";
 import { RiFileUserFill } from "react-icons/ri";
 import { BiLogOut } from "react-icons/bi";
@@ -112,10 +113,12 @@ const RecruiterSidebar = () => {
           </Link>
         </div>
         <div className="cursor-pointer rounded-md border bg-white p-4 transition duration-300 hover:border-sky-200 hover:bg-[#ebf2ff]">
-          <div className="flex items-center gap-3">
-            <FaBell color="grey" size={20} />
-            <p>Cài đặt thông báo việc làm</p>
-          </div>
+          <Link href="/recruiter/change-password">
+            <div className="flex items-center gap-3">
+              <FaLock color="grey" size={20} />
+              <p>Đổi mật khẩu</p>
+            </div>
+          </Link>
         </div>
         <div className="cursor-pointer rounded-md border bg-white p-4 transition duration-300 hover:border-sky-200 hover:bg-[#ebf2ff]">
           <div className="flex items-center gap-3"

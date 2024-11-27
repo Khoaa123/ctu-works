@@ -174,6 +174,11 @@ const HeaderRecruiter = () => {
                   Đăng tuyển với AI
                 </Button>
               </Link>
+              <Link href="/recruiter/create-jobpost-voice">
+                <Button className="h-10 bg-[#ff7d55] hover:bg-[#fd6333] lg:min-w-32">
+                  Đăng tuyển bằng giọng nói
+                </Button>
+              </Link>
             </div>
             <div className="flex flex-1 items-center justify-end gap-8">
               {/* <FaCartShopping size={24} className="cursor-pointer text-white" /> */}
@@ -264,10 +269,13 @@ const HeaderRecruiter = () => {
                         <FaCog size={16} color="#00b14f" />
                         Cài đặt gợi ý việc làm
                       </DropdownMenuItem> */}
-                      <DropdownMenuItem className="my-[6px] flex cursor-pointer items-center gap-3 bg-[#F6FAFB] p-3 font-medium">
-                        <FaLock size={16} color="#00b14f" />
-                        Đổi mật khẩu
-                      </DropdownMenuItem>
+                      <Link href="/recruiter/change-password">
+
+                        <DropdownMenuItem className="my-[6px] flex cursor-pointer items-center gap-3 bg-[#F6FAFB] p-3 font-medium">
+                          <FaLock size={16} color="#00b14f" />
+                          Đổi mật khẩu
+                        </DropdownMenuItem>
+                      </Link>
                       <DropdownMenuItem
                         className="my-[6px] flex cursor-pointer items-center gap-3 bg-[#F6FAFB] p-3 font-medium"
                         onClick={handleLogout}

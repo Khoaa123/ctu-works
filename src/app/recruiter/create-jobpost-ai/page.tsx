@@ -445,8 +445,6 @@ const CreateJobPostAI = () => {
               return "Tên nhân viên công ty";
             case "companyBenefits":
               return "Lợi ích công ty";
-            case "companyEmail":
-              return "Email công ty";
             case "companyInfo":
               return "Thông tin công ty";
             default:
@@ -463,7 +461,7 @@ const CreateJobPostAI = () => {
     fetchUpdateJob(formData)
       .then((response) => {
         if (response.status === "OK") {
-          toast.success("Chỉnh sửa bài đăng thành công!");
+          toast.success("Tạo bài đăng thành công!");
           router.push("/recruiter/job");
         } else {
           toast.error("Vui lòng không bỏ trống: Từ khóa hoặc phúc lợi.");
@@ -497,7 +495,7 @@ const CreateJobPostAI = () => {
   };
 
   const [minExperience, setMinExperience] = useState(
-    Math.max(Math.min(formData.jobInformation.minExperience, 100), 1)
+    formData.jobInformation.minExperience
   );
 
   const handleDecrementExperience = () => {
@@ -969,7 +967,7 @@ const CreateJobPostAI = () => {
         companyLogo = Test.companyLogo || "";
         companyStaffName = Test.companyStaffName || "";
         companyBenefits = Test.companyBenefits || "";
-        companyEmail = Test.companyEmail || "";
+        // companyEmail = Test.companyEmail || "";
         jobCompanyInfoId = Test.jobCompanyInfoId || "";
         candidateExpectationsId = Test.candidateExpectationsId || "";
         jobInfoId = Test.jobInfoId || "";
@@ -996,7 +994,7 @@ const CreateJobPostAI = () => {
       })
       location?.forEach((item: string, index: any) => {
         Location.push({ _id: "", title: item, description: "", used: false })
-
+        locations.push({ id: index, title: item })
       });
       keywords?.map((key: any) => {
         handleAddTag(key)
@@ -1005,9 +1003,11 @@ const CreateJobPostAI = () => {
       companyBenefits?.forEach((item: any, index: any) => {
         handleAddBenefit(item.title, index)
       });
-      console.log(expirationDate, "asdasdasd")
+
       const newDate = new Date(expirationDate);
       handleDateSelect(newDate)
+        setMinExperience(minExperience)
+        companyEmail = decodedToken?.email ?? ''
       setFormData({
         jobTitle, expirationDate, location, jobDescription, jobRequirements,
         jobType, minSalary, maxSalary, canDeal, numberOfPositions,
@@ -1098,7 +1098,7 @@ const CreateJobPostAI = () => {
           companyLogo = Test.companyLogo || "";
           companyStaffName = Test.companyStaffName || "";
           companyBenefits = Test.companyBenefits || "";
-          companyEmail = Test.companyEmail || "";
+          // companyEmail = Test.companyEmail || "";
           jobCompanyInfoId = Test.jobCompanyInfoId || "";
           candidateExpectationsId = Test.candidateExpectationsId || "";
           jobInfoId = Test.jobInfoId || "";
@@ -1106,7 +1106,7 @@ const CreateJobPostAI = () => {
         const Used: string[] = [];
         const res1 = await fetchRecruiterInfo();
         const data1 = res1.data;
-        data1?.locationCompanyId.map(async (data: any) => {
+        data1?.locationCompanyId.map(async (data: any, index: any) => {
           const dataLocation = await getLocationCompany(data)
           const LocationData = dataLocation.data[0]
           if (LocationData !== null) {
@@ -1124,18 +1124,21 @@ const CreateJobPostAI = () => {
           }
         })
         location?.forEach((item: string, index: any) => {
-          Location.push({ _id: "", title: item, description: "", used: false })
-
+          Location.push({ _id: "", title: item, description: "", used: true })
+          locations.push({ id: index, title: item })
         });
+
         keywords?.map((key: any) => {
           handleAddTag(key)
         })
         companyBenefits?.forEach((item: any, index: any) => {
           handleAddBenefit(item.title, index)
         });
-        console.log(expirationDate, "asdasdasd")
+
         const newDate = new Date(expirationDate);
         handleDateSelect(newDate)
+        setMinExperience(minExperience)
+        companyEmail = decodedToken?.email ?? ''
         setFormData({
           jobTitle, expirationDate, location, jobDescription, jobRequirements,
           jobType, minSalary, maxSalary, canDeal, numberOfPositions,
@@ -1196,16 +1199,12 @@ const CreateJobPostAI = () => {
       setShowContinueButton(e.target.value.length > 1);
     }
   };
-  const Test = () => {
-    const dateTest = new Date("22-11-2024");
-    setShowInfo(true)
-    handleDateSelect(dateTest)
-  }
+
   return (
     <>
       <HeaderRecruiter />
       <div className="flex flex-col items-center py-10">
-        <button onClick={Test}>Test</button>
+
         {showChoseFile &&
           <div className="flex justify-center items-center">
             <div className="bg-white p-8 rounded-lg shadow-md w-full">
@@ -1328,7 +1327,6 @@ const CreateJobPostAI = () => {
           </>}
         {showInfo &&
           <>
-
             <div className="w-full max-w-4xl rounded-lg bg-white p-6 shadow-md">
               <div className="mb-6 flex justify-center">
                 <div className="flex flex-col items-center">
@@ -1458,12 +1456,12 @@ const CreateJobPostAI = () => {
                             {locations.map((loc) => (
                               <div key={loc.id} className="mt-1 flex items-center space-x-2">
                                 <select
-                                  value={loc.title}
+                                  value={loc?.title}
                                   onChange={(e) => {
                                     if (e.target.value === '+ Tạo địa điểm làm việc') {
                                       openModal();
                                     } else {
-                                      const use = e.target.value.split(':')
+                                      const use = e.target?.value?.split(':')
                                       if (loc.title.split(':')[0] !== use[0]) {
                                         const locationToUpdate = Location.find((location) => loc.title.split(':')[0] === location.title);
                                         if (locationToUpdate) {
@@ -1480,18 +1478,18 @@ const CreateJobPostAI = () => {
                                         location: locations,
                                       });
                                     }
-                                  }
-                                  }
+                                  }}
                                   className="w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400 focus-visible:ring-0"
                                 >
                                   <option>Chọn một địa điểm làm việc</option>
                                   {Location?.map((Loca) => (
                                     <option
+                                      value={`${Loca.title}`}
                                       key={Loca._id}
                                       disabled={Loca.used}
                                       className="bg-green-100 disabled:bg-gray-100 "
                                     >
-                                      {Loca.title}: {Loca.description}
+                                      {Loca.title}: {Loca.description}:
                                     </option>
                                   ))}
                                   <option className="text-blue-500 cursor-pointer" key={""}>+ Tạo địa điểm làm việc</option>
@@ -1603,20 +1601,20 @@ const CreateJobPostAI = () => {
                                 className="w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400 focus-visible:ring-0"
                               />
                             </div>
-                            <div className="text-center">
-                              <label
-                                id="numberOfPositions"
-                                className="block text-gray-700"
-                              >
-                                Lương có thể thương lượng
-                              </label>
-                              <Switch className="mt-2" value={formData.canDeal}
-                                onChange={
-                                  () => {
-                                    setFormData({ ...formData, canDeal: !formData.canDeal });
-                                  }
-                                } />
-                            </div>
+                          </div>
+                          <div className="text-center">
+                            <label
+                              id="numberOfPositions"
+                              className="block text-gray-700"
+                            >
+                              Lương có thể thương lượng
+                            </label>
+                            <Switch className="mt-2" value={formData.canDeal}
+                              onChange={
+                                () => {
+                                  setFormData({ ...formData, canDeal: !formData.canDeal });
+                                }
+                              } />
                           </div>
                           <div>
                             <label id="numberOfPositions" className="block text-gray-700">Số lượng tuyển dụng</label>
@@ -1762,7 +1760,7 @@ const CreateJobPostAI = () => {
                                   <FaMinus className="fas fa-minus" />
                                 </button>
                                 <input
-                                  value={minExperience}
+                                  value={formData?.jobInformation?.minExperience}
                                   onChange={(e) => {
                                     const newExperience = Math.max(Math.min(Number(e.target.value), 100), 1);
                                     setMinExperience(newExperience);
@@ -1784,7 +1782,7 @@ const CreateJobPostAI = () => {
                                 Bằng cấp tối thiểu
                               </label>
                               <select
-                                value={formData.jobInformation.educationLevel}
+                                value={formData?.jobInformation?.educationLevel}
                                 onChange={(e) => {
                                   setFormData({
                                     ...formData,

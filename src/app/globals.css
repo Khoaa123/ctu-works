@@ -87,37 +87,42 @@
 .ql-editor {
   word-break: break-word;
 }
+
 @layer base {
   * {
     @apply list-inside border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   ul,
   ol {
     list-style: revert;
   }
+
   .bg-custom-gradient {
-    background: linear-gradient(
-      270deg,
-      rgb(0, 90, 255) 0%,
-      rgb(0, 23, 68) 100%
-    );
+    background: linear-gradient(270deg,
+        rgb(0, 90, 255) 0%,
+        rgb(0, 23, 68) 100%);
   }
+
   .bg-banner {
-    background: linear-gradient(
-      270deg,
-      rgb(0, 90, 255) 0%,
-      rgb(0, 23, 68) 73.72%
-    );
+    background: linear-gradient(270deg,
+        rgb(0, 90, 255) 0%,
+        rgb(0, 23, 68) 73.72%);
   }
 
   .bg-header-recruiter {
-    background: linear-gradient(
-      90deg,
-      rgb(0, 23, 68) 58%,
-      rgb(0, 90, 255) 100%
-    );
+    background: linear-gradient(90deg,
+        rgb(0, 23, 68) 58%,
+        rgb(0, 90, 255) 100%);
+  }
+}
+
+@layer base {
+  img {
+    display: initial;
   }
 }

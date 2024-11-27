@@ -42,8 +42,8 @@ import { format, setDefaultOptions } from "date-fns";
 import { cn } from "@/lib/utils";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { chatSession } from "../../../ai/keyWordSuggest";
-import { chatSessionCreate } from "../../../ai/createJobAi";
+import { chatSession } from "../../ai/keyWordSuggest";
+import { chatSessionCreate } from "../../ai/createJobAi";
 import * as XLSX from 'xlsx';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { Switch } from "antd";
@@ -79,10 +79,8 @@ interface FormDataVoice {
   companyName: string;
   companyAddress: string;
   companySize: string;
-  companyLogo: string;
   companyStaffName: string;
   companyBenefits: { title: string; content: string }[];
-  companyEmail: string;
 
 }
 export interface JwtPayload {
@@ -211,8 +209,8 @@ const CreateJobPostAIVoice = () => {
     numberOfPositions: 0,
     jobLevel: "",
     jobIndustry: "",
-    keywords: [],
     jobField: "",
+    keywords: [],
     language: "",
     minExperience: 0,
     nationality: "",
@@ -224,15 +222,14 @@ const CreateJobPostAIVoice = () => {
     companyName: "",
     companyAddress: "",
     companySize: "",
-    companyLogo: "",
     companyStaffName: "",
     companyBenefits: [
       {
         title: "",
         content: "",
       },
-    ],
-    companyEmail: "",
+    ]
+
   });
 
   const [tags, setTags] = useState<string[]>([]);
@@ -378,10 +375,7 @@ const CreateJobPostAIVoice = () => {
     (benefit) => benefit.title
   );
 
-  const [locations, setLocations] = useState<Location[]>([{
-    id: 0,
-    title: "Test"
-  }]);
+  const [locations, setLocations] = useState<Location[]>([]);
   const [locationId, setLocationId] = useState(0);
 
   const handleAddLocationCompany = (item: any, index: any) => {
@@ -522,8 +516,6 @@ const CreateJobPostAIVoice = () => {
               return "Tên nhân viên công ty";
             case "companyBenefits":
               return "Lợi ích công ty";
-            case "companyEmail":
-              return "Email công ty";
             case "companyInfo":
               return "Thông tin công ty";
             default:
@@ -540,7 +532,7 @@ const CreateJobPostAIVoice = () => {
     fetchUpdateJob(formData)
       .then((response) => {
         if (response.status === "OK") {
-          toast.success("Chỉnh sửa bài đăng thành công!");
+          toast.success("Tạo bài đăng thành công!");
           router.push("/recruiter/job");
         } else {
           toast.error("Vui lòng không bỏ trống: Từ khóa hoặc phúc lợi.");
@@ -638,19 +630,6 @@ const CreateJobPostAIVoice = () => {
   const getLocationCompany = async (id: any) => {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/location-company/get-location-company/${id}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return res.json();
-  };
-  const fetchJobPost = async () => {
-    // const id = location.pathname.split("/recruiter/edit-job/")[1];
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/create-job-ai/get/`,
       {
         method: "POST",
         headers: {
@@ -1010,12 +989,13 @@ const CreateJobPostAIVoice = () => {
   const handleCreateWithPaste = async (e: any) => {
     const message = `Hãy phân tích dữ liệu ${dataVoice} và trả về giá trị phù hợp với trường của nó`;
     try {
+    
       setChoseFile(false)
       setIsLoading(true)
       const result = await chatSessionCreate.sendMessage(message);
 
       const Test = JSON.parse(result?.response?.text())
-      let jobTitle, expirationDate, location, jobDescription, jobRequirements, jobType, minSalary, maxSalary, canDeal, numberOfPositions, jobLevel, jobIndustry, keywords, jobField, language, minExperience, nationality, educationLevel, gender, minAge, maxAge, maritalStatus, companyName, companyAddress, companySize, companyLogo, companyStaffName, companyBenefits, companyEmail, jobCompanyInfoId, candidateExpectationsId, jobInfoId;
+      let jobTitle, expirationDate, location, jobDescription, jobRequirements, jobType, minSalary, maxSalary, canDeal, numberOfPositions, jobLevel, jobIndustry, keywords, jobField, language, minExperience, nationality, educationLevel, gender, minAge, maxAge, maritalStatus, companyName, companyAddress, companySize, companyStaffName, companyBenefits, jobCompanyInfoId, candidateExpectationsId, jobInfoId;
 
       if (Test !== undefined) {
         jobTitle = Test.jobTitle || "";
@@ -1043,10 +1023,10 @@ const CreateJobPostAIVoice = () => {
         companyName = Test.companyName || "";
         companyAddress = Test.companyAddress || "";
         companySize = Test.companySize || "";
-        companyLogo = Test.companyLogo || "";
+        // companyLogo = Test.companyLogo || "";
         companyStaffName = Test.companyStaffName || "";
         companyBenefits = Test.companyBenefits || "";
-        companyEmail = Test.companyEmail || "";
+        // companyEmail = Test.companyEmail || "";
         jobCompanyInfoId = Test.jobCompanyInfoId || "";
         candidateExpectationsId = Test.candidateExpectationsId || "";
         jobInfoId = Test.jobInfoId || "";
@@ -1084,6 +1064,7 @@ const CreateJobPostAIVoice = () => {
       });
       const newDate = new Date(expirationDate);
       handleDateSelect(newDate)
+      let companyEmail = decodedToken?.email ?? ''
       setFormData({
         jobTitle, expirationDate, location, jobDescription, jobRequirements,
         jobType, minSalary, maxSalary, canDeal, numberOfPositions,
@@ -1093,8 +1074,8 @@ const CreateJobPostAIVoice = () => {
           maritalStatus,
         },
         companyInfo: {
-          companyName, companyAddress, companySize, companyLogo, companyStaffName,
-          companyBenefits, companyEmail
+          companyName, companyAddress, companySize, companyStaffName,
+          companyBenefits, companyEmail, companyLogo: ''
         }
       })
       setIsLoading(false)
@@ -1105,134 +1086,7 @@ const CreateJobPostAIVoice = () => {
     }
 
   }
-  const handleFileUpload = async (e: any) => {
-    const reader = new FileReader();
 
-    try {
-      if (e.target.files[0].name.split(".")[1] === "txt") {
-        reader.readAsText(e.target.files[0]);
-      } else {
-        reader.readAsBinaryString(e.target.files[0]);
-      }
-    } catch (error) {
-      if (e.dataTransfer.files[0].name.split(".")[1] === "txt") {
-        reader.readAsText(e.dataTransfer.files[0]);
-      } else {
-        reader.readAsBinaryString(e.dataTransfer.files[0]);
-      }
-    }
-
-    reader.onload = async (e) => {
-      const data = e.target?.result;
-      const workbook = XLSX.read(data, { type: "binary" });
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-      const parsedData: any = XLSX.utils.sheet_to_json(sheet);
-      setData(parsedData);
-      parsedData.forEach((data: any, index: any) => {
-        Object.keys(data).forEach((key) => {
-          extractedValues.push(data[key]);
-          // console.log(`${key}: ${data[key]}`);
-        });
-      });
-
-      const message = `${extractedValues}`;
-      try {
-        setChoseFile(false)
-        setIsLoading(true)
-        const result = await chatSessionCreate.sendMessage(message);
-
-        const Test = JSON.parse(result?.response?.text())
-        let jobTitle, expirationDate, location, jobDescription, jobRequirements, jobType, minSalary, maxSalary, canDeal, numberOfPositions, jobLevel, jobIndustry, keywords, jobField, language, minExperience, nationality, educationLevel, gender, minAge, maxAge, maritalStatus, companyName, companyAddress, companySize, companyLogo, companyStaffName, companyBenefits, companyEmail, jobCompanyInfoId, candidateExpectationsId, jobInfoId;
-
-        if (Test !== undefined) {
-          jobTitle = Test.jobTitle || "";
-          expirationDate = Test.expirationDate || "";
-          location = Test.location || "";
-          jobDescription = Test.jobDescription || "";
-          jobRequirements = Test.jobRequirements || "";
-          jobType = Test.jobType || "";
-          minSalary = Test.minSalary || 1;
-          maxSalary = Test.maxSalary || 1;
-          canDeal = Test.canDeal || false;
-          numberOfPositions = Test.numberOfPositions || "";
-          jobLevel = Test.jobLevel || "";
-          jobIndustry = Test.jobIndustry || "";
-          keywords = Test.keywords || "";
-          jobField = Test.jobField || "";
-          language = Test.language || "";
-          minExperience = Test.minExperience || 1;
-          nationality = Test.nationality || "";
-          educationLevel = Test.educationLevel || "";
-          gender = Test.gender || "";
-          minAge = Test.minAge || 1;
-          maxAge = Test.maxAge || 1;
-          maritalStatus = Test.maritalStatus || "";
-          companyName = Test.companyName || "";
-          companyAddress = Test.companyAddress || "";
-          companySize = Test.companySize || "";
-          companyLogo = Test.companyLogo || "";
-          companyStaffName = Test.companyStaffName || "";
-          companyBenefits = Test.companyBenefits || "";
-          companyEmail = Test.companyEmail || "";
-          jobCompanyInfoId = Test.jobCompanyInfoId || "";
-          candidateExpectationsId = Test.candidateExpectationsId || "";
-          jobInfoId = Test.jobInfoId || "";
-        }
-        const Used: string[] = [];
-        const res1 = await fetchRecruiterInfo();
-        const data1 = res1.data;
-        data1?.locationCompanyId.map(async (data: any) => {
-          const dataLocation = await getLocationCompany(data)
-          const LocationData = dataLocation.data[0]
-          if (LocationData !== null) {
-            Used?.map((item: any) => {
-              if (item === LocationData.title.split(":")[0]) {
-                LocationData.used = true
-              }
-            })
-            Location.push(LocationData);
-            const uniqueArray = Location.filter((obj, index, self) => {
-              return self.findIndex((otherObj) => areObjectsEqual(obj, otherObj)) === index;
-            });
-            uniqueArray.splice(0, 1)
-            setLocation(uniqueArray)
-          }
-        })
-        location?.forEach((item: string, index: any) => {
-          Location.push({ _id: "", title: item, description: "", used: false })
-          locations.push({ id: index, title: item })
-        });
-        keywords?.map((key: any) => {
-          handleAddTag(key)
-        })
-
-        companyBenefits?.forEach((item: any, index: any) => {
-          handleAddBenefit(item.title, index)
-        });
-        const newDate = new Date(expirationDate);
-        handleDateSelect(newDate)
-        setFormData({
-          jobTitle, expirationDate, location, jobDescription, jobRequirements,
-          jobType, minSalary, maxSalary, canDeal, numberOfPositions,
-          jobInformation: {
-            jobLevel, jobIndustry, keywords,
-            jobField, language, minExperience, nationality, educationLevel, gender, minAge, maxAge,
-            maritalStatus,
-          },
-          companyInfo: {
-            companyName, companyAddress, companySize, companyLogo, companyStaffName,
-            companyBenefits, companyEmail
-          }
-        })
-        setIsLoading(false)
-        setShowInfo(true)
-      } catch (error) {
-        setIsLoading(false)
-        setIsError(true)
-      }
-    };
-  }
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const handleButtonClick = () => {
     if (fileInputRef.current) {
@@ -1248,20 +1102,18 @@ const CreateJobPostAIVoice = () => {
     borderRadius: '5px',
     cursor: 'pointer',
   };
+  const disabledButtonStyle = {
+    ...customButtonStyle,
+    backgroundColor: '#ccc',
+    color: '#666',
+    opacity: 0.5,           
+    cursor: 'not-allowed',   
+  };
   const [showInfo, setShowInfo] = useState(false);
   const [showChoseFile, setChoseFile] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
-
-  const handleDrop = (event: any) => {
-    event.preventDefault();
-    handleFileUpload(event)
-  };
-
-  const handleDragOver = (event: any) => {
-    event.preventDefault();
-  };
   const [inputMethod, setInputMethod] = useState('file');
   const [textareaValue, setTextareaValue] = useState('');
   const [showContinueButton, setShowContinueButton] = useState(false);
@@ -1292,6 +1144,7 @@ const CreateJobPostAIVoice = () => {
     startListening(currentField)
   }
   const startEnterForm = () => {
+    setIsFormStarted(true);
     TextToSpeech(`Vui lòng nhập vào chức danh`)
     startListening("jobTitle")
   }
@@ -1396,7 +1249,7 @@ const CreateJobPostAIVoice = () => {
       startListening(keys[nextIndex])
     } else {
       console.log('Đã điền xong tất cả các trường:', formData);
-      TextToSpeech(`'Đã điền xong tất cả các trường vui lòng kiểm tra lại thông tin.`)
+      TextToSpeech(`'Đã điền xong tất cả các trường vui lòng bấm vào nút hoàn thành để AI tiến hành xử lý.`)
     }
   };
   const handlePreviousField = () => {
@@ -1412,32 +1265,23 @@ const CreateJobPostAIVoice = () => {
       startListening(keys[previousIndex])
     }
   }
-  const Test = () => {
-    // console.log(formData)
-    // const dateTest = new Date("2024-11-22");
-    setShowInfo(true)
-    // handleDateSelect(dateTest)
-  }
+  const [isFormStarted, setIsFormStarted] = useState(false);
   return (
     <>
       <HeaderRecruiter />
       <div className="flex flex-col items-center py-10">
-        <button onClick={Test}>Test</button>
         {showChoseFile &&
           <div className="flex flex-col items-center">
-            <div className="block mb-4">
-              <p>Transcript: </p>
-              {transcript && <p>
-                {transcript}
-              </p>
-              }
-            </div>
+              <p>Văn bản từ giọng nói: </p>
+                <div className="block mb-4" style={{ width: '70%', height: 'auto' }}>
+                    {transcript && <p>{transcript}</p>}
+                </div>
             <div className="flex">
-              <button style={customButtonStyle} className="m-2" onClick={startEnterForm}>Start</button>
-              <button style={customButtonStyle} className="m-2" onClick={handlePreviousField}>Previous</button>
-              <button style={customButtonStyle} className="m-2" onClick={handleNextField}>Next</button>
-              <button style={customButtonStyle} className="m-2" onClick={Respeak}>Respeak</button>
-              <button style={customButtonStyle} className="m-2" onClick={handleCreateWithPaste}>Done</button>
+              <button style={isFormStarted ? disabledButtonStyle : customButtonStyle} className="m-2" disabled={isFormStarted} onClick={startEnterForm}>Bắt đầu</button>
+              <button style={isFormStarted ? customButtonStyle : disabledButtonStyle} className="m-2"  disabled={!isFormStarted} onClick={handlePreviousField}>Lùi lại</button>
+              <button style={isFormStarted ? customButtonStyle : disabledButtonStyle} className="m-2"  disabled={!isFormStarted} onClick={handleNextField}>Tiếp theo</button>
+              <button style={isFormStarted ? customButtonStyle : disabledButtonStyle} className="m-2"  disabled={!isFormStarted} onClick={Respeak}>Đọc lại</button>
+              <button style={isFormStarted ? customButtonStyle : disabledButtonStyle} className="m-2"  disabled={!isFormStarted} onClick={handleCreateWithPaste}>Hoàn thành</button>
             </div>
           </div>
         }
@@ -2240,15 +2084,6 @@ const CreateJobPostAIVoice = () => {
                                   type="text"
                                   className="w-12 w-[30%] rounded border border-gray-300 px-2 py-1 text-center outline-none focus:border-sky-400"
                                 />
-                                {/* <label className="ml-5 flex w-[25%] items-center">
-                              <input
-                                type="checkbox"
-                                className="form-checkbox text-blue-500"
-                              />
-                              <span className="ml-2">
-                                Hiển thị cho Ứng Viên
-                              </span>
-                            </label> */}
                               </div>
                             </div>
                           </div>
