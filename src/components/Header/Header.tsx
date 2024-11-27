@@ -351,9 +351,11 @@ const Header = () => {
               </>
             ) : (
               <>
-                <button className="rounded-sm bg-[#212f3f] px-4 py-2 font-medium text-white transition duration-300 hover:bg-black">
-                  Đăng Tuyển Dụng
-                </button>
+                <Link href="/recruiter">
+                  <button className="rounded-sm bg-[#212f3f] px-4 py-2 font-medium text-white transition duration-300 hover:bg-black">
+                    Nhà tuyển dụng
+                  </button>
+                </Link>
                 <Link href="/login">
                   <button className="rounded-sm border border-[#00b14f] px-4 py-2 font-medium text-[#00b14f] transition duration-300 hover:bg-[#e5f7ed80]">
                     Đăng Nhập

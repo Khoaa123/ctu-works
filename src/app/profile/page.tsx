@@ -19,7 +19,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "react-toastify";
 import MultipleSelector from "@/components/ui/multiple-selector";
-import SelectReact from 'react-select';
+import SelectReact from "react-select";
 import {
   FaAward,
   FaHandHoldingUsd,
@@ -315,7 +315,9 @@ const Profile = () => {
     if (newIndustries.length < 4) {
       setWorkingPreferences((prev) => ({
         ...prev,
-        companyIndustries: newIndustries.map((industry: { value: string }) => industry.value),
+        companyIndustries: newIndustries.map(
+          (industry: { value: string }) => industry.value
+        ),
       }));
     } else {
       setWorkingPreferences((prev) => ({
@@ -323,7 +325,7 @@ const Profile = () => {
         companyIndustries: prev.companyIndustries.slice(0, 3),
       }));
     }
-  }
+  };
   const handleBenefitClick = (benefitId: any) => {
     setSelectedBenefits((prevBenefits) => {
       if (prevBenefits.includes(benefitId)) {
@@ -350,38 +352,74 @@ const Profile = () => {
     { value: "Tư Vấn Rủi Ro", label: "Tư Vấn Rủi Ro" },
     { value: "Cho Thuê & Quản Lý Căn Hộ", label: "Cho Thuê & Quản Lý Căn Hộ" },
     { value: "Định Giá", label: "Định Giá" },
-    { value: "Kinh Doanh Thương Mại, Cho Thuê & Quản Lý Tài Sản", label: "Kinh Doanh Thương Mại, Cho Thuê & Quản Lý Tài Sản" },
-    { value: "Phân Tích Dự Án Bất Động Sản", label: "Phân Tích Dự Án Bất Động Sản" },
+    {
+      value: "Kinh Doanh Thương Mại, Cho Thuê & Quản Lý Tài Sản",
+      label: "Kinh Doanh Thương Mại, Cho Thuê & Quản Lý Tài Sản",
+    },
+    {
+      value: "Phân Tích Dự Án Bất Động Sản",
+      label: "Phân Tích Dự Án Bất Động Sản",
+    },
     { value: "Phát Triển Bất Động Sản", label: "Phát Triển Bất Động Sản" },
     { value: "Quản Lý Cơ Sở Vật Chất", label: "Quản Lý Cơ Sở Vật Chất" },
     { value: "CEO", label: "CEO" },
     { value: "Quản Lý Cấp Cao", label: "Quản Lý Cấp Cao" },
-    { value: "Chính sách, Quy hoạch & Quy định", label: "Chính sách, Quy hoạch & Quy định" },
+    {
+      value: "Chính sách, Quy hoạch & Quy định",
+      label: "Chính sách, Quy hoạch & Quy định",
+    },
     { value: "NGO/Phi Lợi Nhuận", label: "NGO/Phi Lợi Nhuận" },
-    { value: "Bảo Mật Công Nghệ Thông Tin", label: "Bảo Mật Công Nghệ Thông Tin" },
+    {
+      value: "Bảo Mật Công Nghệ Thông Tin",
+      label: "Bảo Mật Công Nghệ Thông Tin",
+    },
     { value: "Chuyển Đổi Số", label: "Chuyển Đổi Số" },
     { value: "IT Support/Help Desk", label: "IT Support/Help Desk" },
     { value: "Phần Cứng Máy Tính", label: "Phần Cứng Máy Tính" },
     { value: "Phần Mềm Máy Tính", label: "Phần Mềm Máy Tính" },
-    { value: "Phân Tích Kinh Doanh/Phân Tích Hệ Thống", label: "Phân Tích Kinh Doanh/Phân Tích Hệ Thống" },
+    {
+      value: "Phân Tích Kinh Doanh/Phân Tích Hệ Thống",
+      label: "Phân Tích Kinh Doanh/Phân Tích Hệ Thống",
+    },
     { value: "QA/QC/Software Testing", label: "QA/QC/Software Testing" },
-    { value: "Quản Lý Công Nghệ Thông Tin", label: "Quản Lý Công Nghệ Thông Tin" },
+    {
+      value: "Quản Lý Công Nghệ Thông Tin",
+      label: "Quản Lý Công Nghệ Thông Tin",
+    },
     { value: "Quản Lý Dự Án Công Nghệ", label: "Quản Lý Dự Án Công Nghệ" },
     { value: "Quản Trị Cơ Sở Dữ Liệu", label: "Quản Trị Cơ Sở Dữ Liệu" },
-    { value: "System/Cloud/DevOps Engineer", label: "System/Cloud/DevOps Engineer" },
+    {
+      value: "System/Cloud/DevOps Engineer",
+      label: "System/Cloud/DevOps Engineer",
+    },
     { value: "Viễn Thông", label: "Viễn Thông" },
-    { value: "Phát Triển Sản Phẩm May Mặc", label: "Phát Triển Sản Phẩm May Mặc" },
+    {
+      value: "Phát Triển Sản Phẩm May Mặc",
+      label: "Phát Triển Sản Phẩm May Mặc",
+    },
     { value: "Đầu Bếp", label: "Đầu Bếp" },
     { value: "Quản Lý F&B", label: "Quản Lý F&B" },
-    { value: "Data Engineer/Data Analyst/AI", label: "Data Engineer/Data Analyst/AI" },
+    {
+      value: "Data Engineer/Data Analyst/AI",
+      label: "Data Engineer/Data Analyst/AI",
+    },
     { value: "UX/UI Design", label: "UX/UI Design" },
     { value: "Quản Lý Đơn Hàng", label: "Quản Lý Đơn Hàng" },
     { value: "Quầy Bar/Đồ Uống/Phục vụ", label: "Quầy Bar/Đồ Uống/Phục vụ" },
     { value: "Dịch Vụ Khách Hàng", label: "Dịch Vụ Khách Hàng" },
-    { value: "Dịch Vụ Khách Hàng - Call Center", label: "Dịch Vụ Khách Hàng - Call Center" },
-    { value: "Dịch Vụ Khách Hàng - Hướng Khách Hàng", label: "Dịch Vụ Khách Hàng - Hướng Khách Hàng" },
+    {
+      value: "Dịch Vụ Khách Hàng - Call Center",
+      label: "Dịch Vụ Khách Hàng - Call Center",
+    },
+    {
+      value: "Dịch Vụ Khách Hàng - Hướng Khách Hàng",
+      label: "Dịch Vụ Khách Hàng - Hướng Khách Hàng",
+    },
     { value: "Phân Phối Dược Phẩm", label: "Phân Phối Dược Phẩm" },
-    { value: "Dịch Vụ Sinh Viên/Hỗ Trợ Học Viên", label: "Dịch Vụ Sinh Viên/Hỗ Trợ Học Viên" },
+    {
+      value: "Dịch Vụ Sinh Viên/Hỗ Trợ Học Viên",
+      label: "Dịch Vụ Sinh Viên/Hỗ Trợ Học Viên",
+    },
     { value: "Giảng Dạy/Đào Tạo", label: "Giảng Dạy/Đào Tạo" },
     { value: "Nghiên Cứu Học Thuật", label: "Nghiên Cứu Học Thuật" },
     { value: "Quản Lý Giáo Dục", label: "Quản Lý Giáo Dục" },
@@ -397,10 +435,22 @@ const Profile = () => {
     { value: "Quản Lý Chuỗi Cung Ứng", label: "Quản Lý Chuỗi Cung Ứng" },
     { value: "Quản Lý Kho & Phân Phối", label: "Quản Lý Kho & Phân Phối" },
     { value: "Quản Lý Đội Xe", label: " Quản Lý Đội Xe" },
-    { value: "Thu Mua & Quản Trị Hàng Tồn Kho", label: "Thu Mua & Quản Trị Hàng Tồn Kho" },
-    { value: "Vận Tải/Giao Nhận Hàng Hóa", label: "Vận Tải / Giao Nhận Hàng Hóa " },
-    { value: "Xuất Nhập Khẩu & Thủ Tục Hải Quan", label: "Xuất Nhập Khẩu & Thủ Tục Hải Quan" },
-    { value: "Kế hoạch/Tư Vấn Doanh Nghiệp", label: "Kế hoạch / Tư Vấn Doanh Nghiệp " },
+    {
+      value: "Thu Mua & Quản Trị Hàng Tồn Kho",
+      label: "Thu Mua & Quản Trị Hàng Tồn Kho",
+    },
+    {
+      value: "Vận Tải/Giao Nhận Hàng Hóa",
+      label: "Vận Tải / Giao Nhận Hàng Hóa ",
+    },
+    {
+      value: "Xuất Nhập Khẩu & Thủ Tục Hải Quan",
+      label: "Xuất Nhập Khẩu & Thủ Tục Hải Quan",
+    },
+    {
+      value: "Kế hoạch/Tư Vấn Doanh Nghiệp",
+      label: "Kế hoạch / Tư Vấn Doanh Nghiệp ",
+    },
     { value: "Kế Toán Chi Phí", label: "Kế Toán Chi Phí" },
     { value: "Kế Toán Công Nợ", label: "Kế Toán Công Nợ" },
     { value: "Kế Toán Doanh Thu", label: "Kế Toán Doanh Thu" },
@@ -421,68 +471,131 @@ const Profile = () => {
     { value: "Kỹ Thuật Ô Tô", label: "Kỹ Thuật Ô Tô" },
     { value: "Kỹ Thuật Điện/Điện Tử", label: "Kỹ Thuật Điện / Điện Tử" },
     { value: "An Toàn Lao Động", label: "An Toàn Lao Động" },
-    { value: "Phát Triển Dự Án/Đấu Thầu", label: "Phát Triển Dự Án / Đấu Thầu" },
+    {
+      value: "Phát Triển Dự Án/Đấu Thầu",
+      label: "Phát Triển Dự Án / Đấu Thầu",
+    },
     { value: "Quản Lý Dự Án", label: "Quản Lý Dự Án" },
-    { value: "Thiết Kế & Quy Hoạch Đô Thị", label: "Thiết Kế & Quy Hoạch Đô Thị" },
-    { value: "Thiết Kế Kiến Trúc/Họa Viên Kiến Trúc", label: "Thiết Kế Kiến Trúc / Họa Viên Kiến Trúc" },
+    {
+      value: "Thiết Kế & Quy Hoạch Đô Thị",
+      label: "Thiết Kế & Quy Hoạch Đô Thị",
+    },
+    {
+      value: "Thiết Kế Kiến Trúc/Họa Viên Kiến Trúc",
+      label: "Thiết Kế Kiến Trúc / Họa Viên Kiến Trúc",
+    },
     { value: "Thiết Kế Nội Thất", label: "Thiết Kế Nội Thất" },
     { value: "Xây Dựng", label: "Xây Dựng" },
     { value: "Bán Hàng Kỹ Thuật", label: "Bán Hàng Kỹ Thuật" },
     { value: "Bán Hàng Qua Điện Thoại", label: "Bán Hàng Qua Điện Thoại" },
-    { value: "Bán Hàng/Phát Triển Kinh Doanh", label: "Bán Hàng / Phát Triển Kinh Doanh" },
+    {
+      value: "Bán Hàng/Phát Triển Kinh Doanh",
+      label: "Bán Hàng / Phát Triển Kinh Doanh",
+    },
     { value: "Bảo trì/Bảo Dưỡng", label: "Bảo trì / Bảo Dưỡng" },
-    { value: "Cơ Khí Tự Động Hoá", label: 'Cơ Khí Tự Động Hoá' },
+    { value: "Cơ Khí Tự Động Hoá", label: "Cơ Khí Tự Động Hoá" },
     { value: "In Ấn", label: "In Ấn" },
     { value: "Kỹ Thuật CNC", label: "Kỹ Thuật CNC" },
     { value: "Đầu Tư Tài Chính", label: "Đầu Tư Tài Chính" },
     { value: "Dịch Vụ Hỗ Trợ Khách Hàng", label: "Dịch Vụ Hỗ Trợ Khách Hàng" },
-    { value: "Môi Giới & Giao Dịch Chứng Khoán", label: "Môi Giới & Giao Dịch Chứng Khoán" },
-    { value: "Phân Tích & Báo Cáo Tài Chính", label: "Phân Tích & Báo Cáo Tài Chính" },
-    { value: "Quản Lý Quan Hệ Khách Hàng", label: "Quản Lý Quan Hệ Khách Hàng" },
-    { value: "Quản Lý Quỹ", label: 'Quản Lý Quỹ' },
+    {
+      value: "Môi Giới & Giao Dịch Chứng Khoán",
+      label: "Môi Giới & Giao Dịch Chứng Khoán",
+    },
+    {
+      value: "Phân Tích & Báo Cáo Tài Chính",
+      label: "Phân Tích & Báo Cáo Tài Chính",
+    },
+    {
+      value: "Quản Lý Quan Hệ Khách Hàng",
+      label: "Quản Lý Quan Hệ Khách Hàng",
+    },
+    { value: "Quản Lý Quỹ", label: "Quản Lý Quỹ" },
     { value: "Thu Hồi Nợ", label: "Thu Hồi Nợ" },
     { value: "Tín Dụng", label: "Tín Dụng" },
-    { value: "Tuân Thủ & Kiểm Soát Rủi Ro", label: "Tuân Thủ & Kiểm Soát Rủi Ro" },
-    { value: "Đạo Diễn Nghệ Thuật/Nhiếp Ảnh", label: 'Đạo Diễn Nghệ Thuật / Nhiếp Ảnh' },
+    {
+      value: "Tuân Thủ & Kiểm Soát Rủi Ro",
+      label: "Tuân Thủ & Kiểm Soát Rủi Ro",
+    },
+    {
+      value: "Đạo Diễn Nghệ Thuật/Nhiếp Ảnh",
+      label: "Đạo Diễn Nghệ Thuật / Nhiếp Ảnh",
+    },
     { value: "In Ấn & Xuất Bản", label: "In Ấn & Xuất Bản" },
     { value: "Sản Xuất Chương Trình", label: "Sản Xuất Chương Trình" },
-    { value: "Bộ Phận Tiền Sảnh & Dịch Vụ Khách Hàng", label: "Bộ Phận Tiền Sảnh & Dịch Vụ Khách Hàng" },
-    { value: "Công Ty Kinh Doanh Lữ Hành", label: "Công Ty Kinh Doanh Lữ Hành" },
+    {
+      value: "Bộ Phận Tiền Sảnh & Dịch Vụ Khách Hàng",
+      label: "Bộ Phận Tiền Sảnh & Dịch Vụ Khách Hàng",
+    },
+    {
+      value: "Công Ty Kinh Doanh Lữ Hành",
+      label: "Công Ty Kinh Doanh Lữ Hành",
+    },
     { value: "Đại Lý Du Lịch", label: "Đại Lý Du Lịch" },
     { value: "Đặt Phòng Khách Sạn", label: "Đặt Phòng Khách Sạn" },
     { value: "Hướng Dẫn Viên Du Lịch", label: "Hướng Dẫn Viên Du Lịch" },
     { value: "Vệ Sinh Buồng Phòng", label: "Vệ Sinh Buồng Phòng" },
     { value: "Đào Tạo Và Phát Triển", label: "Đào Tạo Và Phát Triển" },
     { value: "Gắn Kết Nhân Viên", label: "Gắn Kết Nhân Viên" },
-    { value: "Lương Thưởng & Phúc Lợi", label: 'Lương Thưởng & Phúc Lợi' },
+    { value: "Lương Thưởng & Phúc Lợi", label: "Lương Thưởng & Phúc Lợi" },
     { value: "Nhân Sự Tổng Hợp", label: "Nhân Sự Tổng Hợp" },
-    { value: "Quản Trị Hiệu Suất & Sự Nghiệp", label: "Quản Trị Hiệu Suất & Sự Nghiệp" },
+    {
+      value: "Quản Trị Hiệu Suất & Sự Nghiệp",
+      label: "Quản Trị Hiệu Suất & Sự Nghiệp",
+    },
     { value: "Tuyển Dụng", label: "Tuyển Dụng" },
     { value: "Nông/Lâm/Ngư nghiệp", label: "Nông / Lâm / Ngư nghiệp" },
     { value: "Luật Lao động/Hưu Trí", label: "Luật Lao động / Hưu Trí" },
     { value: "Luật Sở Hữu Trí Tuệ", label: "Luật Sở Hữu Trí Tuệ" },
-    { value: "Luật Tài Chính Ngân Hàng Thương mại", label: "Luật Tài Chính Ngân Hàng Thương mại" },
+    {
+      value: "Luật Tài Chính Ngân Hàng Thương mại",
+      label: "Luật Tài Chính Ngân Hàng Thương mại",
+    },
     { value: "Luật Thuế", label: "Luật Thuế" },
     { value: "Luật Xây Dựng", label: "Luật Xây Dựng" },
-    { value: "Quản Lý Thi Hành Pháp Luật", label: "Quản Lý Thi Hành Pháp Luật" },
+    {
+      value: "Quản Lý Thi Hành Pháp Luật",
+      label: "Quản Lý Thi Hành Pháp Luật",
+    },
     { value: "Thư Ký Luật & Trợ Lý Luật", label: "Thư Ký Luật & Trợ Lý Luật" },
     { value: "Thư Ký Pháp Lý", label: "Thư Ký Pháp Lý" },
     { value: "Tư Vấn Pháp Lý", label: "Tư Vấn Pháp Lý" },
-    { value: "Đảm Bảo Chất Lượng/Kiểm Soát Chất Lượng/Quản Lý Chất Lượng", label: "Đảm Bảo Chất Lượng / Kiểm Soát Chất Lượng / Quản Lý Chất Lượng" },
-    { value: "Hoạch Định & Quản Lý Sản Xuất", label: "Hoạch Định & Quản Lý Sản Xuất" },
+    {
+      value: "Đảm Bảo Chất Lượng/Kiểm Soát Chất Lượng/Quản Lý Chất Lượng",
+      label: "Đảm Bảo Chất Lượng / Kiểm Soát Chất Lượng / Quản Lý Chất Lượng",
+    },
+    {
+      value: "Hoạch Định & Quản Lý Sản Xuất",
+      label: "Hoạch Định & Quản Lý Sản Xuất",
+    },
     { value: "Nghiên Cứu & Phát Triển", label: "Nghiên Cứu & Phát Triển" },
     { value: "Phân Tích Sản Xuất", label: "Phân Tích Sản Xuất" },
     { value: "Quy Trình & Lắp Ráp", label: "Quy Trình & Lắp Ráp" },
     { value: "Vận Hành Máy Móc", label: "Vận Hành Máy Móc" },
     { value: "Chỉnh Sửa Video", label: "Chỉnh Sửa Video" },
-    { value: "Thiết Kế Công Nghiệp/Kỹ Thuật", label: "Thiết Kế Công Nghiệp / Kỹ Thuật" },
-    { value: "Thiết Kế Thời Trang/Trang Sức", label: "Thiết Kế Thời Trang / Trang Sức" },
+    {
+      value: "Thiết Kế Công Nghiệp/Kỹ Thuật",
+      label: "Thiết Kế Công Nghiệp / Kỹ Thuật",
+    },
+    {
+      value: "Thiết Kế Thời Trang/Trang Sức",
+      label: "Thiết Kế Thời Trang / Trang Sức",
+    },
     { value: "Thiết Kế Đồ Họa", label: "Thiết Kế Đồ Họa" },
-    { value: "Nghiên Cứu & Phân Tích Thị Trường", label: "Nghiên Cứu & Phân Tích Thị Trường" },
+    {
+      value: "Nghiên Cứu & Phân Tích Thị Trường",
+      label: "Nghiên Cứu & Phân Tích Thị Trường",
+    },
     { value: "Quan Hệ Công Chúng", label: "Quan Hệ Công Chúng" },
-    { value: "Quản Lý & Phát Triển Sản Phẩm", label: "Quản Lý & Phát Triển Sản Phẩm" },
+    {
+      value: "Quản Lý & Phát Triển Sản Phẩm",
+      label: "Quản Lý & Phát Triển Sản Phẩm",
+    },
     { value: "Quản Lý Sự Kiện", label: "Quản Lý Sự Kiện" },
-    { value: "Quản Lý Tài Khoản Khách Hàng", label: "Quản Lý Tài Khoản Khách Hàng" },
+    {
+      value: "Quản Lý Tài Khoản Khách Hàng",
+      label: "Quản Lý Tài Khoản Khách Hàng",
+    },
     { value: "Quản Lý Thương Hiệu", label: "Quản Lý Thương Hiệu" },
     { value: "Tiếp Thị", label: "Tiếp Thị" },
     { value: "Tiếp Thị Nội Dung", label: "Tiếp Thị Nội Dung" },
@@ -491,11 +604,20 @@ const Profile = () => {
     { value: "Dịch Vụ Hàng Không", label: "Dịch Vụ Hàng Không" },
     { value: "Dịch Vụ Vận Tải Công Cộng", label: "Dịch Vụ Vận Tải Công Cộng" },
     { value: "Vận Tải Đường Bộ", label: "Vận Tải Đường Bộ" },
-    { value: "Vận Tải Đường Sắt & Hàng Hải", label: "Vận Tải Đường Sắt & Hàng Hải" },
-    { value: "Bác Sĩ/Điều Trị Đa Khoa/Điều Trị Nội Trú", label: "Bác Sĩ / Điều Trị Đa Khoa / Điều Trị Nội Trú" },
+    {
+      value: "Vận Tải Đường Sắt & Hàng Hải",
+      label: "Vận Tải Đường Sắt & Hàng Hải",
+    },
+    {
+      value: "Bác Sĩ/Điều Trị Đa Khoa/Điều Trị Nội Trú",
+      label: "Bác Sĩ / Điều Trị Đa Khoa / Điều Trị Nội Trú",
+    },
     { value: "Dược Sĩ", label: "Dược Sĩ" },
     { value: "Kỹ Thuật Viên Y Tế", label: "Kỹ Thuật Viên Y Tế" },
-    { value: "Tư Vấn Tâm Lý & Công Tác Xã Hội", label: "Tư Vấn Tâm Lý & Công Tác Xã Hội" },
+    {
+      value: "Tư Vấn Tâm Lý & Công Tác Xã Hội",
+      label: "Tư Vấn Tâm Lý & Công Tác Xã Hội",
+    },
     { value: "Y Tá", label: "Y Tá" },
   ];
   const handleChange = (selectedOption: any) => {
@@ -508,58 +630,92 @@ const Profile = () => {
     return (
       option.label.toLowerCase().includes(inputValue.toLowerCase()) ||
       option.value.toLowerCase().includes(inputValue.toLowerCase())
-
     );
   };
-  const optionsIndustry = [{ value: "Bán lẻ/Bán sỉ", label: "Bán lẻ/Bán sỉ" },
-  { value: "Bao bì/In ấn/Dán nhãn", label: "Bao bì/In ấn/Dán nhãn" },
-  { value: "Bảo hiểm", label: "Bảo hiểm" },
-  { value: "Bất Động Sản/Cho thuê", label: "Bất Động Sản/Cho thuê" },
-  { value: "Chính phủ & NGO", label: "Chính phủ & NGO" },
-  { value: "Chứng khoán", label: "Chứng khoán" },
-  { value: "Chuỗi cung ứng", label: "Chuỗi cung ứng" },
-  { value: "Cơ khí/Máy móc/Thiết bị công nghiệp", label: "Cơ khí/Máy móc/Thiết bị công nghiệp" },
-  { value: "Cung cấp nhân lực", label: "Cung cấp nhân lực" },
-  { value: "Dệt may/May mặc/Giày dép", label: "Dệt may/May mặc/Giày dép" },
-  { value: "Dịch vụ kho bãi", label: "Dịch vụ kho bãi" },
-  { value: "Dịch vụ lưu trú/Nhà hàng/Khách sạn/Du lịch", label: "Dịch vụ lưu trú/Nhà hàng/Khách sạn/Du lịch" },
-  { value: "Dịch vụ môi trường/Chất thải", label: "Dịch vụ môi trường/Chất thải" },
-  { value: "Dịch vụ Y tế/Chăm sóc sức khỏe", label: "Dịch vụ Y tế/Chăm sóc sức khỏe" },
-  { value: "Điện/Điện tử", label: "Điện/Điện tử" },
-  { value: "Dược phẩm", label: "Dược phẩm" },
-  { value: "Giáo dục/Đào Tạo", label: "Giáo dục/Đào Tạo" },
-  { value: "Hàng tiêu dùng", label: "Hàng tiêu dùng" },
-  { value: "Hậu cần/Giao nhận", label: "Hậu cần/Giao nhận" },
-  { value: "Hệ thống CNTT & Thiết bị", label: "Hệ thống CNTT & Thiết bị" },
-  { value: "Hoá chất/Hoá sinh", label: "Hoá chất/Hoá sinh" },
-  { value: "Kế toán", label: "Kế toán" },
-  { value: "Khai khoáng/Dầu khí", label: "Khai khoáng/Dầu khí" },
-  { value: "Kiến trúc/Thiết kế nội thất", label: "Kiến trúc/Thiết kế nội thất" },
-  { value: "Kỹ thuật xây dựng/Cơ sở hạ tầng", label: "Kỹ thuật xây dựng/Cơ sở hạ tầng" },
-  { value: "Làm đẹp (Mỹ phẩm) & Chăm sóc cá nhân", label: "Làm đẹp (Mỹ phẩm) & Chăm sóc cá nhân" },
-  { value: "Luật/Dịch vụ pháp lý", label: "Luật/Dịch vụ pháp lý" },
-  { value: "Ngân hàng", label: "Ngân hàng" },
-  { value: "Nghệ thuật/Giải trí", label: "Nghệ thuật/Giải trí" },
-  { value: "Nghiên cứu", label: "Nghiên cứu" },
-  { value: "Nhập khẩu/Xuất khẩu", label: "Nhập khẩu/Xuất khẩu" },
-  { value: "Nhựa & Cao su", label: "Nhựa & Cao su" },
-  { value: "Nội thất/Gỗ", label: "Nội thất/Gỗ" },
-  { value: "Nông nghiệp/Lâm nghiệp/Nuôi trồng thủy sản", label: "Nông nghiệp/Lâm nghiệp/Nuôi trồng thủy sản" },
-  { value: "Ô tô", label: "Ô tô" },
-  { value: "Phần Mềm CNTT/Dịch vụ Phần mềm", label: "Phần Mềm CNTT/Dịch vụ Phần mềm" },
-  { value: "Sản xuất", label: "Sản xuất" },
-  { value: "Sản xuất và Phân phối Điện/Khí đốt/Nước", label: "Sản xuất và Phân phối Điện/Khí đốt/Nước" },
-  { value: "Tài Chính", label: "Tài Chính" },
-  { value: "Thiết bị y tế", label: "Thiết bị y tế" },
-  { value: "Thời trang/Trang sức", label: "Thời trang/Trang sức" },
-  { value: "Thú y", label: "Thú y" },
-  { value: "Thương mại điện tử", label: "Thương mại điện tử" },
-  { value: "Truyền thông/Báo chí/Quảng cáo", label: "Truyền thông/Báo chí/Quảng cáo" },
-  { value: "Tự động hoá", label: "Tự động hoá" },
-  { value: "Vận tải", label: "Vận tải" },
-  { value: "Vật liệu xây dựng", label: "Vật liệu xây dựng" },
-  { value: "Viễn thông", label: "Viễn thông" },
-  { value: "Khác", label: "Khác" }]
+  const optionsIndustry = [
+    { value: "Bán lẻ/Bán sỉ", label: "Bán lẻ/Bán sỉ" },
+    { value: "Bao bì/In ấn/Dán nhãn", label: "Bao bì/In ấn/Dán nhãn" },
+    { value: "Bảo hiểm", label: "Bảo hiểm" },
+    { value: "Bất Động Sản/Cho thuê", label: "Bất Động Sản/Cho thuê" },
+    { value: "Chính phủ & NGO", label: "Chính phủ & NGO" },
+    { value: "Chứng khoán", label: "Chứng khoán" },
+    { value: "Chuỗi cung ứng", label: "Chuỗi cung ứng" },
+    {
+      value: "Cơ khí/Máy móc/Thiết bị công nghiệp",
+      label: "Cơ khí/Máy móc/Thiết bị công nghiệp",
+    },
+    { value: "Cung cấp nhân lực", label: "Cung cấp nhân lực" },
+    { value: "Dệt may/May mặc/Giày dép", label: "Dệt may/May mặc/Giày dép" },
+    { value: "Dịch vụ kho bãi", label: "Dịch vụ kho bãi" },
+    {
+      value: "Dịch vụ lưu trú/Nhà hàng/Khách sạn/Du lịch",
+      label: "Dịch vụ lưu trú/Nhà hàng/Khách sạn/Du lịch",
+    },
+    {
+      value: "Dịch vụ môi trường/Chất thải",
+      label: "Dịch vụ môi trường/Chất thải",
+    },
+    {
+      value: "Dịch vụ Y tế/Chăm sóc sức khỏe",
+      label: "Dịch vụ Y tế/Chăm sóc sức khỏe",
+    },
+    { value: "Điện/Điện tử", label: "Điện/Điện tử" },
+    { value: "Dược phẩm", label: "Dược phẩm" },
+    { value: "Giáo dục/Đào Tạo", label: "Giáo dục/Đào Tạo" },
+    { value: "Hàng tiêu dùng", label: "Hàng tiêu dùng" },
+    { value: "Hậu cần/Giao nhận", label: "Hậu cần/Giao nhận" },
+    { value: "Hệ thống CNTT & Thiết bị", label: "Hệ thống CNTT & Thiết bị" },
+    { value: "Hoá chất/Hoá sinh", label: "Hoá chất/Hoá sinh" },
+    { value: "Kế toán", label: "Kế toán" },
+    { value: "Khai khoáng/Dầu khí", label: "Khai khoáng/Dầu khí" },
+    {
+      value: "Kiến trúc/Thiết kế nội thất",
+      label: "Kiến trúc/Thiết kế nội thất",
+    },
+    {
+      value: "Kỹ thuật xây dựng/Cơ sở hạ tầng",
+      label: "Kỹ thuật xây dựng/Cơ sở hạ tầng",
+    },
+    {
+      value: "Làm đẹp (Mỹ phẩm) & Chăm sóc cá nhân",
+      label: "Làm đẹp (Mỹ phẩm) & Chăm sóc cá nhân",
+    },
+    { value: "Luật/Dịch vụ pháp lý", label: "Luật/Dịch vụ pháp lý" },
+    { value: "Ngân hàng", label: "Ngân hàng" },
+    { value: "Nghệ thuật/Giải trí", label: "Nghệ thuật/Giải trí" },
+    { value: "Nghiên cứu", label: "Nghiên cứu" },
+    { value: "Nhập khẩu/Xuất khẩu", label: "Nhập khẩu/Xuất khẩu" },
+    { value: "Nhựa & Cao su", label: "Nhựa & Cao su" },
+    { value: "Nội thất/Gỗ", label: "Nội thất/Gỗ" },
+    {
+      value: "Nông nghiệp/Lâm nghiệp/Nuôi trồng thủy sản",
+      label: "Nông nghiệp/Lâm nghiệp/Nuôi trồng thủy sản",
+    },
+    { value: "Ô tô", label: "Ô tô" },
+    {
+      value: "Phần Mềm CNTT/Dịch vụ Phần mềm",
+      label: "Phần Mềm CNTT/Dịch vụ Phần mềm",
+    },
+    { value: "Sản xuất", label: "Sản xuất" },
+    {
+      value: "Sản xuất và Phân phối Điện/Khí đốt/Nước",
+      label: "Sản xuất và Phân phối Điện/Khí đốt/Nước",
+    },
+    { value: "Tài Chính", label: "Tài Chính" },
+    { value: "Thiết bị y tế", label: "Thiết bị y tế" },
+    { value: "Thời trang/Trang sức", label: "Thời trang/Trang sức" },
+    { value: "Thú y", label: "Thú y" },
+    { value: "Thương mại điện tử", label: "Thương mại điện tử" },
+    {
+      value: "Truyền thông/Báo chí/Quảng cáo",
+      label: "Truyền thông/Báo chí/Quảng cáo",
+    },
+    { value: "Tự động hoá", label: "Tự động hoá" },
+    { value: "Vận tải", label: "Vận tải" },
+    { value: "Vật liệu xây dựng", label: "Vật liệu xây dựng" },
+    { value: "Viễn thông", label: "Viễn thông" },
+    { value: "Khác", label: "Khác" },
+  ];
   const handleChangeIndustry = (selectedOption: any) => {
     setFormData({
       ...formData,
@@ -567,11 +723,10 @@ const Profile = () => {
     });
   };
   const handleChangeJobFunction = (selectedOption: any) => {
-
     setWorkingPreferences({
       ...workingPreferences,
       jobFunction: selectedOption.value,
-    })
+    });
   };
   return (
     <>
@@ -679,11 +834,21 @@ const Profile = () => {
                               <SelectValue placeholder="Vui lòng chọn..." />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="Trung họ">Thực tập sinh/Sinh viên</SelectItem>
-                              <SelectItem value="Trung cấp">Mới tốt nghiệp</SelectItem>
-                              <SelectItem value="Cao đẳng">Nhân viên</SelectItem>
-                              <SelectItem value="Cử nhân">Trưởng phòng</SelectItem>
-                              <SelectItem value="Thạc sĩ">Giám Đốc và Câp Cao Hơn</SelectItem>
+                              <SelectItem value="Trung họ">
+                                Thực tập sinh/Sinh viên
+                              </SelectItem>
+                              <SelectItem value="Trung cấp">
+                                Mới tốt nghiệp
+                              </SelectItem>
+                              <SelectItem value="Cao đẳng">
+                                Nhân viên
+                              </SelectItem>
+                              <SelectItem value="Cử nhân">
+                                Trưởng phòng
+                              </SelectItem>
+                              <SelectItem value="Thạc sĩ">
+                                Giám Đốc và Câp Cao Hơn
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -710,13 +875,19 @@ const Profile = () => {
                             Lĩnh vực hiện tại
                           </label>
                           <SelectReact
-                            value={formData.currentIndustries ? { value: formData.currentIndustries, label: formData.currentIndustries } : null}
+                            value={
+                              formData.currentIndustries
+                                ? {
+                                    value: formData.currentIndustries,
+                                    label: formData.currentIndustries,
+                                  }
+                                : null
+                            }
                             onChange={handleChangeIndustry}
                             options={optionsIndustry}
                             filterOption={filterOption}
                             placeholder="Vui lòng chọn..."
-                          >
-                          </SelectReact>
+                          ></SelectReact>
                         </div>
                         <div className="col-span-1 flex flex-col gap-1">
                           <label htmlFor="" className="text-sm">
@@ -726,13 +897,19 @@ const Profile = () => {
                             Ngành nghề hiện tại
                           </label>
                           <SelectReact
-                            value={formData.currentJobFunction ? { value: formData.currentJobFunction, label: formData.currentJobFunction } : null}
+                            value={
+                              formData.currentJobFunction
+                                ? {
+                                    value: formData.currentJobFunction,
+                                    label: formData.currentJobFunction,
+                                  }
+                                : null
+                            }
                             onChange={handleChange}
                             options={optionsFeild}
                             filterOption={filterOption}
                             placeholder="Tìm kiếm lĩnh vực nghề nghiệp..."
-                          >
-                          </SelectReact>
+                          ></SelectReact>
                         </div>
                       </div>
                       <div className="grid grid-cols-2 gap-5">
@@ -810,8 +987,12 @@ const Profile = () => {
                               <SelectValue placeholder="Vui lòng chọn..." />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="Trung học">Trung học</SelectItem>
-                              <SelectItem value="Trung cấp">Trung cấp</SelectItem>
+                              <SelectItem value="Trung học">
+                                Trung học
+                              </SelectItem>
+                              <SelectItem value="Trung cấp">
+                                Trung cấp
+                              </SelectItem>
                               <SelectItem value="Cao đẳng">Cao đẳng</SelectItem>
                               <SelectItem value="Cử nhân">Cử nhân</SelectItem>
                               <SelectItem value="Thạc sĩ">Thạc sĩ</SelectItem>
@@ -1082,8 +1263,9 @@ const Profile = () => {
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <MdMailOutline />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.email ? "text-[#414042] font-medium" : ""
-                      }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
+                      data?.email ? "text-[#414042] font-medium" : ""
+                    }`}
                   >
                     {data?.email ? data.email : "Email"}
                   </p>
@@ -1091,8 +1273,9 @@ const Profile = () => {
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <FiGift />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.dateOfBirth ? "text-[#414042] font-medium" : ""
-                      }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
+                      data?.dateOfBirth ? "text-[#414042] font-medium" : ""
+                    }`}
                   >
                     {data?.dateOfBirth ? data.dateOfBirth : "Ngày sinh"}
                   </p>
@@ -1100,8 +1283,9 @@ const Profile = () => {
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <MdOutlineLocationOn />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.address ? "text-[#414042] font-medium" : ""
-                      }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
+                      data?.address ? "text-[#414042] font-medium" : ""
+                    }`}
                   >
                     {data?.address ? data.address : "Địa chỉ"}
                   </p>
@@ -1112,8 +1296,9 @@ const Profile = () => {
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <FiPhone />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.phoneNumber ? "text-[#414042] font-medium" : ""
-                      }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
+                      data?.phoneNumber ? "text-[#414042] font-medium" : ""
+                    }`}
                   >
                     {data?.phoneNumber ? data.phoneNumber : "Số điện thoại"}
                   </p>
@@ -1121,8 +1306,9 @@ const Profile = () => {
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <FiUser />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.gender ? "text-[#414042] font-medium" : ""
-                      }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
+                      data?.gender ? "text-[#414042] font-medium" : ""
+                    }`}
                   >
                     {(() => {
                       switch (Number(data?.gender)) {
@@ -1139,8 +1325,9 @@ const Profile = () => {
                 <div className="my-1 flex items-center gap-2 text-gray-400">
                   <RiGraduationCapLine />
                   <p
-                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${data?.MSSV ? "text-[#414042] font-medium" : ""
-                      }`}
+                    className={`overflow-hidden text-ellipsis whitespace-nowrap ${
+                      data?.MSSV ? "text-[#414042] font-medium" : ""
+                    }`}
                   >
                     {data?.MSSV ? data.MSSV : "Mã số sinh viên"}
                   </p>
@@ -1390,9 +1577,7 @@ const Profile = () => {
                                       <SelectItem value="Yên Bái">
                                         Yên Bái
                                       </SelectItem>
-                                      <SelectItem value="Khác">
-                                        Khác
-                                      </SelectItem>
+                                      <SelectItem value="Khác">Khác</SelectItem>
                                     </SelectContent>
                                   </Select>
                                   {workingPreferences.locations.length > 1 && (
@@ -1447,13 +1632,19 @@ const Profile = () => {
                           Ngành nghề
                         </label>
                         <SelectReact
-                          value={workingPreferences.jobFunction ? { value: workingPreferences.jobFunction, label: workingPreferences.jobFunction } : null}
+                          value={
+                            workingPreferences.jobFunction
+                              ? {
+                                  value: workingPreferences.jobFunction,
+                                  label: workingPreferences.jobFunction,
+                                }
+                              : null
+                          }
                           onChange={handleChangeJobFunction}
                           options={optionsFeild}
                           filterOption={filterOption}
                           placeholder="Tìm kiếm lĩnh vực nghề nghiệp..."
-                        >
-                        </SelectReact>
+                        ></SelectReact>
                       </div>
                       <div className="col-span-1 flex flex-col gap-1">
                         <label htmlFor="" className="text-sm">
@@ -1523,9 +1714,7 @@ const Profile = () => {
                             <SelectItem value="Mới tốt nghiệp">
                               Mới tốt nghiệp
                             </SelectItem>
-                            <SelectItem value="Nhân viên">
-                              Nhân viên
-                            </SelectItem>
+                            <SelectItem value="Nhân viên">Nhân viên</SelectItem>
                             <SelectItem value="Trưởng phòng">
                               Trưởng phòng
                             </SelectItem>{" "}
@@ -1587,9 +1776,10 @@ const Profile = () => {
                               className={`flex flex-col items-center justify-center gap-2 
                                 rounded-md border border-gray-300 bg-white px-3 py-2 
                                 text-sm hover:bg-gray-100   
-                                ${selectedBenefits.includes(benefit.id)
-                                  ? "text-blue-400"
-                                  : ""
+                                ${
+                                  selectedBenefits.includes(benefit.id)
+                                    ? "text-blue-400"
+                                    : ""
                                 }`}
                             >
                               {benefit.icon}
@@ -1632,7 +1822,9 @@ const Profile = () => {
               </p>
               <p className="flex-1">
                 {" "}
-                {data?.workingPreferences.salary || "Thêm mức lương mong muốn"} (USD / tháng)
+                {data?.workingPreferences.salary ||
+                  "Thêm mức lương mong muốn"}{" "}
+                (USD / tháng)
               </p>
             </div>
           </div>

@@ -46,7 +46,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { chatSession } from "../../ai/keyWordSuggest";
-import { Switch } from 'antd';
+import { Switch } from "antd";
 export interface JwtPayload {
   userid: string;
   email: string;
@@ -1077,17 +1077,19 @@ const CreateJobpost = () => {
 
     debounceTimeout = setTimeout(async () => {
       if (e.target.value.length > 1) {
-        const message = `Gợi ý cho tôi 20 từ khóa về kỹ năng nghề nghiệp có chứa từ ${e.target.value
-          } thuộc lĩnh vực ${formData?.jobInformation?.jobField ||
+        const message = `Gợi ý cho tôi 20 từ khóa về kỹ năng nghề nghiệp có chứa từ ${
+          e.target.value
+        } thuộc lĩnh vực ${
+          formData?.jobInformation?.jobField ||
           formData?.jobInformation?.jobIndustry ||
           ""
-          }`;
+        }`;
         try {
           const result = await chatSession.sendMessage(message);
           const data = result?.response?.text();
           let arr = data.slice(2, -2).split('", "');
           setSuggestions(arr);
-        } catch (error) { }
+        } catch (error) {}
       }
     }, 500);
   };
@@ -1202,9 +1204,9 @@ const CreateJobpost = () => {
                             value={
                               formData.jobInformation.jobField
                                 ? {
-                                  value: formData.jobInformation.jobField,
-                                  label: formData.jobInformation.jobField,
-                                }
+                                    value: formData.jobInformation.jobField,
+                                    label: formData.jobInformation.jobField,
+                                  }
                                 : null
                             }
                             onChange={handleChange}
@@ -1222,9 +1224,9 @@ const CreateJobpost = () => {
                           value={
                             formData.jobInformation.jobIndustry
                               ? {
-                                value: formData.jobInformation.jobIndustry,
-                                label: formData.jobInformation.jobIndustry,
-                              }
+                                  value: formData.jobInformation.jobIndustry,
+                                  label: formData.jobInformation.jobIndustry,
+                                }
                               : null
                           }
                           onChange={handleChangeIndustry}
@@ -1416,12 +1418,16 @@ const CreateJobpost = () => {
                         >
                           Lương có thể thương lượng
                         </label>
-                        <Switch className="mt-2" value={formData.canDeal}
-                          onChange={
-                            () => {
-                              setFormData({ ...formData, canDeal: !formData.canDeal });
-                            }
-                          } />
+                        <Switch
+                          className="mt-2"
+                          value={formData.canDeal}
+                          onChange={() => {
+                            setFormData({
+                              ...formData,
+                              canDeal: !formData.canDeal,
+                            });
+                          }}
+                        />
                       </div>
                       <div>
                         <label
@@ -2149,7 +2155,7 @@ const CreateJobpost = () => {
                                   ...formData.companyInfo.companyBenefits,
                                   [benefit.id]: {
                                     ...formData.companyInfo.companyBenefits[
-                                    benefit.id
+                                      benefit.id
                                     ],
                                     title: e.target.value,
                                     content:
@@ -2171,9 +2177,9 @@ const CreateJobpost = () => {
                               disabled={
                                 usedBenefits.includes(item.name) &&
                                 item.name !==
-                                formData.companyInfo.companyBenefits[
-                                  benefit.id
-                                ]?.title
+                                  formData.companyInfo.companyBenefits[
+                                    benefit.id
+                                  ]?.title
                               }
                             >
                               {item.name}{" "}
