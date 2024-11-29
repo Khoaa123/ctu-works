@@ -39,7 +39,7 @@ function PersonalDetail({ setEnabledNext }: any) {
   };
 
   return (
-    <div className="mt-6 rounded-lg border-t-4 border-t-sky-300 p-5 shadow-lg">
+    <div className="mt-6 rounded-lg border p-5 shadow-lg">
       <h2 className="text-lg font-bold">Thông tin chi tiết</h2>
 
       <form>

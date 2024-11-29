@@ -57,10 +57,10 @@ const Summery = ({ setEnabledNext }: any) => {
 
   return (
     <div>
-      <div className="mt-10 rounded-lg border-t-4 border-t-primary p-5 shadow-lg">
+      <div className="mt-10 rounded-lg border p-5 shadow-lg">
         <h2 className="text-lg font-bold">Mục tiêu nghề nghiệp</h2>
         <div className="mt-7">
-          <div className="flex items-end justify-between">
+          {/* <div className="flex items-end justify-between">
             <Button
               variant="outline"
               type="button"
@@ -76,7 +76,7 @@ const Summery = ({ setEnabledNext }: any) => {
               )}
               Generate from AI
             </Button>
-          </div>
+          </div> */}
           <Textarea
             className="mt-5 min-h-32"
             required

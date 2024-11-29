@@ -71,7 +71,7 @@ function Education({
   };
 
   return (
-    <div className="mt-10 rounded-lg border-t-4 border-t-primary p-5 shadow-lg">
+    <div className="mt-10 rounded-lg border p-5 shadow-lg">
       <h2 className="text-lg font-bold">Học vấn</h2>
 
       <form>

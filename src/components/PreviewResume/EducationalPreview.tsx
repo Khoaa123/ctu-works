@@ -4,26 +4,26 @@ function EducationalPreview({ resumeInfo }: any) {
   return (
     <div className="my-6">
       <h2
-        className="mb-2 text-center text-sm font-bold"
-        style={{
-          color: resumeInfo?.themeColor,
-        }}
+        className="mb-2 text-start text-sm font-semibold"
+        // style={{
+        //   color: resumeInfo?.themeColor,
+        // }}
       >
         Học Vấn
       </h2>
       <hr
-        style={{
-          borderColor: resumeInfo?.themeColor,
-        }}
+      // style={{
+      //   borderColor: resumeInfo?.themeColor,
+      // }}
       />
 
       {resumeInfo?.education.map((education: any, index: any) => (
-        <div key={index} className="my-5">
+        <div key={index} className="my-2">
           <h2
-            className="text-sm font-bold"
-            style={{
-              color: resumeInfo?.themeColor,
-            }}
+            className="text-sm font-semibold"
+            // style={{
+            //   color: resumeInfo?.themeColor,
+            // }}
           >
             {education.universityName}
           </h2>

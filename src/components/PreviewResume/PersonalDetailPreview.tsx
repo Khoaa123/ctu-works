@@ -5,9 +5,9 @@ const PersonalDetailPreview = ({ resumeInfo }: any) => {
     <div>
       <h2
         className="text-center text-xl font-bold"
-        style={{
-          color: resumeInfo?.themeColor,
-        }}
+        // style={{
+        //   color: resumeInfo?.themeColor,
+        // }}
       >
         {resumeInfo?.firstName} {resumeInfo?.lastName}
       </h2>
@@ -16,36 +16,36 @@ const PersonalDetailPreview = ({ resumeInfo }: any) => {
       </h2>
       <h2
         className="text-center text-xs font-normal"
-        style={{
-          color: resumeInfo?.themeColor,
-        }}
+        // style={{
+        //   color: resumeInfo?.themeColor,
+        // }}
       >
         {resumeInfo?.address}
       </h2>
 
-      <div className="flex justify-between">
+      <div className="mt-5 flex justify-between">
         <h2
           className="text-xs font-normal"
-          style={{
-            color: resumeInfo?.themeColor,
-          }}
+          // style={{
+          //   color: resumeInfo?.themeColor,
+          // }}
         >
           {resumeInfo?.phone}
         </h2>
         <h2
           className="text-xs font-normal"
-          style={{
-            color: resumeInfo?.themeColor,
-          }}
+          // style={{
+          //   color: resumeInfo?.themeColor,
+          // }}
         >
           {resumeInfo?.email}
         </h2>
       </div>
       <hr
-        className="my-2 border-[1.5px]"
-        style={{
-          borderColor: resumeInfo?.themeColor,
-        }}
+        className="my-2"
+        // style={{
+        //   borderColor: resumeInfo?.themeColor,
+        // }}
       />
     </div>
   );

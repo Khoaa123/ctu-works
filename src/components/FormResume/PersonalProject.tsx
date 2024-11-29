@@ -108,7 +108,7 @@ function PersonalProject({ setEnabledNext }: any) {
   const formats = ["bold", "italic", "underline", "list"];
 
   return (
-    <div className="mt-10 rounded-lg border-t-4 border-t-primary p-5 shadow-lg">
+    <div className="mt-10 rounded-lg p-5 shadow-lg">
       <h2 className="text-lg font-bold">Dự Án Cá Nhân</h2>
       <p>
         {isSkipped

@@ -4,17 +4,17 @@ function SkillsPreview({ resumeInfo }: any) {
   return (
     <div className="my-6">
       <h2
-        className="mb-2 text-center text-sm font-bold"
-        style={{
-          color: resumeInfo?.themeColor,
-        }}
+        className="mb-2 text-start text-sm font-semibold"
+        // style={{
+        //   color: resumeInfo?.themeColor,
+        // }}
       >
         Kỹ năng
       </h2>
       <hr
-        style={{
-          borderColor: resumeInfo?.themeColor,
-        }}
+      // style={{
+      //   borderColor: resumeInfo?.themeColor,
+      // }}
       />
 
       <div className="my-4 grid grid-cols-2 gap-3">

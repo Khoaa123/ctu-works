@@ -14,11 +14,7 @@ export default function PreviewResume() {
 
   return (
     <div>
-      <div
-        id="resume-preview"
-        className="h-full border-t-[20px] p-14 shadow-lg"
-        style={{ borderColor: resumeInfo?.themeColor }}
-      >
+      <div id="resume-preview" className="h-full border p-14 shadow-lg">
         <PersonalDetailPreview resumeInfo={resumeInfo} />
         <SummeryPreview resumeInfo={resumeInfo} />
         {resumeInfo?.education?.length > 0 && (

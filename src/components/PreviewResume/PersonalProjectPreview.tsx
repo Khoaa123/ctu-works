@@ -4,26 +4,26 @@ function PersonalProjectPreview({ resumeInfo }: any) {
   return (
     <div className="my-6">
       <h2
-        className="mb-2 text-center text-sm font-bold"
-        style={{
-          color: resumeInfo?.themeColor,
-        }}
+        className="mb-2 text-start text-sm font-semibold"
+        // style={{
+        //   color: resumeInfo?.themeColor,
+        // }}
       >
         Dự Án
       </h2>
       <hr
-        style={{
-          borderColor: resumeInfo?.themeColor,
-        }}
+      // style={{
+      //   borderColor: resumeInfo?.themeColor,
+      // }}
       />
 
       {resumeInfo?.personalProjects?.map((project: any, index: any) => (
-        <div key={index} className="my-5">
+        <div key={index} className="my-2">
           <h2
-            className="text-sm font-bold"
-            style={{
-              color: resumeInfo?.themeColor,
-            }}
+            className="text-sm font-semibold"
+            // style={{
+            //   color: resumeInfo?.themeColor,
+            // }}
           >
             {project?.title}
           </h2>
@@ -47,10 +47,11 @@ function PersonalProjectPreview({ resumeInfo }: any) {
               <a
                 href={project?.link}
                 target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  color: resumeInfo?.themeColor,
-                }}
+                // rel="noopener noreferrer"
+                // style={{
+                //   color: resumeInfo?.themeColor,
+                // }}
+                className="text-blue-600 hover:underline"
               >
                 {project?.link}
               </a>

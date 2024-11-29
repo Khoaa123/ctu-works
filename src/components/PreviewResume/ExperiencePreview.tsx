@@ -4,26 +4,26 @@ function ExperiencePreview({ resumeInfo }: any) {
   return (
     <div className="my-6">
       <h2
-        className="mb-2 text-center text-sm font-bold"
-        style={{
-          color: resumeInfo?.themeColor,
-        }}
+        className="mb-2 text-start text-sm font-semibold"
+        // style={{
+        //   color: resumeInfo?.themeColor,
+        // }}
       >
-        Kinh nghiệm làm việc
+        Kinh Nghiệm Làm Việc
       </h2>
       <hr
-        style={{
-          borderColor: resumeInfo?.themeColor,
-        }}
+      // style={{
+      //   borderColor: resumeInfo?.themeColor,
+      // }}
       />
 
       {resumeInfo?.experience.map((experience: any, index: any) => (
-        <div key={index} className="my-5">
+        <div key={index} className="my-2">
           <h2
-            className="text-sm font-bold"
-            style={{
-              color: resumeInfo?.themeColor,
-            }}
+            className="text-sm font-semibold"
+            // style={{
+            //   color: resumeInfo?.themeColor,
+            // }}
           >
             {experience?.title}
           </h2>
