@@ -19,13 +19,23 @@ import { useRouter } from "next/navigation";
 import HeaderRecruiter from "@/components/HeaderRecruiter/HeaderRecruiter";
 import { FaPhoneAlt, FaBriefcase, FaDollarSign, FaMapMarkerAlt } from "react-icons/fa";
 import { FaHeart, FaPaperPlane, FaSackDollar } from "react-icons/fa6";
-
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 export interface JwtPayload {
   userid: string;
   email: string;
   fullName: string;
   role: string;
 }
+import { Badge } from "@/components/ui/badge";
+import { Briefcase, Calendar, DollarSign, MapPin } from "lucide-react";
+import { toast } from "react-toastify";
 const CompanyDetail = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const jobSectionRef = useRef<HTMLDivElement>(null);
@@ -88,7 +98,8 @@ const CompanyDetail = () => {
   const cookies = useCookies();
   const accessToken = cookies.get("accessToken");
   const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
-
+  const accessTokenRecruiter = cookies.get("accessTokenRecruiter");
+  const decodedTokenRecruiter = accessTokenRecruiter ? jwtDecode<JwtPayload>(accessTokenRecruiter) : null;
   const fetchDetailsUser = async () => {
     const id = location.pathname.split("/profileuser/")[1];
     const res = await fetch(
@@ -106,6 +117,58 @@ const CompanyDetail = () => {
 
   const navigate = (id: string) => {
     router.push(`/job/${id}`);
+  };
+  const [showJobPostModal, setShowJobPostModal] = useState(false);
+  const [selectedJobPost, setSelectedJobPost] = useState<any>(null);
+  const [jobPosts, setJobPosts] = useState<
+    Array<{ _id: string; title: string }>
+  >([]);
+  useEffect(() => {
+    const fetchJobPosts = async () => {
+      const data = await fetchGetJobPosts();
+      setJobPosts(data.data);
+    };
+    fetchJobPosts();
+  }, []);
+
+  const fetchGetJobPosts = async () => {
+    const recruiterId = decodedTokenRecruiter?.userid;
+    const res = await fetch(
+      `http://localhost:3001/api/jobpost/get-my-jobpost/${recruiterId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return res.json();
+  };
+  const handleSelectJobPost = (jobPostId: string) => {
+    setSelectedJobPost(jobPostId);
+  };
+  const handleSendInvitation = async (jobPostId: string) => {
+    const recruiterId = decodedTokenRecruiter?.userid;
+    const userId = location.pathname.split("/profileuser/")[1];
+    const res = await fetch(`http://localhost:3001/api/send-invite/send`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        recruiterId: recruiterId,
+        userId: userId,
+        jobId: jobPostId,
+      }),
+    });
+
+    const result = await res.json();
+    if (result.status === "OK") {
+      toast.success("Lời mời đã được gửi thành công");
+    } else {
+      toast.error("Gửi lời mời thất bại: " + result.message);
+    }
+    setShowJobPostModal(false);
   };
 
   return (
@@ -147,10 +210,12 @@ const CompanyDetail = () => {
             </div>
           </div>
           <div className="mt-4">
-            <button className="bg-orange-500 text-white px-4 py-2 rounded">Xem thông tin liên hệ (~2 Điểm)</button>
-            <input type="text" placeholder="Gửi lời mời ứng tuyển" className="border rounded px-4 py-2 ml-4" />
-            <button className="ml-2"><FaPaperPlane className="fas fa-paper-plane"/></button>
-            <button className="ml-2"><FaHeart className="fas fa-heart"/></button>
+            <button
+              onClick={() => setShowJobPostModal(true)}
+              className="rounded bg-blue-500 p-2 text-white"
+            >
+              Gửi lời mời online
+            </button>
           </div>
         </div>
         <div className="bg-white rounded-lg shadow-md p-6 mt-4">
@@ -220,29 +285,92 @@ const CompanyDetail = () => {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-md p-6 mt-4">
-          <h2 className="text-lg font-bold">Ứng viên phù hợp</h2>
-          <div className="mt-2">
-            {[
-              { name: "Le Phan", title: "Legal Counsel", company: "Vietnam Satellite Digital Television Co Ltd", experience: "5 năm", salary: "$1200" },
-              { name: "Huy Hoàng Đỗ", title: "Legal Counsel", company: "FPT software", experience: "3 năm", salary: "$1000" },
-              { name: "My Nguyễn Thị", title: "Senior Legal Counsel", company: "VNTRAVEL., JSC. (a member of VNLIFE Group)", experience: "8 năm", salary: "$1000" },
-              { name: "Lan Vũ Thị Minh", title: "Senior Legal Counsel", company: "Công ty TNHH LITEON Việt Nam", experience: "10 năm", salary: "$2000" },
-              { name: "Giang Nguyen", title: "Group General Legal Counsel", company: "Thien Minh Group (TMG)", experience: "20 năm", salary: "Thương lượng" }
-            ].map((candidate, index) => (
-              <div key={index} className="flex items-center mt-2">
-                <div className="w-10 h-10 rounded-full bg-gray-300"></div>
-                <div className="ml-4">
-                  <h3 className="font-bold">{candidate.name}</h3>
-                  <p className="text-gray-600">{candidate.title}</p>
-                  <p className="text-gray-600">{candidate.company}</p>
-                  <p className="text-gray-600"><i className="fas fa-briefcase"></i> {candidate.experience} <i className="fas fa-dollar-sign"></i> {candidate.salary}</p>
-                </div>
+        {showJobPostModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="w-1/2 rounded-lg bg-white p-6">
+              <h2 className="mb-4 text-xl font-bold">Chọn tin tuyển dụng</h2>
+              <ScrollArea className="h-[400px] pr-4">
+                {jobPosts.map((jobPost: any) => (
+                  <Card
+                    key={jobPost._id}
+                    className={`mb-4 cursor-pointer transition-all ${selectedJobPost === jobPost._id
+                      ? "border-blue-500 shadow-md"
+                      : ""
+                      }`}
+                    onClick={() => handleSelectJobPost(jobPost._id)}
+                  >
+                    <CardHeader>
+                      <CardTitle className="flex items-center justify-between">
+                        <span>{jobPost.jobTitle}</span>
+                        <Badge
+                          variant={
+                            jobPost.jobType === "Toàn thời gian"
+                              ? "default"
+                              : "secondary"
+                          }
+                        >
+                          {jobPost.jobType}
+                        </Badge>
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-2 gap-2 text-sm">
+                        <div className="flex items-center">
+                          <Briefcase className="mr-2 h-4 w-4" />
+                          <span>{jobPost.companyName}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <MapPin className="mr-2 h-4 w-4" />
+                          <span>{jobPost.companyAddress}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <DollarSign className="mr-2 h-4 w-4" />
+                          <span>
+                            {jobPost.minSalary} - {jobPost.maxSalary} USD
+                          </span>
+                        </div>
+                        <div className="flex items-center">
+                          <Calendar className="mr-2 h-4 w-4" />
+                          <span>
+                            Hết hạn:{" "}
+                            {new Date(jobPost.expirationDate).toLocaleDateString(
+                              "vi-VN"
+                            )}
+                          </span>
+                        </div>
+                      </div>
+                    </CardContent>
+                    <CardFooter>
+                      <div className="flex space-x-2">
+                        <Badge variant="outline">{jobPost.jobLevel}</Badge>
+                        <Badge variant="outline">{jobPost.jobIndustry}</Badge>
+                      </div>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </ScrollArea>
+              <div className="mt-4 flex justify-end space-x-2">
+                <button
+                  onClick={() => setShowJobPostModal(false)}
+                  className="rounded bg-gray-300 px-4 py-2"
+                >
+                  Đóng
+                </button>
+                <button
+                  onClick={() => {
+                    if (selectedJobPost) {
+                      handleSendInvitation(selectedJobPost);
+                    }
+                  }}
+                  className="rounded bg-blue-500 px-4 py-2 text-white"
+                  disabled={!selectedJobPost}
+                >
+                  Gửi lời mời
+                </button>
               </div>
-            ))}
-            <p className="text-blue-500 mt-2">Xem thêm</p>
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <ScrollToTopButton />
     </>

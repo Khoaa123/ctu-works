@@ -17,7 +17,7 @@ import { useCookies } from "next-client-cookies";
 import { toast } from "react-toastify";
 import { title } from "process";
 import { chatSessionCreate } from "../../ai/createJobAi";
-import { chatSessionTest } from "../../ai/Test";
+import { chatSessionTest } from "../../ai/ChatbotUser";
 
 import * as XLSX from 'xlsx';
 import CreateJobPostAI from "../create-jobpost-ai/page";

@@ -84,12 +84,12 @@ const Search = () => {
   const [selectedProfile, setSelectedProfile] = useState(userData[0]);
   const options = ["Tất cả", "Công ty", "Chức vụ", "Kỹ năng", "Tên"];
   const [showJobPostModal, setShowJobPostModal] = useState(false);
-
+  const [searchUser, setSearchUser] = useState()
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchGetUsers();
       setUserData(data.data);
-      console.log(data.data,"okok")
+      setSearchUser(data.data)
       setSelectedProfile(data.data[0]);
     };
     fetchData();
@@ -174,6 +174,33 @@ const Search = () => {
     setSelectedJobPost(jobPostId);
   };
 
+
+  const handleSearchUser = (e: any) => {
+    try {
+      const searchTerm = e.target.value.toLowerCase();
+      if (searchTerm.length > 1) {
+        console.log(searchTerm)
+        console.log(searchUser)
+        const filtered = searchUser.filter((user) => {
+          return user !== null && (
+            user.email.toLowerCase().includes(searchTerm)
+            || user.fullName.toLowerCase().includes(searchTerm)
+            || user.currentJobFunction.toLowerCase().includes(searchTerm)
+            || user.currentDegree.toLowerCase().includes(searchTerm)
+            || user.address.toLowerCase().includes(searchTerm)
+            || user.highestDegree.toLowerCase().includes(searchTerm)
+          );
+        });
+        console.log(filtered);
+        setUserData(filtered);
+      } else {
+        setUserData(searchUser);
+      }
+    } catch (error) {
+      console.error("Error during search:", error);
+    }
+  };
+
   return (
     <>
       <div className="max-h-auto">
@@ -183,77 +210,20 @@ const Search = () => {
             <div className="relative flex-grow">
               <input
                 type="text"
-                placeholder="Tìm kiếm"
+                onChange={(e) => handleSearchUser(e)}
+                placeholder="Tìm kiếm theo tên, email, ngành nghề, địa điểm, trình độ"
                 className="w-full rounded border bg-gray-100 p-2 pl-10"
               />
               <FaSearch className="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-500" />
             </div>
-            <div className="relative inline-block w-56 text-left">
-              <div>
-                <button
-                  onClick={() => setIsOpen(!isOpen)}
-                  className="inline-flex w-full justify-between rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                  {selectedOption}
-                  <i
-                    className={`fas fa-chevron-${isOpen ? "up" : "down"} ml-2`}
-                  ></i>
-                </button>
-              </div>
-              {isOpen && (
-                <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5">
-                  <div
-                    className="py-1"
-                    role="menu"
-                    aria-orientation="vertical"
-                    aria-labelledby="options-menu"
-                  >
-                    {options.map((option) => (
-                      <a
-                        key={option}
-                        href="#"
-                        onClick={() => {
-                          setSelectedOption(option);
-                          setIsOpen(false);
-                        }}
-                        className={`block px-4 py-2 text-sm text-gray-700 ${
-                          selectedOption === option ? "bg-blue-100" : ""
-                        }`}
-                        role="menuitem"
-                      >
-                        {option}
-                        {selectedOption === option && (
-                          <FaCheck className="fas fa-check ml-2" />
-                        )}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-            <button className="flex items-center rounded border bg-gray-100 p-2">
-              <FaSliders className="fas fa-sliders-h mr-1" />
-              Bộ lọc
-              <span className="ml-1 rounded border bg-white px-2 py-1"></span>
-            </button>
-            <button className="rounded bg-orange-500 p-2 text-white">
-              Tìm kiếm
-            </button>
+
           </div>
           <div className="mt-4 flex">
-            <p>14376 kết quả tìm kiếm</p>
-            <div className="flex items-center">
-              <button className="rounded border bg-gray-100 p-2">
-                <FaBars className="fas fa-bars"></FaBars>
-              </button>
-              <button className="ml-2 rounded border bg-blue-100 p-2">
-                <FaTh className="fas fa-th"></FaTh>
-              </button>
-            </div>
+            <p>{userData?.length} kết quả tìm kiếm</p>
           </div>
         </div>
         <div className="ml-[10%] flex h-screen">
-          <div className="w-1/4 border-r border-gray-200 p-4">
+          <div className="w-1/4 border-r border-gray-200 p-4 overflow-y-auto">
             {userData.map((profile, index) => (
               <div
                 onClick={() => setSelectedProfile(profile)}
@@ -278,17 +248,6 @@ const Search = () => {
                 </div>
               </div>
             ))}
-            <div className="mt-4 flex justify-center">
-              <button className="rounded border border-gray-300 p-2">1</button>
-              <button className="rounded border border-gray-300 p-2">2</button>
-              <button className="rounded border border-gray-300 p-2">3</button>
-              <button className="rounded border border-gray-300 p-2">
-                ...
-              </button>
-              <button className="rounded border border-gray-300 p-2">
-                719
-              </button>
-            </div>
           </div>
           <div className="w-3/4 p-4">
             {selectedProfile ? (
@@ -441,11 +400,10 @@ const Search = () => {
               {jobPosts.map((jobPost: any) => (
                 <Card
                   key={jobPost._id}
-                  className={`mb-4 cursor-pointer transition-all ${
-                    selectedJobPost === jobPost._id
-                      ? "border-blue-500 shadow-md"
-                      : ""
-                  }`}
+                  className={`mb-4 cursor-pointer transition-all ${selectedJobPost === jobPost._id
+                    ? "border-blue-500 shadow-md"
+                    : ""
+                    }`}
                   onClick={() => handleSelectJobPost(jobPost._id)}
                 >
                   <CardHeader>

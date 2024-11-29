@@ -51,7 +51,7 @@ const EmployerManagement = () => {
   const filteredData = data?.filter(
     (recruiter) =>
       recruiter.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      recruiter.email.toLowerCase().includes(searchTerm.toLowerCase())
+      recruiter?.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (isLoading) {
@@ -112,7 +112,7 @@ const EmployerManagement = () => {
                 <TableCell className="font-medium">
                   {recruiter.fullName}
                 </TableCell>
-                <TableCell>{recruiter.email}</TableCell>
+                <TableCell>{recruiter?.email}</TableCell>
                 <TableCell>
                   <span
                     className={`px-3 py-1 rounded-full text-sm font-medium ${

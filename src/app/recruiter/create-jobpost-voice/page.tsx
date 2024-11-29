@@ -53,7 +53,7 @@ import speech, { useSpeechRecognition } from "react-speech-recognition"
 interface FormDataVoice {
   jobTitle: string;
   expirationDate: string;
-  location: { [key: string]: any }[]; // Thay đổi kiểu dữ liệu cho phù hợp
+  location: { [key: string]: any }[];
   jobDescription: string;
   jobRequirements: string;
   jobType: string;

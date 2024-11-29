@@ -2,8 +2,8 @@
 
 import React, { useState, useMemo } from "react";
 import Image from "next/image";
-import { formatDate } from "@/utils/FormatDate";
-import { Input } from "@/components/ui/input";
+import { formatDate } from "@/utils/FormatDate"; //Make sure this file exists and exports the function
+import { Input } from "@/components/ui/input"; //Replace with your actual component imports
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -14,120 +14,63 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Search, FileText, CheckCircle, XCircle } from "lucide-react";
-import { FaChevronRight, FaChevronLeft } from "react-icons/fa6";
-import Link from "next/link";
+import { Search, CheckCircle, XCircle } from "lucide-react";
+import { FaChevronRight, FaChevronLeft, FaEye } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 
 type JobPostData = {
   _id: string;
-  title: string;
+  jobTitle: string;
   companyName: string;
-  industry: string;
+  jobIndustry: string;
   location: string;
-  salary: string;
-  status: "pending" | "approved" | "rejected";
+  minSalary: string;
+  statusApproval: boolean;
+  statusSeeking: boolean;
   createdAt: string;
-  logo: string;
+  logo?: string;
 };
-
-const mockJobPosts: JobPostData[] = [
-  {
-    _id: "1",
-    title: "Frontend Developer",
-    companyName: "Tech Innovators",
-    industry: "Công nghệ thông tin",
-    location: "Hồ Chí Minh",
-    salary: "15-20 triệu",
-    status: "pending",
-    createdAt: "2023-06-15T00:00:00.000Z",
-    logo: "https://demo.nextadmin.co/images/brand/brand-01.svg",
-  },
-  {
-    _id: "2",
-    title: "Marketing Manager",
-    companyName: "Global Logistics",
-    industry: "Vận tải và Logistics",
-    location: "Hà Nội",
-    salary: "25-30 triệu",
-    status: "pending",
-    createdAt: "2023-06-20T00:00:00.000Z",
-    logo: "https://demo.nextadmin.co/images/brand/brand-03.svg",
-  },
-  {
-    _id: "3",
-    title: "Data Scientist",
-    companyName: "HealthTech Solutions",
-    industry: "Y tế và Công nghệ",
-    location: "Đà Nẵng",
-    salary: "20-25 triệu",
-    status: "pending",
-    createdAt: "2023-06-25T00:00:00.000Z",
-    logo: "https://demo.nextadmin.co/images/brand/brand-04.svg",
-  },
-  {
-    _id: "4",
-    title: "Sales Representative",
-    companyName: "Green Energy Solutions",
-    industry: "Năng lượng tái tạo",
-    location: "Cần Thơ",
-    salary: "12-18 triệu",
-    status: "pending",
-    createdAt: "2023-06-30T00:00:00.000Z",
-    logo: "https://demo.nextadmin.co/images/brand/brand-02.svg",
-  },
-  {
-    _id: "5",
-    title: "Online Tutor",
-    companyName: "EduLearn Platform",
-    industry: "Giáo dục trực tuyến",
-    location: "Remote",
-    salary: "15-22 triệu",
-    status: "pending",
-    createdAt: "2023-07-05T00:00:00.000Z",
-    logo: "https://demo.nextadmin.co/images/brand/brand-05.svg",
-  },
-];
 
 const JobPostApproval = () => {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [jobPosts, setJobPosts] = useState(mockJobPosts);
+  const router = useRouter();
   const itemsPerPage = 10;
 
+  const fetchAllNews = async () => {
+    const res = await fetch(`http://localhost:3001/api/jobpost/get-all-jobpost-admin`);
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    const data = await res.json();
+    if (!data || !data.data || !Array.isArray(data.data)) {
+      throw new Error("Invalid API response format.  Check your backend.");
+    }
+    console.log(data.data)
+    return data.data;
+  };
+
+  const { data: jobPostsData, isLoading, isError, error } = useQuery({
+    queryKey: ["jobPosts"],
+    queryFn: fetchAllNews,
+  });
+
+
   const filteredJobPosts = useMemo(() => {
-    return jobPosts.filter(
-      (post) =>
-        post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.companyName.toLowerCase().includes(searchTerm.toLowerCase())
+    return (jobPostsData || []).filter((post: any) =>
+      post.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      post.companyName.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [jobPosts, searchTerm]);
+  }, [jobPostsData, searchTerm]);
 
   const paginatedJobPosts = useMemo(() => {
-    const start = (page - 1) * itemsPerPage;
-    const end = start + itemsPerPage;
-    return filteredJobPosts.slice(start, end);
-  }, [filteredJobPosts, page]);
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredJobPosts.slice(startIndex, endIndex);
+  }, [filteredJobPosts, page, itemsPerPage]);
 
   const totalPages = Math.ceil(filteredJobPosts.length / itemsPerPage);
-
-  const handleApprove = (id: string) => {
-    setJobPosts((posts) =>
-      posts.map((post) =>
-        post._id === id ? { ...post, status: "approved" } : post
-      )
-    );
-  };
-
-  const handleReject = (id: string) => {
-    setJobPosts((posts) =>
-      posts.map((post) =>
-        post._id === id ? { ...post, status: "rejected" } : post
-      )
-    );
-  };
-
-  const router = useRouter();
 
   const handleClick = (postId: string) => {
     router.push(`/admin/job-post-approval/${postId}`);
@@ -151,109 +94,106 @@ const JobPostApproval = () => {
             <Search className="mr-2 h-4 w-4" /> Tìm kiếm
           </Button>
         </div>
-        {/* <Button className="bg-[#00b14f] hover:bg-[#3ba769]">
-          <FileText className="mr-2 h-4 w-4" /> Xem tất cả bài tuyển dụng
-        </Button> */}
       </div>
-      <Table className="bg-white">
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[250px]">Tiêu đề</TableHead>
-            <TableHead>Công ty</TableHead>
-            <TableHead>Ngành nghề</TableHead>
-            <TableHead>Địa điểm</TableHead>
-            <TableHead>Mức lương</TableHead>
-            <TableHead>Trạng thái</TableHead>
-            <TableHead className="text-right">Ngày đăng</TableHead>
-            <TableHead>Hành động</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody className="cursor-pointer">
-          {paginatedJobPosts.map((post) => (
-            <TableRow onClick={() => handleClick(post._id)} key={post._id}>
-              <TableCell className="font-medium">
-                <div className="flex items-center">
-                  <Image
-                    src={post.logo}
-                    alt="logo"
-                    height={30}
-                    width={30}
-                    className="mr-2 rounded-full"
-                  />
-                  <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-                    {post.title}
-                  </span>
-                </div>
-              </TableCell>
-              <TableCell>{post.companyName}</TableCell>
-              <TableCell>{post.industry}</TableCell>
-              <TableCell>{post.location}</TableCell>
-              <TableCell>{post.salary}</TableCell>
-              <TableCell>
-                <Badge
-                  variant={
-                    post.status === "approved"
-                      ? "default"
-                      : post.status === "rejected"
-                      ? "destructive"
-                      : "secondary"
-                  }
+      {isLoading ? (
+        <div className="p-8">Đang tải...</div>
+      ) : isError ? (
+        <div className="p-8">Lỗi khi tải bài viết: {error?.message}</div>
+      ) : (
+        <>
+          <Table className="bg-white">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[250px]">Tiêu đề</TableHead>
+                <TableHead>Công ty</TableHead>
+                <TableHead>Ngành nghề</TableHead>
+                {/* <TableHead>Địa điểm</TableHead> */}
+                {/* <TableHead>Mức lương</TableHead> */}
+                <TableHead>Trạng thái</TableHead>
+                <TableHead className="text-right">Ngày đăng</TableHead>
+                <TableHead>Hành động</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody className="cursor-pointer">
+              {paginatedJobPosts.map((post: JobPostData) => (
+                <TableRow
+                  onClick={() => handleClick(post._id)}
+                  key={post._id}
                 >
-                  {post.status === "approved"
-                    ? "Đã duyệt"
-                    : post.status === "rejected"
-                    ? "Đã từ chối"
-                    : "Đang chờ"}
-                </Badge>
-              </TableCell>
-              <TableCell className="text-right">
-                {formatDate(post.createdAt)}
-              </TableCell>
-              <TableCell>
-                <div className="flex space-x-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handleApprove(post._id)}
-                    disabled={post.status !== "pending"}
-                  >
-                    <CheckCircle className="mr-2 h-4 w-4" />
-                    Duyệt
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handleReject(post._id)}
-                    disabled={post.status !== "pending"}
-                  >
-                    <XCircle className="mr-2 h-4 w-4" />
-                    Từ chối
-                  </Button>
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-      <div className="mt-5 flex justify-center">
-        <Button
-          variant="outline"
-          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-          disabled={page === 1}
-        >
-          <FaChevronLeft />
-        </Button>
-        <span className="mx-4 flex items-center">
-          Trang {page} / {totalPages}
-        </span>
-        <Button
-          variant="outline"
-          onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-          disabled={page === totalPages}
-        >
-          <FaChevronRight />
-        </Button>
-      </div>
+                  <TableCell className="font-medium">
+                    <div className="flex items-center">
+                      {post.logo && (
+                        <Image
+                          src={post.logo}
+                          alt="logo"
+                          height={30}
+                          width={30}
+                          className="mr-2 rounded-full"
+                        />
+                      )}
+                      <span className=" text-ellipsis whitespace-wrap">
+                        {post.jobTitle}
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell >{post.companyName}</TableCell>
+                  <TableCell>{post.jobIndustry}</TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={
+                        post.statusApproval === true && post.statusSeeking === true
+                          ? "default"
+                          : post.statusApproval === false && post.statusSeeking === false
+                            ? "destructive"
+                            : "secondary"
+                      }
+                    >
+                      {post.statusApproval === true && post.statusSeeking === true
+                        ? "Đã duyệt"
+                        : post.statusApproval === false && post.statusSeeking === false
+                          ? "Đã từ chối"
+                          : "Đang chờ"}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {formatDate(post.createdAt)}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex space-x-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                      >
+                        <FaEye className="mr-2 h-4 w-4" />
+                        Xem chi tiết
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <div className="mt-5 flex justify-center">
+            <Button
+              variant="outline"
+              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+              disabled={page === 1}
+            >
+              <FaChevronLeft />
+            </Button>
+            <span className="mx-4 flex items-center">
+              Trang {page} / {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={page === totalPages}
+            >
+              <FaChevronRight />
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
 };

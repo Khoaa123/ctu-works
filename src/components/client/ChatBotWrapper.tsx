@@ -6,7 +6,7 @@ import ChatBot from "../ChatBot/ChatBot";
 const ChatBotWrapper = () => {
   const pathname = usePathname();
   const isHiddenPage =
-    pathname.startsWith("/recruiter") || pathname.startsWith("/cv");
+    pathname.startsWith("/recruiter") || pathname.startsWith("/cv") || pathname.startsWith("/profileuser");
 
   if (isHiddenPage) {
     return null;

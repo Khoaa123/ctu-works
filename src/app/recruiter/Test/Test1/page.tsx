@@ -1,7 +1,7 @@
 // pages/chatbot.js
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { chatSessionTest } from "../../../ai/Test";
+import { chatSessionTest } from "../../../ai/ChatbotUser";
 const Chatbot = () => {
   const [jobPosts, setJobPosts] = useState([]);
 

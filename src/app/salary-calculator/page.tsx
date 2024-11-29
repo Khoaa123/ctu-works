@@ -22,6 +22,248 @@ const SalaryCalculator = () => {
       setCount(count - 1);
     }
   };
+
+
+  function calculateNetSalaryVietnam(grossSalaryOrther: any, grossSalary: any, taxBrackets: any, personalDeduction: any, dependentDeduction: any) {
+    let socialInsurance, healthInsurance, unemploymentInsurance
+    if (grossSalaryOrther > 0) {
+      socialInsurance = grossSalaryOrther * 0.08;
+      if (socialInsurance > 3744000) {
+        socialInsurance = 3744000
+      }
+      healthInsurance = grossSalaryOrther * 0.015;
+      if (healthInsurance > 702000) {
+        healthInsurance = 702000;
+      }
+      unemploymentInsurance = grossSalaryOrther * 0.01;
+      if (unemploymentInsurance > 992000) {
+        unemploymentInsurance = 992000;
+      }
+    } else {
+      socialInsurance = grossSalary * 0.08;
+      if (socialInsurance > 3744000) {
+        socialInsurance = 3744000
+      }
+      healthInsurance = grossSalary * 0.015;
+      if (healthInsurance > 702000) {
+        healthInsurance = 702000;
+      }
+      unemploymentInsurance = grossSalary * 0.01;
+      if (unemploymentInsurance > 992000) {
+        unemploymentInsurance = 992000;
+      }
+    }
+    const preTaxIncome = grossSalary - socialInsurance - healthInsurance - unemploymentInsurance;
+    let taxableIncome = preTaxIncome - personalDeduction - dependentDeduction;
+
+    taxableIncome = Math.max(0, taxableIncome);
+    console.log(taxableIncome, "taxAbleCOme")
+
+    let incomeTax = 0;
+    for (const bracket of taxBrackets) {
+      if (taxableIncome <= 0) break;
+      const taxableAmountInBracket = Math.min(taxableIncome, bracket.upperLimit - bracket.lowerLimit);
+      console.log(taxableAmountInBracket, "taxableAmountInBracket")
+      incomeTax += taxableAmountInBracket * bracket.rate;
+      taxableIncome -= taxableAmountInBracket;
+    }
+    console.log(incomeTax, "incomeTax")
+    const netSalary = preTaxIncome - incomeTax;
+
+
+    return {
+      grossSalary: formatVND(grossSalary),
+      socialInsurance: formatVND(socialInsurance),
+      healthInsurance: formatVND(healthInsurance),
+      unemploymentInsurance: (unemploymentInsurance),
+      preTaxIncome: formatVND(preTaxIncome),
+      taxableIncome: formatVND(taxableIncome),
+      incomeTax: formatVND(incomeTax),
+      netSalary: formatVND(netSalary)
+    };
+  }
+  function calculateGrossSalaryVietnam(netSalary: any, taxBrackets: any, personalDeduction: any, dependentDeduction: any) {
+    let grossSalary = netSalary * 1.407;
+    console.log(grossSalary)
+
+    let iterations = 0;
+    let tolerance = 1;
+
+    
+
+      let socialInsurance, healthInsurance, unemploymentInsurance;
+      socialInsurance = grossSalary * 0.08;
+      if (socialInsurance > 3744000) {
+        socialInsurance = 3744000
+      }
+      healthInsurance = grossSalary * 0.015;
+      if (healthInsurance > 702000) {
+        healthInsurance = 702000;
+      }
+      unemploymentInsurance = grossSalary * 0.01;
+      if (unemploymentInsurance > 992000) {
+        unemploymentInsurance = 992000;
+      }
+
+
+      let preTaxIncome = grossSalary - socialInsurance - healthInsurance - unemploymentInsurance;
+      console.log(grossSalary,preTaxIncome)
+      let taxableIncome = preTaxIncome - personalDeduction - dependentDeduction;
+      taxableIncome = Math.max(0, taxableIncome);
+      console.log(taxableIncome)
+
+      let incomeTax = 0;
+      for (const bracket of taxBrackets) {
+        if (taxableIncome <= 0) break;
+        const taxableAmountInBracket = Math.min(taxableIncome, bracket.upperLimit - bracket.lowerLimit);
+        incomeTax += taxableAmountInBracket * bracket.rate;
+        taxableIncome -= taxableAmountInBracket;
+      }
+
+      const calculatedNetSalary = preTaxIncome - incomeTax;
+      tolerance = Math.abs(calculatedNetSalary - netSalary);
+
+      grossSalary += (netSalary - calculatedNetSalary) * 1.1;
+      iterations++;
+    
+
+    if (iterations >= 100) {
+      console.warn("Net to Gross calculation did not converge within 100 iterations. Result may be inaccurate.");
+    }
+
+     socialInsurance = grossSalary * 0.08;
+     healthInsurance = grossSalary * 0.015;
+     unemploymentInsurance = grossSalary * 0.01;
+     preTaxIncome = grossSalary - socialInsurance - healthInsurance - unemploymentInsurance;
+     taxableIncome = preTaxIncome - personalDeduction - dependentDeduction;
+     incomeTax = calculateIncomeTax(taxableIncome, taxBrackets); // Helper function (see below)
+    const netSalaryCalculated = preTaxIncome - incomeTax;
+    console.log(preTaxIncome)
+
+
+    return {
+      netSalary: (netSalaryCalculated),
+      grossSalary: (grossSalary),
+      socialInsurance: (socialInsurance),
+      healthInsurance: (healthInsurance),
+      unemploymentInsurance: (unemploymentInsurance),
+      preTaxIncome: (preTaxIncome),
+      taxableIncome: (taxableIncome),
+      incomeTax: (incomeTax),
+    };
+  }
+  function calculateIncomeTax(taxableIncome: any, taxBrackets: any) {
+    let incomeTax = 0;
+    for (const bracket of taxBrackets) {
+      if (taxableIncome <= 0) break;
+      const taxableAmountInBracket = Math.min(taxableIncome, bracket.upperLimit - bracket.lowerLimit);
+      incomeTax += taxableAmountInBracket * bracket.rate;
+      taxableIncome -= taxableAmountInBracket;
+    }
+    return incomeTax;
+  }
+
+  const taxBrackets = [
+    { lowerLimit: 0, upperLimit: 5000000, rate: 0.05 },
+    { lowerLimit: 5000000, upperLimit: 10000000, rate: 0.1 },
+    { lowerLimit: 10000000, upperLimit: 18000000, rate: 0.15 },
+    { lowerLimit: 18000000, upperLimit: 32000000, rate: 0.2 },
+    { lowerLimit: 32000000, upperLimit: 52000000, rate: 0.25 },
+    { lowerLimit: 52000000, upperLimit: 80000000, rate: 0.3 },
+    { lowerLimit: 80000000, upperLimit: Infinity, rate: 0.35 }
+
+  ];
+
+  const [grossSalary, setGrossSalary] = useState(0);
+  const [grossSalaryOrther, setGrossSalaryOrther] = useState(0);
+  const [netSalary, setNetSalary] = useState(0)
+  const personalDeduction = 11000000;
+  const dependentDeduction = 4400000
+
+
+  const grossSalaryChange = (e: any) => {
+    setGrossSalary(e.target.value)
+  }
+  const grossSalaryOrtherChange = (e: any) => {
+    setGrossSalaryOrther(e.target.value)
+  }
+  let [salaryBreakdown, setSalaryBreakdown] = useState({
+    grossSalary: 0,
+    socialInsurance: 0,
+    healthInsurance: 0,
+    unemploymentInsurance: 0,
+    preTaxIncome: 0,
+    taxableIncome: 0,
+    incomeTax: 0,
+    netSalary: 0
+  })
+  const grossSalaryToGross = () => {
+    const grossSalaryInfo = calculateGrossSalaryVietnam(Number(grossSalary), taxBrackets, personalDeduction, dependentDeduction);
+    console.log(Number(grossSalaryInfo.grossSalary))
+    // salaryBreakdown = calculateNetSalaryVietnam(grossSalaryOrther, Number(grossSalaryInfo.grossSalary), taxBrackets, personalDeduction, dependentDeduction * count);
+    // setSalaryBreakdown(salaryBreakdown)
+  }
+  const grossSalaryToNet = () => {
+    salaryBreakdown = calculateNetSalaryVietnam(grossSalaryOrther, grossSalary, taxBrackets, personalDeduction, dependentDeduction * count);
+    setSalaryBreakdown(salaryBreakdown)
+    const salaryDataCal = calculateSalaryDeductions(grossSalary)
+    setSalaryData(salaryDataCal)
+    setNetSalary(salaryBreakdown.netSalary)
+  }
+  const [insuranceBasis, setInsuranceBasis] = useState('salary');
+  const handleInsuranceBasisChange = (value: any) => {
+    if (value === "salary") {
+      setGrossSalaryOrther(0)
+    }
+    setInsuranceBasis(value);
+  };
+  function formatVND(amount: any) {
+    return amount.toLocaleString('it-IT');
+  }
+  const [salaryData, setSalaryData] = useState<any>({
+    grossSalary: 0,
+    socialInsurance: 0,
+    laborAccidentInsurance: 0,
+    healthInsurance: 0,
+    unemploymentInsurance: 0,
+    totalDeductions: 0,
+    netSalary: 0
+  })
+  function calculateSalaryDeductions(grossSalary: any) {
+    if (grossSalary <= 0) {
+      return null;
+    }
+
+    let socialInsurance = grossSalary * 0.17;
+    if (socialInsurance > 7956000) {
+      socialInsurance = 7956000
+    }
+    let laborAccidentInsurance = grossSalary * 0.005;
+    if (laborAccidentInsurance > 234000) {
+      laborAccidentInsurance = 234000
+    }
+    let healthInsurance = grossSalary * 0.03;
+    if (healthInsurance > 1404000) {
+      healthInsurance = 1404000
+    }
+    let unemploymentInsurance = grossSalary * 0.01;
+    if (unemploymentInsurance > 992000) {
+      unemploymentInsurance = 992000
+    }
+    const totalDeductions = Number(grossSalary) + socialInsurance + laborAccidentInsurance + healthInsurance + unemploymentInsurance;
+    const netSalary = grossSalary - totalDeductions;
+
+    return {
+      grossSalary,
+      socialInsurance,
+      laborAccidentInsurance,
+      healthInsurance,
+      unemploymentInsurance,
+      totalDeductions,
+      netSalary,
+    };
+  }
+
   return (
     <>
       <div className="bg-[#F7F8FA] py-4">
@@ -31,19 +273,12 @@ const SalaryCalculator = () => {
               <p className="my-3 text-lg font-bold">
                 Công cụ tính lương Gross sang Net và ngược lại [Chuẩn 2024]
               </p>
-              <div className="flex w-full gap-1 rounded-sm border border-solid p-1">
-                <button className="flex-1 rounded-sm border border-solid border-[#b3ceff] bg-[#e6efff] px-3 py-1 text-[#005aff] transition-all hover:border-[#ccdeff] hover:bg-[#ccdeff]">
-                  Gross -{">"} Net
-                </button>
-                <button className="flex-1 rounded-sm border border-solid border-[#b3ceff] bg-[#e6efff] px-3 py-1 text-[#005aff] transition-all hover:border-[#ccdeff] hover:bg-[#ccdeff]">
-                  Net -{">"} Gross
-                </button>
-              </div>
               <div className="my-4">
-                <p>Lương Gross</p>
+                <p>Thu nhập</p>
                 <div className="my-2 flex justify-between gap-4">
                   <input
-                    type="text"
+                    onChange={(e) => grossSalaryChange(e)}
+                    type="number"
                     name=""
                     id=""
                     className="h-10 flex-1 rounded-md border border-solid border-[#d9d9d9] px-2 py-3 transition-all hover:border-[#80adff] focus-visible:outline-none"
@@ -52,20 +287,15 @@ const SalaryCalculator = () => {
                     <button className="flex-1 rounded-sm border border-solid border-[#b3ceff] bg-[#e6efff] px-3 py-1 text-[#005aff] transition-all hover:border-[#ccdeff] hover:bg-[#ccdeff]">
                       VND
                     </button>
-                    <button className="flex-1 rounded-sm bg-[#fbfbfc] px-3 py-1 text-[#005aff] transition-all hover:border-[#ccdeff] hover:bg-[#ccdeff]">
-                      USD
-                    </button>
                   </div>
                 </div>
               </div>
-
               <div className="my-4">
-                <p>Người phụ thuộc</p>
+                <p>Số người phụ thuộc</p>
                 <div className="my-2 flex gap-2">
                   <button
-                    className={`h-10 rounded-md border border-solid p-3 ${
-                      count === 0 ? "bg-[#f6f8fb]" : ""
-                    }`}
+                    className={`h-10 rounded-md border border-solid p-3 ${count === 0 ? "bg-[#f6f8fb]" : ""
+                      }`}
                     onClick={handleDecrement}
                   >
                     <FaMinus color="grey" />
@@ -87,7 +317,7 @@ const SalaryCalculator = () => {
                   <div className="flex-1">
                     <p>Đóng bảo hiểm dựa trên</p>
                     <div className="my-2 flex w-full gap-2">
-                      <Select>
+                      <Select onValueChange={handleInsuranceBasisChange} value={insuranceBasis}>
                         <SelectTrigger className="flex-1 rounded-md border border-solid p-2 text-start outline-none">
                           <SelectValue placeholder="Lương chính thức" />
                         </SelectTrigger>
@@ -107,12 +337,13 @@ const SalaryCalculator = () => {
                     <p>Đóng bảo hiểm dựa trên</p>
                     <div className="my-2 flex w-full gap-2">
                       <input
-                        type="text"
+                        type="number"
                         name=""
                         id=""
-                        value={0}
-                        disabled
-                        className="flex-1 rounded-md border border-solid p-2 outline-none"
+                        value={insuranceBasis === 'salary' ? grossSalary : grossSalaryOrther}
+                        onChange={(e) => grossSalaryOrtherChange(e)}
+                        disabled={insuranceBasis === 'salary'}
+                        className={`h-10 flex-1 rounded-md border border-solid border-[#d9d9d9] px-2 py-3 transition-all hover:border-[#80adff] focus-visible:outline-none ${insuranceBasis === 'salary' ? 'bg-gray-200' : ''}`}
                       />
                     </div>
                   </div>
@@ -143,29 +374,162 @@ const SalaryCalculator = () => {
               </div>
 
               <div className="my-4">
+                <div className="flex w-full gap-1 mb-4 rounded-sm border border-solid p-1">
+                  <button
+                    onClick={grossSalaryToNet}
+                    className="flex-1 rounded-sm border border-solid border-[#b3ceff] bg-[#e6efff] px-3 py-1 text-[#005aff] transition-all hover:border-[#ccdeff] hover:bg-[#ccdeff]">
+                    Gross -{">"} Net
+                  </button>
+                  <button
+                    onClick={grossSalaryToGross}
+                    className="flex-1 rounded-sm border border-solid border-[#b3ceff] bg-[#e6efff] px-3 py-1 text-[#005aff] transition-all hover:border-[#ccdeff] hover:bg-[#ccdeff]">
+                    Net -{">"} Gross
+                  </button>
+                </div>
                 <div className="rounded-md bg-[#e6efff] p-4">
                   <div className="flex justify-between">
                     <p className="text-sm">
                       Kết quả tính lương{" "}
-                      <span className="text-gray-400">(1 USD = 25,400)</span>
                     </p>
-                    <button className="text-sm text-blue-600">
-                      Xem chi tiết
-                    </button>
                   </div>
                   <div className="mt-4 flex items-center gap-3">
                     <div className="flex flex-1 flex-col items-center justify-center gap-2 rounded-md bg-[#f7faff] p-4 text-sm">
                       <p className="font-bold">GROSS</p>
-                      <p>0 VND</p>
-                      <p className="text-gray-500">0 USD</p>
+                      <p>{formatVND(Number(grossSalary)) || 0} VND</p>
                     </div>
                     <span> -{">"} </span>
                     <div className="flex flex-1 flex-col items-center justify-center gap-2 rounded-md bg-[#f7faff] p-4 text-sm">
                       <p className="font-bold">NET</p>
-                      <p>0 VND</p>
-                      <p className="text-gray-500">0 USD</p>
+                      <p>{netSalary} VND</p>
                     </div>
                   </div>
+                </div>
+              </div>
+              <div className="my-4">
+                <div className="border border-gray-300 rounded-lg overflow-hidden">
+                  <div className="bg-gray-100 p-4">
+                    <span className="text-green-600 font-bold">Diễn giải chi tiết (VNĐ)</span>
+                  </div>
+                  <div className="p-4">
+                    <div className="flex justify-between py-2">
+                      <span className="font-bold">Lương GROSS</span>
+                      <span>{formatVND(Number(salaryBreakdown.grossSalary))}</span>
+                    </div>
+                    <div className="flex justify-between py-2">
+                      <span>Bảo hiểm xã hội (8%)</span>
+                      <span>- {salaryBreakdown.socialInsurance}</span>
+                    </div>
+                    <div className="flex justify-between py-2">
+                      <span>Bảo hiểm y tế (1.5%)</span>
+                      <span>- {salaryBreakdown.healthInsurance}</span>
+                    </div>
+                    <div className="flex justify-between py-2">
+                      <span>Bảo hiểm thất nghiệp (1%)</span>
+                      <span>- {salaryBreakdown.unemploymentInsurance}</span>
+                    </div>
+                    <div className="flex justify-between py-2 bg-gray-100">
+                      <span className="font-bold">Thu nhập trước thuế</span>
+                      <span>{salaryBreakdown.preTaxIncome}</span>
+                    </div>
+                    <div className="flex justify-between py-2">
+                      <span>Giảm trừ gia cảnh bản thân</span>
+                      <span>- {formatVND(personalDeduction)}</span>
+                    </div>
+                    <div className="flex justify-between py-2">
+                      <span>Giảm trừ gia cảnh người phụ thuộc</span>
+                      <span>- {formatVND(dependentDeduction * count)}</span>
+                    </div>
+                    <div className="flex justify-between py-2">
+                      <span>Thuế thu nhập cá nhân(*)</span>
+                      <span>- {formatVND(salaryBreakdown.incomeTax)}</span>
+                    </div>
+                    <div className="flex justify-between py-2 bg-gray-100">
+                      <span className="font-bold">Lương NET</span>
+                      <span>{formatVND(salaryBreakdown.netSalary)}</span>
+                    </div>
+                    <span>(Thu nhập trước thuế - Thuế thu nhập cá nhân.)</span>
+
+                  </div>
+                </div>
+              </div>
+              <div className="my-4">
+                <div className="border border-gray-300 rounded-lg p-4 bg-white">
+                  <h2 className="text-green-600 font-bold">(*) Chi tiết thuế thu nhập cá nhân (VNĐ)</h2>
+                  <table className="w-full mt-4 border-collapse">
+                    <thead>
+                      <tr className="bg-gray-100">
+                        <th className="border border-gray-300 p-2 text-left">Mức chịu thuế</th>
+                        <th className="border border-gray-300 p-2 text-left">Thuế suất</th>
+                        <th className="border border-gray-300 p-2 text-left">Tiền nộp</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td className="border border-gray-300 p-2">Đến 5 triệu VNĐ</td>
+                        <td className="border border-gray-300 p-2">5%</td>
+                        <td className="border border-gray-300 p-2">250,000</td>
+                      </tr>
+                      <tr>
+                        <td className="border border-gray-300 p-2">Trên 5 triệu VNĐ đến 10 triệu VNĐ</td>
+                        <td className="border border-gray-300 p-2">10%</td>
+                        <td className="border border-gray-300 p-2">500,000</td>
+                      </tr>
+                      <tr>
+                        <td className="border border-gray-300 p-2">Trên 10 triệu VNĐ đến 18 triệu VNĐ</td>
+                        <td className="border border-gray-300 p-2">15%</td>
+                        <td className="border border-gray-300 p-2">1,200,000</td>
+                      </tr>
+                      <tr>
+                        <td className="border border-gray-300 p-2">Trên 18 triệu VNĐ đến 32 triệu VNĐ</td>
+                        <td className="border border-gray-300 p-2">20%</td>
+                        <td className="border border-gray-300 p-2">2,330,800</td>
+                      </tr>
+                      <tr>
+                        <td className="border border-gray-300 p-2">Trên 32 triệu VNĐ đến 52 triệu VNĐ</td>
+                        <td className="border border-gray-300 p-2">25%</td>
+                        <td className="border border-gray-300 p-2">0</td>
+                      </tr>
+                      <tr>
+                        <td className="border border-gray-300 p-2">Trên 52 triệu VNĐ đến 80 triệu VNĐ</td>
+                        <td className="border border-gray-300 p-2">30%</td>
+                        <td className="border border-gray-300 p-2">0</td>
+                      </tr>
+                      <tr>
+                        <td className="border border-gray-300 p-2">Trên 80 triệu VNĐ</td>
+                        <td className="border border-gray-300 p-2">35%</td>
+                        <td className="border border-gray-300 p-2">0</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <h2 className="text-green-600 font-bold mt-4">Người sử dụng lao động trả (VNĐ)</h2>
+                  <table className="w-full mt-4 border-collapse">
+                    <tbody>
+                      <tr>
+                        <td className="border border-gray-300 p-2">Lương GROSS</td>
+                        <td className="border border-gray-300 p-2 text-right">{formatVND(Number(salaryData.grossSalary))}</td>
+                      </tr>
+                      <tr>
+                        <td className="border border-gray-300 p-2">Bảo hiểm xã hội (17%)</td>
+                        <td className="border border-gray-300 p-2 text-right">{formatVND(salaryData.socialInsurance)}</td>
+                      </tr>
+                      <tr>
+                        <td className="border border-gray-300 p-2">Bảo hiểm Tai nạn lao động - Bệnh nghề nghiệp (0.5%)</td>
+                        <td className="border border-gray-300 p-2 text-right">{formatVND(salaryData.laborAccidentInsurance)}</td>
+                      </tr>
+                      <tr>
+                        <td className="border border-gray-300 p-2">Bảo hiểm y tế (3%)</td>
+                        <td className="border border-gray-300 p-2 text-right">{formatVND(salaryData.healthInsurance)}</td>
+                      </tr>
+                      <tr>
+                        <td className="border border-gray-300 p-2">Bảo hiểm thất nghiệp (1%)</td>
+                        <td className="border border-gray-300 p-2 text-right">{formatVND(salaryData.unemploymentInsurance)}</td>
+                      </tr>
+                      <tr>
+                        <td className="border border-gray-300 p-2 font-bold">Tổng cộng</td>
+                        <td className="border border-gray-300 p-2 text-right font-bold">{formatVND(salaryData.totalDeductions)}</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
               <p className="text-sm text-gray-400">

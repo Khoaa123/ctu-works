@@ -47,7 +47,7 @@ const UserManagement = () => {
   });
 
   const filteredData = data?.filter((user) =>
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    user?.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (isLoading) {
@@ -101,7 +101,7 @@ const UserManagement = () => {
         <TableBody>
           {filteredData?.map((user) => (
             <TableRow key={user._id}>
-              <TableCell className="font-medium">{user.email}</TableCell>
+              <TableCell className="font-medium">{user?.email}</TableCell>
               <TableCell>{user.role}</TableCell>
               <TableCell>
                 <span

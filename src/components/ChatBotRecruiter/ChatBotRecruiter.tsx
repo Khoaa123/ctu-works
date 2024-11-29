@@ -1,9 +1,9 @@
-// pages/chatbot.js
+// pages/chatbotRecruiter.js
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { chatSessionTest } from "../../app/ai/ChatbotUser";
 
-const Chatbot = () => {
+const ChatbotRecruiter = () => {
   const [jobPosts, setJobPosts] = useState([]);
   const [messages, setMessages] = useState<any>([]);
   const [userInput, setUserInput] = useState("");
@@ -189,4 +189,4 @@ const Chatbot = () => {
   );
 };
 
-export default Chatbot;
+export default ChatbotRecruiter;

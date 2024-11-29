@@ -18,7 +18,8 @@ export interface JwtPayload {
   email: string;
   fullName: string;
   role: string;
-}import {
+}
+import {
   FaLocationDot,
   FaClock,
   FaBriefcase,
@@ -237,7 +238,7 @@ const jobPage = () => {
   const countStatus = (statusSeeking: any, statusApproval: any) => {
     if (statusSeeking === "all" || statusApproval === "all") {
       return formData.length;
-    }else{
+    } else {
       return formData.filter((apply) => apply.statusSeeking === statusSeeking && apply.statusApproval === statusApproval).length;
     }
   };
@@ -254,9 +255,10 @@ const jobPage = () => {
           <div className="mb-4 flex items-center justify-between">
             <div className="flex space-x-4">
               <button className="text-gray-500" onClick={() => setFillter("all", "all")}>Tất cả công việc ({countStatus("all", "all")})</button>
-              <button className="text-gray-500" onClick={() => setFillter(false, true)}>Đang chờ duyệt ({countStatus(false, true)})</button>
-              <button className="text-gray-500" onClick={() => setFillter(true, false)}>Đang Hiển Thị ({countStatus(true, false)})</button>
-              <button className="text-gray-500" onClick={() => setFillter(true, true)}>Đã Hết Hạn ({countStatus(true, true)})</button>
+              <button className="text-gray-500" onClick={() => setFillter(true, false)}>Đang chờ duyệt ({countStatus(true, false)})</button>
+              <button className="text-gray-500" onClick={() => setFillter(true, true)}>Đang hiển Thị ({countStatus(true, true)})</button>
+              <button className="text-gray-500" onClick={() => setFillter(false, false)}>Đã hủy ({countStatus(false, false)})</button>
+              <button className="text-gray-500" onClick={() => setFillter(false, true)}>Đã Hết Hạn ({countStatus(false, true)})</button>
             </div>
           </div>
           <div className="flex items-center space-x-4">
@@ -321,7 +323,14 @@ const jobPage = () => {
                     </div>
                   </div>
                   <div className="text-blue-500">
-                    {job?.statusApproval ? "Đã duyệt" : "Chờ duyệt"}
+                    {/* {job?.statusApproval && job?.statusSeeking ? "Đã duyệt" : "Chờ duyệt"} */}
+                    {job.statusApproval === true && job.statusSeeking === true
+                      ? "Đã duyệt"
+                      : job.statusApproval === false && job.statusSeeking === false
+                        ? "Đã hủy"
+                        : job.statusApproval === true && job.statusSeeking === false
+                          ? "Đã hết hạn"
+                          : "Đang chờ duyệt"}
                   </div>
 
                   <div>

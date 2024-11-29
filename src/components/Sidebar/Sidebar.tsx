@@ -53,6 +53,25 @@ const Sidebar = () => {
                 Quản lý nhà tuyển dụng
               </div>
             </Link>
+            <Link href="/admin/job-post-approval">
+              <div
+                className={`cursor-pointer ease-in-out duration-300 hover:bg-[#F7F8Fa] flex gap-3 items-center rounded-md ${isActive === "job-post-approval"
+                    ? "bg-[#5750f112] text-blue-600"
+                    : ""
+                  } px-4 py-3`}
+                onClick={() => setIsActive("job-post-approval")}
+              >
+                <FaFileAlt
+                  size={22}
+                  className={
+                    isActive === "job-post-approval"
+                      ? "text-blue-600"
+                      : "text-[#4b5563]"
+                  }
+                />
+                Quản lý tin tuyển dụng
+              </div>
+            </Link>
             <Link href="/admin/post-management">
               <div
                 className={`cursor-pointer ease-in-out duration-300 hover:bg-[#F7F8Fa] flex gap-3 items-center rounded-md ${isActive === "post-management"
