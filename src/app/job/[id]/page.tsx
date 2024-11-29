@@ -91,6 +91,8 @@ export interface JwtPayload {
   role: string;
 }
 import { useRouter } from "next/navigation";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 type FormData = {
   email: string;
@@ -151,6 +153,8 @@ const JobDetail = () => {
   const [saveJobDetails, setsaveJobDetails] = useState({
     _id: "",
   });
+  const [loading, setLoading] = useState(true);
+
   const saveJob = async () => {
     const id = location.pathname.split("/job/")[1];
     const res = await fetch(
@@ -287,6 +291,9 @@ const JobDetail = () => {
         const data = await fetchJobPostDetails();
         setJobPostDetails(data.data);
         setJobInfoId(data.data?.jobInfoId);
+        setTimeout(() => {
+          setLoading(false);
+        }, 2000000);
       };
       run = 1;
       fetchData();
@@ -631,7 +638,16 @@ const JobDetail = () => {
                 <div className="rounded-md bg-white p-6">
                   <div className="rounded-md bg-[#F8F9FA] p-3">
                     <p className="mb-1 line-clamp-1 text-xl font-bold">
-                      {jobPostDetails?.jobTitle}
+                      {loading ? (
+                        <Skeleton
+                          baseColor="#edf2f7"
+                          highlightColor="#f7fafc"
+                          width={400}
+                          height={20}
+                        />
+                      ) : (
+                        jobPostDetails?.jobTitle
+                      )}
                     </p>
                     <div className="mt-6 flex flex-col gap-4">
                       <div className="flex items-center gap-2">
@@ -639,16 +655,26 @@ const JobDetail = () => {
                           <FaClock color="grey" size={14} />
                         </div>
                         <span className="text-sm text-[#ff7d55]">
-                          {new Date(
-                            jobPostDetails?.expirationDate
-                          ).toLocaleDateString("vi-VN", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}
-                          {` (Hết hạn trong ${calculateDaysRemaining(
-                            jobPostDetails?.expirationDate
-                          )} ngày)`}
+                          {loading ? (
+                            <Skeleton
+                              baseColor="#edf2f7"
+                              highlightColor="#f7fafc"
+                              width={150}
+                            />
+                          ) : (
+                            <>
+                              {new Date(
+                                jobPostDetails?.expirationDate
+                              ).toLocaleDateString("vi-VN", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              })}
+                              {` (Hết hạn trong ${calculateDaysRemaining(
+                                jobPostDetails?.expirationDate
+                              )} ngày)`}
+                            </>
+                          )}
                         </span>
                       </div>
                       <div className="flex gap-6">
@@ -656,13 +682,19 @@ const JobDetail = () => {
                           <div className="rounded-full bg-[#f1f2f4] p-2">
                             <AiOutlineDollarCircle color="grey" size={14} />
                           </div>
-                          {jobPostDetails?.canDeal === true ? (
+                          {loading ? (
+                            <Skeleton
+                              baseColor="#edf2f7"
+                              highlightColor="#f7fafc"
+                              width={100}
+                            />
+                          ) : jobPostDetails?.canDeal === true ? (
                             <span className="text-sm text-orange-500">
                               Thương lượng
                             </span>
                           ) : (
                             <span className="text-sm">
-                              {jobPostDetails?.minSalary}$ {" - "}
+                              {jobPostDetails?.minSalary}$ {" - "}{" "}
                               {jobPostDetails?.maxSalary}$
                             </span>
                           )}
@@ -672,7 +704,15 @@ const JobDetail = () => {
                             <HiMiniUserGroup color="grey" size={14} />
                           </div>
                           <span className="text-sm">
-                            {jobPostDetails?.postViews} lượt xem
+                            {loading ? (
+                              <Skeleton
+                                baseColor="#edf2f7"
+                                highlightColor="#f7fafc"
+                                width={100}
+                              />
+                            ) : (
+                              <>{jobPostDetails?.postViews} lượt xem</>
+                            )}
                           </span>
                         </div>
                         <div className="flex flex-1 items-center gap-2">
@@ -680,23 +720,35 @@ const JobDetail = () => {
                             <FaLocationDot color="grey" size={14} />
                           </div>
                           <span className="line-clamp-1 text-sm">
-                            {jobPostDetails?.location?.map(
-                              (loc: string, locIndex) => {
-                                const locationName = loc.split(":")[1].trim();
+                            {loading ? (
+                              <Skeleton
+                                baseColor="#edf2f7"
+                                highlightColor="#f7fafc"
+                                width={300}
+                              />
+                            ) : (
+                              <>
+                                {jobPostDetails?.location?.map(
+                                  (loc: string, locIndex) => {
+                                    const locationName = loc
+                                      .split(":")[1]
+                                      .trim();
 
-                                const locationWithoutCountry = locationName
-                                  .replace(", Việt Nam", "")
-                                  .trim();
-                                return (
-                                  <span key={locIndex}>
-                                    {locationWithoutCountry}
-                                    {locIndex <
-                                    jobPostDetails?.location.length - 1
-                                      ? ", "
-                                      : ""}
-                                  </span>
-                                );
-                              }
+                                    const locationWithoutCountry = locationName
+                                      .replace(", Việt Nam", "")
+                                      .trim();
+                                    return (
+                                      <span key={locIndex}>
+                                        {locationWithoutCountry}
+                                        {locIndex <
+                                        jobPostDetails?.location.length - 1
+                                          ? ", "
+                                          : ""}
+                                      </span>
+                                    );
+                                  }
+                                )}
+                              </>
                             )}
                           </span>
                         </div>
@@ -1494,80 +1546,119 @@ const JobDetail = () => {
                   </div>
                   <div className="mt-8">
                     <p className="text-lg font-bold">Mô tả công việc</p>
-                    <div
-                      className="mt-3"
-                      dangerouslySetInnerHTML={{
-                        __html: jobPostDetails?.jobDescription ?? "",
-                      }}
-                    ></div>
-                    <p className="text-lg font-bold">Yêu cầu công việc</p>
-                    <div
-                      className="mt-3"
-                      dangerouslySetInnerHTML={{
-                        __html: jobPostDetails?.jobRequirements ?? "",
-                      }}
-                    ></div>
+                    <div className="mt-3">
+                      {loading ? (
+                        <div className="space-y-3">
+                          <Skeleton
+                            count={2}
+                            height={20}
+                            width="100%"
+                            baseColor="#edf2f7"
+                            highlightColor="#f7fafc"
+                          />
+                        </div>
+                      ) : (
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: jobPostDetails?.jobDescription ?? "",
+                          }}
+                        ></div>
+                      )}
+                    </div>
+                    <p className="mt-8 text-lg font-bold">Yêu cầu công việc</p>
+                    {loading ? (
+                      <div className="space-y-3">
+                        <Skeleton
+                          count={3}
+                          height={20}
+                          width="100%"
+                          baseColor="#edf2f7"
+                          highlightColor="#f7fafc"
+                        />
+                      </div>
+                    ) : (
+                      <div
+                        className="mt-3"
+                        dangerouslySetInnerHTML={{
+                          __html: jobPostDetails?.jobRequirements ?? "",
+                        }}
+                      ></div>
+                    )}
                   </div>
 
                   <div className="mt-8">
                     <h1 className="mb-4 text-xl font-semibold">
                       Các phúc lợi dành cho bạn
                     </h1>
-                    <div className="space-y-4">
-                      {jobPostDetails?.companyBenefits?.map((item) => (
-                        <div className="rounded-lg border bg-white p-4 shadow-sm">
-                          <div className="mb-2 flex items-center">
-                            {item.title === "Thưởng" && (
-                              <FaDollarSign className="fas fa-dollar-sign mr-2 text-blue-500" />
-                            )}
-                            {item.title === "Chăm sóc sức khỏe" && (
-                              <FaBed className="fas fa-bed mr-2 text-blue-500" />
-                            )}
-                            {item.title === "Nghỉ phép có lương" && (
-                              <FaMoneyCheckAlt className="fas fa-book-open mr-2 text-blue-500" />
-                            )}
-                            {item.title === "Đào tạo" && (
-                              <FaChalkboardTeacher className="fas fa-dollar-sign mr-2 text-blue-500" />
-                            )}
-                            {item.title === "Giải thưởng" && (
-                              <FaTrophy className="fas fa-dollar-sign mr-2 text-blue-500" />
-                            )}
-                            {item.title === "Thư viện" && (
-                              <FaBookOpen className="fas fa-book-open mr-2 text-blue-500" />
-                            )}
-                            {item.title === "Máy tính xách tay" && (
-                              <FaLaptop className="fas fa-dollar-sign mr-2 text-blue-500" />
-                            )}
-                            {item.title === "Điện thoại" && (
-                              <FaPhone className="fas fa-dollar-sign mr-2 text-blue-500" />
-                            )}
-                            {item.title === "Cơ hội du lịch" && (
-                              <FaPlane className="fas fa-plane mr-2 text-blue-500" />
-                            )}
-                            {item.title === "Hoạt động nhóm" && (
-                              <FaUsers className="fas fa-dollar-sign mr-2 text-blue-500" />
-                            )}
-                            {item.title === "Xe đưa đón" && (
-                              <FaBus className="fas fa-dollar-sign mr-2 text-blue-500" />
-                            )}
-                            {item.title === "Căn-tin" && (
-                              <FaUtensils className="fas fa-dollar-sign mr-2 text-blue-500" />
-                            )}
-                            {item.title === "Phiếu giảm giá" && (
-                              <FaPercent className="fas fa-dollar-sign mr-2 text-blue-500" />
-                            )}
-                            {item.title === "Nhà trẻ" && (
-                              <FaChild className="fas fa-dollar-sign mr-2 text-blue-500" />
-                            )}
-                            {item.title === "Khác" && (
-                              <FaEllipsisH className="fas fa-dollar-sign mr-2 text-blue-500" />
-                            )}
-                            <span className="font-semibold">{item.title}</span>
+                    {loading ? (
+                      <div className="space-y-3">
+                        <Skeleton
+                          count={2}
+                          height={20}
+                          width="20%"
+                          baseColor="#edf2f7"
+                          highlightColor="#f7fafc"
+                        />
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {jobPostDetails?.companyBenefits?.map((item) => (
+                          <div className="rounded-lg border bg-white p-4 shadow-sm">
+                            <div className="mb-2 flex items-center">
+                              {item.title === "Thưởng" && (
+                                <FaDollarSign className="fas fa-dollar-sign mr-2 text-blue-500" />
+                              )}
+                              {item.title === "Chăm sóc sức khỏe" && (
+                                <FaBed className="fas fa-bed mr-2 text-blue-500" />
+                              )}
+                              {item.title === "Nghỉ phép có lương" && (
+                                <FaMoneyCheckAlt className="fas fa-book-open mr-2 text-blue-500" />
+                              )}
+                              {item.title === "Đào tạo" && (
+                                <FaChalkboardTeacher className="fas fa-dollar-sign mr-2 text-blue-500" />
+                              )}
+                              {item.title === "Giải thưởng" && (
+                                <FaTrophy className="fas fa-dollar-sign mr-2 text-blue-500" />
+                              )}
+                              {item.title === "Thư viện" && (
+                                <FaBookOpen className="fas fa-book-open mr-2 text-blue-500" />
+                              )}
+                              {item.title === "Máy tính xách tay" && (
+                                <FaLaptop className="fas fa-dollar-sign mr-2 text-blue-500" />
+                              )}
+                              {item.title === "Điện thoại" && (
+                                <FaPhone className="fas fa-dollar-sign mr-2 text-blue-500" />
+                              )}
+                              {item.title === "Cơ hội du lịch" && (
+                                <FaPlane className="fas fa-plane mr-2 text-blue-500" />
+                              )}
+                              {item.title === "Hoạt động nhóm" && (
+                                <FaUsers className="fas fa-dollar-sign mr-2 text-blue-500" />
+                              )}
+                              {item.title === "Xe đưa đón" && (
+                                <FaBus className="fas fa-dollar-sign mr-2 text-blue-500" />
+                              )}
+                              {item.title === "Căn-tin" && (
+                                <FaUtensils className="fas fa-dollar-sign mr-2 text-blue-500" />
+                              )}
+                              {item.title === "Phiếu giảm giá" && (
+                                <FaPercent className="fas fa-dollar-sign mr-2 text-blue-500" />
+                              )}
+                              {item.title === "Nhà trẻ" && (
+                                <FaChild className="fas fa-dollar-sign mr-2 text-blue-500" />
+                              )}
+                              {item.title === "Khác" && (
+                                <FaEllipsisH className="fas fa-dollar-sign mr-2 text-blue-500" />
+                              )}
+                              <span className="font-semibold">
+                                {item.title}
+                              </span>
+                            </div>
+                            <p>{item.content}</p>
                           </div>
-                          <p>{item.content}</p>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   <div className="mt-8">
                     <p className="text-lg font-bold">Thông tin việc làm</p>
@@ -1855,18 +1946,30 @@ const JobDetail = () => {
                     /> */}
                   </div>
                   <div className="flex flex-col">
-                    <Link href={`/company/${jobPostDetails?.recruiterId}`}>
-                      <p className="my-3 cursor-pointer text-center font-medium hover:text-[#ff7d55]">
-                        {jobPostDetails?.companyName}
-                      </p>
-                    </Link>
+                    {loading ? (
+                      <Skeleton
+                        width="100%"
+                        height={20}
+                        className="mx-auto my-3"
+                      />
+                    ) : (
+                      <Link href={`/company/${jobPostDetails?.recruiterId}`}>
+                        <p className="my-3 cursor-pointer text-center font-medium hover:text-[#ff7d55]">
+                          {jobPostDetails?.companyName}
+                        </p>
+                      </Link>
+                    )}
                     <div className="flex flex-col gap-6">
                       <div className="flex items-start gap-2">
                         <div className="rounded-full bg-[#f1f2f4] p-1">
                           <FaLocationDot color="grey" size={14} />
                         </div>
                         <span className="text-sm">
-                          {jobPostDetails?.companyAddress}
+                          {loading ? (
+                            <Skeleton width={200} />
+                          ) : (
+                            jobPostDetails?.companyAddress
+                          )}
                         </span>
                       </div>
                       <div className="flex items-start gap-2">
@@ -1874,7 +1977,11 @@ const JobDetail = () => {
                           <HiMiniUserGroup color="grey" size={14} />
                         </div>
                         <span className="text-sm">
-                          {jobPostDetails?.companySize}
+                          {loading ? (
+                            <Skeleton width={100} />
+                          ) : (
+                            jobPostDetails?.companySize
+                          )}
                         </span>
                       </div>
                       <div className="flex items-start gap-2">
@@ -1882,7 +1989,11 @@ const JobDetail = () => {
                           <PhoneCall color="grey" size={14} />
                         </div>
                         <span className="text-sm">
-                          {jobPostDetails?.companyStaffName}
+                          {loading ? (
+                            <Skeleton width={150} />
+                          ) : (
+                            jobPostDetails?.companyStaffName
+                          )}
                         </span>
                       </div>
                     </div>
