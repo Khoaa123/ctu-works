@@ -292,8 +292,7 @@ const Profile = () => {
         throw new Error("Image upload failed on server");
       }
 
-      // Trả về URL ảnh đã upload
-      return data.imageUrls[0]; // Hoặc `[0]` nếu chỉ upload 1 ảnh
+      return data.imageUrls[0];
     } catch (error) {
       console.error("Image upload error:", error);
       throw error;
@@ -306,10 +305,10 @@ const Profile = () => {
     const file = event.target.files?.[0];
     if (file) {
       try {
-        const imageUrl = await uploadImage(file); // Upload ảnh
+        const imageUrl = await uploadImage(file);
         setFormData((prevFormData) => ({
           ...prevFormData,
-          avatar: imageUrl, // Cập nhật đường dẫn ảnh vào formData
+          avatar: imageUrl,
         }));
         toast.success("Ảnh đã được tải lên thành công!");
       } catch (error) {

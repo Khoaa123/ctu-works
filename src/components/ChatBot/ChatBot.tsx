@@ -116,7 +116,7 @@ const Chatbot = () => {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
+    <div className="fixed bottom-24 right-4 z-50">
       {showChat ? (
         <div className="relative w-full max-w-md overflow-hidden rounded-lg bg-white shadow-md">
           <div className="relative bg-indigo-500 px-4 py-3 text-center font-bold text-white">

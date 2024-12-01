@@ -135,13 +135,16 @@ type Notification = {
 
 const JobDetail = () => {
   const [file, setFile] = useState<File | null>(null);
+  const [cvUrl, setCvUrl] = useState<string | null>(null);
+
   const [isSaved, setIsSaved] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [relatedJobs, setRelatedJobs] = useState<any>([]);
   const [jobInfoId, setJobInfoId] = useState("");
 
   const router = useRouter();
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+  const handleFileChange = (event: any) => {
     if (event.target.files && event.target.files[0]) {
       setFile(event.target.files[0]);
     }
@@ -290,10 +293,9 @@ const JobDetail = () => {
       const fetchData = async () => {
         const data = await fetchJobPostDetails();
         setJobPostDetails(data.data);
+        console;
         setJobInfoId(data.data?.jobInfoId);
-        setTimeout(() => {
-          setLoading(false);
-        }, 2000000);
+        setLoading(false);
       };
       run = 1;
       fetchData();
@@ -531,10 +533,9 @@ const JobDetail = () => {
     { label: "Đà Nẵng", value: "Đà Nẵng" },
   ];
 
-  const handleApplication = async () => {
+  const handleApplication = async (cvUrl: string) => {
     const id = location.pathname.split("/job/")[1];
 
-    // const id = decodedToken?.userid;
     const res = await fetch(`http://localhost:3001/api/apply/create`, {
       method: "POST",
       headers: {
@@ -544,39 +545,46 @@ const JobDetail = () => {
         ...formData,
         jobPostId: id,
         recruiterId: jobPostDetails?.recruiterId,
+        cvUrl: cvUrl,
       }),
     });
-
-    // const res = await fetch(
-    //   `${process.env.NEXT_PUBLIC_API_BASE_URL}/apply/create`,
-    //   {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //       ...formData,
-    //       jobPostId: id,
-    //       recruiterId: jobPostDetails?.recruiterId,
-    //     }),
-    //   }
-    // );
 
     return res.json();
   };
 
-  const aplicationCreate = async () => {
+  const uploadAndApply = async () => {
+    if (!file) {
+      toast.error("Vui lòng chọn một tệp để tải lên");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("pdfs", file);
+
     try {
-      const res = await handleApplication();
-      if (res.status === "OK") {
-        toast.success("Ứng tuyển công việc thành công");
+      const uploadRes = await fetch("http://localhost:3001/api/upload/pdf", {
+        method: "POST",
+        body: formData,
+      });
+
+      const uploadData = await uploadRes.json();
+      if (uploadData.success) {
+        const cvUrl = uploadData.pdfUrls[0];
+
+        const applyRes = await handleApplication(cvUrl);
+        if (applyRes.status === "OK") {
+          toast.success("Ứng tuyển công việc thành công");
+        } else {
+          toast.error("Bạn đã ứng tuyển công việc này rồi");
+        }
       } else {
-        toast.error("Bạn đã ứng tuyển công việc này rồi");
+        toast.error("Lỗi khi tải lên tệp");
       }
     } catch (error) {
       toast.error("Cập nhật thất bại. Vui lòng thử lại sau.");
     }
   };
+
   const calculateDaysRemaining = (expirationDate: any) => {
     const expirationDateObj = new Date(expirationDate);
     const today = new Date();
@@ -1516,7 +1524,7 @@ const JobDetail = () => {
                             <DialogFooter className="px-6 py-4">
                               <DialogClose>
                                 <Button
-                                  onClick={aplicationCreate}
+                                  onClick={uploadAndApply}
                                   className="bg-orange-400 text-white shadow-none hover:bg-orange-500"
                                 >
                                   Ứng tuyển
