@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo, useLayoutEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,9 @@ import {
 } from "@/components/ui/table";
 import { PlusIcon, PencilIcon, TrashIcon } from "lucide-react";
 import Link from "next/link";
+import { FaChevronRight, FaChevronLeft } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
+import { useCookies } from "next-client-cookies";
 
 type News = {
   _id: string;
@@ -26,21 +29,40 @@ type News = {
 };
 
 const PostManagement = () => {
+  const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const itemsPerPage = 10;
 
-  const fetchAllNews = async () => {
+  const fetchAllNews = async (): Promise<News[]> => {
     const res = await fetch(`http://localhost:3001/api/news/get-all-news`);
     const data = await res.json();
     return data.data;
   };
 
-  const { data, isLoading, isError } = useQuery<News[]>({
+  const { data, isLoading, isError, error } = useQuery<News[]>({
     queryKey: ["news"],
     queryFn: fetchAllNews,
   });
 
+  const filteredData = useMemo(() => {
+    return (data || []).filter(
+      (item) =>
+        item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.summary.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [data, searchTerm]);
+
+  const paginatedData = useMemo(() => {
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredData.slice(startIndex, endIndex);
+  }, [filteredData, page, itemsPerPage]);
+
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
   if (isLoading) return <div className="p-8">Đang tải...</div>;
-  if (isError) return <div className="p-8">Lỗi khi tải bài viết</div>;
+  if (isError)
+    return <div className="p-8">Lỗi khi tải bài viết: {error?.message}</div>;
 
   return (
     <div className="p-8">
@@ -53,7 +75,10 @@ const PostManagement = () => {
             placeholder="Tìm kiếm bài viết..."
             className="mr-2 max-w-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setPage(1);
+            }}
           />
         </div>
         <Link href="/admin/create-news">
@@ -75,7 +100,7 @@ const PostManagement = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data?.map((item) => (
+          {paginatedData.map((item) => (
             <TableRow key={item._id} className="hover:bg-white">
               <TableCell className="font-medium">{item.title}</TableCell>
               <TableCell>{item.summary.substring(0, 50)}...</TableCell>
@@ -100,6 +125,25 @@ const PostManagement = () => {
           ))}
         </TableBody>
       </Table>
+      <div className="mt-5 flex justify-center">
+        <Button
+          variant="outline"
+          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+          disabled={page === 1}
+        >
+          <FaChevronLeft />
+        </Button>
+        <span className="mx-4 flex items-center">
+          Trang {page} / {totalPages}
+        </span>
+        <Button
+          variant="outline"
+          onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={page === totalPages}
+        >
+          <FaChevronRight />
+        </Button>
+      </div>
     </div>
   );
 };

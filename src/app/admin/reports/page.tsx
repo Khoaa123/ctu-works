@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useLayoutEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -16,6 +16,8 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { useRouter } from "next/navigation";
+import { useCookies } from "next-client-cookies";
 
 type Report = {
   totalUsers: number;
@@ -74,27 +76,27 @@ export default function ReportsDashboard() {
     {
       name: "Tổng số người dùng",
       value: report?.totalUsers || 0,
-      change: report?.userGrowthRate || 0,
+      // change: report?.userGrowthRate || 0,
     },
     {
       name: "Người dùng mới (tháng này)",
       value: report?.newUsersThisMonth || 0,
-      change: report?.userGrowthRate || 0,
+      // change: report?.userGrowthRate || 0,
     },
     {
       name: "Tổng số tin tuyển dụng",
       value: report?.totalJobPosts || 0,
-      change: report?.jobPostGrowthRate || 0,
+      // change: report?.jobPostGrowthRate || 0,
     },
     {
       name: "Tin tuyển dụng mới (tháng này)",
       value: report?.newJobPostsThisMonth || 0,
-      change: report?.jobPostGrowthRate || 0,
+      // change: report?.jobPostGrowthRate || 0,
     },
     {
       name: "Tổng số ứng tuyển",
       value: report?.totalApplications || 0,
-      change: report?.applicationGrowthRate || 0,
+      // change: report?.applicationGrowthRate || 0,
     },
   ];
 
@@ -132,14 +134,14 @@ export default function ReportsDashboard() {
               <div className="text-2xl font-bold">
                 {stat.value.toLocaleString()}
               </div>
-              <p
+              {/* <p
                 className={`text-xs ${
                   stat.change > 0 ? "text-green-500" : "text-red-500"
                 }`}
               >
                 {stat.change > 0 ? "↑" : "↓"} {Math.abs(stat.change).toFixed(2)}
                 % so với tháng trước
-              </p>
+              </p> */}
             </CardContent>
           </Card>
         ))}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo, useLayoutEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,8 @@ import {
 } from "@/components/ui/table";
 import { Search, UserPlus } from "lucide-react";
 import { FaChevronRight, FaChevronLeft } from "react-icons/fa6";
+import { useCookies } from "next-client-cookies";
+import { useRouter } from "next/navigation";
 
 type UserData = {
   _id: string;
@@ -31,9 +33,7 @@ const UserManagement = () => {
   const itemsPerPage = 10;
 
   const fetchAllUsers = async (): Promise<UserData[]> => {
-    const res = await fetch(
-      `http://localhost:3001/api/user/getAll?page=${page}&limit=${itemsPerPage}`
-    );
+    const res = await fetch(`http://localhost:3001/api/user/getAll`);
     if (!res.ok) {
       throw new Error("Failed to fetch users");
     }
@@ -41,14 +41,34 @@ const UserManagement = () => {
     return data.data;
   };
 
-  const { data, isLoading, isError } = useQuery<UserData[]>({
-    queryKey: ["getAllUsers", page, searchTerm],
+  const { data, isLoading, isError, error } = useQuery<UserData[]>({
+    queryKey: ["getAllUsers"],
     queryFn: fetchAllUsers,
   });
 
-  const filteredData = data?.filter((user) =>
-    user?.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredData = useMemo(() => {
+    return (data || []).filter((user) =>
+      user?.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [data, searchTerm]);
+
+  const paginatedData = useMemo(() => {
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredData.slice(startIndex, endIndex);
+  }, [filteredData, page, itemsPerPage]);
+
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  const router = useRouter();
+  const cookies = useCookies();
+  useLayoutEffect(() => {
+    const accessTokenAdmin = cookies.get("accessTokenAdmin");
+    if (!accessTokenAdmin) {
+      router.replace("/admin/login");
+    }
+    console.log("accessTokenAdmin", accessTokenAdmin);
+  }, [cookies, router]);
 
   if (isLoading) {
     return (
@@ -61,7 +81,7 @@ const UserManagement = () => {
   if (isError) {
     return (
       <div className="flex h-screen items-center justify-center">
-        Lỗi khi tải dữ liệu
+        Lỗi khi tải dữ liệu: {error?.message}
       </div>
     );
   }
@@ -76,16 +96,19 @@ const UserManagement = () => {
           <Input
             placeholder="Tìm kiếm theo email..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setPage(1);
+            }}
             className="mr-2 max-w-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           />
           <Button variant="outline" onClick={() => setPage(1)}>
             <Search className="mr-2 h-4 w-4" /> Tìm kiếm
           </Button>
         </div>
-        <Button className="bg-indigo-600 text-white hover:bg-indigo-700">
+        {/* <Button className="bg-indigo-600 text-white hover:bg-indigo-700">
           <UserPlus className="mr-2 h-4 w-4" /> Thêm người dùng
-        </Button>
+        </Button> */}
       </div>
       <Table className="bg-white">
         <TableHeader>
@@ -95,13 +118,12 @@ const UserManagement = () => {
             <TableHead>Tìm việc</TableHead>
             <TableHead>Xác thực</TableHead>
             <TableHead>Lần cuối trực tuyến</TableHead>
-            <TableHead className="text-right">Ngày tham gia</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {filteredData?.map((user) => (
+          {paginatedData.map((user) => (
             <TableRow key={user._id}>
-              <TableCell className="font-medium">{user?.email}</TableCell>
+              <TableCell className="font-medium">{user.email}</TableCell>
               <TableCell>{user.role}</TableCell>
               <TableCell>
                 <span
@@ -128,9 +150,6 @@ const UserManagement = () => {
               <TableCell>
                 {new Date(user.lastOnline).toLocaleString("vi-VN")}
               </TableCell>
-              <TableCell className="text-right">
-                {new Date(user.createdAt).toLocaleString("vi-VN")}
-              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -143,8 +162,14 @@ const UserManagement = () => {
         >
           <FaChevronLeft />
         </Button>
-        <span className="mx-4 flex items-center">Trang {page}</span>
-        <Button variant="outline" onClick={() => setPage((prev) => prev + 1)}>
+        <span className="mx-4 flex items-center">
+          Trang {page} / {totalPages}
+        </span>
+        <Button
+          variant="outline"
+          onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={page === totalPages}
+        >
           <FaChevronRight />
         </Button>
       </div>

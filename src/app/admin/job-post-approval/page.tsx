@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useLayoutEffect } from "react";
 import Image from "next/image";
 import { formatDate } from "@/utils/FormatDate"; //Make sure this file exists and exports the function
 import { Input } from "@/components/ui/input"; //Replace with your actual component imports
@@ -18,6 +18,7 @@ import { Search, CheckCircle, XCircle } from "lucide-react";
 import { FaChevronRight, FaChevronLeft, FaEye } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
+import { useCookies } from "next-client-cookies";
 
 type JobPostData = {
   _id: string;
@@ -39,7 +40,9 @@ const JobPostApproval = () => {
   const itemsPerPage = 10;
 
   const fetchAllNews = async () => {
-    const res = await fetch(`http://localhost:3001/api/jobpost/get-all-jobpost-admin`);
+    const res = await fetch(
+      `http://localhost:3001/api/jobpost/get-all-jobpost-admin`
+    );
     if (!res.ok) {
       throw new Error(`HTTP error! status: ${res.status}`);
     }
@@ -47,20 +50,25 @@ const JobPostApproval = () => {
     if (!data || !data.data || !Array.isArray(data.data)) {
       throw new Error("Invalid API response format.  Check your backend.");
     }
-    console.log(data.data)
+    console.log(data.data);
     return data.data;
   };
 
-  const { data: jobPostsData, isLoading, isError, error } = useQuery({
+  const {
+    data: jobPostsData,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ["jobPosts"],
     queryFn: fetchAllNews,
   });
 
-
   const filteredJobPosts = useMemo(() => {
-    return (jobPostsData || []).filter((post: any) =>
-      post.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.companyName.toLowerCase().includes(searchTerm.toLowerCase())
+    return (jobPostsData || []).filter(
+      (post: any) =>
+        post.jobTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        post.companyName.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [jobPostsData, searchTerm]);
 
@@ -77,7 +85,7 @@ const JobPostApproval = () => {
   };
 
   return (
-    <div className="container mx-auto py-10">
+    <div className="container mx-auto">
       <h1 className="mb-5 text-2xl font-bold">Duyệt bài tuyển dụng</h1>
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center">
@@ -116,10 +124,7 @@ const JobPostApproval = () => {
             </TableHeader>
             <TableBody className="cursor-pointer">
               {paginatedJobPosts.map((post: JobPostData) => (
-                <TableRow
-                  onClick={() => handleClick(post._id)}
-                  key={post._id}
-                >
+                <TableRow onClick={() => handleClick(post._id)} key={post._id}>
                   <TableCell className="font-medium">
                     <div className="flex items-center">
                       {post.logo && (
@@ -131,28 +136,32 @@ const JobPostApproval = () => {
                           className="mr-2 rounded-full"
                         />
                       )}
-                      <span className=" text-ellipsis whitespace-wrap">
+                      <span className="whitespace-wrap text-ellipsis">
                         {post.jobTitle}
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell >{post.companyName}</TableCell>
+                  <TableCell>{post.companyName}</TableCell>
                   <TableCell>{post.jobIndustry}</TableCell>
                   <TableCell>
                     <Badge
                       variant={
-                        post.statusApproval === true && post.statusSeeking === true
-                          ? "default"
-                          : post.statusApproval === false && post.statusSeeking === false
-                            ? "destructive"
-                            : "secondary"
+                        post.statusApproval === true &&
+                        post.statusSeeking === true
+                          ? "outline"
+                          : post.statusApproval === false &&
+                            post.statusSeeking === false
+                          ? "destructive"
+                          : "secondary"
                       }
                     >
-                      {post.statusApproval === true && post.statusSeeking === true
+                      {post.statusApproval === true &&
+                      post.statusSeeking === true
                         ? "Đã duyệt"
-                        : post.statusApproval === false && post.statusSeeking === false
-                          ? "Đã từ chối"
-                          : "Đang chờ"}
+                        : post.statusApproval === false &&
+                          post.statusSeeking === false
+                        ? "Đã từ chối"
+                        : "Đang chờ"}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
@@ -160,10 +169,7 @@ const JobPostApproval = () => {
                   </TableCell>
                   <TableCell>
                     <div className="flex space-x-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                      >
+                      <Button size="sm" variant="outline">
                         <FaEye className="mr-2 h-4 w-4" />
                         Xem chi tiết
                       </Button>
@@ -173,7 +179,7 @@ const JobPostApproval = () => {
               ))}
             </TableBody>
           </Table>
-          <div className="mt-5 flex justify-center">
+          <div className="flex justify-center pb-5 pt-14">
             <Button
               variant="outline"
               onClick={() => setPage((prev) => Math.max(prev - 1, 1))}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo, useLayoutEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { formatDate } from "@/utils/FormatDate";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/table";
 import { Search, UserPlus } from "lucide-react";
 import { FaChevronRight, FaChevronLeft } from "react-icons/fa6";
+import { useCookies } from "next-client-cookies";
+import { useRouter } from "next/navigation";
 
 type RecruiterData = {
   _id: string;
@@ -32,9 +34,9 @@ const EmployerManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const itemsPerPage = 10;
 
-  const fetchAllRecruiters = async () => {
+  const fetchAllRecruiters = async (): Promise<RecruiterData[]> => {
     const res = await fetch(
-      `http://localhost:3001/api/recruiter/getAll-recruiter?page=${page}&limit=${itemsPerPage}`
+      `http://localhost:3001/api/recruiter/getAll-recruiter`
     );
     if (!res.ok) {
       throw new Error("Failed to fetch recruiters");
@@ -43,16 +45,26 @@ const EmployerManagement = () => {
     return data.data;
   };
 
-  const { data, isLoading, isError } = useQuery<RecruiterData[]>({
-    queryKey: ["getAllRecruiters", page, searchTerm],
+  const { data, isLoading, isError, error } = useQuery<RecruiterData[]>({
+    queryKey: ["getAllRecruiters"],
     queryFn: fetchAllRecruiters,
   });
 
-  const filteredData = data?.filter(
-    (recruiter) =>
-      recruiter.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      recruiter?.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredData = useMemo(() => {
+    return (data || []).filter(
+      (recruiter) =>
+        recruiter.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        recruiter.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [data, searchTerm]);
+
+  const paginatedData = useMemo(() => {
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredData.slice(startIndex, endIndex);
+  }, [filteredData, page, itemsPerPage]);
+
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   if (isLoading) {
     return (
@@ -65,7 +77,7 @@ const EmployerManagement = () => {
   if (isError) {
     return (
       <div className="flex h-screen items-center justify-center">
-        Lỗi khi tải dữ liệu
+        Lỗi khi tải dữ liệu: {error?.message}
       </div>
     );
   }
@@ -90,9 +102,9 @@ const EmployerManagement = () => {
             <Search className="mr-2 h-4 w-4" /> Tìm kiếm
           </Button>
         </div>
-        <Button className="bg-indigo-600 text-white hover:bg-indigo-700">
+        {/* <Button className="bg-indigo-600 text-white hover:bg-indigo-700">
           <UserPlus className="mr-2 h-4 w-4" /> Thêm nhà tuyển dụng
-        </Button>
+        </Button> */}
       </div>
       <Table className="bg-white">
         <TableHeader>
@@ -106,31 +118,30 @@ const EmployerManagement = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {filteredData &&
-            filteredData.map((recruiter) => (
-              <TableRow key={recruiter._id}>
-                <TableCell className="font-medium">
-                  {recruiter.fullName}
-                </TableCell>
-                <TableCell>{recruiter?.email}</TableCell>
-                <TableCell>
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      recruiter.isVerified
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {recruiter.isVerified ? "Đã xác thực" : "Chưa xác thực"}
-                  </span>
-                </TableCell>
-                <TableCell>{formatDate(recruiter.lastOnline)}</TableCell>
-                <TableCell>{recruiter.following}</TableCell>
-                <TableCell className="text-right">
-                  {formatDate(recruiter.createdAt)}
-                </TableCell>
-              </TableRow>
-            ))}
+          {paginatedData.map((recruiter) => (
+            <TableRow key={recruiter._id}>
+              <TableCell className="font-medium">
+                {recruiter.fullName}
+              </TableCell>
+              <TableCell>{recruiter.email}</TableCell>
+              <TableCell>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    recruiter.isVerified
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
+                >
+                  {recruiter.isVerified ? "Đã xác thực" : "Chưa xác thực"}
+                </span>
+              </TableCell>
+              <TableCell>{formatDate(recruiter.lastOnline)}</TableCell>
+              <TableCell>{recruiter.following}</TableCell>
+              <TableCell className="text-right">
+                {formatDate(recruiter.createdAt)}
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
       <div className="mt-5 flex justify-center">
@@ -141,8 +152,14 @@ const EmployerManagement = () => {
         >
           <FaChevronLeft />
         </Button>
-        <span className="mx-4 flex items-center">Trang {page}</span>
-        <Button variant="outline" onClick={() => setPage((prev) => prev + 1)}>
+        <span className="mx-4 flex items-center">
+          Trang {page} / {totalPages}
+        </span>
+        <Button
+          variant="outline"
+          onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={page === totalPages}
+        >
           <FaChevronRight />
         </Button>
       </div>

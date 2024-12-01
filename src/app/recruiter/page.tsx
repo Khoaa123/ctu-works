@@ -25,6 +25,7 @@ import { FaClock } from "react-icons/fa6";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useCookies } from "next-client-cookies";
 import { jwtDecode } from "jwt-decode";
+import ChatbotRecruiter from "@/components/ChatBotRecruiter/ChatBotRecruiter";
 
 export interface JwtPayload {
   userid: string;
@@ -77,6 +78,7 @@ const Recruiter = () => {
   };
   return (
     <>
+      <ChatbotRecruiter />
       <div>
         <HeaderRecruiter />
         <div className="bg-[#F6F6F6]">

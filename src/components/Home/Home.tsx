@@ -547,7 +547,7 @@ const HomePage = () => {
                                           {job.minSalary?.toLocaleString()} -{" "}
                                           {job.maxSalary?.toLocaleString()} VNĐ
                                         </p>
-                                        <p className="text-sm">
+                                        <p className="line-clamp-2 text-sm">
                                           {job.location}
                                         </p>
                                       </div>

@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -35,19 +36,15 @@ const Login = () => {
       [e.target.id]: e.target.value,
     });
   };
-  useEffect(() => {
-    if (cookies.get("accessTokenRecruiter")) {
-      router.push("/recruiter");
-    }
-  });
-  const Login = async () => {
+
+  const login = async () => {
     try {
       if (!formData.email || !formData.password) {
         toast.error("Vui lòng nhập đầy đủ thông tin");
         return;
       }
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/recruiter/sign-in-recruiter`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/sign-in`,
         {
           method: "POST",
           headers: {
@@ -65,14 +62,13 @@ const Login = () => {
         throw new Error("Đăng nhập thất bại");
       } else {
         const data = await res.json();
-        console.log(data);
         if (data.status === "OK") {
-          cookies.set("accessTokenRecruiter", data.access_token);
-          cookies.set("refreshTokenRecruiter", data.refresh_token);
+          cookies.set("accessTokenAdmin", data.access_token);
+          cookies.set("refreshTokenAdmin", data.refresh_token);
           toast.success("Đăng nhập thành công");
-          router.push("/recruiter");
+          router.replace("/admin/user-management"); // Redirect to admin dashboard
         } else {
-          if (data.message == "Account not verified") {
+          if (data.message === "Account not verified") {
             toast.error(
               "Tài khoản chưa được xác thực. Vui lòng kiểm tra email để xác thực tài khoản"
             );
@@ -80,19 +76,19 @@ const Login = () => {
           }
           toast.error("Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.");
         }
-        return data;
       }
     } catch (error) {
       console.error("Lỗi khi đăng nhập:", error);
     }
   };
+
   return (
     <div className="flex min-h-screen flex-col bg-gray-50">
       <div className="flex flex-grow items-center justify-center">
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle className="text-center text-2xl font-bold text-gray-800">
-              Đăng nhập nhà tuyển dụng
+              Đăng nhập quản trị viên
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -144,46 +140,16 @@ const Login = () => {
                   </Button>
                 </div>
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <input type="checkbox" id="remember" />
-                  <Label htmlFor="remember" className="text-sm text-gray-600">
-                    Duy trì đăng nhập
-                  </Label>
-                </div>
-                <Link
-                  className="text-sm text-blue-600 hover:underline"
-                  href="#"
-                >
-                  Quên mật khẩu?
-                </Link>
-              </div>
               <Button
                 className="w-full bg-orange-500 text-white hover:bg-orange-600"
-                onClick={Login}
+                onClick={login}
                 type="button"
               >
                 Đăng nhập
               </Button>
             </form>
           </CardContent>
-          <CardFooter className="justify-center">
-            <p className="text-sm text-gray-600">
-              Bạn chưa đăng ký?{" "}
-              <Link
-                className="text-blue-600 hover:underline"
-                href="/recruiter/register"
-              >
-                Đăng ký ngay
-              </Link>
-            </p>
-          </CardFooter>
         </Card>
-      </div>
-      <div className="flex justify-end p-4">
-        <Button variant="ghost" className="text-sm text-gray-600">
-          Trợ giúp
-        </Button>
       </div>
     </div>
   );
