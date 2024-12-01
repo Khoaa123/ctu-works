@@ -46,6 +46,7 @@ const EditNews = () => {
   }, [params.newsId]);
 
   const handleSave = async () => {
+    const newsId = params.newsId;
     const newNews = {
       title,
       summary,
@@ -57,14 +58,14 @@ const EditNews = () => {
 
       const response = await fetch(
         params.newsId
-          ? `http://localhost:3001/api/news/update-news`
+          ? `http://localhost:3001/api/news/update-news/${newsId}`
           : `http://localhost:3001/api/news/create-news`,
         {
           method: params.newId ? "PUT" : "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ id: params.newsId, ...newNews }),
+          body: JSON.stringify({ id: params.newsId, title, summary, content }),
         }
       );
 

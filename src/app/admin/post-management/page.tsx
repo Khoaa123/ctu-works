@@ -17,6 +17,7 @@ import Link from "next/link";
 import { FaChevronRight, FaChevronLeft } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import { useCookies } from "next-client-cookies";
+import { toast } from "react-toastify";
 
 type News = {
   _id: string;
@@ -64,6 +65,26 @@ const PostManagement = () => {
   if (isError)
     return <div className="p-8">Lỗi khi tải bài viết: {error?.message}</div>;
 
+  const fetchDeletePost = async (postId: string) => {
+    const res = await fetch(`http://localhost:3001/api/news/delete/${postId}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) {
+      throw new Error("Failed to delete post");
+    }
+    return res.json();
+  };
+  const handleDeletePost = async (id: any) => {
+    const res = await fetchDeletePost(id);
+    if(res.status == "OK"){
+      toast.success("Xoá bài viết thành công")
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    }else{
+      toast.error("Xoá bài viết thất bại")
+    }
+  }
   return (
     <div className="p-8">
       <h1 className="mb-5 border-b border-indigo-200 pb-2 text-2xl font-bold text-indigo-700">
@@ -117,7 +138,7 @@ const PostManagement = () => {
                     <PencilIcon className="h-4 w-4" />
                   </Button>
                 </Link>
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" onClick={() => handleDeletePost(item._id)}>
                   <TrashIcon className="h-4 w-4" />
                 </Button>
               </TableCell>

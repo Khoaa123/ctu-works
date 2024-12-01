@@ -14,9 +14,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Search, UserPlus } from "lucide-react";
-import { FaChevronRight, FaChevronLeft } from "react-icons/fa6";
+import { FaChevronRight, FaChevronLeft, FaTrash } from "react-icons/fa6";
 import { useCookies } from "next-client-cookies";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 type RecruiterData = {
   _id: string;
@@ -33,7 +34,9 @@ const EmployerManagement = () => {
   const [page, setPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const itemsPerPage = 10;
+  const [isOpen, setIsOpen] = useState(false);
 
+  const [recruiterDelete, setRecruiterDelete] = useState('');
   const fetchAllRecruiters = async (): Promise<RecruiterData[]> => {
     const res = await fetch(
       `http://localhost:3001/api/recruiter/getAll-recruiter`
@@ -81,7 +84,38 @@ const EmployerManagement = () => {
       </div>
     );
   }
+  const openPopup = (id: any) => {
+    setRecruiterDelete(id)
+    setIsOpen(true);
+  };
 
+  const closePopup = () => {
+    setIsOpen(false);
+  };
+  const fetchDeleteRecruiter = async (id: string) => {
+    const res = await fetch(`http://localhost:3001/api/recruiter/delete-recruiter/${id}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) {
+      throw new Error("Failed to delete recruiter");
+    }
+    return res.json();
+  };
+  const handleDeleteRecruiter = async () => {
+    const res = await fetchDeleteRecruiter(recruiterDelete);
+    if (res.status === "OK") {
+      toast.success("Xóa người dùng thành công")
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    } else {
+      toast.error("Xóa người dùng thất bại")
+    }
+    closePopup();
+  };
+  const handleCancleDelete = () => {
+    closePopup();
+  }
   return (
     <div className="container mx-auto py-10">
       <h1 className="mb-5 border-b border-indigo-200 pb-2 text-2xl font-bold text-indigo-700">
@@ -113,8 +147,8 @@ const EmployerManagement = () => {
             <TableHead>Email</TableHead>
             <TableHead>Xác thực</TableHead>
             <TableHead>Lần cuối trực tuyến</TableHead>
-            <TableHead>Số người theo dõi</TableHead>
             <TableHead className="text-right">Ngày tham gia</TableHead>
+            <TableHead className="text-center">Hành động</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -126,43 +160,69 @@ const EmployerManagement = () => {
               <TableCell>{recruiter.email}</TableCell>
               <TableCell>
                 <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    recruiter.isVerified
-                      ? "bg-green-100 text-green-800"
-                      : "bg-red-100 text-red-800"
-                  }`}
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${recruiter.isVerified
+                    ? "bg-green-100 text-green-800"
+                    : "bg-red-100 text-red-800"
+                    }`}
                 >
                   {recruiter.isVerified ? "Đã xác thực" : "Chưa xác thực"}
                 </span>
               </TableCell>
               <TableCell>{formatDate(recruiter.lastOnline)}</TableCell>
-              <TableCell>{recruiter.following}</TableCell>
               <TableCell className="text-right">
                 {formatDate(recruiter.createdAt)}
+              </TableCell>
+              <TableCell className="text-center">
+                <button onClick={() => openPopup(recruiter._id)}>
+                  <FaTrash className="text-red-500" />
+                </button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-      <div className="mt-5 flex justify-center">
-        <Button
-          variant="outline"
-          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-          disabled={page === 1}
-        >
-          <FaChevronLeft />
-        </Button>
-        <span className="mx-4 flex items-center">
-          Trang {page} / {totalPages}
-        </span>
-        <Button
-          variant="outline"
-          onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-          disabled={page === totalPages}
-        >
-          <FaChevronRight />
-        </Button>
-      </div>
+      {isOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-xl p-8 w-96">
+            <h2 className="text-lg font-bold mb-4">Bạn chắc chắn xóa nhà tuyển dụng này chứ?</h2>
+            <div className="flex space-x-4">
+              <button
+                onClick={() => handleDeleteRecruiter()}
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Chắn chắn
+              </button>
+              <button
+                onClick={() => handleCancleDelete()}
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Hủy
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {!isOpen &&
+        <div className="mt-5 flex justify-center">
+          <Button
+            variant="outline"
+            onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+            disabled={page === 1}
+          >
+            <FaChevronLeft />
+          </Button>
+          <span className="mx-4 flex items-center">
+            Trang {page} / {totalPages}
+          </span>
+          <Button
+            variant="outline"
+            onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+            disabled={page === totalPages}
+          >
+            <FaChevronRight />
+          </Button>
+        </div>
+      }
     </div>
   );
 };

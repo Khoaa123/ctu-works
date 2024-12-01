@@ -5,25 +5,16 @@ import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useCookies } from "next-client-cookies";
+import { toast } from "react-toastify";
 
 type Post = {
   id?: string;
   title: string;
   summary: string;
-  category: string;
   content: string;
   status: "published" | "draft";
   publishDate: Date;
@@ -42,7 +33,6 @@ const CreateNews: React.FC<CreateEditPostProps> = ({
 }) => {
   const [title, setTitle] = useState(post?.title || "");
   const [summary, setSummary] = useState(post?.summary || "");
-  const [category, setCategory] = useState(post?.category || "");
   const [content, setContent] = useState(post?.content || "");
   const [status, setStatus] = useState<"published" | "draft">(
     post?.status || "draft"
@@ -50,18 +40,37 @@ const CreateNews: React.FC<CreateEditPostProps> = ({
   const [publishDate, setPublishDate] = useState(
     post?.publishDate || new Date()
   );
-
-  const handleSave = () => {
+  const fetchCreateNews = async (post: Post) => {
+    const res = await fetch(`http://localhost:3001/api/news/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(post),
+    });
+    if (!res.ok) {
+      throw new Error("Failed to create news");
+    }
+    return res.json();
+  };
+  const handleSave = async () => {
     const updatedPost: Post = {
       id: post?.id,
       title,
       summary,
-      category,
       content,
       status,
       publishDate,
     };
-    onSave(updatedPost);
+    const res = await fetchCreateNews(updatedPost);
+    if(res.status == "OK"){
+      toast.success("Tạo bài viết thành công");
+      setTimeout(() => {
+        window.location.href = "/admin/post-management";
+      }, 1000);
+    }else{
+      toast.error("Tạo bài viết thất bại");
+    }
   };
 
   const modules = {
@@ -117,15 +126,7 @@ const CreateNews: React.FC<CreateEditPostProps> = ({
             className="mt-1 shadow-none focus:border-sky-400 focus-visible:ring-0"
           />
         </div>
-        <div className="mb-4">
-          <Label htmlFor="category">Danh mục</Label>
-          <Input
-            id="category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="mt-1 shadow-none focus:border-sky-400 focus-visible:ring-0"
-          />
-        </div>
+   
         <div className="create-post-editor mb-4">
           <Label htmlFor="content">Nội dung</Label>
           <ReactQuill
@@ -137,21 +138,6 @@ const CreateNews: React.FC<CreateEditPostProps> = ({
             className="mt-1"
           />
         </div>
-        {/* <div className="mb-6">
-          <Label htmlFor="status">Trạng thái</Label>
-          <Select
-            value={status}
-            onValueChange={(value: "published" | "draft") => setStatus(value)}
-          >
-            <SelectTrigger className="mt-1 data-[state=open]:border-sky-400">
-              <SelectValue placeholder="Chọn trạng thái" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="published">Đã đăng</SelectItem>
-              <SelectItem value="draft">Bản nháp</SelectItem>
-            </SelectContent>
-          </Select>
-        </div> */}
         <div className="flex justify-end space-x-4">
           <Link href="/admin/post-management">
             <Button variant="outline" onClick={onCancel}>
