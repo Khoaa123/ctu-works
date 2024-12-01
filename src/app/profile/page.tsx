@@ -206,7 +206,7 @@ const Profile = () => {
 
   const updateUser = async (updatedData: FormData) => {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/update-user/${decodedToken?.userid}`,
+      `http://localhost:3001/api/user/update-user/${decodedToken?.userid}`,
       {
         method: "PUT",
         headers: {
@@ -273,8 +273,58 @@ const Profile = () => {
     },
   });
 
-  const update = () => {
-    mutation.mutate(formData);
+  const uploadImage = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append("images", file);
+
+    try {
+      const res = await fetch("http://localhost:3001/api/upload/image", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to upload image");
+      }
+
+      const data = await res.json();
+      if (!data.success) {
+        throw new Error("Image upload failed on server");
+      }
+
+      // Trả về URL ảnh đã upload
+      return data.imageUrls[0]; // Hoặc `[0]` nếu chỉ upload 1 ảnh
+    } catch (error) {
+      console.error("Image upload error:", error);
+      throw error;
+    }
+  };
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      try {
+        const imageUrl = await uploadImage(file); // Upload ảnh
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          avatar: imageUrl, // Cập nhật đường dẫn ảnh vào formData
+        }));
+        toast.success("Ảnh đã được tải lên thành công!");
+      } catch (error) {
+        console.error("Lỗi khi upload ảnh:", error);
+        toast.error("Tải ảnh lên thất bại, vui lòng thử lại.");
+      }
+    }
+  };
+
+  const update = async () => {
+    try {
+      await mutation.mutateAsync(formData);
+    } catch (error) {
+      console.error("Lỗi khi cập nhật thông tin:", error);
+    }
   };
 
   const updatePreferences = () => {
@@ -737,12 +787,19 @@ const Profile = () => {
     });
   };
 
-  console.log("gaga", data?.userInfo.dateOfBirth);
   return (
     <>
       <div className="flex flex-col gap-4 rounded-md bg-[#f1f2f4] p-4">
         <div className="flex items-center gap-6 rounded-md bg-white p-4">
-          <FaUser color="#EEEEEE" size={80} />
+          {formData.avatar ? (
+            <img
+              src={formData.avatar}
+              alt="Avatar"
+              className="h-24 w-24 rounded-full object-cover"
+            />
+          ) : (
+            <FaUser color="#EEEEEE" size={80} />
+          )}{" "}
           <div className="flex-1">
             <div className="flex justify-between">
               <p className="text-xl font-bold">{data?.fullName}</p>
@@ -762,14 +819,32 @@ const Profile = () => {
                   <ScrollArea className="h-96 w-full">
                     <div className="flex items-center gap-6 px-6">
                       <div className="flex flex-col items-center gap-3">
-                        <FaUser color="#EEEEEE" size={100} />
-                        <button className="rounded-full p-3 outline-none transition duration-300 hover:bg-[#e9e9f2]">
+                        {formData.avatar ? (
+                          <img
+                            src={formData.avatar}
+                            alt="Avatar"
+                            className="h-24 w-24 rounded-full object-cover"
+                          />
+                        ) : (
+                          <FaUser color="#EEEEEE" size={100} />
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          className="hidden"
+                          id="file-upload"
+                        />
+                        <label
+                          htmlFor="file-upload"
+                          className="cursor-pointer rounded-full p-3 outline-none transition duration-300 hover:bg-[#e9e9f2]"
+                        >
                           <FaPen color="grey" />
-                        </button>
+                        </label>
                       </div>
                       <div className="flex flex-1 flex-col gap-6">
                         <div className="grid grid-cols-2 gap-5">
-                          <div className="col-span-1 flex flex-col gap-1">
+                          <div className="col-span-2 flex flex-col gap-1">
                             <label htmlFor="" className="text-sm">
                               <span className="-top-1 mr-1 inline-block text-[#dc362e]">
                                 *
@@ -788,7 +863,7 @@ const Profile = () => {
                               }
                             />
                           </div>
-                          <div className="col-span-1 flex flex-col gap-1">
+                          {/* <div className="col-span-1 flex flex-col gap-1">
                             <label htmlFor="" className="text-sm">
                               MSSV
                             </label>
@@ -803,7 +878,7 @@ const Profile = () => {
                                 })
                               }
                             />
-                          </div>
+                          </div> */}
                         </div>
                         <div className="col-span-1 flex flex-col gap-1">
                           <label htmlFor="" className="text-sm">
