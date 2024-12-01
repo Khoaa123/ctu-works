@@ -84,6 +84,11 @@ export interface JwtPayload {
   role: string;
 }
 
+type UserInfo = {
+  country: string;
+  dateOfBirth: string;
+};
+
 type UserData = {
   _id: string;
   fullName: string;
@@ -108,6 +113,7 @@ type UserData = {
   maritalStatusId: string;
   avatar: "";
   workingPreferences: WorkingPreferences;
+  userInfo: UserInfo;
 };
 
 type FormData = {
@@ -148,6 +154,10 @@ const Profile = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isPreferencesDialogOpen, setIsPreferencesDialogOpen] = useState(false);
   const [selectedBenefits, setSelectedBenefits] = useState<any[]>([]);
+  const cookies = useCookies();
+  const accessToken = cookies.get("accessToken");
+  const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
+  const emailToken = decodedToken?.email || "";
 
   const [formData, setFormData] = useState<FormData>({
     fullName: "",
@@ -181,13 +191,9 @@ const Profile = () => {
       benefits: [],
     });
 
-  const cookies = useCookies();
-  const accessToken = cookies.get("accessToken");
-  const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
-
   const fetchUser = async () => {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/get-details/${decodedToken?.userid}`
+      `http://localhost:3001/api/user/get-details/${decodedToken?.userid}`
     );
     const data = await res.json();
     return data.data;
@@ -283,6 +289,8 @@ const Profile = () => {
   useEffect(() => {
     if (data) {
       setFormData(data);
+      const newDate = new Date(data.dateOfBirth);
+      setDate(newDate);
       setSelectedBenefits(data.workingPreferences.benefits || []);
       setWorkingPreferences(data.workingPreferences);
     }
@@ -728,6 +736,8 @@ const Profile = () => {
       jobFunction: selectedOption.value,
     });
   };
+
+  console.log("gaga", data?.userInfo.dateOfBirth);
   return (
     <>
       <div className="flex flex-col gap-4 rounded-md bg-[#f1f2f4] p-4">
@@ -858,7 +868,7 @@ const Profile = () => {
                           </label>
                           <input
                             type="text"
-                            value={data?.email}
+                            value={data?.email || emailToken}
                             className="h-10 rounded-md border border-solid px-3 text-sm outline-none focus:border-sky-400"
                           />
                         </div>
@@ -1021,11 +1031,15 @@ const Profile = () => {
                               <SelectValue placeholder="Vui lòng chọn..." />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="Việt Nam">
-                                Người Việt Nam
+                              <SelectItem value="VN">
+                                {formData.country === "VN"
+                                  ? "Người Việt Nam"
+                                  : "Người nước ngoài"}
                               </SelectItem>
-                              <SelectItem value="Nước ngoài">
-                                Người nước ngoài
+                              <SelectItem value="Other">
+                                {formData.country !== "VN"
+                                  ? "Người nước ngoài"
+                                  : "Người Việt Nam"}
                               </SelectItem>
                             </SelectContent>
                           </Select>
@@ -1881,7 +1895,7 @@ const Profile = () => {
 
       <Introduce data={data} />
 
-      <WorkHistory data={data} />
+      {/* <WorkHistory data={data} /> */}
 
       <Education data={data} />
 
