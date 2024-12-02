@@ -103,21 +103,33 @@
   }
 
   .bg-custom-gradient {
-    background: linear-gradient(270deg,
-        rgb(0, 90, 255) 0%,
-        rgb(0, 23, 68) 100%);
+    background: linear-gradient(
+      270deg,
+      rgb(0, 90, 255) 0%,
+      rgb(0, 23, 68) 100%
+    );
   }
 
   .bg-banner {
-    background: linear-gradient(270deg,
-        rgb(0, 90, 255) 0%,
-        rgb(0, 23, 68) 73.72%);
+    background: linear-gradient(
+      270deg,
+      rgb(0, 90, 255) 0%,
+      rgb(0, 23, 68) 73.72%
+    );
   }
 
   .bg-header-recruiter {
-    background: linear-gradient(90deg,
-        rgb(0, 23, 68) 58%,
-        rgb(0, 90, 255) 100%);
+    background: linear-gradient(
+      90deg,
+      rgb(0, 23, 68) 58%,
+      rgb(0, 90, 255) 100%
+    );
+  }
+
+  .prose img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
   }
 }
 

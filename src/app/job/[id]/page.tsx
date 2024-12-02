@@ -160,33 +160,27 @@ const JobDetail = () => {
 
   const saveJob = async () => {
     const id = location.pathname.split("/job/")[1];
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/savejob/create`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: decodedToken?.userid,
-          jobPostId: id,
-        }),
-      }
-    );
+    const res = await fetch(`http://localhost:3001/api/savejob/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: decodedToken?.userid,
+        jobPostId: id,
+      }),
+    });
     return res.json();
   };
 
   const unSaveJob = async () => {
     const id = saveJobDetails._id;
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/savejob/delete/${id}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const res = await fetch(`http://localhost:3001/api/savejob/delete/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     return res.json();
   };
 
@@ -196,19 +190,16 @@ const JobDetail = () => {
       if (id == "undefined") {
         router.push("/");
       }
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/savejob/check-save`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: decodedToken?.userid,
-            jobPostId: id,
-          }),
-        }
-      );
+      const res = await fetch(`http://localhost:3001/api/savejob/check-save`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: decodedToken?.userid,
+          jobPostId: id,
+        }),
+      });
       const data = await res.json();
       if (data.status === "OK") {
         setIsSaved(true);
@@ -293,8 +284,9 @@ const JobDetail = () => {
       const fetchData = async () => {
         const data = await fetchJobPostDetails();
         setJobPostDetails(data.data);
-        console;
         setJobInfoId(data.data?.jobInfoId);
+        console.log("đasadsa", data.data);
+
         setLoading(false);
       };
       run = 1;
@@ -306,7 +298,7 @@ const JobDetail = () => {
     const id = location.pathname.split("/job/")[1];
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobpost/get-details-jobpost/${id}`,
+      `http://localhost:3001/api/jobpost/get-details-jobpost/${id}`,
       {
         method: "GET",
         headers: {
@@ -368,48 +360,85 @@ const JobDetail = () => {
     };
     fetchData();
   }, []);
-  let startTime = Date.now();
-  const API_ENDPOINT = `${process.env.NEXT_PUBLIC_API_BASE_URL}/job-views-history/create`;
-  let hasRunBeforeunload = false;
+  // let startTime = Date.now();
+  // const API_ENDPOINT = `http://localhost:3001/api/job-views-history/create`;
+  // let hasRunBeforeunload = false;
+  // useEffect(() => {
+  //   window.addEventListener("beforeunload", (event) => {
+  //     event.preventDefault();
+  //     event.returnValue = "";
+  //     event.timeStamp;
+  //     // Kiểm tra xem hàm đã chạy chưa
+  //     if (!hasRunBeforeunload) {
+  //       hasRunBeforeunload = true;
+  //       let endTime = Date.now();
+  //       let timeSpent = endTime - startTime;
+  //       const userId = decodedToken?.userid;
+  //       const jobPostId = location.pathname.split("/job/")[1];
+
+  //       if (userId && jobPostId) {
+  //         fetch(API_ENDPOINT, {
+  //           method: "POST",
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //           },
+  //           body: JSON.stringify({
+  //             userId: userId,
+  //             jobPostId: jobPostId,
+  //             timeSpent: timeSpent,
+  //           }),
+  //         })
+  //           .then((response) => {})
+  //           .catch((error) => {});
+  //       }
+  //     }
+  //   });
+
+  //   return () => {
+  //     window.removeEventListener("beforeunload", () => {});
+  //   };
+  // }, []);
+
+  const API_ENDPOINT = `http://localhost:3001/api/job-views-history/create`;
+  const startTime = Date.now();
+  const userId = decodedToken?.userid;
+  const jobPostId = location.pathname.split("/job/")[1];
+
   useEffect(() => {
-    window.addEventListener("beforeunload", (event) => {
-      event.preventDefault();
-      event.returnValue = "";
-      event.timeStamp;
-      // Kiểm tra xem hàm đã chạy chưa
-      if (!hasRunBeforeunload) {
-        hasRunBeforeunload = true;
-        let endTime = Date.now();
-        let timeSpent = endTime - startTime;
-        const userId = decodedToken?.userid;
-        const jobPostId = location.pathname.split("/job/")[1];
+    if (userId && jobPostId) {
+      const endTime = Date.now();
+      const timeSpent = endTime - startTime;
 
-        if (userId && jobPostId) {
-          fetch(API_ENDPOINT, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              userId: userId,
-              jobPostId: jobPostId,
-              timeSpent: timeSpent,
-            }),
-          })
-            .then((response) => {})
-            .catch((error) => {});
-        }
-      }
-    });
+      fetch(API_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: userId,
+          jobPostId: jobPostId,
+          timeSpent: timeSpent,
+        }),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log("Job view history created:", data);
+        })
+        .catch((error) => {
+          console.error("Error creating job view history:", error);
+        });
+    }
+  }, [userId, jobPostId]);
 
-    return () => {
-      window.removeEventListener("beforeunload", () => {});
-    };
-  }, []);
   const fetchDetailsUser = async () => {
     const id = decodedToken?.userid;
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/get-details/${id}`,
+      `http://localhost:3001/api/user/get-details/${id}`,
       {
         method: "GET",
         headers: {
@@ -609,6 +638,7 @@ const JobDetail = () => {
     fetchRelatedJobs();
   }, [jobInfoId]);
 
+  console.log("jojo", relatedJobs);
   const handleCheckLogin = () => {
     if (!accessToken) {
       router.push("/login");
@@ -647,12 +677,7 @@ const JobDetail = () => {
                   <div className="rounded-md bg-[#F8F9FA] p-3">
                     <p className="mb-1 line-clamp-1 text-xl font-bold">
                       {loading ? (
-                        <Skeleton
-                          baseColor="#edf2f7"
-                          highlightColor="#f7fafc"
-                          width={400}
-                          height={20}
-                        />
+                        <Skeleton width={400} height={20} />
                       ) : (
                         jobPostDetails?.jobTitle
                       )}
@@ -664,11 +689,7 @@ const JobDetail = () => {
                         </div>
                         <span className="text-sm text-[#ff7d55]">
                           {loading ? (
-                            <Skeleton
-                              baseColor="#edf2f7"
-                              highlightColor="#f7fafc"
-                              width={150}
-                            />
+                            <Skeleton width={150} />
                           ) : (
                             <>
                               {new Date(
@@ -691,11 +712,7 @@ const JobDetail = () => {
                             <AiOutlineDollarCircle color="grey" size={14} />
                           </div>
                           {loading ? (
-                            <Skeleton
-                              baseColor="#edf2f7"
-                              highlightColor="#f7fafc"
-                              width={100}
-                            />
+                            <Skeleton width={100} />
                           ) : jobPostDetails?.canDeal === true ? (
                             <span className="text-sm text-orange-500">
                               Thương lượng
@@ -713,11 +730,7 @@ const JobDetail = () => {
                           </div>
                           <span className="text-sm">
                             {loading ? (
-                              <Skeleton
-                                baseColor="#edf2f7"
-                                highlightColor="#f7fafc"
-                                width={100}
-                              />
+                              <Skeleton width={100} />
                             ) : (
                               <>{jobPostDetails?.postViews} lượt xem</>
                             )}
@@ -729,11 +742,7 @@ const JobDetail = () => {
                           </div>
                           <span className="line-clamp-1 text-sm">
                             {loading ? (
-                              <Skeleton
-                                baseColor="#edf2f7"
-                                highlightColor="#f7fafc"
-                                width={300}
-                              />
+                              <Skeleton width={300} />
                             ) : (
                               <>
                                 {jobPostDetails?.location?.map(
@@ -1557,13 +1566,7 @@ const JobDetail = () => {
                     <div className="mt-3">
                       {loading ? (
                         <div className="space-y-3">
-                          <Skeleton
-                            count={2}
-                            height={20}
-                            width="100%"
-                            baseColor="#edf2f7"
-                            highlightColor="#f7fafc"
-                          />
+                          <Skeleton count={2} height={20} width="100%" />
                         </div>
                       ) : (
                         <div
@@ -1576,13 +1579,7 @@ const JobDetail = () => {
                     <p className="mt-8 text-lg font-bold">Yêu cầu công việc</p>
                     {loading ? (
                       <div className="space-y-3">
-                        <Skeleton
-                          count={3}
-                          height={20}
-                          width="100%"
-                          baseColor="#edf2f7"
-                          highlightColor="#f7fafc"
-                        />
+                        <Skeleton count={3} height={20} width="100%" />
                       </div>
                     ) : (
                       <div
@@ -1600,13 +1597,7 @@ const JobDetail = () => {
                     </h1>
                     {loading ? (
                       <div className="space-y-3">
-                        <Skeleton
-                          count={2}
-                          height={20}
-                          width="20%"
-                          baseColor="#edf2f7"
-                          highlightColor="#f7fafc"
-                        />
+                        <Skeleton count={2} height={20} width="20%" />
                       </div>
                     ) : (
                       <div className="space-y-4">
@@ -1946,12 +1937,12 @@ const JobDetail = () => {
               <div className="col-span-1">
                 <div className="flex flex-col rounded-md bg-white px-8 py-4">
                   <div className="flex items-center justify-center">
-                    {/* <Image
+                    <Image
                       src={jobPostDetails?.companyLogo}
                       alt=""
                       height={100}
                       width={100}
-                    /> */}
+                    />
                   </div>
                   <div className="flex flex-col">
                     {loading ? (

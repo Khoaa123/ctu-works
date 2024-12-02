@@ -22,12 +22,13 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { GoPencil, GoPlusCircle, GoTrash } from "react-icons/go";
+import { formatDate } from "@/utils/FormatDate";
 
 interface WorkingHistoryRequest {
   jobTitle: string;
   companyName: string;
-  fromDate: string;
-  toDate: string;
+  fromDate: any;
+  toDate: any;
   description: string;
   isCurrent: number;
 }
@@ -169,7 +170,7 @@ const WorkHistory = ({ data }: { data: any }) => {
     if (fromDate) {
       setWorkingHistories((prev) => ({
         ...prev,
-        fromDate: format(fromDate, "MM/yyyy"),
+        fromDate: fromDate ? new Date(fromDate) : null,
       }));
     }
   }, [fromDate]);
@@ -178,7 +179,7 @@ const WorkHistory = ({ data }: { data: any }) => {
     if (toDate) {
       setWorkingHistories((prev) => ({
         ...prev,
-        toDate: format(toDate, "MM/yyyy"),
+        toDate: toDate ? new Date(toDate) : null,
       }));
     }
   }, [toDate]);
@@ -431,9 +432,13 @@ const WorkHistory = ({ data }: { data: any }) => {
                   <h3 className="font-medium">{history.jobTitle}</h3>
                   <p className="text-sm text-gray-500">{history.companyName}</p>
                   <div className="flex items-center gap-2 text-sm text-gray-500">
-                    {history.fromDate && <span>{history.fromDate}</span>}
+                    {history.fromDate && (
+                      <span>{formatDate(history.fromDate)}</span>
+                    )}
                     {history.fromDate && history.toDate && <span> - </span>}
-                    {history.toDate && <span>{history.toDate}</span>}
+                    {history.toDate && (
+                      <span>{formatDate(history.toDate)}</span>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center gap-2">

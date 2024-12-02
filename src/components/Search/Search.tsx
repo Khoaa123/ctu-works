@@ -15,13 +15,19 @@ const Search = () => {
   const handleSearch = (e: any) => {
     e.preventDefault();
     if (searchQuery) {
-      router.push(`/job-search/${searchQuery}`);
+      router.push(`/job-search/keyword=${searchQuery}`);
+    }
+  };
+
+  const handleKeyDown = (e: any) => {
+    if (e.key === "Enter") {
+      handleSearch(e);
     }
   };
   return (
     <>
       <div className="mb-12 flex items-center justify-center gap-3 bg-[#F6FAFB] py-12">
-        <Select>
+        {/* <Select>
           <SelectTrigger className="w-[200px] bg-white py-5 shadow-none focus:ring-0">
             <SelectValue placeholder="Tất cả địa điểm" />
           </SelectTrigger>
@@ -91,11 +97,12 @@ const Search = () => {
             <SelectItem value="Yên Bái">Yên Bái</SelectItem>
             <SelectItem value="Khác">Khác</SelectItem>
           </SelectContent>
-        </Select>
+        </Select> */}
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
           placeholder="Tìm kiếm việc làm..."
           className="w-full max-w-lg rounded-md border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
         />

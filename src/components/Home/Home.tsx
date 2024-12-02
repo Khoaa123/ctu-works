@@ -18,6 +18,15 @@ import Chatbot from "@/app/recruiter/Test/Test1/page";
 import ChatBotWrapper from "../client/ChatBotWrapper";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
+import { Badge } from "../ui/badge";
+import { BriefcaseIcon, ChevronRight, MapPin } from "lucide-react";
 
 type CompanyInfo = {
   companyName: string;
@@ -28,6 +37,8 @@ type jobPosts = {
   _id: string;
   title: string;
   companyInfo: CompanyInfo;
+  companyLogo: string;
+  companyName: string;
   jobTitle: string;
   minSalary: number;
   maxSalary: number;
@@ -102,11 +113,13 @@ const HomePage = () => {
     groupedAllJobPosts.push(jobPosts.slice(i, i + 9));
   }
 
+  console.log(groupedAllJobPosts);
+
   useEffect(() => {
     const fetchJobPosts = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobpost/get-all-jobpost`
+          `http://localhost:3001/api/jobpost/get-all-jobpost`
         );
         const data = await res.json();
         if (data.status === "OK") {
@@ -127,7 +140,7 @@ const HomePage = () => {
     const fetchRecentJobPosts = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobpost/get-all-jobpost?days=3`
+          `http://localhost:3001/api/jobpost/get-all-jobpost?days=7`
         );
         const data = await res.json();
         if (data.status === "OK") {
@@ -167,9 +180,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/news/get-all-news`
-        );
+        const res = await fetch(`http://localhost:3001/api/news/get-all-news`);
         const data = await res.json();
         if (data.status === "OK") {
           setNews(data.data);
@@ -276,16 +287,25 @@ const HomePage = () => {
                                 <div key={subIndex} className="p-1">
                                   <Link href={`/job/${job._id}`}>
                                     <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]">
+                                      <div className="flex-shrink-0">
+                                        <Image
+                                          src={job?.companyLogo}
+                                          alt={job?.companyName}
+                                          className="object-cover"
+                                          width={60}
+                                          height={60}
+                                        />
+                                      </div>
                                       <div>
                                         <h1 className="mb-1 line-clamp-1 text-xl font-bold">
                                           {job.jobTitle}
                                         </h1>
-                                        <p>{job.companyInfo?.companyName}</p>
+                                        {/* <p>{job.companyInfo?.companyName}</p> */}
                                         <p className="my-1 text-sm text-amber-600">
                                           {job.minSalary?.toLocaleString()} -{" "}
-                                          {job.maxSalary?.toLocaleString()} VNĐ
+                                          {job.maxSalary?.toLocaleString()} $
                                         </p>
-                                        <p className="text-sm">
+                                        <p className="line-clamp-2 text-sm">
                                           {job.location}
                                         </p>
                                       </div>
@@ -400,74 +420,91 @@ const HomePage = () => {
             </Carousel>
           </div>
 
-          <div className="my-8">
-            <p className="text-xl font-bold">Nhà Tuyển Dụng Nổi Bật</p>
-            <Carousel
-              setApi={setApi2}
-              opts={{ align: "start" }}
-              className="my-2 w-full"
-            >
-              <CarouselContent>
-                {companies.map((company, index) => (
-                  <CarouselItem key={company._id}>
-                    <div className="h-fit p-1">
-                      <div
-                        style={{
-                          backgroundImage: `url(${company.companyLogo})`,
-                          backgroundSize: "cover",
-                          width: "100%",
-                          height: "350px",
-                        }}
-                      ></div>
-                      <div className="z-50 mx-auto -mt-20 h-fit w-3/4 rounded-md bg-[#f4f4f7] p-5">
-                        <div className="flex items-center gap-6 rounded-md bg-white p-4">
-                          <img
-                            src={company.companyLogo}
-                            alt="logo"
-                            width={100}
-                            height={70}
-                          />
-                          <div className="flex flex-col gap-1">
-                            <p className="text-lg font-semibold">
-                              {company.companyName}
-                            </p>
-                            <p className="text-sm italic text-[#ff7d55]">
-                              {company.companyDescription}
-                            </p>
-                            <p>{company.companyAddress}</p>
-                          </div>
+          <div className="bg-gradient-to-b from-white to-gray-50/50 py-16">
+            <div className="m mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center">
+                <h2 className="text-xl font-bold tracking-tight text-gray-900">
+                  Nhà Tuyển Dụng Nổi Bật
+                </h2>
+                <p className="mx-auto mt-3 max-w-2xl text-lg text-gray-500 sm:mt-4">
+                  Khám phá cơ hội nghề nghiệp tại các công ty hàng đầu
+                </p>
+              </div>
+
+              <div className="mt-12">
+                <Carousel
+                  opts={{
+                    align: "start",
+                    loop: true,
+                  }}
+                  className="w-full"
+                >
+                  <CarouselContent className="-ml-4">
+                    {companies.map((company) => (
+                      <CarouselItem
+                        key={company._id}
+                        className="pl-4 md:basis-1/2 lg:basis-1/3"
+                      >
+                        <div className="h-full">
+                          <Card className="group relative flex h-full flex-col overflow-hidden rounded-sm shadow-none transition-all duration-300 hover:shadow-lg">
+                            <CardHeader className="relative h-48 flex-shrink-0 overflow-hidden bg-gray-50 p-6">
+                              <div className="absolute inset-0 bg-gradient-to-t from-white/80 to-transparent" />
+                              <div className="relative mx-auto h-28 w-28">
+                                <Image
+                                  src={company.companyLogo}
+                                  alt={`${company.companyName} logo`}
+                                  fill
+                                  className="object-contain"
+                                />
+                              </div>
+                            </CardHeader>
+                            <CardContent className="relative flex flex-grow flex-col px-6 py-2">
+                              <div className="flex-grow space-y-4">
+                                <div>
+                                  <h3 className="text-base font-semibold text-gray-900 group-hover:text-primary">
+                                    {company.companyName}
+                                  </h3>
+                                  <p className="mt-2 line-clamp-2 text-sm text-gray-500">
+                                    {company.companyDescription}
+                                  </p>
+                                </div>
+
+                                <div className="flex items-center gap-2 text-sm text-gray-500">
+                                  <MapPin className="h-4 w-4 flex-shrink-0" />
+                                  <span className="line-clamp-1">
+                                    {company.companyAddress}
+                                  </span>
+                                </div>
+                              </div>
+
+                              <div className="mt-4 flex items-center justify-between border-t pt-4">
+                                <Badge
+                                  variant="secondary"
+                                  className="flex items-center gap-1"
+                                >
+                                  <BriefcaseIcon className="h-3 w-3" />
+                                  <span>{company.jobCount} việc làm</span>
+                                </Badge>
+                                <Link
+                                  href={`/company/${company._id}`}
+                                  className="inline-flex items-center gap-1 text-sm font-medium text-primary transition-colors hover:text-primary/80"
+                                >
+                                  Xem chi tiết
+                                  <ChevronRight className="h-4 w-4" />
+                                </Link>
+                              </div>
+                            </CardContent>
+                          </Card>
                         </div>
-                      </div>
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
-
-            <div className="mt-4 flex items-center justify-center gap-4">
-              <button
-                onClick={() => api2?.scrollTo(current - 1)}
-                className={`flex h-8 w-8 items-center justify-center rounded-full border ${
-                  current2 === 0
-                    ? "opacity-25 cursor-not-allowed"
-                    : "group hover:border-yellow-500"
-                }`}
-                disabled={current2 === 0}
-              >
-                <FaAngleLeft />
-              </button>
-
-              <button
-                onClick={() => api2?.scrollTo(current + 1)}
-                className={`flex h-8 w-8 items-center justify-center rounded-full border ${
-                  current2 === companies.length - 1
-                    ? "opacity-25 cursor-not-allowed"
-                    : "group hover:border-yellow-500"
-                }`}
-                disabled={current2 === companies.length - 1}
-              >
-                <FaAngleRight />
-              </button>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <div className="mt-8">
+                    <CarouselPrevious className="absolute -left-12 top-1/2 -translate-y-1/2" />
+                    <CarouselNext className="absolute -right-12 top-1/2 -translate-y-1/2" />
+                  </div>
+                </Carousel>
+              </div>
             </div>
           </div>
 
@@ -477,7 +514,7 @@ const HomePage = () => {
                 <span className="px-6 py-3 text-xl font-bold">
                   Việc Làm Tốt Nhất
                 </span>
-                <Link href="#">
+                <Link href="/job">
                   <button className="px-6 py-3 uppercase text-blue-500">
                     Xem tất cả
                   </button>
@@ -538,14 +575,23 @@ const HomePage = () => {
                                 <div key={subIndex} className="p-1">
                                   <Link href={`/job/${job._id}`}>
                                     <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]">
+                                      <div className="flex-shrink-0">
+                                        <Image
+                                          src={job?.companyLogo}
+                                          alt={job?.companyName}
+                                          className="object-cover"
+                                          width={60}
+                                          height={60}
+                                        />
+                                      </div>
                                       <div>
                                         <h1 className="mb-1 line-clamp-1 text-xl font-bold">
                                           {job.jobTitle}
                                         </h1>
-                                        <p>{job.companyInfo?.companyName}</p>
+                                        {/* <p>{job.companyInfo?.companyName}</p> */}
                                         <p className="my-1 text-sm text-amber-600">
                                           {job.minSalary?.toLocaleString()} -{" "}
-                                          {job.maxSalary?.toLocaleString()} VNĐ
+                                          {job.maxSalary?.toLocaleString()} $
                                         </p>
                                         <p className="line-clamp-2 text-sm">
                                           {job.location}
@@ -688,26 +734,9 @@ const HomePage = () => {
                       key={index}
                       className="overflow-hidden rounded-md border border-solid border-[#dbdbdb] p-4"
                     >
-                      <Skeleton
-                        baseColor="#edf2f7"
-                        highlightColor="#f7fafc"
-                        height={20}
-                        width={`70%`}
-                      />
-                      <Skeleton
-                        baseColor="#edf2f7"
-                        highlightColor="#f7fafc"
-                        height={15}
-                        width={`90%`}
-                        className="mt-4"
-                      />
-                      <Skeleton
-                        baseColor="#edf2f7"
-                        highlightColor="#f7fafc"
-                        height={15}
-                        width={`80%`}
-                        className="mt-2"
-                      />
+                      <Skeleton height={20} width={`70%`} />
+                      <Skeleton height={15} width={`90%`} className="mt-4" />
+                      <Skeleton height={15} width={`80%`} className="mt-2" />
                     </div>
                   ))
                 : news.map((item, index) => (
@@ -720,7 +749,7 @@ const HomePage = () => {
                         <p className="mt-2 text-base font-bold transition-all duration-200 group-hover:text-[#ff7d55]">
                           {item.title}
                         </p>
-                        <p className="my-4">{item.summary}</p>{" "}
+                        <p className="my-4 line-clamp-4">{item.summary}</p>{" "}
                       </div>
                     </Link>
                   ))}

@@ -21,7 +21,7 @@ export default function NewsDetail() {
     const fetchNews = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3001/api/news/get-detail-news/66dc8cefa3bcb045504ce958`
+          `http://localhost:3001/api/news/get-detail-news/${id}`
         );
         const data = await res.json();
         if (data.status === "OK") {
@@ -31,10 +31,18 @@ export default function NewsDetail() {
         }
       } catch (error) {
         console.error("Error fetching news item", error);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchNews();
+    if (id) {
+      fetchNews();
+    }
   }, [id]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="container pt-8">
@@ -48,13 +56,10 @@ export default function NewsDetail() {
           </span>
         </div>
         <p className="mb-6 text-xl font-semibold">{newsItem?.summary}</p>
-        <div className="prose max-w-none">
-          {newsItem?.content.split("\n").map((paragraph, index) => (
-            <p key={index} className="mb-4">
-              {paragraph}
-            </p>
-          ))}
-        </div>
+        <div
+          className="prose max-w-none"
+          dangerouslySetInnerHTML={{ __html: newsItem?.content || "" }}
+        />
       </article>
     </div>
   );

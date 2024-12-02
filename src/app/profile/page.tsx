@@ -786,6 +786,10 @@ const Profile = () => {
     });
   };
 
+  const formatDate = (date: any) => {
+    if (!date) return "";
+    return format(new Date(date), "dd/MM/yyyy");
+  };
   return (
     <>
       <div className="flex flex-col gap-4 rounded-md bg-[#f1f2f4] p-4">
@@ -1231,7 +1235,7 @@ const Profile = () => {
                           </Select>
                         </div>
                       </div>
-                      <div className="grid grid-cols-2 gap-5">
+                      {/* <div className="grid grid-cols-2 gap-5">
                         <div className="col-span-1 flex flex-col gap-1">
                           <label htmlFor="" className="text-sm">
                             <span className="-top-1 mr-1 inline-block text-[#dc362e]">
@@ -1296,7 +1300,7 @@ const Profile = () => {
                             </SelectContent>
                           </Select>
                         </div>
-                      </div>
+                      </div> */}
 
                       <div className="flex flex-col gap-1">
                         <label htmlFor="" className="text-sm">
@@ -1365,7 +1369,9 @@ const Profile = () => {
                       data?.dateOfBirth ? "text-[#414042] font-medium" : ""
                     }`}
                   >
-                    {data?.dateOfBirth ? data.dateOfBirth : "Ngày sinh"}
+                    {data?.dateOfBirth
+                      ? formatDate(data?.dateOfBirth)
+                      : "Ngày sinh"}
                   </p>
                 </div>
                 <div className="my-1 flex items-center gap-2 text-gray-400">
@@ -1410,7 +1416,7 @@ const Profile = () => {
                     })()}
                   </p>
                 </div>
-                <div className="my-1 flex items-center gap-2 text-gray-400">
+                {/* <div className="my-1 flex items-center gap-2 text-gray-400">
                   <RiGraduationCapLine />
                   <p
                     className={`overflow-hidden text-ellipsis whitespace-nowrap ${
@@ -1419,7 +1425,7 @@ const Profile = () => {
                   >
                     {data?.MSSV ? data.MSSV : "Mã số sinh viên"}
                   </p>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -1919,7 +1925,7 @@ const Profile = () => {
         </div>
       </div>
 
-      <div className="rounded-md bg-white p-4">
+      {/* <div className="rounded-md bg-white p-4">
         <p className="text-xl font-bold">Giới Thiệu Bản Thân</p>
         <p className="my-3 text-xs font-normal italic">
           Giới thiệu điểm mạnh và số năm kinh nghiệm của bạn{" "}
@@ -1965,9 +1971,9 @@ const Profile = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      </div>
+      </div> */}
 
-      <Introduce data={data} />
+      {/* <Introduce data={data} /> */}
 
       {/* <WorkHistory data={data} /> */}
 

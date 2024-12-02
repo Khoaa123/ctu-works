@@ -13,6 +13,7 @@ import PreviewResume from "../PreviewResume/PreviewResume";
 import { ResumeInfoContext } from "@/context/ResumeInfoContext";
 import html2canvas from "html2canvas-pro";
 import jsPDF from "jspdf";
+import Link from "next/link";
 
 export default function FormResume({
   activeFormIndex,
@@ -102,7 +103,15 @@ export default function FormResume({
       {activeFormIndex < 7 ? (
         <>
           <div>
-            <div className="mb-4 flex justify-end">
+            <div className="mb-4 flex justify-between">
+              <div>
+                <Button
+                  size="sm"
+                  className="flex justify-start gap-2 bg-blue-600 hover:bg-blue-700"
+                >
+                  <Link href="/">Quay về trang chủ</Link>
+                </Button>
+              </div>
               <div className="flex gap-2">
                 {activeFormIndex > 1 && (
                   <Button

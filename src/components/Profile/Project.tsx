@@ -23,13 +23,14 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { GoPencil, GoPlusCircle, GoTrash } from "react-icons/go";
+import { formatDate } from "@/utils/FormatDate";
 
 type ProjectRequest = {
   projectName: string;
   companyName: string;
   yourRole: string;
-  fromDate: string;
-  toDate: string;
+  fromDate: any;
+  toDate: any;
   description: string;
   projectLink: string;
 };
@@ -159,7 +160,7 @@ const Project = ({ data }: { data: any }) => {
     if (fromDate) {
       setProject((prev) => ({
         ...prev,
-        fromDate: format(fromDate, "MM/yyyy"),
+        fromDate: fromDate ? new Date(fromDate) : null,
       }));
     }
   }, [fromDate]);
@@ -168,7 +169,7 @@ const Project = ({ data }: { data: any }) => {
     if (toDate) {
       setProject((prev) => ({
         ...prev,
-        toDate: format(toDate, "MM/yyyy"),
+        toDate: toDate ? new Date(toDate) : null,
       }));
     }
   }, [toDate]);
@@ -450,9 +451,13 @@ const Project = ({ data }: { data: any }) => {
                   <h3 className="font-medium">{project.projectName}</h3>
                   <p className="text-sm text-gray-500">{project.companyName}</p>
                   <div className="flex items-center gap-2 text-sm text-gray-500">
-                    {project.fromDate && <span>{project.fromDate}</span>}
+                    {project.fromDate && (
+                      <span>{formatDate(project.fromDate)}</span>
+                    )}
                     {project.fromDate && project.toDate && <span> - </span>}
-                    {project.toDate && <span>{project.toDate}</span>}
+                    {project.toDate && (
+                      <span>{formatDate(project.toDate)}</span>
+                    )}
                   </div>
                   <Link
                     href={project.projectLink}

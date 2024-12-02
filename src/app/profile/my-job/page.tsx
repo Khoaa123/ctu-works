@@ -71,7 +71,7 @@ const MyJob = () => {
   const fetchViewHistory = async () => {
     const id = decodedToken?.userid;
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/job-views-history/get/${id}`,
+      `http://localhost:3001/api/job-views-history/get/${id}`,
       {
         method: "GET",
         headers: {
@@ -84,7 +84,7 @@ const MyJob = () => {
   const fetchSaveJob = async () => {
     const id = decodedToken?.userid;
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/savejob/get-my-savejob/${id}`,
+      `http://localhost:3001/api/savejob/get-my-savejob/${id}`,
       {
         method: "GET",
         headers: {
@@ -127,7 +127,7 @@ const MyJob = () => {
   }, []);
   const getJobPost = async (item: any) => {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobpost/get-details-jobpost/${item.jobPostId}`,
+      `http://localhost:3001/api/jobpost/get-details-jobpost/${item.jobPostId}`,
       {
         method: "GET",
         headers: {
@@ -140,7 +140,7 @@ const MyJob = () => {
   const fetchApplyJob = async () => {
     const id = decodedToken?.userid;
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/apply/get-my-apply/${id}`,
+      `http://localhost:3001/api/apply/get-my-apply/${id}`,
       {
         method: "POST",
         headers: {
@@ -151,9 +151,7 @@ const MyJob = () => {
     return res.json();
   };
   const [activeTab, setActiveTab] = useState("saved");
-  // const Test = () => {
-  //   console.log(viewHistory)
-  // }
+
   return (
     <div className="">
       <h1 className="mb-3 rounded-md border bg-white p-4 font-bold">
@@ -177,9 +175,9 @@ const MyJob = () => {
           ))}
         </div>
         {
-          <div className="p-4">
+          <div className="">
             {activeTab === "saved" && (
-              <div className="space-y-4">
+              <div className="space-y-4 p-4">
                 {saveJob?.map((job) => (
                   <Link
                     href={`/job/${job.jobPostId}`}
@@ -231,9 +229,9 @@ const MyJob = () => {
           </div>
         }
         {
-          <div className="p-4">
+          <div className="">
             {activeTab === "applied" && (
-              <div className="space-y-4">
+              <div className="space-y-4 p-4">
                 {applyJob &&
                   applyJob.map((job) => (
                     <Link
@@ -290,9 +288,9 @@ const MyJob = () => {
           </div>
         }
         {
-          <div className="p-4">
+          <div className="">
             {activeTab === "historyView" && (
-              <div className="space-y-4">
+              <div className="space-y-4 p-4">
                 {viewHistory?.map((job) => (
                   <Link
                     href={`/job/${job?._id}`}

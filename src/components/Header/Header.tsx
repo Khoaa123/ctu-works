@@ -282,9 +282,9 @@ const Header = () => {
                     </div>
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#00b14f1a]">
+                {/* <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#00b14f1a]">
                   <FaMessage size={20} color="#00b14f" />
-                </div>
+                </div> */}
                 <div>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>

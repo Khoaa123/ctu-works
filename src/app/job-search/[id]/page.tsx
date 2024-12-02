@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Select,
   SelectContent,
@@ -33,6 +33,8 @@ import { toast } from "react-toastify";
 import { useCookies } from "next-client-cookies";
 import { jwtDecode } from "jwt-decode";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 export interface JwtPayload {
   userid: string;
   email: string;
@@ -47,11 +49,14 @@ const JobSearch = () => {
   const accessToken = cookies.get("accessToken");
   const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
   const router = useRouter();
+  const [locationQuery, setLocationQuery] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("");
 
   useEffect(() => {
     const query = location.pathname?.split("/job-search/")[1];
-    const search = location.pathname?.split("/job-search/keyword=")[1]?.split("&")[0]
-    console.log(query, "asdadas")
+    const search = location.pathname
+      ?.split("/job-search/keyword=")[1]
+      ?.split("&")[0];
     if (query) {
       setSearchQuery(decodeURIComponent(search));
       fetchSearchJob(query);
@@ -60,23 +65,20 @@ const JobSearch = () => {
   }, []);
   const createSearch = async (query: any) => {
     const id = decodedToken?.userid;
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/search-history/create`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: id,
-          description: query,
-        }),
-      }
-    );
+    const res = await fetch(`http://localhost:3001/api/search-history/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId: id,
+        description: query,
+      }),
+    });
 
     return res.json();
   };
-  const fetchSearhData = () => { };
+  const fetchSearhData = () => {};
 
   const handleSearch = (e: any) => {
     e.preventDefault();
@@ -87,9 +89,7 @@ const JobSearch = () => {
   };
 
   const fetchSearchJob = async (query: any) => {
-    const res = await fetch(
-      `http://localhost:3001/api/search/search?${query}`
-    );
+    const res = await fetch(`http://localhost:3001/api/search/search?${query}`);
     const data = await res.json();
     setJobData(data.data);
   };
@@ -102,21 +102,21 @@ const JobSearch = () => {
     return `${day}/${month}/${year}`;
   };
 
-
-  const [jobLevelFilter, setJobLevelFilter] = useState('')
-  const [jobTypeFilter, setJobTypeFilter] = useState('')
+  const [jobLevelFilter, setJobLevelFilter] = useState("");
+  const [jobTypeFilter, setJobTypeFilter] = useState("");
   const handleSearchFilter = (e: any) => {
     e.preventDefault();
-    const path = location.pathname?.split("&")[0]
+    const path = location.pathname?.split("&")[0];
     // if (searchQuery) {
     createSearch(searchQuery);
     if (jobLevelFilter === "all" && jobTypeFilter === "all") {
       router.push(`${path}`);
     } else {
       if (jobLevelFilter !== "all" && jobTypeFilter !== "all") {
-        router.push(`${path}&jobType=${jobTypeFilter}&jobLevel=${jobLevelFilter}`);
+        router.push(
+          `${path}&jobType=${jobTypeFilter}&jobLevel=${jobLevelFilter}`
+        );
       } else {
-
         if (jobLevelFilter !== "all") {
           router.push(`${path}&jobLevel=${jobLevelFilter}`);
         }
@@ -128,9 +128,21 @@ const JobSearch = () => {
     // }
   };
   const handleLocationChange = (value: any) => {
-    const path = location.pathname?.split("&")[0]
-    router.push(`${path}&location=${value}`)
+    const path = location.pathname?.split("&")[0];
+    router.push(`${path}&location=${value}`);
   };
+
+  const itemsPerPage = 2;
+  const [page, setPage] = useState(1);
+
+  const paginatedData = useMemo(() => {
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return jobData.slice(startIndex, endIndex);
+  }, [jobData, page, itemsPerPage]);
+
+  const totalPages = Math.ceil(jobData.length / itemsPerPage);
+
   return (
     <>
       <div className="bg-[#F7F8FA]">
@@ -228,7 +240,7 @@ const JobSearch = () => {
                 <SelectItem value="all">Khác</SelectItem>
               </SelectContent>
             </Select>
-            <Drawer direction="left" >
+            <Drawer direction="left">
               <DrawerTrigger asChild>
                 <button className="flex items-center gap-2 rounded-md border border-solid px-3">
                   {" "}
@@ -236,7 +248,7 @@ const JobSearch = () => {
                   Lọc nâng cao
                 </button>
               </DrawerTrigger>
-              <DrawerContent className="w-96 right-0 top-0 mt-0 h-full rounded-none pb-5 outline-none">
+              <DrawerContent className="right-0 top-0 mt-0 h-full w-96 rounded-none pb-5 outline-none">
                 <DrawerHeader>
                   <div className="flex items-center justify-between gap-6">
                     <DrawerTitle>Bộ lọc</DrawerTitle>
@@ -245,7 +257,7 @@ const JobSearch = () => {
                     </DrawerClose>
                   </div>
                 </DrawerHeader>
-                <ScrollArea className=" h-4/5 py-4">
+                <ScrollArea className="h-4/5 py-4">
                   <div className="px-4">
                     <div className="flex flex-col gap-2">
                       <p>Loại công việc</p>{" "}
@@ -255,12 +267,20 @@ const JobSearch = () => {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="all">Tất cả</SelectItem>
-                          <SelectItem value="Toàn thời gian">Toàn thời gian</SelectItem>
-                          <SelectItem value="Bán thời gian">Bán thời gian</SelectItem>
+                          <SelectItem value="Toàn thời gian">
+                            Toàn thời gian
+                          </SelectItem>
+                          <SelectItem value="Bán thời gian">
+                            Bán thời gian
+                          </SelectItem>
                           <SelectItem value="Thực tập">Thực tập</SelectItem>
-                          <SelectItem value="Việc làm online">Việc làm online</SelectItem>
+                          <SelectItem value="Việc làm online">
+                            Việc làm online
+                          </SelectItem>
                           <SelectItem value="Nghề tự do">Nghề tự do</SelectItem>
-                          <SelectItem value="Hợp đồng thời vụ">Hợp đồng thời vụ</SelectItem>
+                          <SelectItem value="Hợp đồng thời vụ">
+                            Hợp đồng thời vụ
+                          </SelectItem>
                           <SelectItem value="Khác">Khác</SelectItem>
                         </SelectContent>
                       </Select>
@@ -273,11 +293,19 @@ const JobSearch = () => {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="all">Tất cả</SelectItem>
-                          <SelectItem value="Thực tập sinh/Sinh viên">Thực tập sinh/Sinh viên</SelectItem>
-                          <SelectItem value="Mới tốt nghiệp">Mới tốt nghiệp</SelectItem>
+                          <SelectItem value="Thực tập sinh/Sinh viên">
+                            Thực tập sinh/Sinh viên
+                          </SelectItem>
+                          <SelectItem value="Mới tốt nghiệp">
+                            Mới tốt nghiệp
+                          </SelectItem>
                           <SelectItem value="Nhân viên">Nhân viên</SelectItem>
-                          <SelectItem value="Trưởng phòng">Trưởng phòng</SelectItem>
-                          <SelectItem value="Giám đốc và Cấp cao hơn">Giám đốc và Cấp cao hơn</SelectItem>
+                          <SelectItem value="Trưởng phòng">
+                            Trưởng phòng
+                          </SelectItem>
+                          <SelectItem value="Giám đốc và Cấp cao hơn">
+                            Giám đốc và Cấp cao hơn
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -362,7 +390,10 @@ const JobSearch = () => {
                   <button className="rounded-md bg-[#ff7d55] p-2 text-white">
                     Xóa bộ lọc
                   </button>
-                  <button onClick={handleSearchFilter} className="rounded-md bg-[#ff7d55] p-2 text-white">
+                  <button
+                    onClick={handleSearchFilter}
+                    className="rounded-md bg-[#ff7d55] p-2 text-white"
+                  >
                     Tìm kiếm
                   </button>
                 </div>
@@ -386,45 +417,49 @@ const JobSearch = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 text-sm">
+          {/* <div className="flex items-center gap-3 text-sm">
             <span>Sắp xếp theo</span>
             <button
-              className={`rounded-md text-gray-600  ${isActive === "all"
-                ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
-                : "bg-white"
-                } py-1 px-2 `}
+              className={`rounded-md text-gray-600  ${
+                isActive === "all"
+                  ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
+                  : "bg-white"
+              } py-1 px-2 `}
             >
               Tất cả
             </button>
             <button
-              className={`rounded-md text-gray-600  ${isActive === "salary"
-                ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
-                : "bg-white"
-                } py-1 px-2 `}
+              className={`rounded-md text-gray-600  ${
+                isActive === "salary"
+                  ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
+                  : "bg-white"
+              } py-1 px-2 `}
             >
               Lương (cao - thấp)
             </button>
             <button
-              className={`rounded-md text-gray-600  ${isActive === "newest"
-                ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
-                : "bg-white"
-                } py-1 px-2 `}
+              className={`rounded-md text-gray-600  ${
+                isActive === "newest"
+                  ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
+                  : "bg-white"
+              } py-1 px-2 `}
             >
               Ngày đăng (mới nhất)
             </button>
             <button
-              className={`rounded-md text-gray-600  ${isActive === "oldest"
-                ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
-                : "bg-white"
-                } py-1 px-2 `}
+              className={`rounded-md text-gray-600  ${
+                isActive === "oldest"
+                  ? "bg-[#ebf2ff] text-[#005aff] border border-solid border-[#005aff33]"
+                  : "bg-white"
+              } py-1 px-2 `}
             >
               Ngày đăng (cũ nhất)
             </button>
-          </div>
+          </div> */}
 
           <div>
             <div className="mt-4 flex flex-col gap-4">
-              {jobData?.map((job, index) => (
+              {paginatedData?.map((job, index) => (
                 <Link
                   href={`/job/${job.jobPostId}`}
                   className="flex items-center gap-5 rounded-md border border-solid border-[#a0c1ff] bg-[#eff5ff] p-4 transition hover:border-sky-200 hover:bg-[#f9fbff]"
@@ -450,30 +485,35 @@ const JobSearch = () => {
             </div>
           </div>
 
-          <Pagination className="mt-10">
-            <PaginationContent className="list-none">
-              <PaginationItem>
-                <PaginationPrevious href="#" />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">1</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#" isActive>
-                  2
-                </PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationLink href="#">3</PaginationLink>
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationEllipsis />
-              </PaginationItem>
-              <PaginationItem>
-                <PaginationNext href="#" />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          {page === 1 && jobData.length === 0 ? (
+            <div>
+              <p className="mt-5 text-center text-lg">
+                Không tìm thấy kết quả nào phù hợp
+              </p>
+            </div>
+          ) : (
+            <div className="mt-5 flex justify-center">
+              <Button
+                variant="outline"
+                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                disabled={page === 1}
+              >
+                <FaChevronLeft />
+              </Button>
+              <span className="mx-4 flex items-center">
+                Trang {page} / {totalPages}
+              </span>
+              <Button
+                variant="outline"
+                onClick={() =>
+                  setPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={page === totalPages}
+              >
+                <FaChevronRight />
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </>

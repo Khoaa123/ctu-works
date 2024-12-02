@@ -22,11 +22,12 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { GoPencil, GoPlusCircle, GoTrash } from "react-icons/go";
+import { formatDate } from "@/utils/FormatDate";
 
 type CertificationRequest = {
   certification: string;
   organization: string;
-  fromDate: string;
+  fromDate: any;
   linkCertification: string;
 };
 
@@ -153,7 +154,7 @@ const Certification = ({ data }: { data: any }) => {
     if (fromDate) {
       setCertification((prev) => ({
         ...prev,
-        fromDate: format(fromDate, "MM/yyyy"),
+        fromDate: fromDate ? new Date(fromDate) : null,
       }));
     }
   }, [fromDate]);
@@ -338,13 +339,13 @@ const Certification = ({ data }: { data: any }) => {
             className="group my-4 cursor-pointer rounded-md p-2 transition duration-300 hover:bg-[#f8f9fa]"
           >
             <div className="mb-2 flex items-center gap-4">
-              <Image
+              {/* <Image
                 src={certification.logo}
                 alt="logo"
                 width={60}
                 height={60}
                 className="rounded-md object-cover"
-              />
+              /> */}
               <div className="flex flex-1 justify-between">
                 <div>
                   <h3 className="font-medium">{certification.certification}</h3>
@@ -353,7 +354,7 @@ const Certification = ({ data }: { data: any }) => {
                   </p>
                   <div className="flex items-center gap-2 text-sm text-gray-500">
                     {certification.fromDate && (
-                      <span>{certification.fromDate}</span>
+                      <span>{formatDate(certification.fromDate)}</span>
                     )}
                   </div>
                   <Link

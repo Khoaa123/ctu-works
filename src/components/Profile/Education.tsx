@@ -29,13 +29,14 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { GoPencil, GoPlusCircle, GoTrash } from "react-icons/go";
+import { formatDate } from "@/utils/FormatDate";
 
 interface EducationRequest {
   major: string;
   schoolName: string;
   highestDegree: string;
-  fromDate: string;
-  toDate: string;
+  fromDate: any;
+  toDate: any;
   achievement: string;
 }
 
@@ -164,7 +165,7 @@ const Education = ({ data }: { data: any }) => {
     if (fromDate) {
       setEducation((prev) => ({
         ...prev,
-        fromDate: format(fromDate, "MM/yyyy"),
+        fromDate: fromDate ? new Date(fromDate) : null,
       }));
     }
   }, [fromDate]);
@@ -173,7 +174,7 @@ const Education = ({ data }: { data: any }) => {
     if (toDate) {
       setEducation((prev) => ({
         ...prev,
-        toDate: format(toDate, "MM/yyyy"),
+        toDate: toDate ? new Date(toDate) : null,
       }));
     }
   }, [toDate]);
@@ -449,9 +450,13 @@ const Education = ({ data }: { data: any }) => {
                     {education.schoolName}
                   </p>
                   <div className="flex items-center gap-2 text-sm text-gray-500">
-                    {education.fromDate && <span>{education.fromDate}</span>}
+                    {education.fromDate && (
+                      <span>{formatDate(education.fromDate)}</span>
+                    )}
                     {education.fromDate && education.toDate && <span> - </span>}
-                    {education.toDate && <span>{education.toDate}</span>}
+                    {education.toDate && (
+                      <span>{formatDate(education.toDate)}</span>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
