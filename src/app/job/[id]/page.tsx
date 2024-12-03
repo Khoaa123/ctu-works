@@ -159,7 +159,7 @@ const JobDetail = () => {
   const [loading, setLoading] = useState(true);
 
   const saveJob = async () => {
-    const id = location.pathname.split("/job/")[1];
+    const id = location.pathname?.split("/job/")[1];
     const res = await fetch(`http://localhost:3001/api/savejob/create`, {
       method: "POST",
       headers: {
@@ -186,7 +186,7 @@ const JobDetail = () => {
 
   useEffect(() => {
     const checkSaveJob = async () => {
-      const id = location.pathname.split("/job/")[1];
+      const id = location.pathname?.split("/job/")[1];
       if (id == "undefined") {
         router.push("/");
       }
@@ -295,7 +295,7 @@ const JobDetail = () => {
   }, []);
 
   const fetchJobPostDetails = async () => {
-    const id = location.pathname.split("/job/")[1];
+    const id = location.pathname?.split("/job/")[1];
 
     const res = await fetch(
       `http://localhost:3001/api/jobpost/get-details-jobpost/${id}`,
@@ -402,7 +402,7 @@ const JobDetail = () => {
   const API_ENDPOINT = `http://localhost:3001/api/job-views-history/create`;
   const startTime = Date.now();
   const userId = decodedToken?.userid;
-  const jobPostId = location.pathname.split("/job/")[1];
+  const jobPostId = location.pathname?.split("/job/")[1];
 
   useEffect(() => {
     if (userId && jobPostId) {
@@ -563,7 +563,7 @@ const JobDetail = () => {
   ];
 
   const handleApplication = async (cvUrl: string) => {
-    const id = location.pathname.split("/job/")[1];
+    const id = location.pathname?.split("/job/")[1];
 
     const res = await fetch(`http://localhost:3001/api/apply/create`, {
       method: "POST",
@@ -748,12 +748,12 @@ const JobDetail = () => {
                                 {jobPostDetails?.location?.map(
                                   (loc: string, locIndex) => {
                                     const locationName = loc
-                                      .split(":")[1]
-                                      .trim();
+                                      ?.split(":")[1]
+                                      ?.trim();
 
                                     const locationWithoutCountry = locationName
-                                      .replace(", Việt Nam", "")
-                                      .trim();
+                                      ?.replace(", Việt Nam", "")
+                                      ?.trim();
                                     return (
                                       <span key={locIndex}>
                                         {locationWithoutCountry}
@@ -1828,7 +1828,7 @@ const JobDetail = () => {
                           alt="Company logo"
                           className="h-12 w-12 rounded-full"
                           height="50"
-                          src={jobPostDetails?.companyLogo}
+                          src={jobPostDetails?.companyLogo || "https://images.vietnamworks.com/img/company-default-logo.svg"}
                           width="50"
                         />
                         <div className="ml-4">
@@ -1863,11 +1863,11 @@ const JobDetail = () => {
                             <span className="ml-1">
                               {jobPostDetails?.location?.map(
                                 (loc: string, locIndex) => {
-                                  const locationName = loc.split(":")[1].trim();
+                                  const locationName = loc?.split(":")[1].trim();
 
                                   const locationWithoutCountry = locationName
-                                    .replace("Việt Nam", "")
-                                    .trim();
+                                    ?.replace("Việt Nam", "")
+                                    ?.trim();
                                   return (
                                     <span key={locIndex}>
                                       {locationWithoutCountry}

@@ -575,7 +575,7 @@ const Register = () => {
       <div>
         <div className="bg-custom-gradient min-h-[160px] p-4 text-center sm:p-6">
           <h4 className="text-2xl font-bold text-white sm:text-3xl">
-            Đăng ký tài khoản nhà tuyển dụng
+            Đăng ký tài khoản người tìm việc
             <Link href="/">
               <span className="text-sky-400"> CTU-Works</span>
             </Link>
@@ -766,9 +766,9 @@ const Register = () => {
                   value={
                     formData.currentJobFunction
                       ? {
-                          value: formData.currentJobFunction,
-                          label: formData.currentJobFunction,
-                        }
+                        value: formData.currentJobFunction,
+                        label: formData.currentJobFunction,
+                      }
                       : null
                   }
                   onChange={handleChangeJobFunction}
@@ -878,8 +878,68 @@ const Register = () => {
                     <SelectValue placeholder="Vui lòng chọn" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Hồ Chính Minh">Hồ Chí Minh</SelectItem>
+                    <SelectItem value="Hồ Chí Minh">Hồ Chí Minh</SelectItem>
+                    <SelectItem value="Hà Nội">Hà Nội</SelectItem>
+                    <SelectItem value="Đà Nẵng">Đà Nẵng</SelectItem>
+                    <SelectItem value="Hải Phòng">Hải Phòng</SelectItem>
                     <SelectItem value="Cần Thơ">Cần Thơ</SelectItem>
+                    <SelectItem value="An Giang">An Giang</SelectItem>
+                    <SelectItem value="Bà Rịa - Vũng Tàu">Bà Rịa - Vũng Tàu</SelectItem>
+                    <SelectItem value="Bạc Liêu">Bạc Liêu</SelectItem>
+                    <SelectItem value="Bắc Giang">Bắc Giang</SelectItem>
+                    <SelectItem value="Bắc Kạn">Bắc Kạn</SelectItem>
+                    <SelectItem value="Bắc Ninh">Bắc Ninh</SelectItem>
+                    <SelectItem value="Bến Tre">Bến Tre</SelectItem>
+                    <SelectItem value="Bình Dương">Bình Dương</SelectItem>
+                    <SelectItem value="Bình Định">Bình Định</SelectItem>
+                    <SelectItem value="Bình Phước">Bình Phước</SelectItem>
+                    <SelectItem value="Bình Thuận">Bình Thuận</SelectItem>
+                    <SelectItem value="Cà Mau">Cà Mau</SelectItem>
+                    <SelectItem value="Cao Bằng">Cao Bằng</SelectItem>
+                    <SelectItem value="Đắk Lắk">Đắk Lắk</SelectItem>
+                    <SelectItem value="Đắk Nông">Đắk Nông</SelectItem>
+                    <SelectItem value="Điện Biên">Điện Biên</SelectItem>
+                    <SelectItem value="Đồng Nai">Đồng Nai</SelectItem>
+                    <SelectItem value="Đồng Tháp">Đồng Tháp</SelectItem>
+                    <SelectItem value="Gia Lai">Gia Lai</SelectItem>
+                    <SelectItem value="Hà Giang">Hà Giang</SelectItem>
+                    <SelectItem value="Hà Nam">Hà Nam</SelectItem>
+                    <SelectItem value="Hà Tĩnh">Hà Tĩnh</SelectItem>
+                    <SelectItem value="Hậu Giang">Hậu Giang</SelectItem>
+                    <SelectItem value="Hòa Bình">Hòa Bình</SelectItem>
+                    <SelectItem value="Hưng Yên">Hưng Yên</SelectItem>
+                    <SelectItem value="Khánh Hòa">Khánh Hòa</SelectItem>
+                    <SelectItem value="Kiên Giang">Kiên Giang</SelectItem>
+                    <SelectItem value="Kon Tum">Kon Tum</SelectItem>
+                    <SelectItem value="Lai Châu">Lai Châu</SelectItem>
+                    <SelectItem value="Lâm Đồng">Lâm Đồng</SelectItem>
+                    <SelectItem value="Lạng Sơn">Lạng Sơn</SelectItem>
+                    <SelectItem value="Lào Cai">Lào Cai</SelectItem>
+                    <SelectItem value="Long An">Long An</SelectItem>
+                    <SelectItem value="Nam Định">Nam Định</SelectItem>
+                    <SelectItem value="Nghệ An">Nghệ An</SelectItem>
+                    <SelectItem value="Ninh Bình">Ninh Bình</SelectItem>
+                    <SelectItem value="Ninh Thuận">Ninh Thuận</SelectItem>
+                    <SelectItem value="Phú Thọ">Phú Thọ</SelectItem>
+                    <SelectItem value="Phú Yên">Phú Yên</SelectItem>
+                    <SelectItem value="Quảng Bình">Quảng Bình</SelectItem>
+                    <SelectItem value="Quảng Nam">Quảng Nam</SelectItem>
+                    <SelectItem value="Quảng Ngãi">Quảng Ngãi</SelectItem>
+                    <SelectItem value="Quảng Ninh">Quảng Ninh</SelectItem>
+                    <SelectItem value="Quảng Trị">Quảng Trị</SelectItem>
+                    <SelectItem value="Sóc Trăng">Sóc Trăng</SelectItem>
+                    <SelectItem value="Sơn La">Sơn La</SelectItem>
+                    <SelectItem value="Tây Ninh">Tây Ninh</SelectItem>
+                    <SelectItem value="Thái Bình">Thái Bình</SelectItem>
+                    <SelectItem value="Thái Nguyên">Thái Nguyên</SelectItem>
+                    <SelectItem value="Thanh Hóa">Thanh Hóa</SelectItem>
+                    <SelectItem value="Thừa Thiên Huế">Thừa Thiên Huế</SelectItem>
+                    <SelectItem value="Tiền Giang">Tiền Giang</SelectItem>
+                    <SelectItem value="Trà Vinh">Trà Vinh</SelectItem>
+                    <SelectItem value="Tuyên Quang">Tuyên Quang</SelectItem>
+                    <SelectItem value="Vĩnh Long">Vĩnh Long</SelectItem>
+                    <SelectItem value="Vĩnh Phúc">Vĩnh Phúc</SelectItem>
+                    <SelectItem value="Yên Bái">Yên Bái</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -900,8 +960,33 @@ const Register = () => {
                     <SelectValue placeholder="Vui lòng chọn giới tính" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Quận 1">Quận 1</SelectItem>
                     <SelectItem value="Ninh Kiều">Ninh Kiều</SelectItem>
+                    <SelectItem value="Bình Thủy">Bình Thủy</SelectItem>
+                    <SelectItem value="Cái Răng">Cái Răng</SelectItem>
+                    <SelectItem value="Ô Môn">Ô Môn</SelectItem>
+                    <SelectItem value="Thốt Nốt">Thốt Nốt</SelectItem>
+                    <SelectItem value="Quận 1">Quận 1</SelectItem>
+                    <SelectItem value="Quận 3">Quận 3</SelectItem>
+                    <SelectItem value="Quận 5">Quận 5</SelectItem>
+                    <SelectItem value="Quận 10">Quận 10</SelectItem>
+                    <SelectItem value="Quận Phú Nhuận">Quận Phú Nhuận</SelectItem>
+                    <SelectItem value="Quận Bình Thạnh">Quận Bình Thạnh</SelectItem>
+                    <SelectItem value="Quận Tân Bình">Quận Tân Bình</SelectItem>
+                    <SelectItem value="Quận Gò Vấp">Quận Gò Vấp</SelectItem>
+                    <SelectItem value="Quận Thủ Đức">Quận Thủ Đức</SelectItem>
+                    <SelectItem value="Quận Ba Đình">Quận Ba Đình</SelectItem>
+                    <SelectItem value="Quận Hoàn Kiếm">Quận Hoàn Kiếm</SelectItem>
+                    <SelectItem value="Quận Tây Hồ">Quận Tây Hồ</SelectItem>
+                    <SelectItem value="Quận Cầu Giấy">Quận Cầu Giấy</SelectItem>
+                    <SelectItem value="Quận Đống Đa">Quận Đống Đa</SelectItem>
+                    <SelectItem value="Quận Hai Bà Trưng">Quận Hai Bà Trưng</SelectItem>
+                    <SelectItem value="Quận Thanh Xuân">Quận Thanh Xuân</SelectItem>
+                    <SelectItem value="Huyện Sóc Sơn">Huyện Sóc Sơn</SelectItem>
+                    <SelectItem value="Quận Hải Châu">Quận Hải Châu</SelectItem>
+                    <SelectItem value="Quận Thanh Khê">Quận Thanh Khê</SelectItem>
+                    <SelectItem value="Quận Sơn Trà">Quận Sơn Trà</SelectItem>
+                    <SelectItem value="Quận Ngũ Hành Sơn">Quận Ngũ Hành Sơn</SelectItem>
+                    <SelectItem value="Quận Liên Chiểu">Quận Liên Chiểu</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -1049,11 +1134,10 @@ const Register = () => {
                     {industries.map((industry) => (
                       <button
                         key={industry.id}
-                        className={`flex w-fit items-center gap-1 rounded-md border border-solid px-3 py-2 text-sm ${
-                          selectedIndustries.includes(industry.id)
-                            ? "bg-[#00b14f] text-white"
-                            : "bg-white text-gray-400"
-                        } hover:bg-[#00b14f] hover:text-white`}
+                        className={`flex w-fit items-center gap-1 rounded-md border border-solid px-3 py-2 text-sm ${selectedIndustries.includes(industry.id)
+                          ? "bg-[#00b14f] text-white"
+                          : "bg-white text-gray-400"
+                          } hover:bg-[#00b14f] hover:text-white`}
                         value={industry.id.toString()}
                         onClick={handleIndustryClick}
                       >

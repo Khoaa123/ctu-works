@@ -172,18 +172,13 @@ const Login = () => {
               Bạn chưa đăng ký?{" "}
               <Link
                 className="text-blue-600 hover:underline"
-                href="/recruiter/register"
+                href="/employer/register"
               >
                 Đăng ký ngay
               </Link>
             </p>
           </CardFooter>
         </Card>
-      </div>
-      <div className="flex justify-end p-4">
-        <Button variant="ghost" className="text-sm text-gray-600">
-          Trợ giúp
-        </Button>
       </div>
     </div>
   );

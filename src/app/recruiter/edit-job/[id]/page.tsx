@@ -1025,7 +1025,9 @@ const EditJob = () => {
     }, 500);
 
   };
-
+const Test = () => {
+  console.log(formData)
+}
   return (
     <>
       <HeaderRecruiter />
@@ -1152,10 +1154,12 @@ const EditJob = () => {
                         </Select>
                       </div>
                       <div>
+                        <button onClick={Test}>Test</button>
                         <label id="jobLocation" className="block text-gray-700">
                           Địa điểm làm việc (Tối đa 3 địa điểm)
                           <span className="text-red-500">*</span>
                         </label>
+                        
                         {locations.map((loc) => (
                           <div key={loc.id} className="mt-1 flex items-center space-x-2">
                             <select
@@ -1164,6 +1168,7 @@ const EditJob = () => {
                                 if (e.target.value === '+ Tạo địa điểm làm việc') {
                                   openModal();
                                 } else {
+                                  console.log(e.target.value)
                                   const use = e.target.value.split(':')
                                   if (loc.title.split(':')[0] !== use[0]) {
                                     const locationToUpdate = Location.find((location) => loc.title.split(':')[0] === location.title);
@@ -1189,7 +1194,7 @@ const EditJob = () => {
                               {Location?.map((Loca) => (
                                 <option
                                   key={Loca._id}
-                                  value={`${Loca.title}`}
+                                  value={`${Loca.title} : ${Loca?.description}`}
                                   disabled={Loca.used}
                                   className="bg-green-100 disabled:bg-gray-100 "
                                 >
@@ -1522,7 +1527,7 @@ const EditJob = () => {
                                   formData.jobInformation.nationality === "any"
                                 }
                                 onClick={(e) => {
-                                  const target = e.target as HTMLInputElement;
+                                  const target = e?.target as HTMLInputElement;
                                   setFormData({
                                     ...formData,
                                     jobInformation: {
@@ -1545,7 +1550,7 @@ const EditJob = () => {
                                   formData.jobInformation.nationality === "1"
                                 }
                                 onClick={(e) => {
-                                  const target = e.target as HTMLInputElement;
+                                  const target = e?.target as HTMLInputElement;
                                   setFormData({
                                     ...formData,
                                     jobInformation: {
@@ -1568,7 +1573,7 @@ const EditJob = () => {
                                   formData.jobInformation.nationality === "2"
                                 }
                                 onClick={(e) => {
-                                  const target = e.target as HTMLInputElement;
+                                  const target = e?.target as HTMLInputElement;
                                   setFormData({
                                     ...formData,
                                     jobInformation: {
@@ -2109,7 +2114,7 @@ const EditJob = () => {
                     </label>
                     <div className="rounded-lg border-2 border-dashed border-gray-300 p-4 text-center">
                       <input
-                        value={formData.companyInfo?.companyLogo}
+                        // value={formData.companyInfo?.companyLogo}
                         onChange={(e) => {
                           setFormData({
                             ...formData,

@@ -947,27 +947,23 @@ const CreateJobPostAIVoice = () => {
 
   const handleInputChangeKeyWord = async (e: any) => {
     setInputValue(e.target.value);
-    if (debounceTimeout) {
-      clearTimeout(debounceTimeout);
-    }
-
-    debounceTimeout = setTimeout(async () => {
-      if (e.target.value?.length > 1) {
-        const message = `Gợi ý cho tôi 20 từ khóa tiếng việt về kỹ năng nghề nghiệp có chứa từ ${e.target.value} thuộc lĩnh vực ${formData?.jobInformation?.jobField || formData?.jobInformation?.jobIndustry || ""}`;
-        try {
-          const result = await chatSession.sendMessage(message);
-          const data = result?.response?.text()
-          let arr = data.slice(2, -2).split('", "');
-          setSuggestions(arr)
-        } catch (error) {
-
-        }
-
-      }
-    }, 500);
-
   };
-
+  
+  const sendMess = async () => {
+    if (inputValue?.length > 1) {
+      const message = `Gợi ý cho tôi 20 từ khóa về kỹ năng nghề nghiệp có chứa từ ${inputValue
+        } thuộc lĩnh vực hoặc liên quan đến ${formData?.jobInformation?.jobField ||
+        formData?.jobInformation?.jobIndustry ||
+        ""
+        } bằng tiếng việt`;
+      try {
+        const result = await chatSession.sendMessage(message);
+        const data = result?.response?.text();
+        let arr = JSON.parse(data);
+        setSuggestions((prev) => [...prev, ...arr.keywords]);
+      } catch (error) { }
+    }
+  }
 
   const putData = async (data: any) => {
     const res = await fetch(
@@ -989,7 +985,7 @@ const CreateJobPostAIVoice = () => {
   const handleCreateWithPaste = async (e: any) => {
     const message = `Hãy phân tích dữ liệu ${dataVoice} và trả về giá trị phù hợp với trường của nó`;
     try {
-    
+
       setChoseFile(false)
       setIsLoading(true)
       const result = await chatSessionCreate.sendMessage(message);
@@ -1106,8 +1102,8 @@ const CreateJobPostAIVoice = () => {
     ...customButtonStyle,
     backgroundColor: '#ccc',
     color: '#666',
-    opacity: 0.5,           
-    cursor: 'not-allowed',   
+    opacity: 0.5,
+    cursor: 'not-allowed',
   };
   const [showInfo, setShowInfo] = useState(false);
   const [showChoseFile, setChoseFile] = useState(true);
@@ -1249,7 +1245,7 @@ const CreateJobPostAIVoice = () => {
       startListening(keys[nextIndex])
     } else {
       console.log('Đã điền xong tất cả các trường:', formData);
-      TextToSpeech(`'Đã điền xong tất cả các trường vui lòng bấm vào nút hoàn thành để AI tiến hành xử lý.`)
+      TextToSpeech(`'Đã điền xong tất cả các trường vui lòng bấm vào nút tiếp tục để AI tiến hành xử lý.`)
     }
   };
   const handlePreviousField = () => {
@@ -1266,22 +1262,72 @@ const CreateJobPostAIVoice = () => {
     }
   }
   const [isFormStarted, setIsFormStarted] = useState(false);
+  const uploadImage = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append("images", file);
+
+    try {
+      const res = await fetch("http://localhost:3001/api/upload/image", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to upload image");
+      }
+
+      const data = await res.json();
+      if (!data.success) {
+        throw new Error("Image upload failed on server");
+      }
+
+      return data.imageUrls[0];
+    } catch (error) {
+      console.error("Image upload error:", error);
+      throw error;
+    }
+  };
+  const [isLoadingUploadImg, setIsLoadingUploadImg] = useState(false);
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      try {
+        setIsLoadingUploadImg(true)
+        const imageUrl = await uploadImage(file);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          companyInfo: {
+            ...formData.companyInfo,
+            companyLogo: imageUrl,
+          },
+        }));
+        setIsLoadingUploadImg(false)
+        toast.success("Ảnh đã được tải lên thành công!");
+      } catch (error) {
+        console.error("Lỗi khi upload ảnh:", error);
+        setIsLoadingUploadImg(false)
+        toast.error("Tải ảnh lên thất bại, vui lòng thử lại.");
+      }
+    }
+  };
   return (
     <>
       <HeaderRecruiter />
       <div className="flex flex-col items-center py-10">
         {showChoseFile &&
           <div className="flex flex-col items-center">
-              <p>Văn bản từ giọng nói: </p>
-                <div className="block mb-4" style={{ width: '70%', height: 'auto' }}>
-                    {transcript && <p>{transcript}</p>}
-                </div>
+            <p>Văn bản từ giọng nói: </p>
+            <div className="block mb-4" style={{ width: '70%', height: 'auto' }}>
+              {transcript && <p>{transcript}</p>}
+            </div>
             <div className="flex">
               <button style={isFormStarted ? disabledButtonStyle : customButtonStyle} className="m-2" disabled={isFormStarted} onClick={startEnterForm}>Bắt đầu</button>
-              <button style={isFormStarted ? customButtonStyle : disabledButtonStyle} className="m-2"  disabled={!isFormStarted} onClick={handlePreviousField}>Lùi lại</button>
-              <button style={isFormStarted ? customButtonStyle : disabledButtonStyle} className="m-2"  disabled={!isFormStarted} onClick={handleNextField}>Tiếp theo</button>
-              <button style={isFormStarted ? customButtonStyle : disabledButtonStyle} className="m-2"  disabled={!isFormStarted} onClick={Respeak}>Đọc lại</button>
-              <button style={isFormStarted ? customButtonStyle : disabledButtonStyle} className="m-2"  disabled={!isFormStarted} onClick={handleCreateWithPaste}>Hoàn thành</button>
+              <button style={isFormStarted ? customButtonStyle : disabledButtonStyle} className="m-2" disabled={!isFormStarted} onClick={handlePreviousField}>Lùi lại</button>
+              <button style={isFormStarted ? customButtonStyle : disabledButtonStyle} className="m-2" disabled={!isFormStarted} onClick={handleNextField}>Tiếp theo</button>
+              <button style={isFormStarted ? customButtonStyle : disabledButtonStyle} className="m-2" disabled={!isFormStarted} onClick={Respeak}>Đọc lại</button>
+              <button style={isFormStarted ? customButtonStyle : disabledButtonStyle} className="m-2" disabled={!isFormStarted} onClick={handleCreateWithPaste}>Tiếp tục</button>
             </div>
           </div>
         }
@@ -1706,6 +1752,11 @@ const CreateJobPostAIVoice = () => {
                                       : "Ví dụ: Anh văn, Giao tiếp..."
                                   }
                                 />
+                                <button
+                                  className="text-blue-500"
+                                  onClick={sendMess}>
+                                  Gợi ý với AI
+                                </button>
                               </div>
                               {inputValue && (
                                 <div className="mt-2 max-h-40 overflow-y-auto rounded border border-gray-300">
@@ -2377,16 +2428,7 @@ const CreateJobPostAIVoice = () => {
                         </label>
                         <div className="rounded-lg border-2 border-dashed border-gray-300 p-4 text-center">
                           <input
-                            value={formData.companyInfo?.companyLogo}
-                            onChange={(e) => {
-                              setFormData({
-                                ...formData,
-                                companyInfo: {
-                                  ...formData.companyInfo,
-                                  companyLogo: e.target.value,
-                                },
-                              });
-                            }}
+                            onChange={(e) => handleFileChange(e)}
                             id="companyLogo"
                             type="file"
                             accept=".jpg, .jpeg, .png, .gif"
@@ -2406,6 +2448,7 @@ const CreateJobPostAIVoice = () => {
             <div className="fixed bottom-0 flex h-20 w-full justify-center bg-gray-100">
               <button
                 onClick={handleSubmit}
+                disabled={isLoadingUploadImg}
                 className="mt-4 h-12 rounded bg-orange-500 px-4 py-2 text-white"
               >
                 Lưu

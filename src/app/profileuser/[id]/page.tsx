@@ -36,6 +36,7 @@ export interface JwtPayload {
 import { Badge } from "@/components/ui/badge";
 import { Briefcase, Calendar, DollarSign, MapPin } from "lucide-react";
 import { toast } from "react-toastify";
+import { toDate } from "date-fns";
 const CompanyDetail = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const jobSectionRef = useRef<HTMLDivElement>(null);
@@ -205,7 +206,7 @@ const CompanyDetail = () => {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric'
-                })}
+                })} 
               </p>
             </div>
           </div>
@@ -267,7 +268,7 @@ const CompanyDetail = () => {
             <div>Ngôn ngữ</div><div>English - Cao cấp</div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-md p-6 mt-4">
+        {/* <div className="bg-white rounded-lg shadow-md p-6 mt-4">
           <h2 className="text-lg font-bold">Hồ sơ đính kèm</h2>
           <div className="bg-gray-200 p-4 rounded mt-2">
             <div className="flex items-center">
@@ -284,13 +285,13 @@ const CompanyDetail = () => {
               <button className="px-2"><i className="fas fa-download"></i></button>
             </div>
           </div>
-        </div>
+        </div> */}
         {showJobPostModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
             <div className="w-1/2 rounded-lg bg-white p-6">
               <h2 className="mb-4 text-xl font-bold">Chọn tin tuyển dụng</h2>
               <ScrollArea className="h-[400px] pr-4">
-                {jobPosts.map((jobPost: any) => (
+                {jobPosts?.map((jobPost: any) => (
                   <Card
                     key={jobPost._id}
                     className={`mb-4 cursor-pointer transition-all ${selectedJobPost === jobPost._id

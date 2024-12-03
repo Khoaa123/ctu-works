@@ -102,6 +102,11 @@ const HistoryViewUser = () => {
                                                 </div>
                                             </Link>
                                         ))}
+                                        {historyViews.length === 0 && (
+                                            <div className="flex items-center justify-center">
+                                                <p className="text-gray-500">Bạn chưa xem bất kỳ ứng viên nào gần đây</p>
+                                            </div>
+                                        )}
                                     </div>
 
                                 </div>

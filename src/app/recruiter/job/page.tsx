@@ -237,14 +237,14 @@ const jobPage = () => {
   }
   const countStatus = (statusSeeking: any, statusApproval: any) => {
     if (statusSeeking === "all" || statusApproval === "all") {
-      return formData.length;
+      return formData?.length || 0;
     } else {
-      return formData.filter((apply) => apply.statusSeeking === statusSeeking && apply.statusApproval === statusApproval).length;
+      return formData?.filter((apply) => apply.statusSeeking === statusSeeking && apply.statusApproval === statusApproval).length || 0;
     }
   };
 
   const handleSearch = (e: any) => {
-    const filtered = formData.filter((apply) => apply.jobTitle.toLowerCase().includes(e.target.value.toLowerCase()))
+    const filtered = formData?.filter((apply) => apply.jobTitle.toLowerCase().includes(e.target.value.toLowerCase()))
     setFilteredApplies(filtered)
   }
   return (
@@ -408,7 +408,7 @@ const jobPage = () => {
                               <span className="line-clamp-1 text-sm">
                                 {job?.location?.map(
                                   (loc: string, locIndex: any) => {
-                                    const locationName = loc.split(":")[1]?.trim();
+                                    const locationName = loc?.split(":")[1]?.trim();
 
                                     const locationWithoutCountry = locationName
                                       ?.replace(", Việt Nam", "")
@@ -417,7 +417,7 @@ const jobPage = () => {
                                       <span key={locIndex}>
                                         {locationWithoutCountry}
                                         {locIndex <
-                                          job?.location.length - 1
+                                          job?.location?.length - 1
                                           ? ", "
                                           : ""}
                                       </span>
@@ -602,7 +602,7 @@ const jobPage = () => {
                               {job?.keywords?.map((skill: any, index: any) => (
                                 <span key={index} className="mr-1">
                                   {skill}
-                                  {index < job?.keywords.length - 1
+                                  {index < job?.keywords?.length - 1
                                     ? ", "
                                     : ""}
                                 </span>

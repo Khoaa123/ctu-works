@@ -220,6 +220,150 @@ const HomePage = () => {
     <>
       <div className="container">
         <div className="mt-5">
+          {groupedAllJobPosts && groupedAllJobPosts.length > 0 ? (
+            <div className="w-full rounded-md border border-solid border-[#ccdeff]">
+              <div className="flex justify-between bg-[#f2f7ff]">
+                <span className="px-6 py-3 text-xl font-bold">
+                  Việc Làm Tốt Nhất
+                </span>
+                <Link href="#">
+                  <button className="px-6 py-3 uppercase text-blue-500">
+                    Xem tất cả
+                  </button>
+                </Link>
+              </div>
+              <div className="mt-2 px-6 py-3">
+                <Carousel
+                  setApi={setApi3}
+                  opts={{
+                    align: "start",
+                  }}
+                  className="w-full"
+                >
+                  <CarouselContent>
+                    {loadingJobs
+                      ? Array.from({ length: 3 }).map((_, index) => (
+                        <CarouselItem key={index} className="w-full">
+                          <div className="grid grid-cols-3 gap-4">
+                            {Array.from({ length: 9 }).map((_, subIndex) => (
+                              <div key={subIndex} className="p-1">
+                                <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4">
+                                  <Skeleton
+                                    baseColor="#edf2f7"
+                                    highlightColor="#f7fafc"
+                                    width={80}
+                                    height={80}
+                                  />
+                                  <div className="flex flex-col space-y-2">
+                                    <Skeleton
+                                      baseColor="#edf2f7"
+                                      highlightColor="#f7fafc"
+                                      width={150}
+                                      height={15}
+                                    />
+                                    <Skeleton
+                                      baseColor="#edf2f7"
+                                      highlightColor="#f7fafc"
+                                      width={180}
+                                      height={15}
+                                    />
+                                    <Skeleton
+                                      baseColor="#edf2f7"
+                                      highlightColor="#f7fafc"
+                                      width={160}
+                                      height={15}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </CarouselItem>
+                      ))
+                      : groupedAllJobPosts.map((group, index) => (
+                        <CarouselItem key={index} className="w-full">
+                          <div className="grid grid-cols-3 gap-4">
+                            {group.map((job, subIndex) => (
+                              <div key={subIndex} className="p-1">
+                                <Link href={`/job/${job._id}`}>
+                                  <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]">
+                                    <img src={job?.companyLogo || "https://images.vietnamworks.com/img/company-default-logo.svg"} className="w-24 h-24" />
+                                    <div>
+                                      <h1 className="mb-1 line-clamp-1 text-xl font-bold">
+                                        {job.jobTitle}
+                                      </h1>
+                                      <p>{job.companyInfo?.companyName}</p>
+                                      {job?.canDeal ?
+
+                                        <p className="my-1 text-sm text-amber-600">
+                                          Thương lượng
+                                        </p> : <p className="my-1 text-sm text-amber-600">
+                                          {job.minSalary?.toLocaleString()} -{" "}
+                                          {job.maxSalary?.toLocaleString()} USD
+                                        </p>
+                                      }
+                                      {/* <p className="my-1 text-sm text-amber-600">
+                                          {job.minSalary?.toLocaleString()} -{" "}
+                                          {job.maxSalary?.toLocaleString()} USD
+                                        </p> */}
+                                      <p className="line-clamp-2 text-sm">
+                                        {job.location}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </Link>
+                              </div>
+                            ))}
+                          </div>
+                        </CarouselItem>
+                      ))}
+                  </CarouselContent>
+                </Carousel>
+                <div className="mt-4 flex items-center justify-center gap-4">
+                  <button
+                    onClick={() => api3?.scrollTo(current3 - 1)}
+                    className={`flex h-8 w-8 items-center justify-center rounded-full border border-gray-600 transition ${current3 === 0
+                      ? "opacity-25 cursor-not-allowed"
+                      : "group hover:border-yellow-500"
+                      }`}
+                    disabled={current3 === 0}
+                  >
+                    <FaAngleLeft
+                      className={
+                        current3 === 0 ? "" : "group-hover:text-yellow-500"
+                      }
+                    />
+                  </button>
+                  {groupedAllJobPosts.map((_, i) => (
+                    <div
+                      key={i}
+                      className={`mx-1 h-2 w-2 rounded-full cursor-pointer ${i === current3 ? "bg-blue-500" : "bg-gray-300"
+                        }`}
+                      onClick={() => api3?.scrollTo(i)}
+                    />
+                  ))}
+                  <button
+                    onClick={() => api3?.scrollTo(current3 + 1)}
+                    className={`flex h-8 w-8 group items-center justify-center rounded-full border border-gray-600 transition ${current3 === groupedAllJobPosts.length - 1
+                      ? "opacity-25 cursor-not-allowed"
+                      : "hover:border-yellow-500"
+                      }`}
+                    disabled={current3 === groupedAllJobPosts.length - 1}
+                  >
+                    <FaAngleRight
+                      className={
+                        current3 === groupedAllJobPosts.length - 1
+                          ? ""
+                          : "group-hover:text-yellow-500"
+                      }
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div>Loading...</div>
+          )}
           {groupedRecentJobPosts && groupedRecentJobPosts.length > 0 ? (
             <div className="w-full rounded-md border border-solid border-[#ccdeff]">
               <div className="flex justify-between bg-[#f2f7ff]">
@@ -243,89 +387,88 @@ const HomePage = () => {
                   <CarouselContent>
                     {loadingRecentJobs
                       ? Array.from({ length: 3 }).map((_, index) => (
-                          <CarouselItem key={index} className="w-full">
-                            <div className="grid grid-cols-3 gap-4">
-                              {Array.from({ length: 9 }).map((_, subIndex) => (
-                                <div key={subIndex} className="p-1">
-                                  <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4">
+                        <CarouselItem key={index} className="w-full">
+                          <div className="grid grid-cols-3 gap-4">
+                            {Array.from({ length: 9 }).map((_, subIndex) => (
+                              <div key={subIndex} className="p-1">
+                                <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4">
+                                  <Skeleton
+                                    baseColor="#edf2f7"
+                                    highlightColor="#f7fafc"
+                                    width={80}
+                                    height={80}
+                                  />
+                                  <div className="flex flex-col space-y-2">
                                     <Skeleton
                                       baseColor="#edf2f7"
                                       highlightColor="#f7fafc"
-                                      width={80}
-                                      height={80}
+                                      width={150}
+                                      height={15}
                                     />
-                                    <div className="flex flex-col space-y-2">
-                                      <Skeleton
-                                        baseColor="#edf2f7"
-                                        highlightColor="#f7fafc"
-                                        width={150}
-                                        height={15}
-                                      />
-                                      <Skeleton
-                                        baseColor="#edf2f7"
-                                        highlightColor="#f7fafc"
-                                        width={180}
-                                        height={15}
-                                      />
-                                      <Skeleton
-                                        baseColor="#edf2f7"
-                                        highlightColor="#f7fafc"
-                                        width={160}
-                                        height={15}
-                                      />
-                                    </div>
+                                    <Skeleton
+                                      baseColor="#edf2f7"
+                                      highlightColor="#f7fafc"
+                                      width={180}
+                                      height={15}
+                                    />
+                                    <Skeleton
+                                      baseColor="#edf2f7"
+                                      highlightColor="#f7fafc"
+                                      width={160}
+                                      height={15}
+                                    />
                                   </div>
                                 </div>
-                              ))}
-                            </div>
-                          </CarouselItem>
-                        ))
+                              </div>
+                            ))}
+                          </div>
+                        </CarouselItem>
+                      ))
                       : groupedRecentJobPosts.map((group, index) => (
-                          <CarouselItem key={index} className="w-full">
-                            <div className="grid grid-cols-3 gap-4">
-                              {group.map((job, subIndex) => (
-                                <div key={subIndex} className="p-1">
-                                  <Link href={`/job/${job._id}`}>
-                                    <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]">
-                                      <div className="flex-shrink-0">
-                                        <Image
-                                          src={job?.companyLogo}
-                                          alt={job?.companyName}
-                                          className="object-cover"
-                                          width={60}
-                                          height={60}
-                                        />
-                                      </div>
-                                      <div>
-                                        <h1 className="mb-1 line-clamp-1 text-xl font-bold">
-                                          {job.jobTitle}
-                                        </h1>
-                                        {/* <p>{job.companyInfo?.companyName}</p> */}
-                                        <p className="my-1 text-sm text-amber-600">
-                                          {job.minSalary?.toLocaleString()} -{" "}
-                                          {job.maxSalary?.toLocaleString()} $
-                                        </p>
-                                        <p className="line-clamp-2 text-sm">
-                                          {job.location}
-                                        </p>
-                                      </div>
+                        <CarouselItem key={index} className="w-full">
+                          <div className="grid grid-cols-3 gap-4">
+                            {group.map((job, subIndex) => (
+                              <div key={subIndex} className="p-1">
+                                <Link href={`/job/${job._id}`}>
+                                  <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]">
+                                    <div className="flex-shrink-0">
+                                      <Image
+                                        src={job?.companyLogo}
+                                        alt={job?.companyName}
+                                        className="object-cover"
+                                        width={60}
+                                        height={60}
+                                      />
                                     </div>
-                                  </Link>
-                                </div>
-                              ))}
-                            </div>
-                          </CarouselItem>
-                        ))}
+                                    <div>
+                                      <h1 className="mb-1 line-clamp-1 text-xl font-bold">
+                                        {job.jobTitle}
+                                      </h1>
+                                      {/* <p>{job.companyInfo?.companyName}</p> */}
+                                      <p className="my-1 text-sm text-amber-600">
+                                        {job.minSalary?.toLocaleString()} -{" "}
+                                        {job.maxSalary?.toLocaleString()} $
+                                      </p>
+                                      <p className="line-clamp-2 text-sm">
+                                        {job.location}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </Link>
+                              </div>
+                            ))}
+                          </div>
+                        </CarouselItem>
+                      ))}
                   </CarouselContent>
                 </Carousel>
                 <div className="mt-4 flex items-center justify-center gap-4">
                   <button
                     onClick={() => api?.scrollTo(current - 1)}
-                    className={`flex h-8 w-8 items-center justify-center rounded-full border border-gray-600 transition ${
-                      current === 0
-                        ? "opacity-25 cursor-not-allowed"
-                        : "group hover:border-yellow-500"
-                    }`}
+                    className={`flex h-8 w-8 items-center justify-center rounded-full border border-gray-600 transition ${current === 0
+                      ? "opacity-25 cursor-not-allowed"
+                      : "group hover:border-yellow-500"
+                      }`}
                     disabled={current === 0}
                   >
                     <FaAngleLeft
@@ -337,19 +480,17 @@ const HomePage = () => {
                   {groupedRecentJobPosts.map((_, i) => (
                     <div
                       key={i}
-                      className={`mx-1 h-2 w-2 rounded-full cursor-pointer ${
-                        i === current ? "bg-blue-500" : "bg-gray-300"
-                      }`}
+                      className={`mx-1 h-2 w-2 rounded-full cursor-pointer ${i === current ? "bg-blue-500" : "bg-gray-300"
+                        }`}
                       onClick={() => api?.scrollTo(i)}
                     />
                   ))}
                   <button
                     onClick={() => api?.scrollTo(current + 1)}
-                    className={`flex h-8 w-8 group items-center justify-center rounded-full border border-gray-600 transition ${
-                      current === groupedRecentJobPosts.length - 1
-                        ? "opacity-25 cursor-not-allowed"
-                        : "hover:border-yellow-500"
-                    }`}
+                    className={`flex h-8 w-8 group items-center justify-center rounded-full border border-gray-600 transition ${current === groupedRecentJobPosts.length - 1
+                      ? "opacity-25 cursor-not-allowed"
+                      : "hover:border-yellow-500"
+                      }`}
                     disabled={current === groupedRecentJobPosts.length - 1}
                   >
                     <FaAngleRight
@@ -364,7 +505,19 @@ const HomePage = () => {
               </div>
             </div>
           ) : (
-            <div>Loading...</div>
+            <div className="w-full rounded-md border border-solid border-[#ccdeff]">
+              <div className="flex justify-between bg-[#f2f7ff]">
+                <span className="px-6 py-3 text-xl font-bold">
+                  Việc Làm Mới Nhất
+                </span>
+                <Link href="#">
+                  <button className="px-6 py-3 uppercase text-blue-500">
+                    Xem tất cả
+                  </button>
+                </Link>
+              </div>
+              {/* <div>Loading...</div> */}
+            </div>
           )}
 
           <div className="my-8">
@@ -378,42 +531,42 @@ const HomePage = () => {
               <CarouselContent>
                 {loadingIndustries
                   ? Array.from({ length: 5 }).map((_, index) => (
-                      <CarouselItem
-                        key={index}
-                        className="md:basis-1/2 lg:basis-1/5"
-                      >
-                        <div className="p-1">
-                          <div>
-                            <Skeleton
-                              baseColor="#edf2f7"
-                              highlightColor="#f7fafc"
-                              height={120}
-                              className="w-full"
-                            />
-                          </div>
+                    <CarouselItem
+                      key={index}
+                      className="md:basis-1/2 lg:basis-1/5"
+                    >
+                      <div className="p-1">
+                        <div>
+                          <Skeleton
+                            baseColor="#edf2f7"
+                            highlightColor="#f7fafc"
+                            height={120}
+                            className="w-full"
+                          />
                         </div>
-                      </CarouselItem>
-                    ))
+                      </div>
+                    </CarouselItem>
+                  ))
                   : jobIndustries.map((industry, index) => (
-                      <CarouselItem
-                        key={index}
-                        className="md:basis-1/2 lg:basis-1/5"
-                      >
-                        <div className="p-1">
-                          <div>
-                            <div className="flex cursor-pointer flex-col items-center justify-center gap-4 rounded-md bg-[#005aff0d] p-6">
-                              {/* <Image src={science} alt="" height={80} width={80} /> */}
-                              <span className="line-clamp-1 text-base font-bold">
-                                {industry.jobIndustry}
-                              </span>
-                              <span className="text-gray-400">
-                                {industry.count} việc làm
-                              </span>
-                            </div>
+                    <CarouselItem
+                      key={index}
+                      className="md:basis-1/2 lg:basis-1/5"
+                    >
+                      <div className="p-1">
+                        <div>
+                          <div className="flex cursor-pointer flex-col items-center justify-center gap-4 rounded-md bg-[#005aff0d] p-6">
+                            {/* <Image src={science} alt="" height={80} width={80} /> */}
+                            <span className="line-clamp-1 text-base font-bold">
+                              {industry.jobIndustry}
+                            </span>
+                            <span className="text-gray-400">
+                              {industry.count} việc làm
+                            </span>
                           </div>
                         </div>
-                      </CarouselItem>
-                    ))}
+                      </div>
+                    </CarouselItem>
+                  ))}
               </CarouselContent>
               <CarouselPrevious className="left-0" />
               <CarouselNext className="right-0" />
@@ -531,89 +684,79 @@ const HomePage = () => {
                   <CarouselContent>
                     {loadingJobs
                       ? Array.from({ length: 3 }).map((_, index) => (
-                          <CarouselItem key={index} className="w-full">
-                            <div className="grid grid-cols-3 gap-4">
-                              {Array.from({ length: 9 }).map((_, subIndex) => (
-                                <div key={subIndex} className="p-1">
-                                  <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4">
+                        <CarouselItem key={index} className="w-full">
+                          <div className="grid grid-cols-3 gap-4">
+                            {Array.from({ length: 9 }).map((_, subIndex) => (
+                              <div key={subIndex} className="p-1">
+                                <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4">
+                                  <Skeleton
+                                    baseColor="#edf2f7"
+                                    highlightColor="#f7fafc"
+                                    width={80}
+                                    height={80}
+                                  />
+                                  <div className="flex flex-col space-y-2">
                                     <Skeleton
                                       baseColor="#edf2f7"
                                       highlightColor="#f7fafc"
-                                      width={80}
-                                      height={80}
+                                      width={150}
+                                      height={15}
                                     />
-                                    <div className="flex flex-col space-y-2">
-                                      <Skeleton
-                                        baseColor="#edf2f7"
-                                        highlightColor="#f7fafc"
-                                        width={150}
-                                        height={15}
-                                      />
-                                      <Skeleton
-                                        baseColor="#edf2f7"
-                                        highlightColor="#f7fafc"
-                                        width={180}
-                                        height={15}
-                                      />
-                                      <Skeleton
-                                        baseColor="#edf2f7"
-                                        highlightColor="#f7fafc"
-                                        width={160}
-                                        height={15}
-                                      />
-                                    </div>
+                                    <Skeleton
+                                      baseColor="#edf2f7"
+                                      highlightColor="#f7fafc"
+                                      width={180}
+                                      height={15}
+                                    />
+                                    <Skeleton
+                                      baseColor="#edf2f7"
+                                      highlightColor="#f7fafc"
+                                      width={160}
+                                      height={15}
+                                    />
                                   </div>
                                 </div>
-                              ))}
-                            </div>
-                          </CarouselItem>
-                        ))
+                              </div>
+                            ))}
+                          </div>
+                        </CarouselItem>
+                      ))
                       : groupedAllJobPosts.map((group, index) => (
-                          <CarouselItem key={index} className="w-full">
-                            <div className="grid grid-cols-3 gap-4">
-                              {group.map((job, subIndex) => (
-                                <div key={subIndex} className="p-1">
-                                  <Link href={`/job/${job._id}`}>
-                                    <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]">
-                                      <div className="flex-shrink-0">
-                                        <Image
-                                          src={job?.companyLogo}
-                                          alt={job?.companyName}
-                                          className="object-cover"
-                                          width={60}
-                                          height={60}
-                                        />
-                                      </div>
-                                      <div>
-                                        <h1 className="mb-1 line-clamp-1 text-xl font-bold">
-                                          {job.jobTitle}
-                                        </h1>
-                                        {/* <p>{job.companyInfo?.companyName}</p> */}
-                                        <p className="my-1 text-sm text-amber-600">
-                                          {job.minSalary?.toLocaleString()} -{" "}
-                                          {job.maxSalary?.toLocaleString()} $
-                                        </p>
-                                        <p className="line-clamp-2 text-sm">
-                                          {job.location}
-                                        </p>
-                                      </div>
+                        <CarouselItem key={index} className="w-full">
+                          <div className="grid grid-cols-3 gap-4">
+                            {group.map((job, subIndex) => (
+                              <div key={subIndex} className="p-1">
+                                <Link href={`/job/${job._id}`}>
+                                  <div className="flex items-center gap-5 rounded-md border border-solid border-gray-200 p-4 transition hover:border-sky-200 hover:bg-[#F9FBFF]">
+                                    <div>
+                                      <h1 className="mb-1 line-clamp-1 text-xl font-bold">
+                                        {job.jobTitle}
+                                      </h1>
+                                      <p>{job.companyInfo?.companyName}</p>
+                                      <p className="my-1 text-sm text-amber-600">
+                                        {job.minSalary?.toLocaleString()} -{" "}
+                                        {job.maxSalary?.toLocaleString()} VNĐ
+                                      </p>
+                                      <p className="line-clamp-2 text-sm">
+                                        {job.location}
+                                      </p>
                                     </div>
-                                  </Link>
-                                </div>
-                              ))}
-                            </div>
-                          </CarouselItem>
-                        ))}
+                                  </div>
+                                </Link>
+                              </div>
+                            ))}
+                          </div>
+                        </CarouselItem>
+                      ))}
                   </CarouselContent>
                 </Carousel>
                 <div className="mt-4 flex items-center justify-center gap-4">
                   <button
                     onClick={() => api3?.scrollTo(current3 - 1)}
-                    className={`flex h-8 w-8 items-center justify-center rounded-full border border-gray-600 transition ${
-                      current3 === 0
-                        ? "opacity-25 cursor-not-allowed"
-                        : "group hover:border-yellow-500"
-                    }`}
+                    className={`flex h-8 w-8 items-center justify-center rounded-full border border-gray-600 transition ${current3 === 0
+                      ? "opacity-25 cursor-not-allowed"
+                      : "group hover:border-yellow-500"
+                      }`}
                     disabled={current3 === 0}
                   >
                     <FaAngleLeft
@@ -625,19 +768,17 @@ const HomePage = () => {
                   {groupedAllJobPosts.map((_, i) => (
                     <div
                       key={i}
-                      className={`mx-1 h-2 w-2 rounded-full cursor-pointer ${
-                        i === current3 ? "bg-blue-500" : "bg-gray-300"
-                      }`}
+                      className={`mx-1 h-2 w-2 rounded-full cursor-pointer ${i === current3 ? "bg-blue-500" : "bg-gray-300"
+                        }`}
                       onClick={() => api3?.scrollTo(i)}
                     />
                   ))}
                   <button
                     onClick={() => api3?.scrollTo(current3 + 1)}
-                    className={`flex h-8 w-8 group items-center justify-center rounded-full border border-gray-600 transition ${
-                      current3 === groupedAllJobPosts.length - 1
-                        ? "opacity-25 cursor-not-allowed"
-                        : "hover:border-yellow-500"
-                    }`}
+                    className={`flex h-8 w-8 group items-center justify-center rounded-full border border-gray-600 transition ${current3 === groupedAllJobPosts.length - 1
+                      ? "opacity-25 cursor-not-allowed"
+                      : "hover:border-yellow-500"
+                      }`}
                     disabled={current3 === groupedAllJobPosts.length - 1}
                   >
                     <FaAngleRight
@@ -730,29 +871,29 @@ const HomePage = () => {
             <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-4">
               {loadingNews
                 ? Array.from({ length: 4 }).map((_, index) => (
-                    <div
-                      key={index}
-                      className="overflow-hidden rounded-md border border-solid border-[#dbdbdb] p-4"
-                    >
-                      <Skeleton height={20} width={`70%`} />
-                      <Skeleton height={15} width={`90%`} className="mt-4" />
-                      <Skeleton height={15} width={`80%`} className="mt-2" />
-                    </div>
-                  ))
+                  <div
+                    key={index}
+                    className="overflow-hidden rounded-md border border-solid border-[#dbdbdb] p-4"
+                  >
+                    <Skeleton height={20} width={`70%`} />
+                    <Skeleton height={15} width={`90%`} className="mt-4" />
+                    <Skeleton height={15} width={`80%`} className="mt-2" />
+                  </div>
+                ))
                 : news.map((item, index) => (
-                    <Link
-                      className="group cursor-pointer overflow-hidden rounded-md border border-solid border-[#dbdbdb] transition-all hover:border-[#ff7d55]"
-                      key={index}
-                      href={`/news/${item._id}`}
-                    >
-                      <div className="px-4 py-2">
-                        <p className="mt-2 text-base font-bold transition-all duration-200 group-hover:text-[#ff7d55]">
-                          {item.title}
-                        </p>
-                        <p className="my-4 line-clamp-4">{item.summary}</p>{" "}
-                      </div>
-                    </Link>
-                  ))}
+                  <Link
+                    className="group cursor-pointer overflow-hidden rounded-md border border-solid border-[#dbdbdb] transition-all hover:border-[#ff7d55]"
+                    key={index}
+                    href={`/news/${item._id}`}
+                  >
+                    <div className="px-4 py-2">
+                      <p className="mt-2 text-base font-bold transition-all duration-200 group-hover:text-[#ff7d55]">
+                        {item.title}
+                      </p>
+                      <p className="my-4 line-clamp-4">{item.summary}</p>{" "}
+                    </div>
+                  </Link>
+                ))}
             </div>
           </div>
         </div>

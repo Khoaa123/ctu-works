@@ -24,7 +24,7 @@ const Location = () => {
     const [formData, setFormData] = useState({
         locationCompanyId: []
     });
-    const [Location, setLocation] = useState([{ _id: "", title: "", description: "" }]);
+    const [Location, setLocation] = useState([]);
     const createLocation = async (currentOffice: any) => {
         const id = decodedToken?.userid;
         const res = await fetch(

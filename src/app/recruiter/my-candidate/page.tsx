@@ -61,19 +61,7 @@ const MyCandidate = () => {
       applyJob: applyJob,
     },
   ]);
-  const [userApplyDetail, setUserApplyDetail] = useState([
-    [
-      {
-        status: "",
-        applyId: "",
-        fullName: "",
-        email: "",
-        address: "",
-        phoneNumber: "",
-        _id: "",
-      },
-    ],
-  ]);
+  const [userApplyDetail, setUserApplyDetail] = useState([[]]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -194,9 +182,9 @@ const MyCandidate = () => {
 
   const countStatus = (status: any) => {
     if (status === "all") {
-      return userApplyDetail[applySelect].length;
+      return userApplyDetail[applySelect]?.length;
     } else {
-      return applyJob[applySelect].filter((application) => application.status === status).length;
+      return applyJob[applySelect]?.filter((application) => application.status === status).length;
     }
   };
   const [filteredApplies, setFilteredApplies] = useState([{}]);
@@ -207,7 +195,7 @@ const MyCandidate = () => {
     if (status === "all") {
       setFilteredApplies(userApplyDetail[applySelect])
     } else {
-      const filtered = userApplyDetail[applySelect].filter(
+      const filtered = userApplyDetail[applySelect]?.filter(
         (apply) => apply.status === status
       );
       setFilteredApplies(filtered);
@@ -215,7 +203,7 @@ const MyCandidate = () => {
   }
 
   const handleSearch = (e: any) => {
-    const filtered = userApplyDetail[applySelect].filter((apply) => apply.fullName.toLowerCase().includes(e.target.value.toLowerCase()) || apply.email.toLowerCase().includes(e.target.value.toLowerCase()) || apply.phoneNumber.toString().toLowerCase().includes(e.target.value.toString().toLowerCase()))
+    const filtered = userApplyDetail[applySelect]?.filter((apply) => apply.fullName.toLowerCase().includes(e.target.value.toLowerCase()) || apply.email.toLowerCase().includes(e.target.value.toLowerCase()) || apply.phoneNumber.toString().toLowerCase().includes(e.target.value.toString().toLowerCase()))
     setFilteredApplies(filtered)
   }
 
@@ -229,17 +217,22 @@ const MyCandidate = () => {
               <div className="flex items-center space-x-2">
                 <span>Việc làm</span>
                 <div className="relative">
-                  <select
-                    className="mt-1 w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400 focus-visible:ring-0"
-                    onChange={(e) => handleSelectJob(e.target.value)}
-                  >
-                    {myJobpost &&
-                      myJobpost.map((job, index) => (
+                  {myJobpost?.length > 0 ? (
+                    <select
+                      className="mt-1 w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400 focus-visible:ring-0"
+                      onChange={(e) => handleSelectJob(e.target.value)}
+                    >
+                      {myJobpost.map((job, index) => (
                         <option key={index} value={index}>
                           {job.jobTitle}
                         </option>
                       ))}
-                  </select>
+                    </select>
+                  )
+                    : (
+                      <p>Bạn chưa có công việc nào</p>
+                    )
+                  }
                 </div>
               </div>
             </div>
@@ -286,100 +279,113 @@ const MyCandidate = () => {
             </div>
           </div>
         </div>
-        <div className="flex min-h-80 flex-col gap-4 overflow-y-scroll rounded border border-gray-300 bg-white p-2">
-          {applyJob[applySelect]?.length > 0 ? (
-            filteredApplies.map((job: any, index: any) => (
-              <Link
-                key={job?.userId}
-                href={`/profileuser/${job?._id}`}
-                className="group flex w-full cursor-pointer items-center justify-between rounded-lg border border-blue-400 bg-white p-4 transition-all duration-300 hover:bg-[#f9fcff]"
-              >
-                <div className="flex flex-grow items-center gap-6">
-                  <img
-                    src={myJobpost[applySelect]?.companyLogo || "https://cdn-icons-png.flaticon.com/128/149/149071.png"}
-                    alt={`avatar`}
-                    className="rounded-lg"
-                    width={60}
-                    height={60}
-                  />
-                  <div className="max-w-[calc(100%-200px)] flex-grow">
-                    <h3 className="line-clamp-2 text-lg font-medium duration-300 group-hover:text-[#ff7d55] group-hover:transition-all">
-                      {job?.fullName}
-                    </h3>
-                    <p className="truncate text-gray-600">{job?.email}</p>
-                    <p className="text-sm text-gray-500">{job?.address}</p>
-                    <p className="text-sm text-[#ff7d55]">{job?.phoneNumber}</p>
+        {myJobpost?.length > 0 ? (
+          <div className="flex min-h-80 flex-col gap-4 overflow-y-scroll rounded border border-gray-300 bg-white p-2">
+            {applyJob[applySelect]?.length > 0 ? (
+              filteredApplies.map((job: any, index: any) => (
+                <Link
+                  key={job?.userId}
+                  href={`/profileuser/${job?._id}`}
+                  className="group flex w-full cursor-pointer items-center justify-between rounded-lg border border-blue-400 bg-white p-4 transition-all duration-300 hover:bg-[#f9fcff]"
+                >
+                  <div className="flex flex-grow items-center gap-6">
+                    <img
+                      src={myJobpost[applySelect]?.companyLogo || "https://cdn-icons-png.flaticon.com/128/149/149071.png"}
+                      alt={`avatar`}
+                      className="rounded-lg"
+                      width={60}
+                      height={60}
+                    />
+                    <div className="max-w-[calc(100%-200px)] flex-grow">
+                      <h3 className="line-clamp-2 text-lg font-medium duration-300 group-hover:text-[#ff7d55] group-hover:transition-all">
+                        {job?.fullName}
+                      </h3>
+                      <p className="truncate text-gray-600">{job?.email}</p>
+                      <p className="text-sm text-gray-500">{job?.address}</p>
+                      <p className="text-sm text-[#ff7d55]">{job?.phoneNumber}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex flex-shrink-0 items-center space-x-4">
-                  <Select
-                    value={job?.status}
-                    onValueChange={(value) =>
-                      updateApply(job?.applyId, value)
-                    }
-                  >
-                    <SelectTrigger
-                      className={`whitespace-nowrap rounded-lg px-4 py-2 text-white transition-colors hover:bg-orange-500 
-                                            ${job
-                          .status === "Chờ phản hồi"
-                          ? "bg-yellow-600"
-                          : ""
-                        } 
-                                            ${job
-                          .status === "Mời phỏng vấn"
-                          ? "bg-sky-500"
-                          : ""
-                        } 
-                                            ${job
-                          .status === "Từ chối"
-                          ? "bg-red-500"
-                          : ""
-                        } 
-                                            ${job
-                          .status === "Chấp nhận"
-                          ? "bg-green-500"
-                          : ""
-                        }`}
+                  <div className="flex flex-shrink-0 items-center space-x-4">
+                    <Select
+                      value={job?.status}
+                      onValueChange={(value) =>
+                        updateApply(job?.applyId, value)
+                      }
                     >
-                      <SelectValue placeholder="Vui lòng chọn..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem
-                        className="text-yellow-600"
-                        value="Chờ phản hồi"
+                      <SelectTrigger
+                        className={`whitespace-nowrap rounded-lg px-4 py-2 text-white transition-colors hover:bg-orange-500 
+                                            ${job
+                            .status === "Chờ phản hồi"
+                            ? "bg-yellow-600"
+                            : ""
+                          } 
+                                            ${job
+                            .status === "Mời phỏng vấn"
+                            ? "bg-sky-500"
+                            : ""
+                          } 
+                                            ${job
+                            .status === "Từ chối"
+                            ? "bg-red-500"
+                            : ""
+                          } 
+                                            ${job
+                            .status === "Chấp nhận"
+                            ? "bg-green-500"
+                            : ""
+                          }`}
                       >
-                        Chờ phản hồi
-                      </SelectItem>
-                      <SelectItem
-                        className="text-sky-500"
-                        value="Mời phỏng vấn"
-                      >
-                        Mời phỏng vấn
-                      </SelectItem>
-                      <SelectItem className="text-red-500" value="Từ chối">
-                        Từ chối
-                      </SelectItem>
-                      <SelectItem className="text-green-500" value="Chấp nhận">
-                        Chấp nhận
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </Link>
-            ))
-          ) : (
-            <div className="flex min-h-60 flex-col items-center">
-              <img
-                src="https://employer.vietnamworks.com/v2/img/none-of-candidate.svg"
-                alt="No candidates illustration"
-                className="mb-4"
-              />
-              <span className="text-gray-700">
-                Không có ứng viên nào cho việc làm này
-              </span>
-            </div>
-          )}
-        </div>
+                        <SelectValue placeholder="Vui lòng chọn..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem
+                          className="text-yellow-600"
+                          value="Chờ phản hồi"
+                        >
+                          Chờ phản hồi
+                        </SelectItem>
+                        <SelectItem
+                          className="text-sky-500"
+                          value="Mời phỏng vấn"
+                        >
+                          Mời phỏng vấn
+                        </SelectItem>
+                        <SelectItem className="text-red-500" value="Từ chối">
+                          Từ chối
+                        </SelectItem>
+                        <SelectItem className="text-green-500" value="Chấp nhận">
+                          Chấp nhận
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </Link>
+              ))
+            ) : (
+              <div className="flex min-h-60 flex-col items-center">
+                <img
+                  src="https://employer.vietnamworks.com/v2/img/none-of-candidate.svg"
+                  alt="No candidates illustration"
+                  className="mb-4"
+                />
+                <span className="text-gray-700">
+                  Không có ứng viên nào cho việc làm này
+                </span>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="flex min-h-60 flex-col items-center">
+            <img
+              src="https://employer.vietnamworks.com/v2/img/none-of-candidate.svg"
+              alt="No candidates illustration"
+              className="mb-4 w-[40%] h-[40%]"
+            />
+            <span className="text-gray-700">
+              Bạn chưa có công việc nào
+            </span>
+          </div>
+        )}
         {/* <div className="mt-4 flex items-center space-x-2 rounded bg-blue-100 p-4 text-blue-700">
           <FaInfoCircle className="fas fa-info-circle" />
           <span>

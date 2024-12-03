@@ -209,7 +209,7 @@ const CompanySearch = () => {
                     <div className="grid grid-cols-3 gap-4">
                         {detailsCompany?.map((com, index) => (
                             <div className="bg-white rounded-lg shadow p-4 ">
-                                <img src="https://placehold.co/300x150" alt="Company 1" className="w-full h-32 object-cover rounded-lg mb-4" />
+                                <img src={com.companyLogo || "https://images.vietnamworks.com/img/company-default-logo.svg"} alt="Company 1" className="w-full h-32 object-cover rounded-lg mb-4" />
                                 <Link href={`/company/${com.recruiterId}`}>
                                     <h3 className="text-lg font-semibold min-h-16 hover:text-sky-700">{com?.companyName}</h3>
                                 </Link>

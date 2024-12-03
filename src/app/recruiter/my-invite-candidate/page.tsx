@@ -30,7 +30,7 @@ const MyInviteCandidate = () => {
     const cookies = useCookies();
     const accessToken = cookies.get("accessTokenRecruiter");
     const decodedToken = accessToken ? jwtDecode<JwtPayload>(accessToken) : null;
-    const [myInvite, setMyInvite] = useState<MyInvite>([{}]);
+    const [myInvite, setMyInvite] = useState<MyInvite>([]);
     useEffect(() => {
         const fetchData = async () => {
             try {

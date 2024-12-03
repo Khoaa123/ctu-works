@@ -113,15 +113,17 @@ const Recruiter = () => {
                   </div>
                 </div>
                 <div className="mt-4 rounded-md bg-white p-4 shadow-sm">
-                  <p className="text-lg font-medium">Điểm khả dụng</p>
+                  {/* <p className="text-lg font-medium">Điểm khả dụng</p> */}
                   <div className="mt-6 grid grid-cols-2 gap-4">
                     <div className="border-solod col-span-1 flex min-h-44 cursor-pointer flex-col justify-center rounded-lg border border-[#f5f5f5] bg-[#f5f5f5] p-2 transition-all duration-300 hover:border-sky-200 hover:bg-[#F9FBFF]">
-                      <p className="text-2xl font-semibold text-[#ff7d55]">0</p>
-                      <p className="text-sm">Điểm đăng tuyển</p>
+                      <img src="https://images.vietnamworks.com/announcement-images/1732004232-announcement-pop-up-Pop-up%20banner%20EM_%20500%20x%20200%20(1).png"></img>
+                      {/* <p className="text-2xl font-semibold text-[#ff7d55]">0</p> */}
+                      {/* <p className="text-sm">Điểm đăng tuyển</p> */}
                     </div>
                     <div className="border-solod col-span-1 flex min-h-44 cursor-pointer flex-col justify-center rounded-lg border border-[#f5f5f5] bg-[#f5f5f5] p-2 transition-all duration-300 hover:border-sky-200 hover:bg-[#F9FBFF]">
-                      <p className="text-2xl font-semibold text-[#ff7d55]">0</p>
-                      <p className="text-sm">Điểm xem hồ sơ</p>
+                      {/* <p className="text-2xl font-semibold text-[#ff7d55]">0</p> */}
+                      {/* <p className="text-sm">Điểm xem hồ sơ</p> */}
+                      <img src="https://www.vietnamworks.com/_next/image?url=https%3A%2F%2Fimages.vietnamworks.com%2Flogo%2Fmondelez_hrbn1024_129061.png&w=1920&q=75"></img>
                     </div>
                   </div>
                 </div>
@@ -161,7 +163,7 @@ const Recruiter = () => {
               </div>
             </div>
 
-            <div className="mb-6 rounded-md bg-white p-4 shadow-sm">
+            {/* <div className="mb-6 rounded-md bg-white p-4 shadow-sm">
               <p className="text-lg font-bold">Quản lý nhanh tin đăng</p>
               <div className="mt-4 flex h-full flex-col items-center justify-center gap-3 text-center">
                 <div>
@@ -175,9 +177,9 @@ const Recruiter = () => {
                   <p>Không có việc làm nào</p>
                 </div>
               </div>
-            </div>
+            </div> */}
 
-            <div className="mb-6 grid grid-cols-12 gap-3">
+            {/* <div className="mb-6 grid grid-cols-12 gap-3">
               <div className="col-span-5">
                 <div className="flex h-full flex-col gap-3 rounded-md bg-white p-4 shadow-sm">
                   <p className="text-lg font-bold">Trang thái tin đăng</p>
@@ -283,9 +285,9 @@ const Recruiter = () => {
                   </CarouselContent>
                 </Carousel>
               </div>
-            </div>
+            </div> */}
 
-            <div className="mb-6 grid grid-cols-12 gap-3">
+            {/* <div className="mb-6 grid grid-cols-12 gap-3">
               <div className="rounded-md bg-white p-4 lg:col-span-7">
                 <p className="text-lg font-bold">
                   Thông tin khách hàng thân thiết
@@ -319,7 +321,7 @@ const Recruiter = () => {
                 </div>
               </div>
               <div className="lg:col-span-5"></div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

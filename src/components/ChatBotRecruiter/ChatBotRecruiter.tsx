@@ -1,7 +1,6 @@
-// pages/chatbotRecruiter.js
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { chatSessionTest } from "../../app/ai/ChatbotUser";
+import { chatSessionTest } from "../../app/ai/ChatbotRecruiter";
 
 const ChatbotRecruiter = () => {
   const [jobPosts, setJobPosts] = useState([]);
@@ -9,27 +8,12 @@ const ChatbotRecruiter = () => {
   const [userInput, setUserInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [showChat, setShowChat] = useState(false);
-  const [detailsCompany, setDetailsCompany] = useState([
-    {
-      companyLogo: "",
-      companyName: "",
-      companyScale: "",
-      companyIndustries: "",
-      fullName: "",
-      companyAddress: "",
-      companyDescription: "",
-      following: -1,
-      follower: [],
-      recruiterId: "",
-      _id: "",
-    },
-  ]);
-
+  
   useEffect(() => {
-    const fetchJobPosts = async () => {
+    const fetchUser = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobpost/get-all-jobpost`
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/getAll`
         );
         const data = await res.json();
         if (data.status === "OK") {
@@ -42,29 +26,9 @@ const ChatbotRecruiter = () => {
       }
     };
 
-    fetchJobPosts();
+    fetchUser();
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchDetailsCompany();
-      setDetailsCompany(data.data);
-    };
-    fetchData();
-  }, []);
-
-  const fetchDetailsCompany = async () => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/recruiter/get-all-company`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return res.json();
-  };
 
   const sendMessage = async () => {
     if (userInput.trim() === "") return;
@@ -78,7 +42,6 @@ const ChatbotRecruiter = () => {
       setIsTyping(true);
       const result = await chatSessionTest(
         jobPosts,
-        detailsCompany
       ).sendMessage(`${userInput}`);
       console.log(result?.response?.text().replace(/\*/g, "\n"));
       const data = result?.response?.text().replace(/\*/g, "\n");

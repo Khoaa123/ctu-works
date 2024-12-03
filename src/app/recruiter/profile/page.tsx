@@ -333,6 +333,60 @@ const Profile = () => {
     );
     return res.json();
   };
+  const fetchUploadImage = async (data: any) => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/upload-image/image`,
+      {
+        method: "POST",
+        body: data,
+      }
+    );
+    return res.json();
+  };
+  const uploadImage = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append("images", file);
+
+    try {
+      const res = await fetch("http://localhost:3001/api/upload/image", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to upload image");
+      }
+
+      const data = await res.json();
+      if (!data.success) {
+        throw new Error("Image upload failed on server");
+      }
+
+      return data.imageUrls[0];
+    } catch (error) {
+      console.error("Image upload error:", error);
+      throw error;
+    }
+  };
+
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      try {
+        const imageUrl = await uploadImage(file);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          companyLogo: imageUrl,
+        }));
+        toast.success("Ảnh đã được tải lên thành công!");
+      } catch (error) {
+        console.error("Lỗi khi upload ảnh:", error);
+        toast.error("Tải ảnh lên thất bại, vui lòng thử lại.");
+      }
+    }
+  };
   return (
     <>
       <div className="bg-[#F7F8FA]">
@@ -419,9 +473,9 @@ const Profile = () => {
                     value={
                       formData.companyIndustries
                         ? {
-                            value: formData.companyIndustries,
-                            label: formData.companyIndustries,
-                          }
+                          value: formData.companyIndustries,
+                          label: formData.companyIndustries,
+                        }
                         : null
                     }
                     onChange={handleChangeIndustry}
@@ -536,7 +590,7 @@ const Profile = () => {
                             disabled={
                               usedBenefits.includes(item.name) &&
                               item.name !==
-                                formData?.companyBenefits[benefit.id]?.title
+                              formData?.companyBenefits[benefit.id]?.title
                             }
                           >
                             {item.name}{" "}
@@ -594,13 +648,7 @@ const Profile = () => {
                   </label>
                   <div className="rounded-lg border-2 border-dashed border-gray-300 p-4 text-center">
                     <input
-                      onChange={(e) => {
-                        setFormData({
-                          ...formData,
-
-                          companyLogo: e.target.value,
-                        });
-                      }}
+                      onChange={(e) => handleFileChange(e)}
                       id="companyLogo"
                       type="file"
                       accept=".jpg, .jpeg, .png, .gif"

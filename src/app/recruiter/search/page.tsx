@@ -1,17 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import {
-  FaBars,
   FaBriefcase,
-  FaCheck,
-  FaGlasses,
-  FaMagnifyingGlass,
   FaSackDollar,
-  FaSearchengin,
-  FaSliders,
 } from "react-icons/fa6";
 import HeaderRecruiter from "@/components/HeaderRecruiter/HeaderRecruiter";
-import { FaMapMarkerAlt, FaSearch, FaTh } from "react-icons/fa";
+import { FaMapMarkerAlt, FaSearch } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
 import { useCookies } from "next-client-cookies";
@@ -63,6 +57,7 @@ const Search = () => {
       district: "",
       maritalStatusId: "",
       avatar: "",
+      updatedAt: "",
       workingPreferences: {
         locations: [""],
         jobFunction: "",
@@ -79,10 +74,7 @@ const Search = () => {
     Array<{ _id: string; title: string }>
   >([]);
   const [selectedJobPost, setSelectedJobPost] = useState<any>(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("Tất cả");
   const [selectedProfile, setSelectedProfile] = useState(userData[0]);
-  const options = ["Tất cả", "Công ty", "Chức vụ", "Kỹ năng", "Tên"];
   const [showJobPostModal, setShowJobPostModal] = useState(false);
   const [searchUser, setSearchUser] = useState()
   useEffect(() => {
@@ -179,9 +171,7 @@ const Search = () => {
     try {
       const searchTerm = e.target.value.toLowerCase();
       if (searchTerm.length > 1) {
-        console.log(searchTerm)
-        console.log(searchUser)
-        const filtered = searchUser.filter((user) => {
+        const filtered = searchUser.filter((user: any) => {
           return user !== null && (
             user.email.toLowerCase().includes(searchTerm)
             || user.fullName.toLowerCase().includes(searchTerm)
@@ -200,6 +190,8 @@ const Search = () => {
       console.error("Error during search:", error);
     }
   };
+  const numFound = userData?.filter(item => item !== null)?.length || 0;
+
 
   return (
     <>
@@ -219,35 +211,45 @@ const Search = () => {
 
           </div>
           <div className="mt-4 flex">
-            <p>{userData?.length} kết quả tìm kiếm</p>
+            <p>{numFound} kết quả tìm kiếm</p>
           </div>
         </div>
         <div className="ml-[10%] flex h-screen">
           <div className="w-1/4 border-r border-gray-200 p-4 overflow-y-auto">
-            {userData.map((profile, index) => (
-              <div
-                onClick={() => setSelectedProfile(profile)}
-                key={index}
-                className="mb-4 cursor-pointer rounded border border-gray-200 p-2 hover:bg-gray-100"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="font-bold text-blue-600">
-                      {profile?.fullName}
+            {userData?.map((profile, index) => {
+              if (profile) {
+                return (
+                  <div
+                    onClick={() => setSelectedProfile(profile)}
+                    key={index}
+                    className="mb-4 cursor-pointer rounded border border-gray-200 p-2 hover:bg-gray-100"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-bold text-blue-600">
+                          {profile.fullName}
+                        </div>
+                        <div className="text-gray-500">{profile.jobTitle}</div>
+                      </div>
+                      {profile.seekJobMode && (
+                        <div className="text-sm text-blue-500">
+                          {profile.seekJobMode}
+                        </div>
+                      )}
                     </div>
-                    <div className="text-gray-500">{profile?.jobTitle}</div>
+                    <div className="text-sm text-gray-400">
+                      Cập nhật gần nhất:
+                      {new Date(profile?.updatedAt).toLocaleDateString('vi-VN', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })}
+                    </div>
                   </div>
-                  {profile?.seekJobMode && (
-                    <div className="text-sm text-blue-500">
-                      {profile?.seekJobMode}
-                    </div>
-                  )}
-                </div>
-                <div className="text-sm text-gray-400">
-                  Cập nhật gần nhất: Vừa cập nhật
-                </div>
-              </div>
-            ))}
+                );
+              }
+              return null;
+            })}
           </div>
           <div className="w-3/4 p-4">
             {selectedProfile ? (
@@ -372,7 +374,7 @@ const Search = () => {
                     </div>
                   </div>
                 </div>
-                <div className="rounded border border-gray-200 p-4">
+                {/* <div className="rounded border border-gray-200 p-4">
                   <div className="mb-4 text-lg font-bold">Hồ sơ đính kèm</div>
                   <div className="rounded bg-gray-100 p-4"></div>
                 </div>
@@ -381,11 +383,11 @@ const Search = () => {
                   <div className="rounded bg-gray-100 p-4">
                     <span>CV ở đây</span>
                   </div>
-                </div>
+                </div> */}
               </>
             ) : (
               <div className="text-center text-gray-500">
-                Select a profile to view details
+                Chọn một ứng viên để xem chi tiết
               </div>
             )}
           </div>
@@ -397,7 +399,7 @@ const Search = () => {
           <div className="w-1/2 rounded-lg bg-white p-6">
             <h2 className="mb-4 text-xl font-bold">Chọn tin tuyển dụng</h2>
             <ScrollArea className="h-[400px] pr-4">
-              {jobPosts.map((jobPost: any) => (
+              {jobPosts?.map((jobPost: any) => (
                 <Card
                   key={jobPost._id}
                   className={`mb-4 cursor-pointer transition-all ${selectedJobPost === jobPost._id
@@ -455,6 +457,7 @@ const Search = () => {
                   </CardFooter>
                 </Card>
               ))}
+
             </ScrollArea>
             <div className="mt-4 flex justify-end space-x-2">
               <button

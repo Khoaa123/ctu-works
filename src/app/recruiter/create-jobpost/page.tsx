@@ -1071,29 +1071,74 @@ const CreateJobpost = () => {
 
   const handleInputChangeKeyWord = async (e: any) => {
     setInputValue(e.target.value);
-    if (debounceTimeout) {
-      clearTimeout(debounceTimeout);
-    }
-
-    debounceTimeout = setTimeout(async () => {
-      if (e.target.value.length > 1) {
-        const message = `Gợi ý cho tôi 20 từ khóa về kỹ năng nghề nghiệp có chứa từ ${
-          e.target.value
-        } thuộc lĩnh vực ${
-          formData?.jobInformation?.jobField ||
-          formData?.jobInformation?.jobIndustry ||
-          ""
-        }`;
-        try {
-          const result = await chatSession.sendMessage(message);
-          const data = result?.response?.text();
-          let arr = data.slice(2, -2).split('", "');
-          setSuggestions(arr);
-        } catch (error) {}
-      }
-    }, 500);
   };
 
+  const sendMess = async () => {
+    if (inputValue?.length > 1) {
+      const message = `Gợi ý cho tôi 20 từ khóa về kỹ năng nghề nghiệp có chứa từ ${inputValue
+        } thuộc lĩnh vực hoặc liên quan đến ${formData?.jobInformation?.jobField ||
+        formData?.jobInformation?.jobIndustry ||
+        ""
+        } bằng tiếng việt`;
+      try {
+        const result = await chatSession.sendMessage(message);
+        const data = result?.response?.text();
+        let arr = JSON.parse(data);
+        setSuggestions((prev) => [...prev, ...arr.keywords]);
+      } catch (error) { }
+    }
+  }
+  const uploadImage = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append("images", file);
+
+    try {
+      const res = await fetch("http://localhost:3001/api/upload/image", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to upload image");
+      }
+
+      const data = await res.json();
+      if (!data.success) {
+        throw new Error("Image upload failed on server");
+      }
+
+      return data.imageUrls[0];
+    } catch (error) {
+      console.error("Image upload error:", error);
+      throw error;
+    }
+  };
+
+  const [isLoadingUploadImg, setIsLoadingUploadImg] = useState(false);
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      try {
+        setIsLoadingUploadImg(true)
+        const imageUrl = await uploadImage(file);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          companyInfo: {
+            ...formData.companyInfo,
+            companyLogo: imageUrl,
+          },
+        }));
+        setIsLoadingUploadImg(false)
+        toast.success("Ảnh đã được tải lên thành công!");
+      } catch (error) {
+        console.error("Lỗi khi upload ảnh:", error);
+        setIsLoadingUploadImg(false)
+        toast.error("Tải ảnh lên thất bại, vui lòng thử lại.");
+      }
+    }
+  };
   return (
     <>
       <HeaderRecruiter />
@@ -1204,9 +1249,9 @@ const CreateJobpost = () => {
                             value={
                               formData.jobInformation.jobField
                                 ? {
-                                    value: formData.jobInformation.jobField,
-                                    label: formData.jobInformation.jobField,
-                                  }
+                                  value: formData.jobInformation.jobField,
+                                  label: formData.jobInformation.jobField,
+                                }
                                 : null
                             }
                             onChange={handleChange}
@@ -1224,9 +1269,9 @@ const CreateJobpost = () => {
                           value={
                             formData.jobInformation.jobIndustry
                               ? {
-                                  value: formData.jobInformation.jobIndustry,
-                                  label: formData.jobInformation.jobIndustry,
-                                }
+                                value: formData.jobInformation.jobIndustry,
+                                label: formData.jobInformation.jobIndustry,
+                              }
                               : null
                           }
                           onChange={handleChangeIndustry}
@@ -1557,6 +1602,11 @@ const CreateJobpost = () => {
                                   : "Ví dụ: Anh văn, Giao tiếp..."
                               }
                             />
+                            <button
+                              className="text-blue-500"
+                              onClick={sendMess}>
+                              Gợi ý với AI
+                            </button>
                           </div>
                           {inputValue && (
                             <div className="mt-2 max-h-40 overflow-y-auto rounded border border-gray-300">
@@ -2155,7 +2205,7 @@ const CreateJobpost = () => {
                                   ...formData.companyInfo.companyBenefits,
                                   [benefit.id]: {
                                     ...formData.companyInfo.companyBenefits[
-                                      benefit.id
+                                    benefit.id
                                     ],
                                     title: e.target.value,
                                     content:
@@ -2177,9 +2227,9 @@ const CreateJobpost = () => {
                               disabled={
                                 usedBenefits.includes(item.name) &&
                                 item.name !==
-                                  formData.companyInfo.companyBenefits[
-                                    benefit.id
-                                  ]?.title
+                                formData.companyInfo.companyBenefits[
+                                  benefit.id
+                                ]?.title
                               }
                             >
                               {item.name}{" "}
@@ -2248,20 +2298,12 @@ const CreateJobpost = () => {
                     </label>
                     <div className="rounded-lg border-2 border-dashed border-gray-300 p-4 text-center">
                       <input
-                        value={formData.companyInfo.companyLogo}
-                        onChange={(e) => {
-                          setFormData({
-                            ...formData,
-                            companyInfo: {
-                              ...formData.companyInfo,
-                              companyLogo: e.target.value,
-                            },
-                          });
-                        }}
+                        onChange={(e) => handleFileChange(e)}
                         id="companyLogo"
                         type="file"
                         accept=".jpg, .jpeg, .png, .gif"
                         max-size="5242880"
+
                       />
                       <p className="text-xs text-gray-500">
                         (Tập tin với phần mở rộng .jpg, .jpeg, .png, .gif và
@@ -2278,6 +2320,7 @@ const CreateJobpost = () => {
           <button
             onClick={handleSubmit}
             className="mt-4 h-12 rounded bg-orange-500 px-4 py-2 text-white"
+            disabled={isLoadingUploadImg}
           >
             Tạo
           </button>

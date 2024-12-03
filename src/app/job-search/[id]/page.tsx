@@ -78,7 +78,7 @@ const JobSearch = () => {
 
     return res.json();
   };
-  const fetchSearhData = () => {};
+  const fetchSearhData = () => { };
 
   const handleSearch = (e: any) => {
     e.preventDefault();
@@ -129,7 +129,12 @@ const JobSearch = () => {
   };
   const handleLocationChange = (value: any) => {
     const path = location.pathname?.split("&")[0];
-    router.push(`${path}&location=${value}`);
+    if (value == "all") {
+      router.push(`${path}`);
+    } else {
+      router.push(`${path}&location=${value}`);
+    }
+
   };
 
   const itemsPerPage = 2;
@@ -138,10 +143,10 @@ const JobSearch = () => {
   const paginatedData = useMemo(() => {
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    return jobData.slice(startIndex, endIndex);
+    return jobData?.slice(startIndex, endIndex);
   }, [jobData, page, itemsPerPage]);
 
-  const totalPages = Math.ceil(jobData.length / itemsPerPage);
+  const totalPages = Math.ceil(jobData?.length / itemsPerPage);
 
   return (
     <>
@@ -309,7 +314,7 @@ const JobSearch = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="flex flex-col gap-2">
+                    {/* <div className="flex flex-col gap-2">
                       <p>Chức vụ</p>{" "}
                       <Select>
                         <SelectTrigger className="w-full bg-white py-5 shadow-none focus:ring-0">
@@ -323,7 +328,7 @@ const JobSearch = () => {
                           <SelectItem value="cantho">Cần Thơ</SelectItem>
                         </SelectContent>
                       </Select>
-                    </div>
+                    </div> */}
                     <div className="flex flex-col gap-2">
                       <p>Mức lương</p>{" "}
                       <Select>
@@ -331,15 +336,15 @@ const JobSearch = () => {
                           <SelectValue placeholder="Tất cả địa điểm" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="hanoi">Hà Nội</SelectItem>
+                          <SelectItem value="hanoi">Dưới 1000$</SelectItem>
                           <SelectItem value="hochiminh">
-                            Thành phố Hồ Chí Minh
+                            Từ 1000 - 2000 $
                           </SelectItem>
-                          <SelectItem value="cantho">Cần Thơ</SelectItem>
+                          <SelectItem value="cantho">Trên 2000$</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="flex flex-col gap-2">
+                    {/* <div className="flex flex-col gap-2">
                       <p>Ngành nghề</p>{" "}
                       <Select>
                         <SelectTrigger className="w-full bg-white py-5 shadow-none focus:ring-0">
@@ -383,7 +388,7 @@ const JobSearch = () => {
                           <SelectItem value="cantho">Cần Thơ</SelectItem>
                         </SelectContent>
                       </Select>
-                    </div>
+                    </div> */}
                   </div>
                 </ScrollArea>
                 <div className="flex gap-3 px-4">
@@ -407,13 +412,6 @@ const JobSearch = () => {
                 {jobData?.length || 0} việc làm{" "}
                 <span className="font-bold">"{searchQuery} "</span> phù hợp
               </p>
-              <button className="flex items-center gap-3">
-                Tạo thông báo việc làm
-                <label className="relative inline-flex cursor-pointer items-center">
-                  <input id="switch" type="checkbox" className="peer sr-only" />
-                  <div className="peer h-6 w-11 rounded-full border bg-slate-200 after:absolute after:left-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-800 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-green-300"></div>
-                </label>
-              </button>
             </div>
           </div>
 
@@ -485,7 +483,7 @@ const JobSearch = () => {
             </div>
           </div>
 
-          {page === 1 && jobData.length === 0 ? (
+          {page === 1 && jobData?.length === 0 ? (
             <div>
               <p className="mt-5 text-center text-lg">
                 Không tìm thấy kết quả nào phù hợp
