@@ -93,6 +93,7 @@ export interface JwtPayload {
 import { useRouter } from "next/navigation";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import ScreenLoading from "@/components/ScreenLoading/ScreenLoading";
 
 type FormData = {
   email: string;
@@ -157,6 +158,7 @@ const JobDetail = () => {
     _id: "",
   });
   const [loading, setLoading] = useState(true);
+  const [isLoadingApply, setisLoadingApply] = useState(false);
 
   const saveJob = async () => {
     const id = location.pathname?.split("/job/")[1];
@@ -589,7 +591,7 @@ const JobDetail = () => {
 
     const formData = new FormData();
     formData.append("pdfs", file);
-
+    setisLoadingApply(true);
     try {
       const uploadRes = await fetch("http://localhost:3001/api/upload/pdf", {
         method: "POST",
@@ -611,6 +613,8 @@ const JobDetail = () => {
       }
     } catch (error) {
       toast.error("Cập nhật thất bại. Vui lòng thử lại sau.");
+    } finally {
+      setisLoadingApply(false);
     }
   };
 
@@ -668,7 +672,8 @@ const JobDetail = () => {
   const toDate = new Date();
   return (
     <>
-      <div className="bg-[#F1F2F4]">
+      {isLoadingApply && <ScreenLoading />}
+      <div className="bg-[#f9f9f9]">
         <div className="container">
           <div className="pt-5">
             <div className="grid grid-cols-4 gap-5">
@@ -1828,7 +1833,10 @@ const JobDetail = () => {
                           alt="Company logo"
                           className="h-12 w-12 rounded-full"
                           height="50"
-                          src={jobPostDetails?.companyLogo || "https://images.vietnamworks.com/img/company-default-logo.svg"}
+                          src={
+                            jobPostDetails?.companyLogo ||
+                            "https://images.vietnamworks.com/img/company-default-logo.svg"
+                          }
                           width="50"
                         />
                         <div className="ml-4">
@@ -1863,7 +1871,9 @@ const JobDetail = () => {
                             <span className="ml-1">
                               {jobPostDetails?.location?.map(
                                 (loc: string, locIndex) => {
-                                  const locationName = loc?.split(":")[1].trim();
+                                  const locationName = loc
+                                    ?.split(":")[1]
+                                    .trim();
 
                                   const locationWithoutCountry = locationName
                                     ?.replace("Việt Nam", "")

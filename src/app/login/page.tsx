@@ -38,14 +38,11 @@ const Login = () => {
 
   const mutation = useMutation({
     mutationFn: async (data: FormData) => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/sign-in`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        }
-      );
+      const res = await fetch(`http://localhost:3001/api/user/sign-in`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
       if (!res.ok) {
         throw new Error("Đăng nhập thất bại");
       }

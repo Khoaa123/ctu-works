@@ -18,6 +18,8 @@ const SearchWrapper = () => {
     pathname === "/recruiter" ||
     pathname.startsWith("/profile") ||
     pathname.startsWith("/cv") ||
+    pathname.startsWith("/best-jobs") ||
+    pathname.startsWith("/new-jobs") ||
     pathname.startsWith("/news");
 
   if (isHiddenPage) {

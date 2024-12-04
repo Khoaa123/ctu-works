@@ -24,6 +24,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useRouter } from "next/navigation";
 
 type JwtPayload = {
   userid: string;
@@ -46,10 +47,12 @@ const Header = () => {
   const userName = decodedToken?.fullName || "";
   const email = decodedToken?.email || "";
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const router = useRouter();
 
   const handleLogout = () => {
     cookies.remove("accessToken");
     cookies.remove("refreshToken");
+    router.push("/");
   };
 
   const userId = decodedToken?.userid || "6715491824a3b95200ec55d3";

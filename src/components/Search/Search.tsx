@@ -16,15 +16,12 @@ const Search = () => {
     e.preventDefault();
     if (searchQuery) {
       router.push(`/job-search/keyword=${searchQuery}`);
-<<<<<<< Updated upstream
     }
   };
 
   const handleKeyDown = (e: any) => {
     if (e.key === "Enter") {
       handleSearch(e);
-=======
->>>>>>> Stashed changes
     }
   };
   return (
