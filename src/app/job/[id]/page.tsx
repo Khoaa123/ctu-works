@@ -670,6 +670,9 @@ const JobDetail = () => {
     };
   }, []);
   const toDate = new Date();
+  function isBlank(locationName: any) {
+    return locationName.trim().length === 0;
+  }
   return (
     <>
       {isLoadingApply && <ScreenLoading />}
@@ -752,10 +755,14 @@ const JobDetail = () => {
                               <>
                                 {jobPostDetails?.location?.map(
                                   (loc: string, locIndex) => {
-                                    const locationName = loc
+                                    let locationName = loc
                                       ?.split(":")[1]
                                       ?.trim();
-
+                                    if (isBlank(locationName)) {
+                                      locationName = loc
+                                        ?.split(":")[0]
+                                        ?.trim();
+                                    }
                                     const locationWithoutCountry = locationName
                                       ?.replace(", Việt Nam", "")
                                       ?.trim();
@@ -763,7 +770,7 @@ const JobDetail = () => {
                                       <span key={locIndex}>
                                         {locationWithoutCountry}
                                         {locIndex <
-                                        jobPostDetails?.location.length - 1
+                                          jobPostDetails?.location.length - 1
                                           ? ", "
                                           : ""}
                                       </span>
@@ -778,7 +785,7 @@ const JobDetail = () => {
                       <div className="flex items-center justify-between gap-4">
                         <Dialog>
                           {new Date(jobPostDetails?.expirationDate) > toDate &&
-                          jobPostDetails?.statusSeeking == true ? (
+                            jobPostDetails?.statusSeeking == true ? (
                             <DialogTrigger
                               id="dialogtrigger"
                               onClick={handleCheckLogin}
@@ -932,7 +939,7 @@ const JobDetail = () => {
                                                   className={cn(
                                                     "shadow-none w-full border-gray-300 rounded-sm h-10  justify-start text-left hover:bg-transparent  font-normal data-[state=open]:border-sky-400",
                                                     !date &&
-                                                      "text-muted-foreground"
+                                                    "text-muted-foreground"
                                                   )}
                                                 >
                                                   <CalendarIcon className="mr-2 h-4 w-4" />
@@ -1388,16 +1395,16 @@ const JobDetail = () => {
                                                 onChange={
                                                   handleCompanyJobFunctionChange
                                                 }
-                                                // onChange={(e) => {
-                                                //   setWorkingPreferences((prev) => ({
-                                                //     ...prev,
-                                                //     jobFunction: e.target.value,
-                                                //   }));
-                                                //   setFormData((prevFormData) => ({
-                                                //     ...prevFormData,
-                                                //     workingPreferences: workingPreferences,
-                                                //   }))
-                                                // }}
+                                              // onChange={(e) => {
+                                              //   setWorkingPreferences((prev) => ({
+                                              //     ...prev,
+                                              //     jobFunction: e.target.value,
+                                              //   }));
+                                              //   setFormData((prevFormData) => ({
+                                              //     ...prevFormData,
+                                              //     workingPreferences: workingPreferences,
+                                              //   }))
+                                              // }}
                                               />
                                             </div>
                                             <div className="col-span-1 flex flex-col gap-1">
@@ -1468,13 +1475,13 @@ const JobDetail = () => {
                                                 onChange={
                                                   handleCompanySalaryChange
                                                 }
-                                                // onChange={(e) => {
-                                                //   setWorkingPreferences((prev) => ({
-                                                //     ...prev,
-                                                //     salary: e.target.value,
+                                              // onChange={(e) => {
+                                              //   setWorkingPreferences((prev) => ({
+                                              //     ...prev,
+                                              //     salary: e.target.value,
 
-                                                //   }))
-                                                // }}
+                                              //   }))
+                                              // }}
                                               />
                                             </div>
 
@@ -1497,12 +1504,12 @@ const JobDetail = () => {
                                                     value
                                                   )
                                                 }
-                                                // onValueChange={(value) =>
-                                                //   setWorkingPreferences((prev) => ({
-                                                //     ...prev,
-                                                //     desiredJobLevel: value,
-                                                //   }))
-                                                // }
+                                              // onValueChange={(value) =>
+                                              //   setWorkingPreferences((prev) => ({
+                                              //     ...prev,
+                                              //     desiredJobLevel: value,
+                                              //   }))
+                                              // }
                                               >
                                                 <SelectTrigger className="h-10 bg-white shadow-none focus:ring-0">
                                                   <SelectValue placeholder="Vui lòng chọn..." />
@@ -1549,11 +1556,10 @@ const JobDetail = () => {
                         </Dialog>
 
                         <button
-                          className={`flex flex-1 justify-center items-center gap-3 rounded-lg border px-4 py-2 transition ${
-                            isSaved
+                          className={`flex flex-1 justify-center items-center gap-3 rounded-lg border px-4 py-2 transition ${isSaved
                               ? "border-[#005aff] text-[#005aff] hover:bg-[#347bff26] "
                               : "border-gray-300 "
-                          }`}
+                            }`}
                           onClick={handleSaveClick}
                         >
                           {isSaved ? (
@@ -1688,7 +1694,7 @@ const JobDetail = () => {
                           <span className="text-[#939393]">NGÀNH NGHỀ</span>
                         </div>
                         <div className="mb-4 ml-6">
-                          Công Nghệ Thông Tin/Viễn Thông {">"} Phần Mềm Máy Tính
+                          {jobPostDetails?.jobIndustry}
                         </div>
 
                         <div className="mb-2 flex items-center">
@@ -1783,8 +1789,8 @@ const JobDetail = () => {
                           {jobPostDetails?.nationality === "1"
                             ? "Người Việt"
                             : jobPostDetails?.nationality === "2"
-                            ? "Người nước ngoài"
-                            : "Bất kỳ"}
+                              ? "Người nước ngoài"
+                              : "Bất kỳ"}
                         </div>
 
                         <div className="mb-2 flex items-center">
@@ -1795,8 +1801,8 @@ const JobDetail = () => {
                           {jobPostDetails?.gender === "1"
                             ? "Nam"
                             : jobPostDetails?.gender === "2"
-                            ? "Nữ"
-                            : "Bất kỳ"}
+                              ? "Nữ"
+                              : "Bất kỳ"}
                         </div>
 
                         <div className="mb-2 flex items-center">
@@ -1809,8 +1815,8 @@ const JobDetail = () => {
                           {jobPostDetails?.maritalStatus === "1"
                             ? "Chưa kết hôn"
                             : jobPostDetails?.maritalStatus === "2"
-                            ? "Đã kết hôn"
-                            : "Bất kỳ"}
+                              ? "Đã kết hôn"
+                              : "Bất kỳ"}
                         </div>
                       </div>
                     </div>
@@ -1882,7 +1888,7 @@ const JobDetail = () => {
                                     <span key={locIndex}>
                                       {locationWithoutCountry}
                                       {locIndex <
-                                      jobPostDetails?.location.length - 1
+                                        jobPostDetails?.location.length - 1
                                         ? " "
                                         : ""}
                                     </span>

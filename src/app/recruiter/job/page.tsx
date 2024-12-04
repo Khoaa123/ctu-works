@@ -532,7 +532,7 @@ const jobPage = () => {
                               <span className="text-[#939393]">NGÀNH NGHỀ</span>
                             </div>
                             <div className="mb-4 ml-6">
-                              Công Nghệ Thông Tin/Viễn Thông {">"} Phần Mềm Máy Tính
+                              {job?.jobIndustry}
                             </div>
 
                             <div className="mb-2 flex items-center">

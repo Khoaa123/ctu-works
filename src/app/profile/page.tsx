@@ -338,7 +338,7 @@ const Profile = () => {
   useEffect(() => {
     if (data) {
       setFormData(data);
-      const newDate = new Date(data.dateOfBirth);
+      const newDate = new Date(data?.dateOfBirth);
       setDate(newDate);
       setSelectedBenefits(data.workingPreferences.benefits || []);
       setWorkingPreferences(data.workingPreferences);

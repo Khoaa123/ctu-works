@@ -133,7 +133,7 @@ const Header = () => {
                 <p className="cursor-pointer hover:text-[#00b14f]">Việc làm</p>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="px-2">
-                <Link href={`/job-search/all`}>
+                <Link href={`/job-search/keyword=all`}>
                   <DropdownMenuItem className="my-[6px] bg-[#F1F1F1]">
                     Tìm việc làm
                   </DropdownMenuItem>

@@ -1165,9 +1165,11 @@ const Register = () => {
               <span className="text-gray-500">
                 Bạn đã có tài khoản CTU-Works?{" "}
               </span>
-              <button className="ml-2 font-semibold text-blue-600">
-                Đăng nhập
-              </button>
+              <Link href="/login">
+                <button className="ml-2 font-semibold text-blue-600">
+                  Đăng nhập
+                </button>
+              </Link>
             </div>
             <div className="my-6 h-[1px] w-full bg-teal-100"></div>
             <div className="text-center">

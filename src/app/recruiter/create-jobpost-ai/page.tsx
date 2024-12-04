@@ -674,7 +674,6 @@ const CreateJobPostAI = () => {
     { value: "Data Engineer/Data Analyst/AI", label: "Data Engineer/Data Analyst/AI" },
     { value: "IT Support/Help Desk", label: "IT Support/Help Desk" },
     { value: "Phần Cứng Máy Tính", label: "Phần Cứng Máy Tính" },
-    { value: "Phần Mềm Máy Tính", label: "Phần Mềm Máy Tính" },
     { value: "Phân Tích Kinh Doanh/Phân Tích Hệ Thống", label: "Phân Tích Kinh Doanh/Phân Tích Hệ Thống" },
     { value: "QA/QC/Software Testing", label: "QA/QC/Software Testing" },
     { value: "Quản Lý Công Nghệ Thông Tin", label: "Quản Lý Công Nghệ Thông Tin" },

@@ -262,7 +262,7 @@ const EmployerRegister = () => {
 
           <div className="my-5 text-center">
             <span className="text-gray-500">
-              Bạn đã có tài khoản CTU-Works?
+              Bạn đã có tài khoản nhà tuyển dụng CTU-Works?
             </span>
             <Link href="/recruiter/login">
               <span className="ml-2 font-semibold text-blue-600">

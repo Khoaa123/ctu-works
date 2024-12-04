@@ -57,7 +57,7 @@ const JobSearch = () => {
     const search = location.pathname
       ?.split("/job-search/keyword=")[1]
       ?.split("&")[0];
-    if (query) {
+    if (query && search !== "all") {
       setSearchQuery(decodeURIComponent(search));
       fetchSearchJob(query);
     }
@@ -137,7 +137,7 @@ const JobSearch = () => {
 
   };
 
-  const itemsPerPage = 2;
+  const itemsPerPage = 5;
   const [page, setPage] = useState(1);
 
   const paginatedData = useMemo(() => {
@@ -410,7 +410,7 @@ const JobSearch = () => {
             <div className="flex items-center justify-between text-base">
               <p>
                 {jobData?.length || 0} việc làm{" "}
-                <span className="font-bold">"{searchQuery} "</span> phù hợp
+                <span className="font-bold">"{searchQuery}"</span> phù hợp
               </p>
             </div>
           </div>
@@ -468,10 +468,17 @@ const JobSearch = () => {
                       {job.jobInfoId.jobTitle}
                     </h1>
                     {/* <p>Nexon Networks Vina Co.Ltd</p> */}
-                    <p className="my-1 text-sm text-amber-600">
-                      ${job.jobInfoId.minSalary} - {job.jobInfoId.maxSalary}{" "}
-                      /tháng
-                    </p>
+                    {job?.jobInfoId?.canDeal ? (
+                      <p className="my-1 text-sm text-amber-600">
+                        Thương lượng
+                      </p>
+                    ) : (
+                      <p className="my-1 text-sm text-amber-600">
+                        ${job.jobInfoId.minSalary} - {job.jobInfoId.maxSalary}{" "}
+                        /tháng
+                      </p>
+                    )}
+
                     <div>
                       <span className="text-sm">
                         Cập nhật {formatDate(job.jobInfoId.datePosted)}

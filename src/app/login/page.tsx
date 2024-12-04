@@ -168,11 +168,11 @@ const Login = () => {
                 </Button>
                 <div className="text-center">
                   <span className="text-gray-500">
-                    Bạn đã có tài khoản CTU-Works?{" "}
+                    Bạn chưa có tài khoản CTU-Works?{" "}
                   </span>
                   <Link href="/register">
                     <button className="ml-2 font-semibold text-blue-600">
-                      Đăng nhập
+                      Đăng ký ngay
                     </button>
                   </Link>
                 </div>
