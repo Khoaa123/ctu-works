@@ -216,6 +216,8 @@ const HomePage = () => {
     fetchJobIndustries();
   }, []);
 
+  console.log("ngành nghề trọng điểm", jobIndustries);
+
   return (
     <>
       <div className="container">
@@ -551,9 +553,15 @@ const HomePage = () => {
                           <div>
                             <div className="flex cursor-pointer flex-col items-center justify-center gap-4 rounded-md bg-[#005aff0d] p-6">
                               {/* <Image src={science} alt="" height={80} width={80} /> */}
-                              <span className="line-clamp-1 text-base font-bold">
-                                {industry.jobIndustry}
-                              </span>
+                              <Link
+                                href={`job/industry/${encodeURIComponent(
+                                  industry.jobIndustry
+                                )}`}
+                              >
+                                <span className="line-clamp-1 cursor-pointer text-base font-bold transition duration-300 hover:text-orange-200">
+                                  {industry.jobIndustry}
+                                </span>
+                              </Link>
                               <span className="text-gray-400">
                                 {industry.count} việc làm
                               </span>

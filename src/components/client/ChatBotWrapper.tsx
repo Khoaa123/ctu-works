@@ -9,6 +9,8 @@ const ChatBotWrapper = () => {
     pathname.startsWith("/recruiter") ||
     pathname.startsWith("/cv") ||
     pathname.startsWith("/profileuser") ||
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/register") ||
     pathname.startsWith("/admin");
 
   if (isHiddenPage) {

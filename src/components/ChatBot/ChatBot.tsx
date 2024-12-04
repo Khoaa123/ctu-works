@@ -1,35 +1,31 @@
-// pages/chatbot.js
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+import { useChatbotStore } from "../../store/chatbotStore";
 import { chatSessionTest } from "../../app/ai/ChatbotUser";
+import { useRouter } from "next/navigation";
 
 const Chatbot = () => {
-  const [jobPosts, setJobPosts] = useState([]);
-  const [messages, setMessages] = useState<any>([]);
-  const [userInput, setUserInput] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-  const [showChat, setShowChat] = useState(false);
-  const [detailsCompany, setDetailsCompany] = useState([
-    {
-      companyLogo: "",
-      companyName: "",
-      companyScale: "",
-      companyIndustries: "",
-      fullName: "",
-      companyAddress: "",
-      companyDescription: "",
-      following: -1,
-      follower: [],
-      recruiterId: "",
-      _id: "",
-    },
-  ]);
+  const {
+    messages,
+    userInput,
+    isTyping,
+    showChat,
+    jobPosts,
+    detailsCompany,
+    setMessages,
+    addMessage,
+    setUserInput,
+    setIsTyping,
+    setShowChat,
+    setJobPosts,
+    setDetailsCompany,
+  } = useChatbotStore();
 
   useEffect(() => {
     const fetchJobPosts = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/jobpost/get-all-jobpost`
+          `http://localhost:3001/api/jobpost/get-all-jobpost`
         );
         const data = await res.json();
         if (data.status === "OK") {
@@ -43,53 +39,37 @@ const Chatbot = () => {
     };
 
     fetchJobPosts();
-  }, []);
+  }, [setJobPosts]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const data = await fetchDetailsCompany();
+    const fetchDetailsCompany = async () => {
+      const res = await fetch(
+        `http://localhost:3001/api/recruiter/get-all-company`
+      );
+      const data = await res.json();
       setDetailsCompany(data.data);
     };
-    fetchData();
-  }, []);
-
-  const fetchDetailsCompany = async () => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/recruiter/get-all-company`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return res.json();
-  };
+    fetchDetailsCompany();
+  }, [setDetailsCompany]);
 
   const sendMessage = async () => {
     if (userInput.trim() === "") return;
 
     try {
-      setMessages((prevMessages: any) => [
-        ...prevMessages,
-        { sender: "user", content: userInput },
-      ]);
+      addMessage({ sender: "user", content: userInput });
       setUserInput("");
       setIsTyping(true);
+
       const result = await chatSessionTest(
         jobPosts,
         detailsCompany
-      ).sendMessage(`${userInput}`);
-      console.log(result?.response?.text().replace(/\*/g, "\n"));
+      ).sendMessage(userInput);
       const data = result?.response?.text().replace(/\*/g, "\n");
 
-      setMessages((prevMessages: any) => [
-        ...prevMessages,
-        { sender: "bot", content: data },
-      ]);
+      addMessage({ sender: "bot", content: data });
       setIsTyping(false);
     } catch (error) {
-      console.error("Lỗi khi gửi tin nhắn:", error);
+      console.error("Error sending message:", error);
       setIsTyping(false);
     }
   };
@@ -102,18 +82,13 @@ const Chatbot = () => {
     }
   }, [showChat]);
 
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, []);
-
-  const handleKeyDown = (event: any) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
     }
   };
+  const router = useRouter();
 
   return (
     <div className="fixed bottom-24 right-4 z-50">
@@ -129,7 +104,7 @@ const Chatbot = () => {
             </button>
           </div>
           <div className="h-96 overflow-y-auto p-4" id="chat-log">
-            {messages.map((message: any, index: any) => (
+            {messages.map((message, index) => (
               <div
                 key={index}
                 className={`flex ${
@@ -144,10 +119,17 @@ const Chatbot = () => {
                   } rounded-lg py-2 px-4 max-w-xs`}
                 >
                   <div
-                    dangerouslySetInnerHTML={{
-                      __html: message.content ?? "",
+                    onClick={(e: any) => {
+                      if (e.target.tagName === "A") {
+                        e.preventDefault(); // Prevent default link behavior
+                        const href = e.target.getAttribute("href");
+                        if (href) {
+                          router.push(href); // Use Next.js router to navigate
+                        }
+                      }
                     }}
-                  ></div>
+                    dangerouslySetInnerHTML={{ __html: message.content ?? "" }}
+                  />
                 </div>
               </div>
             ))}

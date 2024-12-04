@@ -1,9 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {
-  FaBriefcase,
-  FaSackDollar,
-} from "react-icons/fa6";
+import { FaBriefcase, FaSackDollar } from "react-icons/fa6";
 import HeaderRecruiter from "@/components/HeaderRecruiter/HeaderRecruiter";
 import { FaMapMarkerAlt, FaSearch } from "react-icons/fa";
 import Image from "next/image";
@@ -58,6 +55,7 @@ const Search = () => {
       maritalStatusId: "",
       avatar: "",
       updatedAt: "",
+      cvUrl: "",
       workingPreferences: {
         locations: [""],
         jobFunction: "",
@@ -76,17 +74,18 @@ const Search = () => {
   const [selectedJobPost, setSelectedJobPost] = useState<any>(null);
   const [selectedProfile, setSelectedProfile] = useState(userData[0]);
   const [showJobPostModal, setShowJobPostModal] = useState(false);
-  const [searchUser, setSearchUser] = useState()
+  const [searchUser, setSearchUser] = useState();
   useEffect(() => {
     const fetchData = async () => {
       const data = await fetchGetUsers();
       setUserData(data.data);
-      setSearchUser(data.data)
+      setSearchUser(data.data);
       setSelectedProfile(data.data[0]);
     };
     fetchData();
   }, []);
 
+  console.log("select", selectedProfile);
   useEffect(() => {
     const fetchJobPosts = async () => {
       const data = await fetchGetJobPosts();
@@ -94,17 +93,28 @@ const Search = () => {
     };
     fetchJobPosts();
   }, []);
+  const handleDownloadCV = () => {
+    if (!selectedProfile || !selectedProfile.cvUrl) return;
 
+    const downloadUrl = selectedProfile.cvUrl.includes("/upload/")
+      ? selectedProfile.cvUrl.replace("/upload/", "/upload/fl_attachment/")
+      : selectedProfile.cvUrl;
+
+    const link = document.createElement("a");
+    link.href = downloadUrl;
+    link.setAttribute("download", `${selectedProfile.fullName || "CV"}_CV.pdf`);
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
   const fetchGetUsers = async () => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}/user/getAll`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const res = await fetch(`http://localhost:3001/api/user/getAll`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
     return res.json();
   };
 
@@ -166,19 +176,19 @@ const Search = () => {
     setSelectedJobPost(jobPostId);
   };
 
-
   const handleSearchUser = (e: any) => {
     try {
       const searchTerm = e.target.value.toLowerCase();
       if (searchTerm.length > 1) {
         const filtered = searchUser.filter((user: any) => {
-          return user !== null && (
-            user.email.toLowerCase().includes(searchTerm)
-            || user.fullName.toLowerCase().includes(searchTerm)
-            || user.currentJobFunction.toLowerCase().includes(searchTerm)
-            || user.currentDegree.toLowerCase().includes(searchTerm)
-            || user.address.toLowerCase().includes(searchTerm)
-            || user.highestDegree.toLowerCase().includes(searchTerm)
+          return (
+            user !== null &&
+            (user.email.toLowerCase().includes(searchTerm) ||
+              user.fullName.toLowerCase().includes(searchTerm) ||
+              user.currentJobFunction.toLowerCase().includes(searchTerm) ||
+              user.currentDegree.toLowerCase().includes(searchTerm) ||
+              user.address.toLowerCase().includes(searchTerm) ||
+              user.highestDegree.toLowerCase().includes(searchTerm))
           );
         });
         console.log(filtered);
@@ -190,8 +200,7 @@ const Search = () => {
       console.error("Error during search:", error);
     }
   };
-  const numFound = userData?.filter(item => item !== null)?.length || 0;
-
+  const numFound = userData?.filter((item) => item !== null)?.length || 0;
 
   return (
     <>
@@ -208,14 +217,13 @@ const Search = () => {
               />
               <FaSearch className="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-500" />
             </div>
-
           </div>
           <div className="mt-4 flex">
             <p>{numFound} kết quả tìm kiếm</p>
           </div>
         </div>
         <div className="ml-[10%] flex h-screen">
-          <div className="w-1/4 border-r border-gray-200 p-4 overflow-y-auto">
+          <div className="w-1/4 overflow-y-auto border-r border-gray-200 p-4">
             {userData?.map((profile, index) => {
               if (profile) {
                 return (
@@ -239,11 +247,14 @@ const Search = () => {
                     </div>
                     <div className="text-sm text-gray-400">
                       Cập nhật gần nhất:
-                      {new Date(profile?.updatedAt).toLocaleDateString('vi-VN', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                      })}
+                      {new Date(profile?.updatedAt).toLocaleDateString(
+                        "vi-VN",
+                        {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        }
+                      )}
                     </div>
                   </div>
                 );
@@ -311,6 +322,12 @@ const Search = () => {
                       className="rounded bg-blue-500 p-2 text-white"
                     >
                       Gửi lời mời online
+                    </button>
+                    <button
+                      onClick={handleDownloadCV}
+                      className="ml-2 rounded bg-green-500 p-2 text-white"
+                    >
+                      Tải về CV ứng viên
                     </button>
                   </div>
                 </div>
@@ -402,10 +419,11 @@ const Search = () => {
               {jobPosts?.map((jobPost: any) => (
                 <Card
                   key={jobPost._id}
-                  className={`mb-4 cursor-pointer transition-all ${selectedJobPost === jobPost._id
-                    ? "border-blue-500 shadow-md"
-                    : ""
-                    }`}
+                  className={`mb-4 cursor-pointer transition-all ${
+                    selectedJobPost === jobPost._id
+                      ? "border-blue-500 shadow-md"
+                      : ""
+                  }`}
                   onClick={() => handleSelectJobPost(jobPost._id)}
                 >
                   <CardHeader>
@@ -457,7 +475,6 @@ const Search = () => {
                   </CardFooter>
                 </Card>
               ))}
-
             </ScrollArea>
             <div className="mt-4 flex justify-end space-x-2">
               <button
