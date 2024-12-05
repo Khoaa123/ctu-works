@@ -16,6 +16,7 @@ import {
   FaLock,
   FaBuilding,
   FaBriefcase,
+  FaBars,
 } from "react-icons/fa6";
 import { FaCog, FaSignOutAlt } from "react-icons/fa";
 import {
@@ -25,6 +26,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
+import { MobileNav } from "./MobileNav";
 
 type JwtPayload = {
   userid: string;
@@ -116,18 +118,19 @@ const Header = () => {
   const unreadCount = notifications.filter(
     (notification) => !notification.isRead
   ).length;
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <>
       <header className="bg-white py-4 shadow-sm">
-        <div className="container mx-auto flex max-w-screen-2xl items-center gap-8 px-6">
+        <div className="container mx-auto flex max-w-screen-2xl items-center justify-between gap-8 px-6 lg:justify-normal">
           <Link href="/" className="flex items-center">
             <Image src={logo} alt="CTU-Works Logo" width={50} height={50} />
             <h1 className="ml-3 cursor-pointer text-2xl font-bold text-[#00b14f]">
               CTU-Works
             </h1>
           </Link>
-          <div className="mr-8 flex items-center gap-8 font-semibold text-black">
+          <div className="mr-8 hidden items-center gap-8 font-semibold text-black lg:flex">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <p className="cursor-pointer hover:text-[#00b14f]">Việc làm</p>
@@ -234,7 +237,22 @@ const Header = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <div className="flex flex-1 items-center justify-end gap-4 text-black">
+
+          <div className="lg:hidden">
+            <button
+              className="flex-1 justify-end text-xl"
+              aria-label="Toggle menu"
+              onClick={() => setIsMobileMenuOpen(true)}
+            >
+              <FaBars size={24} />
+            </button>
+          </div>
+          <MobileNav
+            isOpen={isMobileMenuOpen}
+            onClose={() => setIsMobileMenuOpen(false)}
+          />
+
+          <div className="hidden flex-1 items-center justify-end gap-4 text-black lg:flex">
             {accessToken ? (
               <>
                 <DropdownMenu>
@@ -285,9 +303,6 @@ const Header = () => {
                     </div>
                   </DropdownMenuContent>
                 </DropdownMenu>
-                {/* <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#00b14f1a]">
-                  <FaMessage size={20} color="#00b14f" />
-                </div> */}
                 <div>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -355,17 +370,17 @@ const Header = () => {
             ) : (
               <>
                 <Link href="/recruiter">
-                  <button className="rounded-sm bg-[#212f3f] px-4 py-2 font-medium text-white transition duration-300 hover:bg-black">
+                  <button className="hidden rounded-sm bg-[#212f3f] px-4 py-2 font-medium text-white transition duration-300 hover:bg-black lg:block">
                     Nhà tuyển dụng
                   </button>
                 </Link>
                 <Link href="/login">
-                  <button className="rounded-sm border border-[#00b14f] px-4 py-2 font-medium text-[#00b14f] transition duration-300 hover:bg-[#e5f7ed80]">
+                  <button className="hidden rounded-sm border border-[#00b14f] px-4 py-2 font-medium text-[#00b14f] transition duration-300 hover:bg-[#e5f7ed80] lg:block">
                     Đăng Nhập
                   </button>
                 </Link>
                 <Link href="/register">
-                  <button className="rounded-sm border bg-[#00b14f] px-4 py-2 font-medium text-white transition duration-300 hover:bg-[#3ba769] hover:text-white">
+                  <button className="hidden rounded-sm border bg-[#00b14f] px-4 py-2 font-medium text-white transition duration-300 hover:bg-[#3ba769] hover:text-white lg:block">
                     Đăng Ký
                   </button>
                 </Link>

@@ -26,7 +26,7 @@ const Search = () => {
   };
   return (
     <>
-      <div className="mb-12 flex items-center justify-center gap-3 bg-[#F6FAFB] py-12">
+      <div className="mb-12 flex flex-col items-center justify-center gap-3 bg-[#F6FAFB] px-8 py-12 lg:flex-row lg:px-0">
         {/* <Select>
           <SelectTrigger className="w-[200px] bg-white py-5 shadow-none focus:ring-0">
             <SelectValue placeholder="Tất cả địa điểm" />
