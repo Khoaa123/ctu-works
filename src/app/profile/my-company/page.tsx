@@ -1,17 +1,12 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import {
-  FaBriefcase,
-  FaFolder,
-  FaFolderOpen,
-  FaHeart,
-  FaUser,
-  FaUsers,
-} from "react-icons/fa6";
+import { FaBriefcase, FaFolderOpen, FaUsers } from "react-icons/fa6";
 import Link from "next/link";
 import { useCookies } from "next-client-cookies";
 import { jwtDecode } from "jwt-decode";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 export interface JwtPayload {
   userid: string;
@@ -33,6 +28,7 @@ const MyCompany = () => {
     {
       companyName: "",
       companyLogo: "",
+      companyId: "",
       companyIndustries: "",
       companyJob: 0,
       companyFollowing: 0,
@@ -53,16 +49,34 @@ const MyCompany = () => {
       _id: "",
     },
   ]);
+  const [activeTab, setActiveTab] = useState("profileViews");
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetchFollowing();
-      const dataProfileViews = await fecthGetHistory();
-      setProfileViews(dataProfileViews.data);
-      console.log(data.data);
-      setFollowing(data.data);
+      // setIsLoading(true);
+
+      // const data = await fetchFollowing();
+      // const dataProfileViews = await fecthGetHistory();
+      // setProfileViews(dataProfileViews.data);
+      // console.log(data.data);
+      // setFollowing(data.data);
+
+      setIsLoading(true);
+      try {
+        const data = await fetchFollowing();
+        const dataProfileViews = await fecthGetHistory();
+        setProfileViews(dataProfileViews.data);
+        setFollowing(data.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchData();
   }, []);
+
   const fetchFollowing = async () => {
     const id = decodedToken?.userid;
     const res = await fetch(
@@ -76,24 +90,34 @@ const MyCompany = () => {
     );
     return res.json();
   };
-  const unFollow = async (id: any) => {
+
+  const unFollow = async (id: string) => {
     const userId = decodedToken?.userid;
-    const res = await fetch(
-      `http://localhost:3001/api/follow/delete-follow/${id}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: userId,
-        }),
+    try {
+      const res = await fetch(
+        `http://localhost:3001/api/follow/delete-follow/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: userId,
+          }),
+        }
+      );
+      if (res.ok) {
+        setFollowing((prevFollowing) =>
+          prevFollowing.filter((company) => company._id !== id)
+        );
+      } else {
+        console.error("Failed to unfollow company");
       }
-    );
-    window.location.reload();
-    return res.json();
+    } catch (error) {
+      console.error("Error unfollowing company:", error);
+    }
   };
-  const [activeTab, setActiveTab] = useState("profileViews");
+
   const fecthGetHistory = async () => {
     const id = decodedToken?.userid;
     const res = await fetch(
@@ -107,6 +131,18 @@ const MyCompany = () => {
     );
     return res.json();
   };
+
+  const CompanySkeleton = () => (
+    <div className="flex flex-grow items-center gap-6">
+      <Skeleton width={60} height={60} />
+      <div className="max-w-[calc(100%-200px)] flex-grow">
+        <Skeleton width={200} height={24} />
+        <Skeleton width={150} height={20} />
+        <Skeleton width={100} height={20} />
+      </div>
+    </div>
+  );
+
   return (
     <div className="">
       <h1 className="mb-3 rounded-md border bg-white p-4 font-bold">
@@ -128,12 +164,16 @@ const MyCompany = () => {
             </button>
           ))}
         </div>
-        {
-          <div className="p-4">
-            {activeTab === "profileViews" && (
-              <div className="space-y-4">
-                {profileViews.map((company) => (
-                  <Link href={`/company/${company?._id}`}>
+        <div className="p-4">
+          {activeTab === "profileViews" && (
+            <div className="space-y-4">
+              {isLoading ? (
+                Array(3)
+                  .fill(0)
+                  .map((_, index) => <CompanySkeleton key={index} />)
+              ) : profileViews.length > 0 ? (
+                profileViews.map((company) => (
+                  <Link href={`/company/${company?._id}`} key={company._id}>
                     <div className="flex flex-grow items-center gap-6">
                       <Image
                         src={company?.companyLogo}
@@ -161,18 +201,26 @@ const MyCompany = () => {
                       </div>
                     </div>
                   </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        }
-        {
-          <div className="p-4">
-            {activeTab === "followCompany" && (
-              <div className="space-y-4">
-                {following.map((company) => (
-                  <Link
-                    href={``}
+                ))
+              ) : (
+                <div className="py-8 text-center">
+                  <p className="text-gray-500">
+                    Chưa có nhà tuyển dụng nào xem hồ sơ của bạn.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+          {activeTab === "followCompany" && (
+            <div className="space-y-4">
+              {isLoading ? (
+                Array(3)
+                  .fill(0)
+                  .map((_, index) => <CompanySkeleton key={index} />)
+              ) : following.length > 0 ? (
+                following.map((company) => (
+                  <div
+                    key={company._id}
                     className="group flex cursor-pointer items-center justify-between rounded-lg border bg-white p-4 transition-all duration-300 hover:bg-[#f9fcff]"
                   >
                     <div className="flex flex-grow items-center gap-6">
@@ -184,7 +232,7 @@ const MyCompany = () => {
                         height={60}
                       />
                       <div className="max-w-[calc(100%-200px)] flex-grow">
-                        <Link href={`/company/${company.recruiterId}`}>
+                        <Link href={`/company/${company.companyId}`}>
                           <h3 className="line-clamp-2 text-lg font-medium duration-300 group-hover:text-[#ff7d55] group-hover:transition-all">
                             {company.companyName}
                           </h3>
@@ -197,12 +245,10 @@ const MyCompany = () => {
                         </div>
                         <div className="flex items-center gap-2">
                           <FaUsers size={15} color="gray" />
-
                           <span className="truncate text-gray-600">
                             {company.companyFollowing} lượt theo dõi
                           </span>
                           <FaBriefcase size={15} color="gray" />
-
                           <span className="truncate text-gray-600">
                             {company.companyJob} việc làm
                           </span>
@@ -217,12 +263,18 @@ const MyCompany = () => {
                         Hủy theo dõi
                       </button>
                     </div>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        }
+                  </div>
+                ))
+              ) : (
+                <div className="py-8 text-center">
+                  <p className="text-gray-500">
+                    Bạn chưa theo dõi công ty nào.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

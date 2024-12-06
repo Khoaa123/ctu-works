@@ -19,7 +19,7 @@ const tabs = [
   { id: "applied", label: "Việc đã ứng tuyển" },
   { id: "saved", label: "Việc đã lưu" },
   { id: "historyView", label: "Việc làm đã xem" },
-  { id: "invited", label: "Thư mời ứng tuyển" },
+  // { id: "invited", label: "Thư mời ứng tuyển" },
 ];
 
 const MyJob = () => {
@@ -152,12 +152,12 @@ const MyJob = () => {
   };
   const [activeTab, setActiveTab] = useState("saved");
 
+  console.log("apply", applyJob);
   return (
     <div className="">
       <h1 className="mb-3 rounded-md border bg-white p-4 font-bold">
         Việc Làm Của Tôi
       </h1>
-      {/* <button onClick={Test}>Tset</button> */}
       <div className="rounded-md border bg-white">
         <div className="flex border-b">
           {tabs.map((tab) => (
@@ -271,9 +271,6 @@ const MyJob = () => {
                         </div>
                       </div>
                       <div className="flex flex-shrink-0 items-center space-x-4">
-                        {/* <button className="text-blue-500 hover:text-blue-600">
-                      <FaHeart size={20} />
-                    </button> */}
                         <button
                           disabled
                           className="whitespace-nowrap rounded-lg bg-orange-400 px-4 py-2 text-white transition-colors hover:bg-orange-500"

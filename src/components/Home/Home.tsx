@@ -272,8 +272,13 @@ const HomePage = () => {
                                     <div className="flex items-center gap-3 rounded-md border border-solid border-gray-200 p-3 transition hover:border-sky-200 hover:bg-[#F9FBFF] sm:gap-5 sm:p-4">
                                       <div className="flex-shrink-0">
                                         <Image
-                                          src={job?.companyLogo}
-                                          alt={job?.companyName}
+                                          src={
+                                            job?.companyLogo ||
+                                            "https://images.vietnamworks.com/img/company-default-logo.svg"
+                                          }
+                                          alt={
+                                            job?.companyName || "Company Logo"
+                                          }
                                           className="h-12 w-12 object-cover sm:h-16 sm:w-16"
                                           width={60}
                                           height={60}
@@ -354,17 +359,137 @@ const HomePage = () => {
             </div>
           ) : (
             <div className="w-full rounded-md border border-solid border-[#ccdeff]">
-              <div className="flex justify-between bg-[#f2f7ff]">
-                <span className="px-6 py-3 text-xl font-bold">
+              <div className="flex flex-col justify-between bg-[#f2f7ff] sm:flex-row">
+                <span className="px-4 py-3 text-lg font-bold sm:px-6 sm:text-xl">
                   Việc Làm Mới Nhất
                 </span>
-                <Link href="">
-                  <button className="px-6 py-3 uppercase text-blue-500">
+                <Link href="/new-jobs">
+                  <button className="px-4 py-2 text-sm uppercase text-blue-500 sm:px-6 sm:py-3 sm:text-base">
                     Xem tất cả
                   </button>
                 </Link>
               </div>
-              {/* <div>Loading...</div> */}
+              <div className="mt-2 px-4 py-3 sm:px-6">
+                <Carousel
+                  setApi={setApi}
+                  opts={{
+                    align: "start",
+                  }}
+                  className="w-full"
+                >
+                  <CarouselContent>
+                    {loadingRecentJobs
+                      ? Array.from({ length: 3 }).map((_, index) => (
+                          <CarouselItem key={index} className="w-full">
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                              {Array.from({ length: 3 }).map((_, subIndex) => (
+                                <div key={subIndex} className="p-1">
+                                  <div className="flex items-center gap-3 rounded-md border border-solid border-gray-200 p-3 sm:gap-5 sm:p-4">
+                                    <Skeleton height={60} width={60} />
+                                    <div className="flex flex-col space-y-2">
+                                      <Skeleton height={20} width={200} />
+                                      <Skeleton height={20} width={200} />
+                                      <Skeleton height={20} width={200} />
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </CarouselItem>
+                        ))
+                      : groupedRecentJobPosts.map((group, index) => (
+                          <CarouselItem key={index} className="w-full">
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                              {group.map((job, subIndex) => (
+                                <div key={subIndex} className="p-1">
+                                  <Link href={`/job/${job._id}`}>
+                                    <div className="flex items-center gap-3 rounded-md border border-solid border-gray-200 p-3 transition hover:border-sky-200 hover:bg-[#F9FBFF] sm:gap-5 sm:p-4">
+                                      <div className="flex-shrink-0">
+                                        <Image
+                                          src={
+                                            job?.companyLogo ||
+                                            "https://images.vietnamworks.com/img/company-default-logo.svg"
+                                          }
+                                          alt={
+                                            job?.companyName || "Company Logo"
+                                          }
+                                          className="h-12 w-12 object-cover sm:h-16 sm:w-16"
+                                          width={60}
+                                          height={60}
+                                        />
+                                      </div>
+                                      <div>
+                                        <h1 className="mb-1 line-clamp-1 text-base font-bold sm:text-lg">
+                                          {job.jobTitle}
+                                        </h1>
+                                        {job?.canDeal ? (
+                                          <p className="my-1 text-xs text-amber-600 sm:text-sm">
+                                            Thương lượng
+                                          </p>
+                                        ) : (
+                                          <p className="my-1 text-xs text-amber-600 sm:text-sm">
+                                            {job.minSalary?.toLocaleString()} -{" "}
+                                            {job.maxSalary?.toLocaleString()}{" "}
+                                            USD
+                                          </p>
+                                        )}
+                                        <p className="line-clamp-2 text-xs sm:text-sm">
+                                          {job.location}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </Link>
+                                </div>
+                              ))}
+                            </div>
+                          </CarouselItem>
+                        ))}
+                  </CarouselContent>
+                </Carousel>
+                <div className="mt-4 flex items-center justify-center gap-4">
+                  <button
+                    onClick={() => api?.scrollTo(current - 1)}
+                    className={`flex h-8 w-8 items-center justify-center rounded-full border border-gray-600 transition ${
+                      current === 0
+                        ? "opacity-25 cursor-not-allowed"
+                        : "group hover:border-yellow-500"
+                    }`}
+                    disabled={current === 0}
+                  >
+                    <FaAngleLeft
+                      className={
+                        current === 0 ? "" : "group-hover:text-yellow-500"
+                      }
+                    />
+                  </button>
+                  {groupedRecentJobPosts.map((_, i) => (
+                    <div
+                      key={i}
+                      className={`mx-1 h-2 w-2 rounded-full cursor-pointer ${
+                        i === current ? "bg-blue-500" : "bg-gray-300"
+                      }`}
+                      onClick={() => api?.scrollTo(i)}
+                    />
+                  ))}
+                  <button
+                    onClick={() => api?.scrollTo(current + 1)}
+                    className={`flex h-8 w-8 group items-center justify-center rounded-full border border-gray-600 transition ${
+                      current === groupedRecentJobPosts.length - 1
+                        ? "opacity-25 cursor-not-allowed"
+                        : "hover:border-yellow-500"
+                    }`}
+                    disabled={current === groupedRecentJobPosts.length - 1}
+                  >
+                    <FaAngleRight
+                      className={
+                        current === groupedRecentJobPosts.length - 1
+                          ? ""
+                          : "group-hover:text-yellow-500"
+                      }
+                    />
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 
@@ -671,8 +796,8 @@ const HomePage = () => {
             <div>Loading...</div>
           )}
 
-          <div className="my-8 grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="flex items-center justify-center gap-8 rounded-md bg-[#ebf2ff] p-4">
+          <div className="my-8 grid grid-cols-1 gap-6">
+            {/* <div className="flex items-center justify-center gap-8 rounded-md bg-[#ebf2ff] p-4">
               <div className="flex flex-col justify-start gap-2">
                 <p className="text-lg font-semibold">Nhân Số Học</p>
                 <p className="text-justify text-sm">
@@ -710,7 +835,7 @@ const HomePage = () => {
                   </defs>
                 </svg>
               </div>
-            </div>
+            </div> */}
             <div className="flex items-center justify-center gap-8 rounded-md bg-[#ebf2ff] p-4">
               <div className="flex flex-col justify-start gap-2">
                 <p className="text-lg font-semibold">Lộ Trình Sự Nghiệp:</p>
@@ -720,7 +845,9 @@ const HomePage = () => {
                   bằng cách tham khảo lộ trình thăng tiến của tất cả các ngành
                   nghề, bạn nhé!
                 </p>
-                <span className="text-blue-600">Xem thêm</span>
+                <Link href="/career-path">
+                  <span className="text-blue-600">Xem thêm</span>
+                </Link>
               </div>
               <div>
                 <svg

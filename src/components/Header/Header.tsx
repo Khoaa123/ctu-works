@@ -132,10 +132,14 @@ const Header = () => {
           </Link>
           <div className="mr-8 hidden items-center gap-8 font-semibold text-black lg:flex">
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <p className="cursor-pointer hover:text-[#00b14f]">Việc làm</p>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="px-2">
+              <Link href="/new-jobs">
+                <DropdownMenuTrigger asChild>
+                  <p className="cursor-pointer hover:text-[#00b14f]">
+                    Việc làm
+                  </p>
+                </DropdownMenuTrigger>
+              </Link>
+              {/* <DropdownMenuContent className="px-2">
                 <Link href={`/job-search/keyword=all`}>
                   <DropdownMenuItem className="my-[6px] bg-[#F1F1F1]">
                     Tìm việc làm
@@ -144,9 +148,9 @@ const Header = () => {
                 <DropdownMenuItem className="my-[6px] bg-[#F1F1F1]">
                   Việc làm phù hợp
                 </DropdownMenuItem>
-              </DropdownMenuContent>
+              </DropdownMenuContent> */}
             </DropdownMenu>
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <p className="cursor-pointer hover:text-[#00b14f]">
                   Việc của tôi
@@ -163,7 +167,7 @@ const Header = () => {
                   <DropdownMenuItem>Việc dành cho bạn</DropdownMenuItem>
                 </Link>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
             <DropdownMenu>
               <Link href="/company-search">
                 <DropdownMenuTrigger asChild>
@@ -207,12 +211,12 @@ const Header = () => {
                     Lộ trình sự nghiệp
                   </DropdownMenuItem>
                 </Link>
-                <Link href="/blog/knowledge">
+                {/* <Link href="/blog/knowledge">
                   <DropdownMenuItem className="my-[6px] bg-[#F6FAFB] p-3">
                     Kiến thức chuyên ngành
                   </DropdownMenuItem>
-                </Link>
-                <DropdownMenuItem className="my-[6px] bg-[#F6FAFB] p-3">
+                </Link> */}
+                {/* <DropdownMenuItem className="my-[6px] bg-[#F6FAFB] p-3">
                   Bí kíp tìm việc
                 </DropdownMenuItem>
                 <DropdownMenuItem className="my-[6px] bg-[#F6FAFB] p-3">
@@ -223,10 +227,10 @@ const Header = () => {
                 </DropdownMenuItem>
                 <DropdownMenuItem className="my-[6px] bg-[#F6FAFB] p-3">
                   Thị trường và xu hướng tuyển dụng
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
               </DropdownMenuContent>
             </DropdownMenu>
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <p className="cursor-pointer hover:text-[#00b14f]">Blog</p>
               </DropdownMenuTrigger>
@@ -235,7 +239,7 @@ const Header = () => {
                 <DropdownMenuItem>Option 2</DropdownMenuItem>
                 <DropdownMenuItem>Option 3</DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
           </div>
 
           <div className="lg:hidden">

@@ -11,6 +11,7 @@ const ChatBotWrapper = () => {
     pathname.startsWith("/profileuser") ||
     pathname.startsWith("/login") ||
     pathname.startsWith("/register") ||
+    pathname.startsWith("/profile") ||
     pathname.startsWith("/admin");
 
   if (isHiddenPage) {
