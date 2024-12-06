@@ -671,7 +671,7 @@ const JobDetail = () => {
   }, []);
   const toDate = new Date();
   function isBlank(locationName: any) {
-    return locationName.trim().length === 0;
+    return locationName?.trim().length === 0;
   }
   return (
     <>
@@ -1880,7 +1880,7 @@ const JobDetail = () => {
                                 (loc: string, locIndex) => {
                                   const locationName = loc
                                     ?.split(":")[1]
-                                    .trim();
+                                    ?.trim();
 
                                   const locationWithoutCountry = locationName
                                     ?.replace("Việt Nam", "")

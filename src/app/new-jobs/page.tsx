@@ -21,6 +21,7 @@ type JobPost = {
   location: string;
   jobInfoId: string;
   jobLevel: string;
+  canDeal: boolean;
 };
 
 function JobCard({ job }: { job: JobPost }) {
@@ -46,9 +47,13 @@ function JobCard({ job }: { job: JobPost }) {
                 <p className="text-gray-600">{job.companyName}</p>
               </div>
               <div className="shrink-0 text-right">
-                <p className="whitespace-nowrap text-red-500">
-                  {job.minSalary} - {job.maxSalary}
-                </p>
+                {job?.canDeal ? (
+                  <p className="my-1 text-sm text-amber-600">Thương lượng</p>
+                ) : (
+                  <p className="my-1 text-sm text-amber-600">
+                    ${job?.minSalary} - {job?.maxSalary} /tháng
+                  </p>
+                )}
               </div>
             </div>
             <p className="mt-1 text-gray-600">{job.location}</p>

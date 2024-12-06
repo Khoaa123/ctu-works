@@ -1,16 +1,12 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import {
-  FaList,
-} from "react-icons/fa6";
+import { FaList } from "react-icons/fa6";
 import Link from "next/link";
 import { useCookies } from "next-client-cookies";
 import { jwtDecode } from "jwt-decode";
 import HeaderRecruiter from "@/components/HeaderRecruiter/HeaderRecruiter";
-import {
-  FaSearch,
-} from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import {
   Select,
   SelectContent,
@@ -19,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "react-toastify";
+import ChatbotRecruiter from "@/components/ChatBotRecruiter/ChatBotRecruiter";
 
 export interface JwtPayload {
   userid: string;
@@ -184,7 +181,9 @@ const MyCandidate = () => {
     if (status === "all") {
       return userApplyDetail[applySelect]?.length;
     } else {
-      return applyJob[applySelect]?.filter((application) => application.status === status).length;
+      return applyJob[applySelect]?.filter(
+        (application) => application.status === status
+      ).length;
     }
   };
   const [filteredApplies, setFilteredApplies] = useState([{}]);
@@ -193,22 +192,32 @@ const MyCandidate = () => {
   }, [applyJob, applySelect]);
   const setFillter = (status: any) => {
     if (status === "all") {
-      setFilteredApplies(userApplyDetail[applySelect])
+      setFilteredApplies(userApplyDetail[applySelect]);
     } else {
       const filtered = userApplyDetail[applySelect]?.filter(
         (apply) => apply.status === status
       );
       setFilteredApplies(filtered);
     }
-  }
+  };
 
   const handleSearch = (e: any) => {
-    const filtered = userApplyDetail[applySelect]?.filter((apply) => apply.fullName.toLowerCase().includes(e.target.value.toLowerCase()) || apply.email.toLowerCase().includes(e.target.value.toLowerCase()) || apply.phoneNumber.toString().toLowerCase().includes(e.target.value.toString().toLowerCase()))
-    setFilteredApplies(filtered)
-  }
+    const filtered = userApplyDetail[applySelect]?.filter(
+      (apply) =>
+        apply.fullName.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        apply.email.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        apply.phoneNumber
+          .toString()
+          .toLowerCase()
+          .includes(e.target.value.toString().toLowerCase())
+    );
+    setFilteredApplies(filtered);
+  };
 
   return (
     <div>
+      <ChatbotRecruiter />
+
       <HeaderRecruiter />
       <div className="p-1 pl-2">
         <div className="p-2">
@@ -228,20 +237,18 @@ const MyCandidate = () => {
                         </option>
                       ))}
                     </select>
-                  )
-                    : (
-                      <p>Bạn chưa có công việc nào</p>
-                    )
-                  }
+                  ) : (
+                    <p>Bạn chưa có công việc nào</p>
+                  )}
                 </div>
               </div>
             </div>
-            <div className="flex items-center space-x-4 w-[30%]">
+            <div className="flex w-[30%] items-center space-x-4">
               <input
                 type="text"
                 placeholder="Tìm kiếm theo email, tên hoặc số điện thoại"
                 onChange={(e) => handleSearch(e)}
-                className="rounded border px-2 py-1 w-[100%]"
+                className="w-[100%] rounded border px-2 py-1"
               />
               <FaSearch className="fas fa-search" />
             </div>
@@ -250,32 +257,67 @@ const MyCandidate = () => {
         <div className="flex w-full space-x-2">
           <div className="mb-4 flex flex-1 items-center justify-between rounded border border-gray-300 bg-white p-4">
             <div className="flex items-center space-x-2">
-              <button className="text-gray-700" onClick={() => setFillter("all")}>1. Tất cả ứng viên</button>
-              <span className="rounded-full bg-red-500 px-2 text-white">{countStatus("all")}</span>
+              <button
+                className="text-gray-700"
+                onClick={() => setFillter("all")}
+              >
+                1. Tất cả ứng viên
+              </button>
+              <span className="rounded-full bg-red-500 px-2 text-white">
+                {countStatus("all")}
+              </span>
             </div>
           </div>
           <div className="mb-4 flex flex-1 items-center justify-between rounded border border-gray-300 bg-white p-4">
             <div className="flex items-center space-x-2">
-              <button className="text-gray-700" onClick={() => setFillter("Chờ phản hồi")}>2. Chờ phản hồi</button>
-              <span className="rounded-full bg-red-500 px-2 text-white">{countStatus("Chờ phản hồi")}</span>
+              <button
+                className="text-gray-700"
+                onClick={() => setFillter("Chờ phản hồi")}
+              >
+                2. Chờ phản hồi
+              </button>
+              <span className="rounded-full bg-red-500 px-2 text-white">
+                {countStatus("Chờ phản hồi")}
+              </span>
             </div>
           </div>
           <div className="mb-4 flex flex-1 items-center justify-between rounded border border-gray-300 bg-white p-4">
             <div className="flex items-center space-x-2">
-              <button className="text-gray-700" onClick={() => setFillter("Mời phỏng vấn")}>3. Mời phỏng vấn</button>
-              <span className="rounded-full bg-red-500 px-2 text-white">{countStatus("Mời phỏng vấn")}</span>
+              <button
+                className="text-gray-700"
+                onClick={() => setFillter("Mời phỏng vấn")}
+              >
+                3. Mời phỏng vấn
+              </button>
+              <span className="rounded-full bg-red-500 px-2 text-white">
+                {countStatus("Mời phỏng vấn")}
+              </span>
             </div>
           </div>
           <div className="mb-4 flex flex-1 items-center justify-between rounded border border-gray-300 bg-white p-4">
             <div className="flex items-center space-x-2">
-              <button className="text-gray-700" onClick={() => setFillter("Từ chối")}>4. Từ chối</button>
-              <span className="rounded-full bg-red-500 px-2 text-white">{countStatus("Từ chối")}</span>
+              <button
+                className="text-gray-700"
+                onClick={() => setFillter("Từ chối")}
+              >
+                4. Từ chối
+              </button>
+              <span className="rounded-full bg-red-500 px-2 text-white">
+                {countStatus("Từ chối")}
+              </span>
             </div>
           </div>
           <div className="mb-4 flex flex-1 items-center justify-between rounded border border-gray-300 bg-white p-4">
             <div className="flex items-center space-x-2">
-              <button className="text-gray-700" onClick={() => setFillter("Chấp nhận")}>5. Chấp nhận</button>
-              <span className="rounded-full bg-red-500 px-2 text-white">{countStatus("Chấp nhận")}</span>
+              <button
+                className="text-gray-700"
+                onClick={() => setFillter("Chấp nhận")}
+              >
+                5. Chấp nhận
+              </button>
+              <span className="rounded-full bg-red-500 px-2 text-white">
+                {countStatus("Chấp nhận")}
+              </span>
             </div>
           </div>
         </div>
@@ -290,7 +332,10 @@ const MyCandidate = () => {
                 >
                   <div className="flex flex-grow items-center gap-6">
                     <img
-                      src={myJobpost[applySelect]?.companyLogo || "https://cdn-icons-png.flaticon.com/128/149/149071.png"}
+                      src={
+                        myJobpost[applySelect]?.companyLogo ||
+                        "https://cdn-icons-png.flaticon.com/128/149/149071.png"
+                      }
                       alt={`avatar`}
                       className="rounded-lg"
                       width={60}
@@ -302,7 +347,9 @@ const MyCandidate = () => {
                       </h3>
                       <p className="truncate text-gray-600">{job?.email}</p>
                       <p className="text-sm text-gray-500">{job?.address}</p>
-                      <p className="text-sm text-[#ff7d55]">{job?.phoneNumber}</p>
+                      <p className="text-sm text-[#ff7d55]">
+                        {job?.phoneNumber}
+                      </p>
                     </div>
                   </div>
                   <div className="flex flex-shrink-0 items-center space-x-4">
@@ -314,26 +361,26 @@ const MyCandidate = () => {
                     >
                       <SelectTrigger
                         className={`whitespace-nowrap rounded-lg px-4 py-2 text-white transition-colors hover:bg-orange-500 
-                                            ${job
-                            .status === "Chờ phản hồi"
-                            ? "bg-yellow-600"
-                            : ""
-                          } 
-                                            ${job
-                            .status === "Mời phỏng vấn"
-                            ? "bg-sky-500"
-                            : ""
-                          } 
-                                            ${job
-                            .status === "Từ chối"
-                            ? "bg-red-500"
-                            : ""
-                          } 
-                                            ${job
-                            .status === "Chấp nhận"
-                            ? "bg-green-500"
-                            : ""
-                          }`}
+                                            ${
+                                              job.status === "Chờ phản hồi"
+                                                ? "bg-yellow-600"
+                                                : ""
+                                            } 
+                                            ${
+                                              job.status === "Mời phỏng vấn"
+                                                ? "bg-sky-500"
+                                                : ""
+                                            } 
+                                            ${
+                                              job.status === "Từ chối"
+                                                ? "bg-red-500"
+                                                : ""
+                                            } 
+                                            ${
+                                              job.status === "Chấp nhận"
+                                                ? "bg-green-500"
+                                                : ""
+                                            }`}
                       >
                         <SelectValue placeholder="Vui lòng chọn..." />
                       </SelectTrigger>
@@ -353,7 +400,10 @@ const MyCandidate = () => {
                         <SelectItem className="text-red-500" value="Từ chối">
                           Từ chối
                         </SelectItem>
-                        <SelectItem className="text-green-500" value="Chấp nhận">
+                        <SelectItem
+                          className="text-green-500"
+                          value="Chấp nhận"
+                        >
                           Chấp nhận
                         </SelectItem>
                       </SelectContent>
@@ -379,11 +429,9 @@ const MyCandidate = () => {
             <img
               src="https://employer.vietnamworks.com/v2/img/none-of-candidate.svg"
               alt="No candidates illustration"
-              className="mb-4 w-[40%] h-[40%]"
+              className="mb-4 h-[40%] w-[40%]"
             />
-            <span className="text-gray-700">
-              Bạn chưa có công việc nào
-            </span>
+            <span className="text-gray-700">Bạn chưa có công việc nào</span>
           </div>
         )}
         {/* <div className="mt-4 flex items-center space-x-2 rounded bg-blue-100 p-4 text-blue-700">

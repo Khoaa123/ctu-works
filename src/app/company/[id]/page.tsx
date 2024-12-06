@@ -262,7 +262,7 @@ const CompanyDetail = () => {
                   <p className="w-[100px]">Địa chỉ</p>
                   <p>{detailsCompany?.companyAddress}</p>
                 </div>
-                <div
+                {/* <div
                   className={`transition-all duration-400 ease-in-out overflow-hidden ${
                     isExpanded ? "max-h-[1000px]" : "max-h-[170px]"
                   }`}
@@ -272,7 +272,7 @@ const CompanyDetail = () => {
                       {detailsCompany?.companyDescription}
                     </p>
                   </div>
-                </div>
+                </div> */}
 
                 <button
                   className="text-sm text-blue-500"

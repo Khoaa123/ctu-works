@@ -1,14 +1,24 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+import { useChatbotRecruiterStore } from "../../store/chatbotRecruiter";
 import { chatSessionTest } from "../../app/ai/ChatbotRecruiter";
+import { useRouter } from "next/navigation";
 
 const ChatbotRecruiter = () => {
-  const [jobPosts, setJobPosts] = useState([]);
-  const [messages, setMessages] = useState<any>([]);
-  const [userInput, setUserInput] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-  const [showChat, setShowChat] = useState(false);
-  
+  const {
+    messages,
+    userInput,
+    isTyping,
+    showChat,
+    jobPosts,
+    setMessages,
+    addMessage,
+    setUserInput,
+    setIsTyping,
+    setShowChat,
+    setJobPosts,
+  } = useChatbotRecruiterStore();
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -27,29 +37,20 @@ const ChatbotRecruiter = () => {
     };
 
     fetchUser();
-  }, []);
-
+  }, [setJobPosts]);
 
   const sendMessage = async () => {
     if (userInput.trim() === "") return;
 
     try {
-      setMessages((prevMessages: any) => [
-        ...prevMessages,
-        { sender: "user", content: userInput },
-      ]);
+      addMessage({ sender: "user", content: userInput });
       setUserInput("");
       setIsTyping(true);
-      const result = await chatSessionTest(
-        jobPosts,
-      ).sendMessage(`${userInput}`);
-      console.log(result?.response?.text().replace(/\*/g, "\n"));
+
+      const result = await chatSessionTest(jobPosts).sendMessage(userInput);
       const data = result?.response?.text().replace(/\*/g, "\n");
 
-      setMessages((prevMessages: any) => [
-        ...prevMessages,
-        { sender: "bot", content: data },
-      ]);
+      addMessage({ sender: "bot", content: data });
       setIsTyping(false);
     } catch (error) {
       console.error("Lỗi khi gửi tin nhắn:", error);
@@ -65,18 +66,14 @@ const ChatbotRecruiter = () => {
     }
   }, [showChat]);
 
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, []);
-
-  const handleKeyDown = (event: any) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       sendMessage();
     }
   };
+
+  const router = useRouter();
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
@@ -92,7 +89,7 @@ const ChatbotRecruiter = () => {
             </button>
           </div>
           <div className="h-96 overflow-y-auto p-4" id="chat-log">
-            {messages.map((message: any, index: any) => (
+            {messages.map((message, index) => (
               <div
                 key={index}
                 className={`flex ${
@@ -107,10 +104,17 @@ const ChatbotRecruiter = () => {
                   } rounded-lg py-2 px-4 max-w-xs`}
                 >
                   <div
-                    dangerouslySetInnerHTML={{
-                      __html: message.content ?? "",
+                    onClick={(e: any) => {
+                      if (e.target.tagName === "A") {
+                        e.preventDefault(); // Prevent default link behavior
+                        const href = e.target.getAttribute("href");
+                        if (href) {
+                          router.push(href); // Use Next.js router to navigate
+                        }
+                      }
                     }}
-                  ></div>
+                    dangerouslySetInnerHTML={{ __html: message.content ?? "" }}
+                  />
                 </div>
               </div>
             ))}

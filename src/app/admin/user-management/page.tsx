@@ -35,7 +35,7 @@ const UserManagement = () => {
   const itemsPerPage = 10;
   const [isOpen, setIsOpen] = useState(false);
 
-  const [userDelete, setUserDelete] = useState('');
+  const [userDelete, setUserDelete] = useState("");
   const fetchAllUsers = async (): Promise<UserData[]> => {
     const res = await fetch(`http://localhost:3001/api/user/getAll`);
     if (!res.ok) {
@@ -91,7 +91,7 @@ const UserManagement = () => {
   }
 
   const openPopup = (id: any) => {
-    setUserDelete(id)
+    setUserDelete(id);
     setIsOpen(true);
   };
 
@@ -99,9 +99,12 @@ const UserManagement = () => {
     setIsOpen(false);
   };
   const fetchDeleteUser = async (userId: string) => {
-    const res = await fetch(`http://localhost:3001/api/user/delete-user/${userId}`, {
-      method: "DELETE",
-    });
+    const res = await fetch(
+      `http://localhost:3001/api/user/delete-user/${userId}`,
+      {
+        method: "DELETE",
+      }
+    );
     if (!res.ok) {
       throw new Error("Failed to delete user");
     }
@@ -109,19 +112,19 @@ const UserManagement = () => {
   };
   const handleDeleteUser = async () => {
     const res = await fetchDeleteUser(userDelete);
-    if(res.status === "OK"){
-      toast.success("Xóa người dùng thành công")
+    if (res.status === "OK") {
+      toast.success("Xóa người dùng thành công");
       setTimeout(() => {
         window.location.reload();
       }, 2000);
-    }else{
-      toast.error("Xóa người dùng thất bại")
+    } else {
+      toast.error("Xóa người dùng thất bại");
     }
     closePopup();
   };
   const handleCancleDelete = () => {
     closePopup();
-  }
+  };
   return (
     <div className="container mx-auto py-10">
       <h1 className="mb-5 border-b border-indigo-200 pb-2 text-2xl font-bold text-indigo-700">
@@ -151,7 +154,7 @@ const UserManagement = () => {
           <TableRow>
             <TableHead>Email</TableHead>
             <TableHead>Vai trò</TableHead>
-            <TableHead>Tìm việc</TableHead>
+            {/* <TableHead>Tìm việc</TableHead> */}
             <TableHead>Xác thực</TableHead>
             <TableHead>Lần cuối trực tuyến</TableHead>
           </TableRow>
@@ -161,22 +164,24 @@ const UserManagement = () => {
             <TableRow key={user._id}>
               <TableCell className="font-medium">{user.email}</TableCell>
               <TableCell>{user.role}</TableCell>
-              <TableCell>
+              {/* <TableCell>
                 <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${user.seekJobMode
-                    ? "bg-blue-100 text-blue-800"
-                    : "bg-gray-100 text-gray-800"
-                    }`}
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    user.seekJobMode
+                      ? "bg-blue-100 text-blue-800"
+                      : "bg-gray-100 text-gray-800"
+                  }`}
                 >
                   {user.seekJobMode ? "Đang tìm việc" : "Không tìm việc"}
                 </span>
-              </TableCell>
+              </TableCell> */}
               <TableCell>
                 <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${user.isVerified
-                    ? "bg-green-100 text-green-800"
-                    : "bg-red-100 text-red-800"
-                    }`}
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    user.isVerified
+                      ? "bg-green-100 text-green-800"
+                      : "bg-red-100 text-red-800"
+                  }`}
                 >
                   {user.isVerified ? "Đã xác thực" : "Chưa xác thực"}
                 </span>
@@ -191,18 +196,20 @@ const UserManagement = () => {
               </TableCell>
               {isOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                  <div className="bg-white rounded-lg shadow-xl p-8 w-96">
-                    <h2 className="text-lg font-bold mb-4">Bạn chắc chắn xóa người dùng này chứ?</h2>
+                  <div className="w-96 rounded-lg bg-white p-8 shadow-xl">
+                    <h2 className="mb-4 text-lg font-bold">
+                      Bạn chắc chắn xóa người dùng này chứ?
+                    </h2>
                     <div className="flex space-x-4">
                       <button
                         onClick={() => handleDeleteUser()}
-                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                        className="rounded bg-green-500 px-4 py-2 font-bold text-white hover:bg-green-700"
                       >
                         Chắn chắn
                       </button>
                       <button
                         onClick={() => handleCancleDelete()}
-                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                        className="rounded bg-red-500 px-4 py-2 font-bold text-white hover:bg-red-700"
                       >
                         Hủy
                       </button>
@@ -214,7 +221,7 @@ const UserManagement = () => {
           ))}
         </TableBody>
       </Table>
-      {!isOpen &&
+      {!isOpen && (
         <div className="mt-5 flex justify-center">
           <Button
             variant="outline"
@@ -234,7 +241,7 @@ const UserManagement = () => {
             <FaChevronRight />
           </Button>
         </div>
-      }
+      )}
     </div>
   );
 };

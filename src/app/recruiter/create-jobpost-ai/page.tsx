@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import Select from 'react-select';
+import Select from "react-select";
 import React, { useEffect, useRef, useState } from "react";
 import {
   FaBriefcase,
@@ -11,7 +11,7 @@ import {
   FaUser,
   FaUsers,
   FaPlus,
-  FaUpload
+  FaUpload,
 } from "react-icons/fa6";
 import Link from "next/link";
 import { useCookies } from "next-client-cookies";
@@ -34,7 +34,11 @@ import {
 import dynamic from "next/dynamic";
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon } from "@radix-ui/react-icons";
@@ -44,9 +48,10 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { chatSession } from "../../ai/keyWordSuggest";
 import { chatSessionCreate } from "../../ai/createJobAi";
-import * as XLSX from 'xlsx';
-import { Document, Packer, Paragraph, TextRun } from 'docx';
+import * as XLSX from "xlsx";
+import { Document, Packer, Paragraph, TextRun } from "docx";
 import { Switch } from "antd";
+import ScreenLoading from "@/components/ScreenLoading/ScreenLoading";
 export interface JwtPayload {
   userid: string;
   email: string;
@@ -97,7 +102,6 @@ const CreateJobPostAI = () => {
   }
 
   interface FormData {
-
     jobTitle: string;
     expirationDate: string;
     location: object[];
@@ -121,7 +125,7 @@ const CreateJobPostAI = () => {
   }
   const [formData, setFormData] = useState<FormData>({
     jobTitle: "",
-    expirationDate: '',
+    expirationDate: "",
     location: [{}],
     jobDescription: "",
     jobRequirements: "",
@@ -160,15 +164,13 @@ const CreateJobPostAI = () => {
     },
   });
 
-
   const [tags, setTags] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
-  const [suggestions, setSuggestions] = useState([""
-  ]);
+  const [suggestions, setSuggestions] = useState([""]);
 
   const handleInputChange = (e: any) => {
     setInputValue(e.target.value);
-    setInputMethod(e.target.value)
+    setInputMethod(e.target.value);
   };
   const handleAddTag = (tag: string) => {
     if (tags?.length < 5) {
@@ -269,10 +271,9 @@ const CreateJobPostAI = () => {
           {
             id: index,
             name: item,
-          }
+          },
         ]);
         setBenefitId((prevId) => prevId + 1);
-
       } else {
         setBenefits((prevBenefits) => [
           ...prevBenefits,
@@ -315,27 +316,28 @@ const CreateJobPostAI = () => {
           {
             id: index,
             title: item,
-          }
+          },
         ]);
         setLocationId((prevId) => prevId + 1);
-
       } else {
         setLocations((prevLocations) => [
           ...prevLocations,
           {
             id: locationId,
             title: "",
-          }
+          },
         ]);
         setLocationId((prevId) => prevId + 1);
       }
     }
-  }
+  };
   const handleRemoveLocationCompany = (idToRemove: any) => {
-    const use = locations.find((location) => location.id === idToRemove)?.title.split(":")[0]
-    const LocationRemove = Location.find((location) => location.title === use)
+    const use = locations
+      .find((location) => location.id === idToRemove)
+      ?.title.split(":")[0];
+    const LocationRemove = Location.find((location) => location.title === use);
     if (LocationRemove) {
-      LocationRemove.used = false
+      LocationRemove.used = false;
     }
     setLocations((prevLocations) =>
       prevLocations.filter((location) => location.id !== idToRemove)
@@ -346,7 +348,7 @@ const CreateJobPostAI = () => {
       delete location[idToRemove];
       return {
         ...prevFormData,
-        location: location
+        location: location,
       };
     });
   };
@@ -384,14 +386,20 @@ const CreateJobPostAI = () => {
   const handleSubmit = (event: any) => {
     event.preventDefault();
     const nullFields = [
-      ...Object.entries(formData).filter(([key, value]) => value === "").map(([key]) => key),
-      ...Object.entries(formData.companyInfo).filter(([key, value]) => value === "").map(([key]) => key),
-      ...Object.entries(formData.jobInformation).filter(([key, value]) => value === "").map(([key]) => key)
+      ...Object.entries(formData)
+        .filter(([key, value]) => value === "")
+        .map(([key]) => key),
+      ...Object.entries(formData.companyInfo)
+        .filter(([key, value]) => value === "")
+        .map(([key]) => key),
+      ...Object.entries(formData.jobInformation)
+        .filter(([key, value]) => value === "")
+        .map(([key]) => key),
     ];
     if (nullFields?.length > 0) {
       const labels = nullFields.map((key) => {
         if (key !== "companyLogo") {
-          let label = null
+          let label = null;
           switch (key) {
             case "jobTitle":
               return "Chức danh";
@@ -481,7 +489,9 @@ const CreateJobPostAI = () => {
       ["image"],
     ],
   };
-  const [numberOfPositions, setNumberOfPositions] = useState(formData.numberOfPositions);
+  const [numberOfPositions, setNumberOfPositions] = useState(
+    formData.numberOfPositions
+  );
   const handleDecrement = () => {
     if (numberOfPositions > 0) {
       setNumberOfPositions(numberOfPositions - 1);
@@ -503,7 +513,10 @@ const CreateJobPostAI = () => {
       setMinExperience(minExperience - 1);
       setFormData({
         ...formData,
-        jobInformation: { ...formData.jobInformation, minExperience: minExperience - 1 },
+        jobInformation: {
+          ...formData.jobInformation,
+          minExperience: minExperience - 1,
+        },
       });
     }
   };
@@ -512,7 +525,10 @@ const CreateJobPostAI = () => {
     setMinExperience(minExperience + 1);
     setFormData({
       ...formData,
-      jobInformation: { ...formData.jobInformation, minExperience: minExperience + 1 },
+      jobInformation: {
+        ...formData.jobInformation,
+        minExperience: minExperience + 1,
+      },
     });
   };
 
@@ -520,14 +536,16 @@ const CreateJobPostAI = () => {
     setDate(e);
     setFormData((prevFormData) => ({ ...prevFormData, expirationDate: e }));
   };
-  const [Location, setLocation] = useState([{ _id: "", title: "", description: "", used: false }]);
+  const [Location, setLocation] = useState([
+    { _id: "", title: "", description: "", used: false },
+  ]);
   function areObjectsEqual(obj1: any, obj2: any) {
     try {
       if (Object.keys(obj1)?.length !== Object.keys(obj2)?.length) {
         return false;
       }
       for (const key in obj1) {
-        if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
+        if (typeof obj1[key] === "object" && typeof obj2[key] === "object") {
           if (!areObjectsEqual(obj1[key], obj2[key])) {
             return false;
           }
@@ -539,7 +557,7 @@ const CreateJobPostAI = () => {
       }
       return true;
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
@@ -622,7 +640,7 @@ const CreateJobPostAI = () => {
             setTimeout(() => {
               window.location.reload();
             }, 1000);
-            setIsModalOpen(false)
+            setIsModalOpen(false);
           } else {
             toast.error("Thêm địa điểm làm việc thất bại");
           }
@@ -643,55 +661,109 @@ const CreateJobPostAI = () => {
     { value: "Tư Vấn Rủi Ro", label: "Tư Vấn Rủi Ro" },
     { value: "Cho Thuê & Quản Lý Căn Hộ", label: "Cho Thuê & Quản Lý Căn Hộ" },
     { value: "Định Giá", label: "Định Giá" },
-    { value: "Kinh Doanh Thương Mại, Cho Thuê & Quản Lý Tài Sản", label: "Kinh Doanh Thương Mại, Cho Thuê & Quản Lý Tài Sản" },
-    { value: "Phân Tích Dự Án Bất Động Sản", label: "Phân Tích Dự Án Bất Động Sản" },
+    {
+      value: "Kinh Doanh Thương Mại, Cho Thuê & Quản Lý Tài Sản",
+      label: "Kinh Doanh Thương Mại, Cho Thuê & Quản Lý Tài Sản",
+    },
+    {
+      value: "Phân Tích Dự Án Bất Động Sản",
+      label: "Phân Tích Dự Án Bất Động Sản",
+    },
     { value: "Phát Triển Bất Động Sản", label: "Phát Triển Bất Động Sản" },
     { value: "Quản Lý Cơ Sở Vật Chất", label: "Quản Lý Cơ Sở Vật Chất" },
     { value: "CEO", label: "CEO" },
     { value: "Quản Lý Cấp Cao", label: "Quản Lý Cấp Cao" },
-    { value: "Chính sách, Quy hoạch & Quy định", label: "Chính sách, Quy hoạch & Quy định" },
+    {
+      value: "Chính sách, Quy hoạch & Quy định",
+      label: "Chính sách, Quy hoạch & Quy định",
+    },
     { value: "NGO/Phi Lợi Nhuận", label: "NGO/Phi Lợi Nhuận" },
-    { value: "Bảo Mật Công Nghệ Thông Tin", label: "Bảo Mật Công Nghệ Thông Tin" },
+    {
+      value: "Bảo Mật Công Nghệ Thông Tin",
+      label: "Bảo Mật Công Nghệ Thông Tin",
+    },
     { value: "Chuyển Đổi Số", label: "Chuyển Đổi Số" },
-    { value: "Data Engineer/Data Analyst/AI", label: "Data Engineer/Data Analyst/AI" },
+    {
+      value: "Data Engineer/Data Analyst/AI",
+      label: "Data Engineer/Data Analyst/AI",
+    },
     { value: "IT Support/Help Desk", label: "IT Support/Help Desk" },
     { value: "Phần Cứng Máy Tính", label: "Phần Cứng Máy Tính" },
     { value: "Phần Mềm Máy Tính", label: "Phần Mềm Máy Tính" },
-    { value: "Phân Tích Kinh Doanh/Phân Tích Hệ Thống", label: "Phân Tích Kinh Doanh/Phân Tích Hệ Thống" },
+    {
+      value: "Phân Tích Kinh Doanh/Phân Tích Hệ Thống",
+      label: "Phân Tích Kinh Doanh/Phân Tích Hệ Thống",
+    },
     { value: "QA/QC/Software Testing", label: "QA/QC/Software Testing" },
-    { value: "Quản Lý Công Nghệ Thông Tin", label: "Quản Lý Công Nghệ Thông Tin" },
+    {
+      value: "Quản Lý Công Nghệ Thông Tin",
+      label: "Quản Lý Công Nghệ Thông Tin",
+    },
     { value: "Quản Lý Dự Án Công Nghệ", label: "Quản Lý Dự Án Công Nghệ" },
     { value: "Quản Trị Cơ Sở Dữ Liệu", label: "Quản Trị Cơ Sở Dữ Liệu" },
-    { value: "System/Cloud/DevOps Engineer", label: "System/Cloud/DevOps Engineer" },
+    {
+      value: "System/Cloud/DevOps Engineer",
+      label: "System/Cloud/DevOps Engineer",
+    },
     { value: "UX/UI Design", label: "UX/UI Design" },
     { value: "Viễn Thông", label: "Viễn Thông" },
-    { value: "Phát Triển Sản Phẩm May Mặc", label: "Phát Triển Sản Phẩm May Mặc" },
+    {
+      value: "Phát Triển Sản Phẩm May Mặc",
+      label: "Phát Triển Sản Phẩm May Mặc",
+    },
     { value: "Quản Lý Đơn Hàng", label: "Quản Lý Đơn Hàng" },
     { value: "Đầu Bếp", label: "Đầu Bếp" },
     { value: "Quản Lý F&B", label: "Quản Lý F&B" },
-    { value: "Bảo Mật Công Nghệ Thông Tin", label: "Bảo Mật Công Nghệ Thông Tin" },
+    {
+      value: "Bảo Mật Công Nghệ Thông Tin",
+      label: "Bảo Mật Công Nghệ Thông Tin",
+    },
     { value: "Chuyển Đổi Số", label: "Chuyển Đổi Số" },
-    { value: "Data Engineer/Data Analyst/AI", label: "Data Engineer/Data Analyst/AI" },
+    {
+      value: "Data Engineer/Data Analyst/AI",
+      label: "Data Engineer/Data Analyst/AI",
+    },
     { value: "IT Support/Help Desk", label: "IT Support/Help Desk" },
     { value: "Phần Cứng Máy Tính", label: "Phần Cứng Máy Tính" },
-    { value: "Phân Tích Kinh Doanh/Phân Tích Hệ Thống", label: "Phân Tích Kinh Doanh/Phân Tích Hệ Thống" },
+    {
+      value: "Phân Tích Kinh Doanh/Phân Tích Hệ Thống",
+      label: "Phân Tích Kinh Doanh/Phân Tích Hệ Thống",
+    },
     { value: "QA/QC/Software Testing", label: "QA/QC/Software Testing" },
-    { value: "Quản Lý Công Nghệ Thông Tin", label: "Quản Lý Công Nghệ Thông Tin" },
+    {
+      value: "Quản Lý Công Nghệ Thông Tin",
+      label: "Quản Lý Công Nghệ Thông Tin",
+    },
     { value: "Quản Lý Dự Án Công Nghệ", label: "Quản Lý Dự Án Công Nghệ" },
     { value: "Quản Trị Cơ Sở Dữ Liệu", label: "Quản Trị Cơ Sở Dữ Liệu" },
-    { value: "System/Cloud/DevOps Engineer", label: "System/Cloud/DevOps Engineer" },
+    {
+      value: "System/Cloud/DevOps Engineer",
+      label: "System/Cloud/DevOps Engineer",
+    },
     { value: "UX/UI Design", label: "UX/UI Design" },
     { value: "Viễn Thông", label: "Viễn Thông" },
-    { value: "Phát Triển Sản Phẩm May Mặc", label: "Phát Triển Sản Phẩm May Mặc" },
+    {
+      value: "Phát Triển Sản Phẩm May Mặc",
+      label: "Phát Triển Sản Phẩm May Mặc",
+    },
     { value: "Quản Lý Đơn Hàng", label: "Quản Lý Đơn Hàng" },
     { value: "Đầu Bếp", label: "Đầu Bếp" },
     { value: "Quản Lý F&B", label: "Quản Lý F&B" },
     { value: "Quầy Bar/Đồ Uống/Phục vụ", label: "Quầy Bar/Đồ Uống/Phục vụ" },
     { value: "Dịch Vụ Khách Hàng", label: "Dịch Vụ Khách Hàng" },
-    { value: "Dịch Vụ Khách Hàng - Call Center", label: "Dịch Vụ Khách Hàng - Call Center" },
-    { value: "Dịch Vụ Khách Hàng - Hướng Khách Hàng", label: "Dịch Vụ Khách Hàng - Hướng Khách Hàng" },
+    {
+      value: "Dịch Vụ Khách Hàng - Call Center",
+      label: "Dịch Vụ Khách Hàng - Call Center",
+    },
+    {
+      value: "Dịch Vụ Khách Hàng - Hướng Khách Hàng",
+      label: "Dịch Vụ Khách Hàng - Hướng Khách Hàng",
+    },
     { value: "Phân Phối Dược Phẩm", label: "Phân Phối Dược Phẩm" },
-    { value: "Dịch Vụ Sinh Viên/Hỗ Trợ Học Viên", label: "Dịch Vụ Sinh Viên/Hỗ Trợ Học Viên" },
+    {
+      value: "Dịch Vụ Sinh Viên/Hỗ Trợ Học Viên",
+      label: "Dịch Vụ Sinh Viên/Hỗ Trợ Học Viên",
+    },
     { value: "Giảng Dạy/Đào Tạo", label: "Giảng Dạy/Đào Tạo" },
     { value: "Nghiên Cứu Học Thuật", label: "Nghiên Cứu Học Thuật" },
     { value: "Quản Lý Giáo Dục", label: "Quản Lý Giáo Dục" },
@@ -708,10 +780,22 @@ const CreateJobPostAI = () => {
     { value: "Quản Lý Chuỗi Cung Ứng", label: "Quản Lý Chuỗi Cung Ứng" },
     { value: "Quản Lý Kho & Phân Phối", label: "Quản Lý Kho & Phân Phối" },
     { value: "Quản Lý Đội Xe", label: " Quản Lý Đội Xe" },
-    { value: "Thu Mua & Quản Trị Hàng Tồn Kho", label: "Thu Mua & Quản Trị Hàng Tồn Kho" },
-    { value: "Vận Tải/Giao Nhận Hàng Hóa", label: "Vận Tải / Giao Nhận Hàng Hóa " },
-    { value: "Xuất Nhập Khẩu & Thủ Tục Hải Quan", label: "Xuất Nhập Khẩu & Thủ Tục Hải Quan" },
-    { value: "Kế hoạch/Tư Vấn Doanh Nghiệp", label: "Kế hoạch / Tư Vấn Doanh Nghiệp " },
+    {
+      value: "Thu Mua & Quản Trị Hàng Tồn Kho",
+      label: "Thu Mua & Quản Trị Hàng Tồn Kho",
+    },
+    {
+      value: "Vận Tải/Giao Nhận Hàng Hóa",
+      label: "Vận Tải / Giao Nhận Hàng Hóa ",
+    },
+    {
+      value: "Xuất Nhập Khẩu & Thủ Tục Hải Quan",
+      label: "Xuất Nhập Khẩu & Thủ Tục Hải Quan",
+    },
+    {
+      value: "Kế hoạch/Tư Vấn Doanh Nghiệp",
+      label: "Kế hoạch / Tư Vấn Doanh Nghiệp ",
+    },
     { value: "Kế Toán Chi Phí", label: "Kế Toán Chi Phí" },
     { value: "Kế Toán Công Nợ", label: "Kế Toán Công Nợ" },
     { value: "Kế Toán Doanh Thu", label: "Kế Toán Doanh Thu" },
@@ -732,68 +816,131 @@ const CreateJobPostAI = () => {
     { value: "Kỹ Thuật Ô Tô", label: "Kỹ Thuật Ô Tô" },
     { value: "Kỹ Thuật Điện/Điện Tử", label: "Kỹ Thuật Điện / Điện Tử" },
     { value: "An Toàn Lao Động", label: "An Toàn Lao Động" },
-    { value: "Phát Triển Dự Án/Đấu Thầu", label: "Phát Triển Dự Án / Đấu Thầu" },
+    {
+      value: "Phát Triển Dự Án/Đấu Thầu",
+      label: "Phát Triển Dự Án / Đấu Thầu",
+    },
     { value: "Quản Lý Dự Án", label: "Quản Lý Dự Án" },
-    { value: "Thiết Kế & Quy Hoạch Đô Thị", label: "Thiết Kế & Quy Hoạch Đô Thị" },
-    { value: "Thiết Kế Kiến Trúc/Họa Viên Kiến Trúc", label: "Thiết Kế Kiến Trúc / Họa Viên Kiến Trúc" },
+    {
+      value: "Thiết Kế & Quy Hoạch Đô Thị",
+      label: "Thiết Kế & Quy Hoạch Đô Thị",
+    },
+    {
+      value: "Thiết Kế Kiến Trúc/Họa Viên Kiến Trúc",
+      label: "Thiết Kế Kiến Trúc / Họa Viên Kiến Trúc",
+    },
     { value: "Thiết Kế Nội Thất", label: "Thiết Kế Nội Thất" },
     { value: "Xây Dựng", label: "Xây Dựng" },
     { value: "Bán Hàng Kỹ Thuật", label: "Bán Hàng Kỹ Thuật" },
     { value: "Bán Hàng Qua Điện Thoại", label: "Bán Hàng Qua Điện Thoại" },
-    { value: "Bán Hàng/Phát Triển Kinh Doanh", label: "Bán Hàng / Phát Triển Kinh Doanh" },
+    {
+      value: "Bán Hàng/Phát Triển Kinh Doanh",
+      label: "Bán Hàng / Phát Triển Kinh Doanh",
+    },
     { value: "Bảo trì/Bảo Dưỡng", label: "Bảo trì / Bảo Dưỡng" },
-    { value: "Cơ Khí Tự Động Hoá", label: 'Cơ Khí Tự Động Hoá' },
+    { value: "Cơ Khí Tự Động Hoá", label: "Cơ Khí Tự Động Hoá" },
     { value: "In Ấn", label: "In Ấn" },
     { value: "Kỹ Thuật CNC", label: "Kỹ Thuật CNC" },
     { value: "Đầu Tư Tài Chính", label: "Đầu Tư Tài Chính" },
     { value: "Dịch Vụ Hỗ Trợ Khách Hàng", label: "Dịch Vụ Hỗ Trợ Khách Hàng" },
-    { value: "Môi Giới & Giao Dịch Chứng Khoán", label: "Môi Giới & Giao Dịch Chứng Khoán" },
-    { value: "Phân Tích & Báo Cáo Tài Chính", label: "Phân Tích & Báo Cáo Tài Chính" },
-    { value: "Quản Lý Quan Hệ Khách Hàng", label: "Quản Lý Quan Hệ Khách Hàng" },
-    { value: "Quản Lý Quỹ", label: 'Quản Lý Quỹ' },
+    {
+      value: "Môi Giới & Giao Dịch Chứng Khoán",
+      label: "Môi Giới & Giao Dịch Chứng Khoán",
+    },
+    {
+      value: "Phân Tích & Báo Cáo Tài Chính",
+      label: "Phân Tích & Báo Cáo Tài Chính",
+    },
+    {
+      value: "Quản Lý Quan Hệ Khách Hàng",
+      label: "Quản Lý Quan Hệ Khách Hàng",
+    },
+    { value: "Quản Lý Quỹ", label: "Quản Lý Quỹ" },
     { value: "Thu Hồi Nợ", label: "Thu Hồi Nợ" },
     { value: "Tín Dụng", label: "Tín Dụng" },
-    { value: "Tuân Thủ & Kiểm Soát Rủi Ro", label: "Tuân Thủ & Kiểm Soát Rủi Ro" },
-    { value: "Đạo Diễn Nghệ Thuật/Nhiếp Ảnh", label: 'Đạo Diễn Nghệ Thuật / Nhiếp Ảnh' },
+    {
+      value: "Tuân Thủ & Kiểm Soát Rủi Ro",
+      label: "Tuân Thủ & Kiểm Soát Rủi Ro",
+    },
+    {
+      value: "Đạo Diễn Nghệ Thuật/Nhiếp Ảnh",
+      label: "Đạo Diễn Nghệ Thuật / Nhiếp Ảnh",
+    },
     { value: "In Ấn & Xuất Bản", label: "In Ấn & Xuất Bản" },
     { value: "Sản Xuất Chương Trình", label: "Sản Xuất Chương Trình" },
-    { value: "Bộ Phận Tiền Sảnh & Dịch Vụ Khách Hàng", label: "Bộ Phận Tiền Sảnh & Dịch Vụ Khách Hàng" },
-    { value: "Công Ty Kinh Doanh Lữ Hành", label: "Công Ty Kinh Doanh Lữ Hành" },
+    {
+      value: "Bộ Phận Tiền Sảnh & Dịch Vụ Khách Hàng",
+      label: "Bộ Phận Tiền Sảnh & Dịch Vụ Khách Hàng",
+    },
+    {
+      value: "Công Ty Kinh Doanh Lữ Hành",
+      label: "Công Ty Kinh Doanh Lữ Hành",
+    },
     { value: "Đại Lý Du Lịch", label: "Đại Lý Du Lịch" },
     { value: "Đặt Phòng Khách Sạn", label: "Đặt Phòng Khách Sạn" },
     { value: "Hướng Dẫn Viên Du Lịch", label: "Hướng Dẫn Viên Du Lịch" },
     { value: "Vệ Sinh Buồng Phòng", label: "Vệ Sinh Buồng Phòng" },
     { value: "Đào Tạo Và Phát Triển", label: "Đào Tạo Và Phát Triển" },
     { value: "Gắn Kết Nhân Viên", label: "Gắn Kết Nhân Viên" },
-    { value: "Lương Thưởng & Phúc Lợi", label: 'Lương Thưởng & Phúc Lợi' },
+    { value: "Lương Thưởng & Phúc Lợi", label: "Lương Thưởng & Phúc Lợi" },
     { value: "Nhân Sự Tổng Hợp", label: "Nhân Sự Tổng Hợp" },
-    { value: "Quản Trị Hiệu Suất & Sự Nghiệp", label: "Quản Trị Hiệu Suất & Sự Nghiệp" },
+    {
+      value: "Quản Trị Hiệu Suất & Sự Nghiệp",
+      label: "Quản Trị Hiệu Suất & Sự Nghiệp",
+    },
     { value: "Tuyển Dụng", label: "Tuyển Dụng" },
     { value: "Nông/Lâm/Ngư nghiệp", label: "Nông / Lâm / Ngư nghiệp" },
     { value: "Luật Lao động/Hưu Trí", label: "Luật Lao động / Hưu Trí" },
     { value: "Luật Sở Hữu Trí Tuệ", label: "Luật Sở Hữu Trí Tuệ" },
-    { value: "Luật Tài Chính Ngân Hàng Thương mại", label: "Luật Tài Chính Ngân Hàng Thương mại" },
+    {
+      value: "Luật Tài Chính Ngân Hàng Thương mại",
+      label: "Luật Tài Chính Ngân Hàng Thương mại",
+    },
     { value: "Luật Thuế", label: "Luật Thuế" },
     { value: "Luật Xây Dựng", label: "Luật Xây Dựng" },
-    { value: "Quản Lý Thi Hành Pháp Luật", label: "Quản Lý Thi Hành Pháp Luật" },
+    {
+      value: "Quản Lý Thi Hành Pháp Luật",
+      label: "Quản Lý Thi Hành Pháp Luật",
+    },
     { value: "Thư Ký Luật & Trợ Lý Luật", label: "Thư Ký Luật & Trợ Lý Luật" },
     { value: "Thư Ký Pháp Lý", label: "Thư Ký Pháp Lý" },
     { value: "Tư Vấn Pháp Lý", label: "Tư Vấn Pháp Lý" },
-    { value: "Đảm Bảo Chất Lượng/Kiểm Soát Chất Lượng/Quản Lý Chất Lượng", label: "Đảm Bảo Chất Lượng / Kiểm Soát Chất Lượng / Quản Lý Chất Lượng" },
-    { value: "Hoạch Định & Quản Lý Sản Xuất", label: "Hoạch Định & Quản Lý Sản Xuất" },
+    {
+      value: "Đảm Bảo Chất Lượng/Kiểm Soát Chất Lượng/Quản Lý Chất Lượng",
+      label: "Đảm Bảo Chất Lượng / Kiểm Soát Chất Lượng / Quản Lý Chất Lượng",
+    },
+    {
+      value: "Hoạch Định & Quản Lý Sản Xuất",
+      label: "Hoạch Định & Quản Lý Sản Xuất",
+    },
     { value: "Nghiên Cứu & Phát Triển", label: "Nghiên Cứu & Phát Triển" },
     { value: "Phân Tích Sản Xuất", label: "Phân Tích Sản Xuất" },
     { value: "Quy Trình & Lắp Ráp", label: "Quy Trình & Lắp Ráp" },
     { value: "Vận Hành Máy Móc", label: "Vận Hành Máy Móc" },
     { value: "Chỉnh Sửa Video", label: "Chỉnh Sửa Video" },
-    { value: "Thiết Kế Công Nghiệp/Kỹ Thuật", label: "Thiết Kế Công Nghiệp / Kỹ Thuật" },
-    { value: "Thiết Kế Thời Trang/Trang Sức", label: "Thiết Kế Thời Trang / Trang Sức" },
+    {
+      value: "Thiết Kế Công Nghiệp/Kỹ Thuật",
+      label: "Thiết Kế Công Nghiệp / Kỹ Thuật",
+    },
+    {
+      value: "Thiết Kế Thời Trang/Trang Sức",
+      label: "Thiết Kế Thời Trang / Trang Sức",
+    },
     { value: "Thiết Kế Đồ Họa", label: "Thiết Kế Đồ Họa" },
-    { value: "Nghiên Cứu & Phân Tích Thị Trường", label: "Nghiên Cứu & Phân Tích Thị Trường" },
+    {
+      value: "Nghiên Cứu & Phân Tích Thị Trường",
+      label: "Nghiên Cứu & Phân Tích Thị Trường",
+    },
     { value: "Quan Hệ Công Chúng", label: "Quan Hệ Công Chúng" },
-    { value: "Quản Lý & Phát Triển Sản Phẩm", label: "Quản Lý & Phát Triển Sản Phẩm" },
+    {
+      value: "Quản Lý & Phát Triển Sản Phẩm",
+      label: "Quản Lý & Phát Triển Sản Phẩm",
+    },
     { value: "Quản Lý Sự Kiện", label: "Quản Lý Sự Kiện" },
-    { value: "Quản Lý Tài Khoản Khách Hàng", label: "Quản Lý Tài Khoản Khách Hàng" },
+    {
+      value: "Quản Lý Tài Khoản Khách Hàng",
+      label: "Quản Lý Tài Khoản Khách Hàng",
+    },
     { value: "Quản Lý Thương Hiệu", label: "Quản Lý Thương Hiệu" },
     { value: "Tiếp Thị", label: "Tiếp Thị" },
     { value: "Tiếp Thị Nội Dung", label: "Tiếp Thị Nội Dung" },
@@ -802,11 +949,20 @@ const CreateJobPostAI = () => {
     { value: "Dịch Vụ Hàng Không", label: "Dịch Vụ Hàng Không" },
     { value: "Dịch Vụ Vận Tải Công Cộng", label: "Dịch Vụ Vận Tải Công Cộng" },
     { value: "Vận Tải Đường Bộ", label: "Vận Tải Đường Bộ" },
-    { value: "Vận Tải Đường Sắt & Hàng Hải", label: "Vận Tải Đường Sắt & Hàng Hải" },
-    { value: "Bác Sĩ/Điều Trị Đa Khoa/Điều Trị Nội Trú", label: "Bác Sĩ / Điều Trị Đa Khoa / Điều Trị Nội Trú" },
+    {
+      value: "Vận Tải Đường Sắt & Hàng Hải",
+      label: "Vận Tải Đường Sắt & Hàng Hải",
+    },
+    {
+      value: "Bác Sĩ/Điều Trị Đa Khoa/Điều Trị Nội Trú",
+      label: "Bác Sĩ / Điều Trị Đa Khoa / Điều Trị Nội Trú",
+    },
     { value: "Dược Sĩ", label: "Dược Sĩ" },
     { value: "Kỹ Thuật Viên Y Tế", label: "Kỹ Thuật Viên Y Tế" },
-    { value: "Tư Vấn Tâm Lý & Công Tác Xã Hội", label: "Tư Vấn Tâm Lý & Công Tác Xã Hội" },
+    {
+      value: "Tư Vấn Tâm Lý & Công Tác Xã Hội",
+      label: "Tư Vấn Tâm Lý & Công Tác Xã Hội",
+    },
     { value: "Y Tá", label: "Y Tá" },
   ];
   const handleChange = (selectedOption: any) => {
@@ -822,58 +978,92 @@ const CreateJobPostAI = () => {
     return (
       option.label.toLowerCase().includes(inputValue.toLowerCase()) ||
       option.value.toLowerCase().includes(inputValue.toLowerCase())
-
     );
   };
-  const optionsIndustry = [{ value: "Bán lẻ/Bán sỉ", label: "Bán lẻ/Bán sỉ" },
-  { value: "Bao bì/In ấn/Dán nhãn", label: "Bao bì/In ấn/Dán nhãn" },
-  { value: "Bảo hiểm", label: "Bảo hiểm" },
-  { value: "Bất Động Sản/Cho thuê", label: "Bất Động Sản/Cho thuê" },
-  { value: "Chính phủ & NGO", label: "Chính phủ & NGO" },
-  { value: "Chứng khoán", label: "Chứng khoán" },
-  { value: "Chuỗi cung ứng", label: "Chuỗi cung ứng" },
-  { value: "Cơ khí/Máy móc/Thiết bị công nghiệp", label: "Cơ khí/Máy móc/Thiết bị công nghiệp" },
-  { value: "Cung cấp nhân lực", label: "Cung cấp nhân lực" },
-  { value: "Dệt may/May mặc/Giày dép", label: "Dệt may/May mặc/Giày dép" },
-  { value: "Dịch vụ kho bãi", label: "Dịch vụ kho bãi" },
-  { value: "Dịch vụ lưu trú/Nhà hàng/Khách sạn/Du lịch", label: "Dịch vụ lưu trú/Nhà hàng/Khách sạn/Du lịch" },
-  { value: "Dịch vụ môi trường/Chất thải", label: "Dịch vụ môi trường/Chất thải" },
-  { value: "Dịch vụ Y tế/Chăm sóc sức khỏe", label: "Dịch vụ Y tế/Chăm sóc sức khỏe" },
-  { value: "Điện/Điện tử", label: "Điện/Điện tử" },
-  { value: "Dược phẩm", label: "Dược phẩm" },
-  { value: "Giáo dục/Đào Tạo", label: "Giáo dục/Đào Tạo" },
-  { value: "Hàng tiêu dùng", label: "Hàng tiêu dùng" },
-  { value: "Hậu cần/Giao nhận", label: "Hậu cần/Giao nhận" },
-  { value: "Hệ thống CNTT & Thiết bị", label: "Hệ thống CNTT & Thiết bị" },
-  { value: "Hoá chất/Hoá sinh", label: "Hoá chất/Hoá sinh" },
-  { value: "Kế toán", label: "Kế toán" },
-  { value: "Khai khoáng/Dầu khí", label: "Khai khoáng/Dầu khí" },
-  { value: "Kiến trúc/Thiết kế nội thất", label: "Kiến trúc/Thiết kế nội thất" },
-  { value: "Kỹ thuật xây dựng/Cơ sở hạ tầng", label: "Kỹ thuật xây dựng/Cơ sở hạ tầng" },
-  { value: "Làm đẹp (Mỹ phẩm) & Chăm sóc cá nhân", label: "Làm đẹp (Mỹ phẩm) & Chăm sóc cá nhân" },
-  { value: "Luật/Dịch vụ pháp lý", label: "Luật/Dịch vụ pháp lý" },
-  { value: "Ngân hàng", label: "Ngân hàng" },
-  { value: "Nghệ thuật/Giải trí", label: "Nghệ thuật/Giải trí" },
-  { value: "Nghiên cứu", label: "Nghiên cứu" },
-  { value: "Nhập khẩu/Xuất khẩu", label: "Nhập khẩu/Xuất khẩu" },
-  { value: "Nhựa & Cao su", label: "Nhựa & Cao su" },
-  { value: "Nội thất/Gỗ", label: "Nội thất/Gỗ" },
-  { value: "Nông nghiệp/Lâm nghiệp/Nuôi trồng thủy sản", label: "Nông nghiệp/Lâm nghiệp/Nuôi trồng thủy sản" },
-  { value: "Ô tô", label: "Ô tô" },
-  { value: "Phần Mềm CNTT/Dịch vụ Phần mềm", label: "Phần Mềm CNTT/Dịch vụ Phần mềm" },
-  { value: "Sản xuất", label: "Sản xuất" },
-  { value: "Sản xuất và Phân phối Điện/Khí đốt/Nước", label: "Sản xuất và Phân phối Điện/Khí đốt/Nước" },
-  { value: "Tài Chính", label: "Tài Chính" },
-  { value: "Thiết bị y tế", label: "Thiết bị y tế" },
-  { value: "Thời trang/Trang sức", label: "Thời trang/Trang sức" },
-  { value: "Thú y", label: "Thú y" },
-  { value: "Thương mại điện tử", label: "Thương mại điện tử" },
-  { value: "Truyền thông/Báo chí/Quảng cáo", label: "Truyền thông/Báo chí/Quảng cáo" },
-  { value: "Tự động hoá", label: "Tự động hoá" },
-  { value: "Vận tải", label: "Vận tải" },
-  { value: "Vật liệu xây dựng", label: "Vật liệu xây dựng" },
-  { value: "Viễn thông", label: "Viễn thông" },
-  { value: "Khác", label: "Khác" }]
+  const optionsIndustry = [
+    { value: "Bán lẻ/Bán sỉ", label: "Bán lẻ/Bán sỉ" },
+    { value: "Bao bì/In ấn/Dán nhãn", label: "Bao bì/In ấn/Dán nhãn" },
+    { value: "Bảo hiểm", label: "Bảo hiểm" },
+    { value: "Bất Động Sản/Cho thuê", label: "Bất Động Sản/Cho thuê" },
+    { value: "Chính phủ & NGO", label: "Chính phủ & NGO" },
+    { value: "Chứng khoán", label: "Chứng khoán" },
+    { value: "Chuỗi cung ứng", label: "Chuỗi cung ứng" },
+    {
+      value: "Cơ khí/Máy móc/Thiết bị công nghiệp",
+      label: "Cơ khí/Máy móc/Thiết bị công nghiệp",
+    },
+    { value: "Cung cấp nhân lực", label: "Cung cấp nhân lực" },
+    { value: "Dệt may/May mặc/Giày dép", label: "Dệt may/May mặc/Giày dép" },
+    { value: "Dịch vụ kho bãi", label: "Dịch vụ kho bãi" },
+    {
+      value: "Dịch vụ lưu trú/Nhà hàng/Khách sạn/Du lịch",
+      label: "Dịch vụ lưu trú/Nhà hàng/Khách sạn/Du lịch",
+    },
+    {
+      value: "Dịch vụ môi trường/Chất thải",
+      label: "Dịch vụ môi trường/Chất thải",
+    },
+    {
+      value: "Dịch vụ Y tế/Chăm sóc sức khỏe",
+      label: "Dịch vụ Y tế/Chăm sóc sức khỏe",
+    },
+    { value: "Điện/Điện tử", label: "Điện/Điện tử" },
+    { value: "Dược phẩm", label: "Dược phẩm" },
+    { value: "Giáo dục/Đào Tạo", label: "Giáo dục/Đào Tạo" },
+    { value: "Hàng tiêu dùng", label: "Hàng tiêu dùng" },
+    { value: "Hậu cần/Giao nhận", label: "Hậu cần/Giao nhận" },
+    { value: "Hệ thống CNTT & Thiết bị", label: "Hệ thống CNTT & Thiết bị" },
+    { value: "Hoá chất/Hoá sinh", label: "Hoá chất/Hoá sinh" },
+    { value: "Kế toán", label: "Kế toán" },
+    { value: "Khai khoáng/Dầu khí", label: "Khai khoáng/Dầu khí" },
+    {
+      value: "Kiến trúc/Thiết kế nội thất",
+      label: "Kiến trúc/Thiết kế nội thất",
+    },
+    {
+      value: "Kỹ thuật xây dựng/Cơ sở hạ tầng",
+      label: "Kỹ thuật xây dựng/Cơ sở hạ tầng",
+    },
+    {
+      value: "Làm đẹp (Mỹ phẩm) & Chăm sóc cá nhân",
+      label: "Làm đẹp (Mỹ phẩm) & Chăm sóc cá nhân",
+    },
+    { value: "Luật/Dịch vụ pháp lý", label: "Luật/Dịch vụ pháp lý" },
+    { value: "Ngân hàng", label: "Ngân hàng" },
+    { value: "Nghệ thuật/Giải trí", label: "Nghệ thuật/Giải trí" },
+    { value: "Nghiên cứu", label: "Nghiên cứu" },
+    { value: "Nhập khẩu/Xuất khẩu", label: "Nhập khẩu/Xuất khẩu" },
+    { value: "Nhựa & Cao su", label: "Nhựa & Cao su" },
+    { value: "Nội thất/Gỗ", label: "Nội thất/Gỗ" },
+    {
+      value: "Nông nghiệp/Lâm nghiệp/Nuôi trồng thủy sản",
+      label: "Nông nghiệp/Lâm nghiệp/Nuôi trồng thủy sản",
+    },
+    { value: "Ô tô", label: "Ô tô" },
+    {
+      value: "Phần Mềm CNTT/Dịch vụ Phần mềm",
+      label: "Phần Mềm CNTT/Dịch vụ Phần mềm",
+    },
+    { value: "Sản xuất", label: "Sản xuất" },
+    {
+      value: "Sản xuất và Phân phối Điện/Khí đốt/Nước",
+      label: "Sản xuất và Phân phối Điện/Khí đốt/Nước",
+    },
+    { value: "Tài Chính", label: "Tài Chính" },
+    { value: "Thiết bị y tế", label: "Thiết bị y tế" },
+    { value: "Thời trang/Trang sức", label: "Thời trang/Trang sức" },
+    { value: "Thú y", label: "Thú y" },
+    { value: "Thương mại điện tử", label: "Thương mại điện tử" },
+    {
+      value: "Truyền thông/Báo chí/Quảng cáo",
+      label: "Truyền thông/Báo chí/Quảng cáo",
+    },
+    { value: "Tự động hoá", label: "Tự động hoá" },
+    { value: "Vận tải", label: "Vận tải" },
+    { value: "Vật liệu xây dựng", label: "Vật liệu xây dựng" },
+    { value: "Viễn thông", label: "Viễn thông" },
+    { value: "Khác", label: "Khác" },
+  ];
   const handleChangeIndustry = (selectedOption: any) => {
     setFormData({
       ...formData,
@@ -892,20 +1082,19 @@ const CreateJobPostAI = () => {
 
   const sendMess = async () => {
     if (inputValue?.length > 1) {
-      const message = `Gợi ý cho tôi 20 từ khóa về kỹ năng nghề nghiệp có chứa từ ${inputValue
-        } thuộc lĩnh vực hoặc liên quan đến ${formData?.jobInformation?.jobField ||
+      const message = `Gợi ý cho tôi 20 từ khóa về kỹ năng nghề nghiệp có chứa từ ${inputValue} thuộc lĩnh vực hoặc liên quan đến ${
+        formData?.jobInformation?.jobField ||
         formData?.jobInformation?.jobIndustry ||
         ""
-        } bằng tiếng việt`;
+      } bằng tiếng việt`;
       try {
         const result = await chatSession.sendMessage(message);
         const data = result?.response?.text();
         let arr = JSON.parse(data);
         setSuggestions((prev) => [...prev, ...arr.keywords]);
-      } catch (error) { }
+      } catch (error) {}
     }
-  }
-
+  };
 
   const putData = async (data: any) => {
     const res = await fetch(
@@ -916,23 +1105,54 @@ const CreateJobPostAI = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          data: data
+          data: data,
         }),
       }
     );
     return res.json();
   };
   const [data, setData] = useState([]);
-  const extractedValues = [''];
+  const extractedValues = [""];
   const handleCreateWithPaste = async (e: any) => {
     const message = `${textareaValue}`;
     try {
-      setChoseFile(false)
-      setIsLoading(true)
+      setChoseFile(false);
+      setIsLoading(true);
       const result = await chatSessionCreate.sendMessage(message);
 
-      const Test = JSON.parse(result?.response?.text())
-      let jobTitle, expirationDate, location, jobDescription, jobRequirements, jobType, minSalary, maxSalary, canDeal, numberOfPositions, jobLevel, jobIndustry, keywords, jobField, language, minExperience, nationality, educationLevel, gender, minAge, maxAge, maritalStatus, companyName, companyAddress, companySize, companyLogo, companyStaffName, companyBenefits, companyEmail, jobCompanyInfoId, candidateExpectationsId, jobInfoId;
+      const Test = JSON.parse(result?.response?.text());
+      let jobTitle,
+        expirationDate,
+        location,
+        jobDescription,
+        jobRequirements,
+        jobType,
+        minSalary,
+        maxSalary,
+        canDeal,
+        numberOfPositions,
+        jobLevel,
+        jobIndustry,
+        keywords,
+        jobField,
+        language,
+        minExperience,
+        nationality,
+        educationLevel,
+        gender,
+        minAge,
+        maxAge,
+        maritalStatus,
+        companyName,
+        companyAddress,
+        companySize,
+        companyLogo,
+        companyStaffName,
+        companyBenefits,
+        companyEmail,
+        jobCompanyInfoId,
+        candidateExpectationsId,
+        jobInfoId;
 
       if (Test !== undefined) {
         jobTitle = Test.jobTitle || "";
@@ -972,59 +1192,83 @@ const CreateJobPostAI = () => {
       const res1 = await fetchRecruiterInfo();
       const data1 = res1.data;
       data1?.locationCompanyId.map(async (data: any) => {
-        const dataLocation = await getLocationCompany(data)
-        const LocationData = dataLocation.data[0]
+        const dataLocation = await getLocationCompany(data);
+        const LocationData = dataLocation.data[0];
         if (LocationData !== null) {
           Used?.map((item: any) => {
             if (item === LocationData.title.split(":")[0]) {
-              LocationData.used = true
+              LocationData.used = true;
             }
-          })
+          });
           Location.push(LocationData);
           const uniqueArray = Location.filter((obj, index, self) => {
-            return self.findIndex((otherObj) => areObjectsEqual(obj, otherObj)) === index;
+            return (
+              self.findIndex((otherObj) => areObjectsEqual(obj, otherObj)) ===
+              index
+            );
           });
-          uniqueArray.splice(0, 1)
-          setLocation(uniqueArray)
+          uniqueArray.splice(0, 1);
+          setLocation(uniqueArray);
         }
-      })
+      });
       location?.forEach((item: string, index: any) => {
-        Location.push({ _id: "", title: item, description: "", used: false })
-        locations.push({ id: index, title: item })
+        Location.push({ _id: "", title: item, description: "", used: false });
+        locations.push({ id: index, title: item });
       });
       keywords?.map((key: any) => {
-        handleAddTag(key)
-      })
+        handleAddTag(key);
+      });
 
       companyBenefits?.forEach((item: any, index: any) => {
-        handleAddBenefit(item.title, index)
+        handleAddBenefit(item.title, index);
       });
 
       const newDate = new Date(expirationDate);
-      handleDateSelect(newDate)
-      setMinExperience(minExperience)
-      companyEmail = decodedToken?.email ?? ''
+      handleDateSelect(newDate);
+      setMinExperience(minExperience);
+      companyEmail = decodedToken?.email ?? "";
       setFormData({
-        jobTitle, expirationDate, location, jobDescription, jobRequirements,
-        jobType, minSalary, maxSalary, canDeal, numberOfPositions,
+        jobTitle,
+        expirationDate,
+        location,
+        jobDescription,
+        jobRequirements,
+        jobType,
+        minSalary,
+        maxSalary,
+        canDeal,
+        numberOfPositions,
         jobInformation: {
-          jobLevel, jobIndustry, keywords,
-          jobField, language, minExperience, nationality, educationLevel, gender, minAge, maxAge,
+          jobLevel,
+          jobIndustry,
+          keywords,
+          jobField,
+          language,
+          minExperience,
+          nationality,
+          educationLevel,
+          gender,
+          minAge,
+          maxAge,
           maritalStatus,
         },
         companyInfo: {
-          companyName, companyAddress, companySize, companyLogo, companyStaffName,
-          companyBenefits, companyEmail
-        }
-      })
-      setIsLoading(false)
-      setShowInfo(true)
+          companyName,
+          companyAddress,
+          companySize,
+          companyLogo,
+          companyStaffName,
+          companyBenefits,
+          companyEmail,
+        },
+      });
+      setIsLoading(false);
+      setShowInfo(true);
     } catch (error) {
-      setIsLoading(false)
-      setIsError(true)
+      setIsLoading(false);
+      setIsError(true);
     }
-
-  }
+  };
   const handleFileUpload = async (e: any) => {
     const reader = new FileReader();
 
@@ -1058,12 +1302,43 @@ const CreateJobPostAI = () => {
 
       const message = `${extractedValues}`;
       try {
-        setChoseFile(false)
-        setIsLoading(true)
+        setChoseFile(false);
+        setIsLoading(true);
         const result = await chatSessionCreate.sendMessage(message);
 
-        const Test = JSON.parse(result?.response?.text())
-        let jobTitle, expirationDate, location, jobDescription, jobRequirements, jobType, minSalary, maxSalary, canDeal, numberOfPositions, jobLevel, jobIndustry, keywords, jobField, language, minExperience, nationality, educationLevel, gender, minAge, maxAge, maritalStatus, companyName, companyAddress, companySize, companyLogo, companyStaffName, companyBenefits, companyEmail, jobCompanyInfoId, candidateExpectationsId, jobInfoId;
+        const Test = JSON.parse(result?.response?.text());
+        let jobTitle,
+          expirationDate,
+          location,
+          jobDescription,
+          jobRequirements,
+          jobType,
+          minSalary,
+          maxSalary,
+          canDeal,
+          numberOfPositions,
+          jobLevel,
+          jobIndustry,
+          keywords,
+          jobField,
+          language,
+          minExperience,
+          nationality,
+          educationLevel,
+          gender,
+          minAge,
+          maxAge,
+          maritalStatus,
+          companyName,
+          companyAddress,
+          companySize,
+          companyLogo,
+          companyStaffName,
+          companyBenefits,
+          companyEmail,
+          jobCompanyInfoId,
+          candidateExpectationsId,
+          jobInfoId;
 
         if (Test !== undefined) {
           jobTitle = Test.jobTitle || "";
@@ -1103,60 +1378,85 @@ const CreateJobPostAI = () => {
         const res1 = await fetchRecruiterInfo();
         const data1 = res1.data;
         data1?.locationCompanyId.map(async (data: any, index: any) => {
-          const dataLocation = await getLocationCompany(data)
-          const LocationData = dataLocation.data[0]
+          const dataLocation = await getLocationCompany(data);
+          const LocationData = dataLocation.data[0];
           if (LocationData !== null) {
             Used?.map((item: any) => {
               if (item === LocationData.title.split(":")[0]) {
-                LocationData.used = true
+                LocationData.used = true;
               }
-            })
+            });
             Location.push(LocationData);
             const uniqueArray = Location.filter((obj, index, self) => {
-              return self.findIndex((otherObj) => areObjectsEqual(obj, otherObj)) === index;
+              return (
+                self.findIndex((otherObj) => areObjectsEqual(obj, otherObj)) ===
+                index
+              );
             });
-            uniqueArray.splice(0, 1)
-            setLocation(uniqueArray)
+            uniqueArray.splice(0, 1);
+            setLocation(uniqueArray);
           }
-        })
+        });
         location?.forEach((item: string, index: any) => {
-          Location.push({ _id: "", title: item, description: "", used: true })
-          locations.push({ id: index, title: item })
+          Location.push({ _id: "", title: item, description: "", used: true });
+          locations.push({ id: index, title: item });
         });
 
         keywords?.map((key: any) => {
-          handleAddTag(key)
-        })
+          handleAddTag(key);
+        });
         companyBenefits?.forEach((item: any, index: any) => {
-          handleAddBenefit(item.title, index)
+          handleAddBenefit(item.title, index);
         });
 
         const newDate = new Date(expirationDate);
-        handleDateSelect(newDate)
-        setMinExperience(minExperience)
-        companyEmail = decodedToken?.email ?? ''
+        handleDateSelect(newDate);
+        setMinExperience(minExperience);
+        companyEmail = decodedToken?.email ?? "";
         setFormData({
-          jobTitle, expirationDate, location, jobDescription, jobRequirements,
-          jobType, minSalary, maxSalary, canDeal, numberOfPositions,
+          jobTitle,
+          expirationDate,
+          location,
+          jobDescription,
+          jobRequirements,
+          jobType,
+          minSalary,
+          maxSalary,
+          canDeal,
+          numberOfPositions,
           jobInformation: {
-            jobLevel, jobIndustry, keywords,
-            jobField, language, minExperience, nationality, educationLevel, gender, minAge, maxAge,
+            jobLevel,
+            jobIndustry,
+            keywords,
+            jobField,
+            language,
+            minExperience,
+            nationality,
+            educationLevel,
+            gender,
+            minAge,
+            maxAge,
             maritalStatus,
           },
           companyInfo: {
-            companyName, companyAddress, companySize, companyLogo, companyStaffName,
-            companyBenefits, companyEmail
-          }
-        })
+            companyName,
+            companyAddress,
+            companySize,
+            companyLogo,
+            companyStaffName,
+            companyBenefits,
+            companyEmail,
+          },
+        });
 
-        setIsLoading(false)
-        setShowInfo(true)
+        setIsLoading(false);
+        setShowInfo(true);
       } catch (error) {
-        setIsLoading(false)
-        setIsError(true)
+        setIsLoading(false);
+        setIsError(true);
       }
     };
-  }
+  };
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const handleButtonClick = () => {
     if (fileInputRef.current) {
@@ -1165,29 +1465,28 @@ const CreateJobPostAI = () => {
   };
 
   const customButtonStyle = {
-    padding: '10px 20px',
-    backgroundColor: '#007bff',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
+    padding: "10px 20px",
+    backgroundColor: "#007bff",
+    color: "#fff",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
   };
   const [showInfo, setShowInfo] = useState(false);
   const [showChoseFile, setChoseFile] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
-
   const handleDrop = (event: any) => {
     event.preventDefault();
-    handleFileUpload(event)
+    handleFileUpload(event);
   };
 
   const handleDragOver = (event: any) => {
     event.preventDefault();
   };
-  const [inputMethod, setInputMethod] = useState('file');
-  const [textareaValue, setTextareaValue] = useState('');
+  const [inputMethod, setInputMethod] = useState("file");
+  const [textareaValue, setTextareaValue] = useState("");
   const [showContinueButton, setShowContinueButton] = useState(false);
   const handleTextareaChange = (e: any) => {
     if (e.target.value.length < 14500) {
@@ -1228,7 +1527,7 @@ const CreateJobPostAI = () => {
     const file = event.target.files?.[0];
     if (file) {
       try {
-        setIsLoadingUploadImg(true)
+        setIsLoadingUploadImg(true);
         const imageUrl = await uploadImage(file);
         setFormData((prevFormData) => ({
           ...prevFormData,
@@ -1237,35 +1536,41 @@ const CreateJobPostAI = () => {
             companyLogo: imageUrl,
           },
         }));
-        setIsLoadingUploadImg(false)
+        setIsLoadingUploadImg(false);
         toast.success("Ảnh đã được tải lên thành công!");
       } catch (error) {
         console.error("Lỗi khi upload ảnh:", error);
-        setIsLoadingUploadImg(false)
+        setIsLoadingUploadImg(false);
         toast.error("Tải ảnh lên thất bại, vui lòng thử lại.");
       }
     }
   };
+
+  console.log("load", isLoadingUploadImg);
   return (
     <>
+      {isLoadingUploadImg && <ScreenLoading />}
       <HeaderRecruiter />
       <div className="flex flex-col items-center py-10">
-
-        {showChoseFile &&
-          <div className="flex justify-center items-center">
-            <div className="bg-white p-8 rounded-lg shadow-md w-full">
-              <h1 className="text-2xl font-bold text-center mb-6">Tạo tin tuyển dụng nhanh chóng từ tập tin có sẵn với CtuWorks AI</h1>
+        {showChoseFile && (
+          <div className="flex items-center justify-center">
+            <div className="w-full rounded-lg bg-white p-8 shadow-md">
+              <h1 className="mb-6 text-center text-2xl font-bold">
+                Tạo tin tuyển dụng nhanh chóng từ tập tin có sẵn với CtuWorks AI
+              </h1>
               <div className="flex">
                 <div className="w-2/3 pr-4">
-                  <h2 className="text-lg font-medium mb-4">Cung cấp thông tin theo cách của bạn</h2>
-                  <div className="flex items-center mb-6">
+                  <h2 className="mb-4 text-lg font-medium">
+                    Cung cấp thông tin theo cách của bạn
+                  </h2>
+                  <div className="mb-6 flex items-center">
                     <label className="mr-4">
                       <input
                         type="radio"
                         name="inputMethod"
                         value="file"
                         className="mr-2"
-                        checked={inputMethod === 'file'}
+                        checked={inputMethod === "file"}
                         onChange={handleInputChange}
                       />
                       Tệp sẵn có
@@ -1276,19 +1581,23 @@ const CreateJobPostAI = () => {
                         name="inputMethod"
                         value="paste"
                         className="mr-2"
-                        checked={inputMethod === 'paste'}
+                        checked={inputMethod === "paste"}
                         onChange={handleInputChange}
                       />
                       Sao chép và dán
                     </label>
                   </div>
-                  {inputMethod === 'file' ? (
+                  {inputMethod === "file" ? (
                     <div>
-                      <div className="border-dashed border-2 border-gray-300 p-6 text-center mb-4"
+                      <div
+                        className="mb-4 border-2 border-dashed border-gray-300 p-6 text-center"
                         onDrop={handleDrop}
-                        onDragOver={handleDragOver}>
-                        <i className="fas fa-upload text-2xl mb-2"></i>
-                        <p className="mb-2">Kéo & thả tệp tin của bạn vào đây</p>
+                        onDragOver={handleDragOver}
+                      >
+                        <i className="fas fa-upload mb-2 text-2xl"></i>
+                        <p className="mb-2">
+                          Kéo & thả tệp tin của bạn vào đây
+                        </p>
                         <p className="mb-2">Hoặc</p>
                         <div>
                           <input
@@ -1296,50 +1605,75 @@ const CreateJobPostAI = () => {
                             accept=".xlsx, .xls, .txt"
                             onChange={handleFileUpload}
                             ref={fileInputRef}
-                            style={{ display: 'none' }}
+                            style={{ display: "none" }}
                           />
-                          <button onClick={handleButtonClick} style={customButtonStyle}>
+                          <button
+                            onClick={handleButtonClick}
+                            style={customButtonStyle}
+                          >
                             Upload File
                           </button>
                         </div>
-                        <p className="text-sm text-gray-500 mt-2">tệp .txt, .xls, .xlsx; có kích thước nhỏ hơn 2MB</p>
-
+                        <p className="mt-2 text-sm text-gray-500">
+                          tệp .txt, .xls, .xlsx; có kích thước nhỏ hơn 2MB
+                        </p>
                       </div>
-                      <p className="text-sm text-gray-500 mb-6">Lưu ý: Hệ thống chỉ đọc dữ liệu từ trang tính đầu tiên của Excel. Vui lòng đảm bảo dữ liệu đầy đủ ở trang này trước khi tải lên.</p>
+                      <p className="mb-6 text-sm text-gray-500">
+                        Lưu ý: Hệ thống chỉ đọc dữ liệu từ trang tính đầu tiên
+                        của Excel. Vui lòng đảm bảo dữ liệu đầy đủ ở trang này
+                        trước khi tải lên.
+                      </p>
                     </div>
                   ) : (
                     <div className="text-right">
                       <textarea
                         value={textareaValue}
                         onChange={handleTextareaChange}
-                        className="border border-gray-300 p-2 rounded w-full"
-                        style={{ minHeight: '150px' }}
+                        className="w-full rounded border border-gray-300 p-2"
+                        style={{ minHeight: "150px" }}
                       />
-                      <p className="text-gray-500 p-0 m-0 mb-4">
+                      <p className="m-0 mb-4 p-0 text-gray-500">
                         {textareaValue.length} / 14500 ký tự
                       </p>
 
                       {showContinueButton && (
-                        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                          onClick={handleCreateWithPaste}>
+                        <button
+                          className="rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+                          onClick={handleCreateWithPaste}
+                        >
                           Tiếp tục
                         </button>
                       )}
                     </div>
                   )}
                   <div className="text-center">
-                    <a href="/recruiter/create-jobpost" className="text-blue-500">Đăng tin tuyển dụng thủ công</a>
+                    <a
+                      href="/recruiter/create-jobpost"
+                      className="text-blue-500"
+                    >
+                      Đăng tin tuyển dụng thủ công
+                    </a>
                   </div>
                 </div>
                 <div className="w-1/3 pl-4">
-                  <div className="bg-gray-100 p-4 rounded-lg">
-                    {inputMethod === 'file' ? (
-                      <img src="https://employer.vietnamworks.com/job-list/static/media/jd-file.52e7a755c3f82ca9b7e43fc6ea11874b.svg" alt="AI illustration" className="mb-4" />
+                  <div className="rounded-lg bg-gray-100 p-4">
+                    {inputMethod === "file" ? (
+                      <img
+                        src="https://employer.vietnamworks.com/job-list/static/media/jd-file.52e7a755c3f82ca9b7e43fc6ea11874b.svg"
+                        alt="AI illustration"
+                        className="mb-4"
+                      />
                     ) : (
-                      <img src="https://employer.vietnamworks.com/job-list/static/media/jd-text.90301e33d620591b54c1e53b30603119.svg" alt="AI illustration" className="mb-4" />
+                      <img
+                        src="https://employer.vietnamworks.com/job-list/static/media/jd-text.90301e33d620591b54c1e53b30603119.svg"
+                        alt="AI illustration"
+                        className="mb-4"
+                      />
                     )}
-                    <h2 className="text-lg font-medium mb-2">Tải tập tin có sẵn</h2>
-                    <ol className="list-decimal list-inside text-sm text-gray-700">
+                    <h2 className="mb-2 text-lg font-medium">
+                      Tải tập tin có sẵn
+                    </h2>
+                    <ol className="list-inside list-decimal text-sm text-gray-700">
                       <li>Bước 1: Kéo & thả tệp tin</li>
                       <li>Bước 2: AI sẽ tiến hành trích xuất thông tin</li>
                       <li>Bước 3: Kiểm tra, điều chỉnh và đăng tin</li>
@@ -1349,34 +1683,59 @@ const CreateJobPostAI = () => {
               </div>
             </div>
           </div>
-        }
-        {isLoading &&
+        )}
+        {isLoading && (
           <>
-            <div className="bg-white rounded-lg shadow-lg p-8 text-center max-w-lg mx-auto">
-              <h1 className="text-2xl font-semibold mb-2">CtuWorks AI đang xử lý dữ liệu</h1>
-              <p className="text-lg mb-4">Quá trình này sẽ cần từ 10-20 giây</p>
-              <p className="text-gray-500 mb-6">Bạn vui lòng chờ trong giây lát</p>
-              <video autoPlay loop src="https://cdnl.iconscout.com/lottie/premium/thumb/robot-loader-animated-icon-download-in-lottie-json-gif-static-svg-file-formats--loading-processing-process-preloader-pack-user-interface-icons-8319537.mp4" className="mx-auto mb-6" />
+            <div className="mx-auto max-w-lg rounded-lg bg-white p-8 text-center shadow-lg">
+              <h1 className="mb-2 text-2xl font-semibold">
+                CtuWorks AI đang xử lý dữ liệu
+              </h1>
+              <p className="mb-4 text-lg">Quá trình này sẽ cần từ 10-20 giây</p>
+              <p className="mb-6 text-gray-500">
+                Bạn vui lòng chờ trong giây lát
+              </p>
+              <video
+                autoPlay
+                loop
+                src="https://cdnl.iconscout.com/lottie/premium/thumb/robot-loader-animated-icon-download-in-lottie-json-gif-static-svg-file-formats--loading-processing-process-preloader-pack-user-interface-icons-8319537.mp4"
+                className="mx-auto mb-6"
+              />
             </div>
           </>
-        }
-        {isError &&
+        )}
+        {isError && (
           <>
-            <div className="flex flex-col items-center justify-center w-full h-full">
-              <div className="bg-white p-10 rounded-lg shadow-md text-center">
-                <img src="https://employer.vietnamworks.com/job-list/static/media/ErrorUpload.4b62a2183c6836be9a313113b822b90e.svg" alt="Illustration of a computer with a wrench and screwdriver" className="mx-auto mb-4" />
-                <h1 className="text-2xl font-semibold mb-2">Quá trình xử lý bị lỗi</h1>
-                <p className="text-gray-600 mb-4">Vui lòng kiểm tra lại thông tin của bạn hoặc thử lại sau.</p>
-                <button className="bg-orange-500 text-white px-4 py-2 rounded" onClick={() => window.location.reload()}>Làm lại</button>
+            <div className="flex h-full w-full flex-col items-center justify-center">
+              <div className="rounded-lg bg-white p-10 text-center shadow-md">
+                <img
+                  src="https://employer.vietnamworks.com/job-list/static/media/ErrorUpload.4b62a2183c6836be9a313113b822b90e.svg"
+                  alt="Illustration of a computer with a wrench and screwdriver"
+                  className="mx-auto mb-4"
+                />
+                <h1 className="mb-2 text-2xl font-semibold">
+                  Quá trình xử lý bị lỗi
+                </h1>
+                <p className="mb-4 text-gray-600">
+                  Vui lòng kiểm tra lại thông tin của bạn hoặc thử lại sau.
+                </p>
+                <button
+                  className="rounded bg-orange-500 px-4 py-2 text-white"
+                  onClick={() => window.location.reload()}
+                >
+                  Làm lại
+                </button>
               </div>
             </div>
-          </>}
-        {showInfo &&
+          </>
+        )}
+        {showInfo && (
           <>
             <div className="w-full max-w-4xl rounded-lg bg-white p-6 shadow-md">
               <div className="mb-6 flex justify-center">
                 <div className="flex flex-col items-center">
-                  <h1 className="text-4xl mt-2 text-blue-500">Thông tin công việc</h1>
+                  <h1 className="mt-2 text-4xl text-blue-500">
+                    Thông tin công việc
+                  </h1>
                 </div>
               </div>
               <Accordion
@@ -1386,7 +1745,9 @@ const CreateJobPostAI = () => {
                 collapsible
               >
                 <AccordionItem value="item-1" className="text-gray-500">
-                  <AccordionTrigger onClick={() => handleContinueClick("item-1")}>
+                  <AccordionTrigger
+                    onClick={() => handleContinueClick("item-1")}
+                  >
                     <h3 className="mb-2 mb-4 flex items-center text-lg font-semibold">
                       <FaBriefcase className="mr-1" />
                       <span>Mô tả công việc</span>
@@ -1398,7 +1759,10 @@ const CreateJobPostAI = () => {
                         <div className="space-y-4">
                           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div>
-                              <label id="jobTitle" className="block text-gray-700">
+                              <label
+                                id="jobTitle"
+                                className="block text-gray-700"
+                              >
                                 Chức danh<span className="text-red-500">*</span>
                               </label>
                               <input
@@ -1415,7 +1779,10 @@ const CreateJobPostAI = () => {
                               />
                             </div>
                             <div>
-                              <label id="jobType" className="block text-gray-700">
+                              <label
+                                id="jobType"
+                                className="block text-gray-700"
+                              >
                                 Loại việc làm
                               </label>
                               <select
@@ -1441,7 +1808,10 @@ const CreateJobPostAI = () => {
                           </div>
                           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div>
-                              <label id="jobLevel" className="block text-gray-700">
+                              <label
+                                id="jobLevel"
+                                className="block text-gray-700"
+                              >
                                 Cấp bậc<span className="text-red-500">*</span>
                               </label>
                               <select
@@ -1453,7 +1823,6 @@ const CreateJobPostAI = () => {
                                       ...formData.jobInformation,
                                       jobLevel: e.target.value,
                                     },
-
                                   });
                                 }}
                                 className="mt-1 w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-sky-400 focus-visible:ring-0"
@@ -1467,54 +1836,89 @@ const CreateJobPostAI = () => {
                               </select>
                             </div>
                             <div>
-                              <label id="jobField" className="block text-gray-700 mb-1">
+                              <label
+                                id="jobField"
+                                className="mb-1 block text-gray-700"
+                              >
                                 Ngành nghề chi tiết (Chọn 1 ngành nghề)
                                 <span className="text-red-500">*</span>
                               </label>
                               <Select
-                                value={formData.jobInformation.jobField ? { value: formData.jobInformation.jobField, label: formData.jobInformation.jobField } : null}
+                                value={
+                                  formData.jobInformation.jobField
+                                    ? {
+                                        value: formData.jobInformation.jobField,
+                                        label: formData.jobInformation.jobField,
+                                      }
+                                    : null
+                                }
                                 onChange={handleChange}
                                 options={optionsFeild}
                                 filterOption={filterOption}
                                 placeholder="Tìm kiếm lĩnh vực nghề nghiệp..."
-                              >
-                              </Select>
+                              ></Select>
                             </div>
                           </div>
                           <div>
-                            <label id="jobIndustry" className="block text-gray-700">
+                            <label
+                              id="jobIndustry"
+                              className="block text-gray-700"
+                            >
                               Lĩnh vực công việc
                             </label>
                             <Select
-                              value={formData.jobInformation.jobIndustry ? { value: formData.jobInformation.jobIndustry, label: formData.jobInformation.jobIndustry } : null}
+                              value={
+                                formData.jobInformation.jobIndustry
+                                  ? {
+                                      value:
+                                        formData.jobInformation.jobIndustry,
+                                      label:
+                                        formData.jobInformation.jobIndustry,
+                                    }
+                                  : null
+                              }
                               onChange={handleChangeIndustry}
                               options={optionsIndustry}
                               filterOption={filterOption}
                               placeholder="Vui lòng chọn..."
-                            >
-                            </Select>
+                            ></Select>
                           </div>
                           <div>
-                            <label id="jobLocation" className="block text-gray-700">
+                            <label
+                              id="jobLocation"
+                              className="block text-gray-700"
+                            >
                               Địa điểm làm việc (Tối đa 3 địa điểm)
                               <span className="text-red-500">*</span>
                             </label>
                             {locations.map((loc) => (
-                              <div key={loc.id} className="mt-1 flex items-center space-x-2">
+                              <div
+                                key={loc.id}
+                                className="mt-1 flex items-center space-x-2"
+                              >
                                 <select
                                   value={loc?.title}
                                   onChange={(e) => {
-                                    if (e.target.value === '+ Tạo địa điểm làm việc') {
+                                    if (
+                                      e.target.value ===
+                                      "+ Tạo địa điểm làm việc"
+                                    ) {
                                       openModal();
                                     } else {
-                                      const use = e.target?.value?.split(':')
-                                      if (loc.title.split(':')[0] !== use[0]) {
-                                        const locationToUpdate = Location.find((location) => loc.title.split(':')[0] === location.title);
+                                      const use = e.target?.value?.split(":");
+                                      if (loc.title.split(":")[0] !== use[0]) {
+                                        const locationToUpdate = Location.find(
+                                          (location) =>
+                                            loc.title.split(":")[0] ===
+                                            location.title
+                                        );
                                         if (locationToUpdate) {
                                           locationToUpdate.used = false;
                                         }
                                       }
-                                      const locationToUpdate = Location.find((location) => use[0] === location.title);
+                                      const locationToUpdate = Location.find(
+                                        (location) => use[0] === location.title
+                                      );
                                       if (locationToUpdate) {
                                         locationToUpdate.used = true;
                                       }
@@ -1530,32 +1934,41 @@ const CreateJobPostAI = () => {
                                   <option>Chọn một địa điểm làm việc</option>
                                   {Location?.map((Loca) => (
                                     <option
-                                      value={`${Loca?.title}: ${Loca?.description}`}
+                                      value={`${Loca?.title}${
+                                        Loca?.description || ""
+                                      }`}
                                       key={Loca._id}
                                       disabled={Loca.used}
-                                      className="bg-green-100 disabled:bg-gray-100 "
+                                      className="bg-green-100 disabled:bg-gray-100"
                                     >
                                       {Loca.title}: {Loca.description}:
                                     </option>
                                   ))}
-                                  <option className="text-blue-500 cursor-pointer" key={""}>+ Tạo địa điểm làm việc</option>
+                                  <option
+                                    className="cursor-pointer text-blue-500"
+                                    key={""}
+                                  >
+                                    + Tạo địa điểm làm việc
+                                  </option>
                                 </select>
-                                {
-                                  locations?.length > 1 && (
-                                    <button
-                                      onClick={() => handleRemoveLocationCompany(loc.id)}
-                                    >
-                                      <FaTrash className="cursor-pointer h-12 w-5" />
-                                    </button>
-                                  )
-                                }
+                                {locations?.length > 1 && (
+                                  <button
+                                    onClick={() =>
+                                      handleRemoveLocationCompany(loc.id)
+                                    }
+                                  >
+                                    <FaTrash className="h-12 w-5 cursor-pointer" />
+                                  </button>
+                                )}
                               </div>
                             ))}
                             <div>
                               {locations?.length < 3 && (
                                 <button
                                   className="mt-2 text-blue-500"
-                                  onClick={() => handleAddLocationCompany('', '')}
+                                  onClick={() =>
+                                    handleAddLocationCompany("", "")
+                                  }
                                 >
                                   + Thêm địa điểm làm việc
                                 </button>
@@ -1563,7 +1976,10 @@ const CreateJobPostAI = () => {
                             </div>
                           </div>
                           <div>
-                            <label id="jobDescription" className="block text-gray-700">
+                            <label
+                              id="jobDescription"
+                              className="block text-gray-700"
+                            >
                               Mô tả<span className="text-red-500">*</span>
                             </label>
                             <div className="overflow-hidden rounded-md border border-gray-300">
@@ -1590,7 +2006,10 @@ const CreateJobPostAI = () => {
                       <div className="rounded-lg border border-gray-300 p-4">
                         <div className="space-y-4">
                           <div>
-                            <label id="jobRequirements" className="block text-gray-700">
+                            <label
+                              id="jobRequirements"
+                              className="block text-gray-700"
+                            >
                               Yêu cầu công việc
                               <span className="text-red-500">*</span>
                             </label>
@@ -1618,8 +2037,12 @@ const CreateJobPostAI = () => {
                       <div className="rounded-lg border border-gray-300 p-4">
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                           <div>
-                            <label id="minSalary" className="block text-gray-700">
-                              Mức lương (USD)<span className="text-red-500">*</span>
+                            <label
+                              id="minSalary"
+                              className="block text-gray-700"
+                            >
+                              Mức lương (USD)
+                              <span className="text-red-500">*</span>
                             </label>
                             <div className="mt-1 flex items-center space-x-2">
                               <input
@@ -1655,33 +2078,53 @@ const CreateJobPostAI = () => {
                             >
                               Lương có thể thương lượng
                             </label>
-                            <Switch className="mt-2" value={formData.canDeal}
-                              onChange={
-                                () => {
-                                  setFormData({ ...formData, canDeal: !formData.canDeal });
-                                }
-                              } />
+                            <Switch
+                              className="mt-2"
+                              value={formData.canDeal}
+                              onChange={() => {
+                                setFormData({
+                                  ...formData,
+                                  canDeal: !formData.canDeal,
+                                });
+                              }}
+                            />
                           </div>
                           <div>
-                            <label id="numberOfPositions" className="block text-gray-700">Số lượng tuyển dụng</label>
-                            <div className="flex items-center space-x-2 mt-1">
-                              <button className="text-gray-500" onClick={handleDecrement}>
+                            <label
+                              id="numberOfPositions"
+                              className="block text-gray-700"
+                            >
+                              Số lượng tuyển dụng
+                            </label>
+                            <div className="mt-1 flex items-center space-x-2">
+                              <button
+                                className="text-gray-500"
+                                onClick={handleDecrement}
+                              >
                                 <FaMinus className="fas fa-minus" />
                               </button>
                               <input
                                 value={formData?.numberOfPositions}
-                                onChange={(e) => setNumberOfPositions(Number(e.target.value))}
+                                onChange={(e) =>
+                                  setNumberOfPositions(Number(e.target.value))
+                                }
                                 type="text"
                                 className="w-12 rounded-lg border border-gray-300 p-2 text-center"
                               />
-                              <button className="text-gray-500" onClick={handleIncrement}>
+                              <button
+                                className="text-gray-500"
+                                onClick={handleIncrement}
+                              >
                                 <FaPlus className="fas fa-plus" />
                               </button>
                             </div>
                           </div>
                         </div>
                         <div className="">
-                          <label id="expirationDate" className="block text-gray-700 mb-2 mt-5">
+                          <label
+                            id="expirationDate"
+                            className="mb-2 mt-5 block text-gray-700"
+                          >
                             Ngày ngưng nhập ứng tuyển
                           </label>
                           <Popover>
@@ -1701,7 +2144,10 @@ const CreateJobPostAI = () => {
                                 )}
                               </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
+                            <PopoverContent
+                              className="w-auto p-0"
+                              align="start"
+                            >
                               <Calendar
                                 mode="single"
                                 captionLayout="dropdown-buttons"
@@ -1726,7 +2172,9 @@ const CreateJobPostAI = () => {
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-2" className="text-gray-500">
-                  <AccordionTrigger onClick={() => handleContinueClick("item-2")}>
+                  <AccordionTrigger
+                    onClick={() => handleContinueClick("item-2")}
+                  >
                     <h3 className="mb-2 mb-4 flex items-center text-lg font-semibold">
                       <FaAddressCard className="mr-1" />
                       <span>Kỳ vọng về ứng viên</span>
@@ -1738,7 +2186,10 @@ const CreateJobPostAI = () => {
                         <div className="space-y-4">
                           <div className="grid grid-cols-1 gap-4">
                             <div className="mb-4">
-                              <label id="keyWord" className="mb-2 block text-sm font-bold text-gray-700">
+                              <label
+                                id="keyWord"
+                                className="mb-2 block text-sm font-bold text-gray-700"
+                              >
                                 Thẻ từ khóa{" "}
                                 <span className="text-gray-500">
                                   (Tối đa 5 thẻ)
@@ -1773,7 +2224,8 @@ const CreateJobPostAI = () => {
                                 />
                                 <button
                                   className="text-blue-500"
-                                  onClick={sendMess}>
+                                  onClick={sendMess}
+                                >
                                   Gợi ý với AI
                                 </button>
                               </div>
@@ -1807,23 +2259,37 @@ const CreateJobPostAI = () => {
                                 Năm kinh nghiệm tối thiểu
                               </label>
                               <div className="flex items-center space-x-2">
-                                <button className="rounded bg-gray-200 px-3 py-1 text-gray-700" onClick={handleDecrementExperience}>
+                                <button
+                                  className="rounded bg-gray-200 px-3 py-1 text-gray-700"
+                                  onClick={handleDecrementExperience}
+                                >
                                   <FaMinus className="fas fa-minus" />
                                 </button>
                                 <input
-                                  value={formData?.jobInformation?.minExperience}
+                                  value={
+                                    formData?.jobInformation?.minExperience
+                                  }
                                   onChange={(e) => {
-                                    const newExperience = Math.max(Math.min(Number(e.target.value), 100), 1);
+                                    const newExperience = Math.max(
+                                      Math.min(Number(e.target.value), 100),
+                                      1
+                                    );
                                     setMinExperience(newExperience);
                                     setFormData({
                                       ...formData,
-                                      jobInformation: { ...formData.jobInformation, minExperience: newExperience },
+                                      jobInformation: {
+                                        ...formData.jobInformation,
+                                        minExperience: newExperience,
+                                      },
                                     });
                                   }}
                                   type="text"
                                   className="w-12 rounded border border-gray-300 px-2 py-1 text-center outline-none focus:border-sky-400"
                                 />
-                                <button className="rounded bg-gray-200 px-3 py-1 text-gray-700" onClick={handleIncrementExperience}>
+                                <button
+                                  className="rounded bg-gray-200 px-3 py-1 text-gray-700"
+                                  onClick={handleIncrementExperience}
+                                >
                                   <FaPlus className="fas fa-plus" />
                                 </button>
                               </div>
@@ -1866,10 +2332,12 @@ const CreateJobPostAI = () => {
                                   <input
                                     value={"any"}
                                     checked={
-                                      formData.jobInformation.nationality === "any"
+                                      formData.jobInformation.nationality ===
+                                      "any"
                                     }
                                     onClick={(e) => {
-                                      const target = e?.target as HTMLInputElement;
+                                      const target =
+                                        e?.target as HTMLInputElement;
                                       setFormData({
                                         ...formData,
                                         jobInformation: {
@@ -1889,10 +2357,12 @@ const CreateJobPostAI = () => {
                                   <input
                                     value={"1"}
                                     checked={
-                                      formData.jobInformation.nationality === "1"
+                                      formData.jobInformation.nationality ===
+                                      "1"
                                     }
                                     onClick={(e) => {
-                                      const target = e?.target as HTMLInputElement;
+                                      const target =
+                                        e?.target as HTMLInputElement;
                                       setFormData({
                                         ...formData,
                                         jobInformation: {
@@ -1912,10 +2382,12 @@ const CreateJobPostAI = () => {
                                   <input
                                     value={"2"}
                                     checked={
-                                      formData.jobInformation.nationality === "2"
+                                      formData.jobInformation.nationality ===
+                                      "2"
                                     }
                                     onClick={(e) => {
-                                      const target = e?.target as HTMLInputElement;
+                                      const target =
+                                        e?.target as HTMLInputElement;
                                       setFormData({
                                         ...formData,
                                         jobInformation: {
@@ -1957,7 +2429,8 @@ const CreateJobPostAI = () => {
                                       formData.jobInformation.gender === "any"
                                     }
                                     onClick={(e) => {
-                                      const target = e?.target as HTMLInputElement;
+                                      const target =
+                                        e?.target as HTMLInputElement;
                                       setFormData({
                                         ...formData,
                                         jobInformation: {
@@ -1976,9 +2449,12 @@ const CreateJobPostAI = () => {
                                 <label className="flex w-[20%] items-center">
                                   <input
                                     value={"1"}
-                                    checked={formData.jobInformation.gender === "1"}
+                                    checked={
+                                      formData.jobInformation.gender === "1"
+                                    }
                                     onClick={(e) => {
-                                      const target = e?.target as HTMLInputElement;
+                                      const target =
+                                        e?.target as HTMLInputElement;
                                       setFormData({
                                         ...formData,
                                         jobInformation: {
@@ -1997,9 +2473,12 @@ const CreateJobPostAI = () => {
                                 <label className="flex w-[20%] items-center">
                                   <input
                                     value={"2"}
-                                    checked={formData.jobInformation.gender === "2"}
+                                    checked={
+                                      formData.jobInformation.gender === "2"
+                                    }
                                     onClick={(e) => {
-                                      const target = e?.target as HTMLInputElement;
+                                      const target =
+                                        e?.target as HTMLInputElement;
                                       setFormData({
                                         ...formData,
                                         jobInformation: {
@@ -2041,7 +2520,8 @@ const CreateJobPostAI = () => {
                                       "any"
                                     }
                                     onClick={(e) => {
-                                      const target = e?.target as HTMLInputElement;
+                                      const target =
+                                        e?.target as HTMLInputElement;
                                       setFormData({
                                         ...formData,
                                         jobInformation: {
@@ -2060,10 +2540,12 @@ const CreateJobPostAI = () => {
                                   <input
                                     value={"1"}
                                     checked={
-                                      formData.jobInformation.maritalStatus === "1"
+                                      formData.jobInformation.maritalStatus ===
+                                      "1"
                                     }
                                     onClick={(e) => {
-                                      const target = e?.target as HTMLInputElement;
+                                      const target =
+                                        e?.target as HTMLInputElement;
                                       setFormData({
                                         ...formData,
                                         jobInformation: {
@@ -2082,10 +2564,12 @@ const CreateJobPostAI = () => {
                                   <input
                                     value={"2"}
                                     checked={
-                                      formData.jobInformation.maritalStatus === "2"
+                                      formData.jobInformation.maritalStatus ===
+                                      "2"
                                     }
                                     onClick={(e) => {
-                                      const target = e?.target as HTMLInputElement;
+                                      const target =
+                                        e?.target as HTMLInputElement;
                                       setFormData({
                                         ...formData,
                                         jobInformation: {
@@ -2210,7 +2694,9 @@ const CreateJobPostAI = () => {
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-3" className="text-gray-500">
-                  <AccordionTrigger onClick={() => handleContinueClick("item-3")}>
+                  <AccordionTrigger
+                    onClick={() => handleContinueClick("item-3")}
+                  >
                     <h3 className="mb-4 flex items-center text-lg font-semibold">
                       <FaBuilding className="mr-1" />
                       <span>Thông tin công ty</span>
@@ -2353,7 +2839,11 @@ const CreateJobPostAI = () => {
                         {benefits.map((benefit) => (
                           <div key={benefit.id} className="mb-2 flex space-x-4">
                             <select
-                              value={formData?.companyInfo?.companyBenefits[benefit.id]?.title}
+                              value={
+                                formData?.companyInfo?.companyBenefits[
+                                  benefit.id
+                                ]?.title
+                              }
                               onChange={(e) => {
                                 setFormData({
                                   ...formData,
@@ -2362,9 +2852,8 @@ const CreateJobPostAI = () => {
                                     companyBenefits: {
                                       ...formData.companyInfo?.companyBenefits,
                                       [benefit.id]: {
-                                        ...formData.companyInfo?.companyBenefits[
-                                        benefit.id
-                                        ],
+                                        ...formData.companyInfo
+                                          ?.companyBenefits[benefit.id],
                                         title: e.target.value,
                                         content:
                                           formData.companyInfo?.companyBenefits[
@@ -2385,20 +2874,23 @@ const CreateJobPostAI = () => {
                                   disabled={
                                     usedBenefits.includes(item.name) &&
                                     item.name !==
-                                    formData.companyInfo?.companyBenefits[
-                                      benefit.id
-                                    ]?.title
+                                      formData.companyInfo?.companyBenefits[
+                                        benefit.id
+                                      ]?.title
                                   }
                                 >
                                   {item.name}{" "}
-                                  {usedBenefits.includes(item.name) ? "\u2713" : ""}
+                                  {usedBenefits.includes(item.name)
+                                    ? "\u2713"
+                                    : ""}
                                 </option>
                               ))}
                             </select>
                             <textarea
                               value={
-                                formData.companyInfo?.companyBenefits[benefit.id]
-                                  ?.content
+                                formData.companyInfo?.companyBenefits[
+                                  benefit.id
+                                ]?.content
                               }
                               onChange={(e) => {
                                 setFormData({
@@ -2423,8 +2915,9 @@ const CreateJobPostAI = () => {
                                 benefitoptions.find(
                                   (option) =>
                                     option.name ===
-                                    formData.companyInfo?.companyBenefits[benefit.id]
-                                      ?.title
+                                    formData.companyInfo?.companyBenefits[
+                                      benefit.id
+                                    ]?.title
                                 )?.placeholder || "Nhập chi tiết phúc lợi"
                               }
                             ></textarea>
@@ -2440,7 +2933,7 @@ const CreateJobPostAI = () => {
                         {benefits?.length < 3 && (
                           <button
                             className="mt-2 text-blue-500"
-                            onClick={() => handleAddBenefit('', '')}
+                            onClick={() => handleAddBenefit("", "")}
                           >
                             + Thêm phúc lợi
                           </button>
@@ -2483,13 +2976,20 @@ const CreateJobPostAI = () => {
               </button>
             </div>
             {isModalOpen && (
-              <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-                <div className="bg-white p-6 rounded-lg shadow-lg relative">
-                  <h2 className="text-xl font-semibold mb-4">Tạo địa điểm làm việc</h2>
+              <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50">
+                <div className="relative rounded-lg bg-white p-6 shadow-lg">
+                  <h2 className="mb-4 text-xl font-semibold">
+                    Tạo địa điểm làm việc
+                  </h2>
                   <form className="w-96">
                     <div className="mb-4">
-                      <label className="block text-gray-700">Tên Văn Phòng</label>
-                      <input type="text" className="w-full border border-gray-300 rounded-lg p-2 mt-1" defaultValue={currentOffice ? currentOffice.title : ''}
+                      <label className="block text-gray-700">
+                        Tên Văn Phòng
+                      </label>
+                      <input
+                        type="text"
+                        className="mt-1 w-full rounded-lg border border-gray-300 p-2"
+                        defaultValue={currentOffice ? currentOffice.title : ""}
                         onChange={(e) => {
                           setCurrentOffice({
                             ...currentOffice,
@@ -2497,12 +2997,15 @@ const CreateJobPostAI = () => {
                           });
                         }}
                       />
-
                     </div>
                     <div className="mb-4">
                       <label className="block text-gray-700">Địa Chỉ</label>
-                      <input type="text"
-                        className="w-full border border-gray-300 rounded-lg p-2 mt-1" defaultValue={currentOffice ? currentOffice.description : ''}
+                      <input
+                        type="text"
+                        className="mt-1 w-full rounded-lg border border-gray-300 p-2"
+                        defaultValue={
+                          currentOffice ? currentOffice.description : ""
+                        }
                         onChange={(e) => {
                           setCurrentOffice({
                             ...currentOffice,
@@ -2510,20 +3013,30 @@ const CreateJobPostAI = () => {
                           });
                         }}
                       />
-
                     </div>
                     <div className="flex justify-end">
-                      <button type="button" onClick={closeModal} className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg mr-2">Hủy</button>
-                      <button type="button" onClick={handleAddLocation} className="bg-orange-500 text-white px-4 py-2 rounded-lg">Tạo</button>
+                      <button
+                        type="button"
+                        onClick={closeModal}
+                        className="mr-2 rounded-lg bg-gray-200 px-4 py-2 text-gray-700"
+                      >
+                        Hủy
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleAddLocation}
+                        className="rounded-lg bg-orange-500 px-4 py-2 text-white"
+                      >
+                        Tạo
+                      </button>
                     </div>
                   </form>
                 </div>
               </div>
-
             )}
           </>
-        }
-      </div >
+        )}
+      </div>
     </>
   );
 };

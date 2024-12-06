@@ -18,6 +18,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Briefcase, Calendar, DollarSign, MapPin } from "lucide-react";
 import { toast } from "react-toastify";
+import ChatbotRecruiter from "@/components/ChatBotRecruiter/ChatBotRecruiter";
 
 export interface JwtPayload {
   userid: string;
@@ -93,8 +94,12 @@ const Search = () => {
     };
     fetchJobPosts();
   }, []);
+
   const handleDownloadCV = () => {
-    if (!selectedProfile || !selectedProfile.cvUrl) return;
+    if (!selectedProfile || !selectedProfile.cvUrl) {
+      toast.error("Không tìm thấy CV của ứng viên");
+      return;
+    }
 
     const downloadUrl = selectedProfile.cvUrl.includes("/upload/")
       ? selectedProfile.cvUrl.replace("/upload/", "/upload/fl_attachment/")
@@ -108,6 +113,7 @@ const Search = () => {
     link.click();
     document.body.removeChild(link);
   };
+
   const fetchGetUsers = async () => {
     const res = await fetch(`http://localhost:3001/api/user/getAll`, {
       method: "GET",
@@ -204,6 +210,8 @@ const Search = () => {
 
   return (
     <>
+      <ChatbotRecruiter />
+
       <div className="max-h-auto">
         <HeaderRecruiter />
         <div className="ml-[10%] mr-[10%] p-4">

@@ -10,6 +10,7 @@ import { jwtDecode } from "jwt-decode";
 import HeaderRecruiter from "@/components/HeaderRecruiter/HeaderRecruiter";
 import RecruiterSidebar from "@/components/UserSidebar/RecruiterSidebar";
 import Select from "react-select";
+import ChatbotRecruiter from "@/components/ChatBotRecruiter/ChatBotRecruiter";
 
 export interface JwtPayload {
   userid: string;
@@ -389,6 +390,8 @@ const Profile = () => {
   };
   return (
     <>
+      <ChatbotRecruiter />
+
       <div className="bg-[#F7F8FA]">
         <HeaderRecruiter />
         <div className="container py-6">
@@ -473,9 +476,9 @@ const Profile = () => {
                     value={
                       formData.companyIndustries
                         ? {
-                          value: formData.companyIndustries,
-                          label: formData.companyIndustries,
-                        }
+                            value: formData.companyIndustries,
+                            label: formData.companyIndustries,
+                          }
                         : null
                     }
                     onChange={handleChangeIndustry}
@@ -590,7 +593,7 @@ const Profile = () => {
                             disabled={
                               usedBenefits.includes(item.name) &&
                               item.name !==
-                              formData?.companyBenefits[benefit.id]?.title
+                                formData?.companyBenefits[benefit.id]?.title
                             }
                           >
                             {item.name}{" "}
